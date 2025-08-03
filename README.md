@@ -21,15 +21,10 @@ npm install omni-color
 
 These scripts are available in the `package.json`:
 
-| Script            | Description                                                                 |
-|-------------------|-----------------------------------------------------------------------------|
-| `npm run build`   | Compiles TypeScript files from `./src` into JavaScript in `./dist`.         |
-| `npm run dev`     | Starts the TypeScript compiler in watch mode for live rebuilding.           |
-| `npm run test`    | Runs the test suite.                                |
-| `prepare` _(auto)_| Automatically runs `npm run build` before `npm publish`, `npm install`, etc.|
-
-You can run any of these with:
-
-```bash
-npm run <script-name>
-```
+| Script              | Description                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| `npm run test`      | Runs the test suite once using Jest.                                        |
+| `npm run test:watch`| Runs the test suite in watch mode — re-runs on file changes.                |
+| `npm run dev`       | Starts the TypeScript compiler in watch mode for continuous rebuilding.     |
+| `npm run build`     | Compiles TypeScript source from `./src` to JavaScript in `./dist`.          |
+| `prepare` _(auto)_  | Automatically runs `npm run build` before `npm publish` or `npm install`.   |

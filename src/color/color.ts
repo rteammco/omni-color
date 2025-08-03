@@ -10,7 +10,7 @@ export class Color {
     this.color = color ? toRGBA(color) : getRandomColorRGBA();
   }
 
-  asRGBA(): ColorRGBA {
+  toRGBA(): ColorRGBA {
     return this.color;
   }
 }
