@@ -1,3 +1,3 @@
-export function greetings(name: string) {
-  return `Hello, ${name}!`;
-}
+import { Color } from './color/color';
+
+export { Color };

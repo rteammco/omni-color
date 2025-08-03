@@ -16,8 +16,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "dev": "tsc --watch",
-    "build": "tsc",
+    "dev": "tsup src/index.ts --format esm --dts --out-dir dist --watch",
+    "build": "tsup src/index.ts --format esm --dts --out-dir dist",
     "prepare": "npm run build && npm run build"
   },
   "simple-git-hooks": {
@@ -33,6 +33,7 @@
     "simple-git-hooks": "^2.13.1",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.0",
     "typescript": "^5.9.2"
   }
 }
