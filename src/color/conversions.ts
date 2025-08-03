@@ -1,5 +1,5 @@
-import { ColorFormat, ColorRGBA } from './formats';
-import { isValidHexColor } from './validations';
+import { ColorFormat, ColorHex, ColorRGBA } from './formats';
+import { isValidHexColor, isValidRGBAColor } from './validations';
 
 function hexToRGBA(hex: string): ColorRGBA {
   if (!isValidHexColor(hex)) {
@@ -31,9 +31,32 @@ function hexToRGBA(hex: string): ColorRGBA {
   return { r, g, b, a: +(a / 255).toFixed(3) };
 }
 
+function rgbaToHex(rgba: ColorRGBA): ColorHex {
+  if (!isValidRGBAColor(rgba)) {
+    throw new Error(`Invalid RGBA color: "${JSON.stringify(rgba)}"`);
+  }
+
+  const { r, g, b, a = 1 } = rgba;
+  const toHex = (value: number) => value.toString(16).padStart(2, '0');
+  const alpha = Math.round(a * 255);
+  const alphaHex = alpha < 255 ? toHex(alpha) : '';
+
+  return (`#${toHex(r)}${toHex(g)}${toHex(b)}${alphaHex}`).toLowerCase() as ColorHex;
+}
+
 export function toRGBA(color: ColorFormat): ColorRGBA {
   if (typeof color === 'string') {
     return hexToRGBA(color);
   }
   return color;
+}
+
+export function toHex(color: ColorFormat): ColorHex {
+  if (typeof color === 'string') {
+    if (!isValidHexColor(color)) {
+      throw new Error(`Invalid hex color: "${color}"`);
+    }
+    return color.toLowerCase() as ColorHex;
+  }
+  return rgbaToHex(color);
 }
