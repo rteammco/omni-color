@@ -26,3 +26,36 @@ export type ColorFormat =
   | ColorRGBA
   | ColorHSL
   | ColorHSLA;
+
+export enum ColorFormatType {
+  HEX = 'hex',
+  RGB = 'rgb',
+  RGBA = 'rgba',
+  HSL = 'hsl',
+  HSLA = 'hsla',
+}
+
+export type TypedColorFormat =
+  | { formatType: ColorFormatType.HEX; value: ColorHex }
+  | { formatType: ColorFormatType.RGB; value: ColorRGB }
+  | { formatType: ColorFormatType.RGBA; value: ColorRGBA }
+  | { formatType: ColorFormatType.HSL; value: ColorHSL }
+  | { formatType: ColorFormatType.HSLA; value: ColorHSLA };
+
+export function getColorFormat(color: ColorFormat): TypedColorFormat {
+  if (typeof color === 'string') {
+    return { formatType: ColorFormatType.HEX, value: color };
+  }
+
+  if ('h' in color) {
+    return 'a' in color
+      ? { formatType: ColorFormatType.HSLA, value: color }
+      : { formatType: ColorFormatType.HSL, value: color };
+  }
+
+  if ('a' in color) {
+    return { formatType: ColorFormatType.RGBA, value: color };
+  }
+
+  return { formatType: ColorFormatType.RGB, value: color };
+}
