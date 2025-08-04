@@ -5,7 +5,10 @@ import {
   ColorRGBA,
   ColorHSL,
   ColorHSLA,
+  ColorFormatType,
+  getColorFormat,
 } from './formats';
+
 import {
   isValidHexColor,
   isValidRGBAColor,
@@ -180,45 +183,52 @@ export function hslaToRGBA(color: ColorHSLA): ColorRGBA {
 }
 
 export function toRGBA(color: ColorFormat): ColorRGBA {
-  if (typeof color === 'string') {
-    return hexToRGBA(color);
+  const { formatType, value } = getColorFormat(color);
+  switch (formatType) {
+    case ColorFormatType.HEX:
+      return hexToRGBA(value);
+    case ColorFormatType.HSL:
+      return rgbToRGBA(hslToRGB(value));
+    case ColorFormatType.HSLA:
+      return hslaToRGBA(value);
+    case ColorFormatType.RGBA:
+      return value;
+    default:
+      return rgbToRGBA(value);
   }
-
-  if ('h' in color) {
-    return hslaToRGBA(color);
-  }
-
-  if ('a' in color) {
-    const { a, ...rgb } = color;
-    return rgbToRGBA(rgb, a);
-  }
-
-  return rgbToRGBA(color);
 }
 
 export function toRGB(color: ColorFormat): ColorRGB {
-  if (typeof color === 'string') {
-    return hexToRGB(color);
+  const { formatType, value } = getColorFormat(color);
+  switch (formatType) {
+    case ColorFormatType.HEX:
+      return hexToRGB(value);
+    case ColorFormatType.HSL:
+      return hslToRGB(value);
+    case ColorFormatType.HSLA:
+      return hslToRGB(value);
+    case ColorFormatType.RGBA:
+      return rgbaToRGB(value);
+    default:
+      return value;
   }
-
-  if ('h' in color) {
-    return hslToRGB(color);
-  }
-
-  return 'a' in color ? rgbaToRGB(color) : color;
 }
 
 export function toHex(color: ColorFormat): ColorHex {
-  if (typeof color === 'string') {
-    if (!isValidHexColor(color)) {
-      throw new Error(`Invalid hex color: "${color}"`);
-    }
-    return color.toLowerCase() as ColorHex;
+  const { formatType, value } = getColorFormat(color);
+  switch (formatType) {
+    case ColorFormatType.HEX:
+      if (!isValidHexColor(value)) {
+        throw new Error(`Invalid hex color: "${value}"`);
+      }
+      return value.toLowerCase() as ColorHex;
+    case ColorFormatType.HSL:
+      return rgbToHex(hslToRGB(value));
+    case ColorFormatType.HSLA:
+      return rgbaToHex(hslaToRGBA(value));
+    case ColorFormatType.RGBA:
+      return rgbaToHex(value);
+    default:
+      return rgbToHex(value);
   }
-
-  if ('h' in color) {
-    return rgbToHex(hslToRGB(color));
-  }
-
-  return 'a' in color ? rgbaToHex(color) : rgbToHex(color);
 }
