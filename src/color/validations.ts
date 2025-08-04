@@ -1,4 +1,4 @@
-import { ColorRGBA } from './formats';
+import { ColorRGBA, ColorHSLA } from './formats';
 
 const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
@@ -18,6 +18,22 @@ export function isValidRGBAColor(color: ColorRGBA): boolean {
     Number.isInteger(b) &&
     b >= 0 &&
     b <= 255 &&
+    (a === undefined || (typeof a === 'number' && a >= 0 && a <= 1))
+  );
+}
+
+export function isValidHSLAColor(color: ColorHSLA): boolean {
+  const { h, s, l, a } = color;
+  return (
+    Number.isInteger(h) &&
+    h >= 0 &&
+    h <= 360 &&
+    Number.isInteger(s) &&
+    s >= 0 &&
+    s <= 100 &&
+    Number.isInteger(l) &&
+    l >= 0 &&
+    l <= 100 &&
     (a === undefined || (typeof a === 'number' && a >= 0 && a <= 1))
   );
 }
