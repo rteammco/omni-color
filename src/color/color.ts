@@ -1,5 +1,5 @@
-import { toHex, toRGBA } from './conversions';
-import { ColorFormat, ColorHex, ColorRGBA } from './formats';
+import { toHex, toRGB, toRGBA } from './conversions';
+import { ColorFormat, ColorHex, ColorRGB, ColorRGBA } from './formats';
 import { getRandomColorRGBA } from './utils';
 
 export class Color {
@@ -11,6 +11,10 @@ export class Color {
 
   toRGBA(): ColorRGBA {
     return this.color;
+  }
+
+  toRGB(): ColorRGB {
+    return toRGB(this.color);
   }
 
   toHex(): ColorHex {
