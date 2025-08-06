@@ -1,4 +1,14 @@
-import { toHex, toRGB, toRGBA, rgbaToHSL, rgbaToHSLA } from './conversions';
+import {
+  toHex,
+  toRGB,
+  toRGBA,
+  rgbaToHSL,
+  rgbaToHSLA,
+  rgbaToHSV,
+  rgbaToCMYK,
+  rgbaToLCH,
+  rgbaToOKLCH,
+} from './conversions';
 import {
   ColorFormat,
   ColorHex,
@@ -6,6 +16,10 @@ import {
   ColorRGBA,
   ColorHSL,
   ColorHSLA,
+  ColorHSV,
+  ColorCMYK,
+  ColorLCH,
+  ColorOKLCH,
 } from './formats';
 import { getRandomColorRGBA } from './utils';
 
@@ -34,5 +48,21 @@ export class Color {
 
   toHSLA(): ColorHSLA {
     return rgbaToHSLA(this.color);
+  }
+
+  toHSV(): ColorHSV {
+    return rgbaToHSV(this.color);
+  }
+
+  toCMYK(): ColorCMYK {
+    return rgbaToCMYK(this.color);
+  }
+
+  toLCH(): ColorLCH {
+    return rgbaToLCH(this.color);
+  }
+
+  toOKLCH(): ColorOKLCH {
+    return rgbaToOKLCH(this.color);
   }
 }
