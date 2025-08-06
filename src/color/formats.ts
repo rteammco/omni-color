@@ -1,5 +1,7 @@
 export type ColorHex = `#${string}`;
 
+export type ColorHex8 = `#${string}`;
+
 export interface ColorRGB {
   r: number; // 0-255
   g: number; // 0-255
@@ -7,7 +9,7 @@ export interface ColorRGB {
 }
 
 export interface ColorRGBA extends ColorRGB {
-  a?: number; // 0-1
+  a: number; // 0-1
 }
 
 export interface ColorHSL {
@@ -17,13 +19,17 @@ export interface ColorHSL {
 }
 
 export interface ColorHSLA extends ColorHSL {
-  a?: number; // 0-1
+  a: number; // 0-1
 }
 
 export interface ColorHSV {
   h: number; // 0-360
   s: number; // 0-100
   v: number; // 0-100
+}
+
+export interface ColorHSVA extends ColorHSV {
+  a: number; // 0-1
 }
 
 export interface ColorCMYK {
@@ -52,67 +58,76 @@ export type ColorFormat =
   | ColorHSL
   | ColorHSLA
   | ColorHSV
+  | ColorHSVA
   | ColorCMYK
   | ColorLCH
   | ColorOKLCH;
 
 export enum ColorFormatType {
   HEX = 'hex',
+  HEX8 = 'hex8',
   RGB = 'rgb',
   RGBA = 'rgba',
   HSL = 'hsl',
   HSLA = 'hsla',
   HSV = 'hsv',
+  HSVA = 'hsva',
   CMYK = 'cmyk',
   LCH = 'lch',
   OKLCH = 'oklch',
 }
 
-export type TypedColorFormat =
+type ColorFormatTypeAndValue =
   | { formatType: ColorFormatType.HEX; value: ColorHex }
+  | { formatType: ColorFormatType.HEX8; value: ColorHex8 }
   | { formatType: ColorFormatType.RGB; value: ColorRGB }
   | { formatType: ColorFormatType.RGBA; value: ColorRGBA }
   | { formatType: ColorFormatType.HSL; value: ColorHSL }
   | { formatType: ColorFormatType.HSLA; value: ColorHSLA }
   | { formatType: ColorFormatType.HSV; value: ColorHSV }
+  | { formatType: ColorFormatType.HSVA; value: ColorHSVA }
   | { formatType: ColorFormatType.CMYK; value: ColorCMYK }
   | { formatType: ColorFormatType.LCH; value: ColorLCH }
   | { formatType: ColorFormatType.OKLCH; value: ColorOKLCH };
 
-export function getColorFormat(color: ColorFormat): TypedColorFormat {
+export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue {
   if (typeof color === 'string') {
-    return { formatType: ColorFormatType.HEX, value: color };
+    return color.length === 7
+      ? { formatType: ColorFormatType.HEX, value: color.toLowerCase() as ColorHex }
+      : { formatType: ColorFormatType.HEX8, value: color.toLowerCase() as ColorHex8 };
   }
 
   if ('c' in color && 'm' in color && 'y' in color && 'k' in color) {
     return { formatType: ColorFormatType.CMYK, value: color };
   }
 
-  if ('h' in color) {
-    if ('s' in color && 'v' in color) {
-      return { formatType: ColorFormatType.HSV, value: color };
-    }
-
-    if ('s' in color && 'l' in color) {
-      return 'a' in color
-        ? { formatType: ColorFormatType.HSLA, value: color }
-        : { formatType: ColorFormatType.HSL, value: color };
-    }
-
-    if ('l' in color && 'c' in color) {
-      const { l, c, h } = color;
-      if (l <= 1) {
-        const oklch: ColorOKLCH = { l, c, h };
-        return { formatType: ColorFormatType.OKLCH, value: oklch };
-      }
-      const lch: ColorLCH = { l, c, h };
-      return { formatType: ColorFormatType.LCH, value: lch };
-    }
+  if ('h' in color && 's' in color && 'v' in color) {
+    return 'a' in color
+      ? { formatType: ColorFormatType.HSVA, value: color }
+      : { formatType: ColorFormatType.HSV, value: color };
   }
 
-  if ('a' in color) {
-    return { formatType: ColorFormatType.RGBA, value: color };
+  if ('h' in color && 's' in color && 'l' in color) {
+    return 'a' in color
+      ? { formatType: ColorFormatType.HSLA, value: color }
+      : { formatType: ColorFormatType.HSL, value: color };
   }
 
-  return { formatType: ColorFormatType.RGB, value: color };
+  if ('h' in color && 'l' in color && 'c' in color) {
+    const { l, c, h } = color;
+    if (l <= 1) {
+      const oklch: ColorOKLCH = { l, c, h };
+      return { formatType: ColorFormatType.OKLCH, value: oklch };
+    }
+    const lch: ColorLCH = { l, c, h };
+    return { formatType: ColorFormatType.LCH, value: lch };
+  }
+
+  if ('r' in color && 'g' in color && 'b' in color) {
+    return 'a' in color
+      ? { formatType: ColorFormatType.RGBA, value: color }
+      : { formatType: ColorFormatType.RGB, value: color };
+  }
+
+  throw new Error(`[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`);
 }

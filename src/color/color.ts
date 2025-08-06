@@ -1,25 +1,29 @@
 import {
+  toCMYK,
   toHex,
+  toHex8,
+  toHSL,
+  toHSLA,
+  toHSV,
+  toHSVA,
+  toLCH,
+  toOKLCH,
   toRGB,
   toRGBA,
-  rgbaToHSL,
-  rgbaToHSLA,
-  rgbaToHSV,
-  rgbaToCMYK,
-  rgbaToLCH,
-  rgbaToOKLCH,
 } from './conversions';
 import {
+  ColorCMYK,
   ColorFormat,
-  ColorHex,
-  ColorRGB,
-  ColorRGBA,
   ColorHSL,
   ColorHSLA,
   ColorHSV,
-  ColorCMYK,
+  ColorHSVA,
+  ColorHex,
+  ColorHex8,
   ColorLCH,
   ColorOKLCH,
+  ColorRGB,
+  ColorRGBA,
 } from './formats';
 import { getRandomColorRGBA } from './utils';
 
@@ -30,10 +34,6 @@ export class Color {
     this.color = color ? toRGBA(color) : getRandomColorRGBA();
   }
 
-  toRGBA(): ColorRGBA {
-    return this.color;
-  }
-
   toRGB(): ColorRGB {
     return toRGB(this.color);
   }
@@ -42,27 +42,39 @@ export class Color {
     return toHex(this.color);
   }
 
+  toHex8(): ColorHex8 {
+    return toHex8(this.color);
+  }
+
+  toRGBA(): ColorRGBA {
+    return this.color;
+  }
+
   toHSL(): ColorHSL {
-    return rgbaToHSL(this.color);
+    return toHSL(this.color);
   }
 
   toHSLA(): ColorHSLA {
-    return rgbaToHSLA(this.color);
+    return toHSLA(this.color);
   }
 
   toHSV(): ColorHSV {
-    return rgbaToHSV(this.color);
+    return toHSV(this.color);
+  }
+
+  toHSVA(): ColorHSVA {
+    return toHSVA(this.color);
   }
 
   toCMYK(): ColorCMYK {
-    return rgbaToCMYK(this.color);
+    return toCMYK(this.color);
   }
 
   toLCH(): ColorLCH {
-    return rgbaToLCH(this.color);
+    return toLCH(this.color);
   }
 
   toOKLCH(): ColorOKLCH {
-    return rgbaToOKLCH(this.color);
+    return toOKLCH(this.color);
   }
 }

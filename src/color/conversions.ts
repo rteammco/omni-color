@@ -1,33 +1,32 @@
 import {
+  ColorCMYK,
   ColorFormat,
-  ColorHex,
-  ColorRGB,
-  ColorRGBA,
+  ColorFormatType,
   ColorHSL,
   ColorHSLA,
   ColorHSV,
-  ColorCMYK,
+  ColorHSVA,
+  ColorHex,
+  ColorHex8,
   ColorLCH,
   ColorOKLCH,
-  ColorFormatType,
-  getColorFormat,
+  ColorRGB,
+  ColorRGBA,
+  getColorFormatType,
 } from './formats';
+import { validateColorOrThrow } from './validations';
 
-import {
-  isValidHexColor,
-  isValidRGBAColor,
-  isValidHSLAColor,
-  isValidHSVColor,
-  isValidCMYKColor,
-  isValidLCHColor,
-  isValidOKLCHColor,
-} from './validations';
+function rgbToRGBA(color: ColorRGB, alpha?: number): ColorRGBA {
+  const { r, g, b } = color;
+  return alpha === undefined ? { r, g, b, a: 1 } : { r, g, b, a: alpha };
+}
 
-function parseHex(hex: string): { r: number; g: number; b: number; a?: number } {
-  if (!isValidHexColor(hex)) {
-    throw new Error(`Invalid hex color: "${hex}"`);
-  }
+function rgbaToRGB(color: ColorRGBA): ColorRGB {
+  const { r, g, b } = color;
+  return { r, g, b };
+}
 
+function hexOrHex8ToRGBA(hex: ColorHex | ColorHex8): ColorRGBA {
   const raw = hex.replace(/^#/, '');
   let r = 0;
   let g = 0;
@@ -48,48 +47,38 @@ function parseHex(hex: string): { r: number; g: number; b: number; a?: number } 
     }
   }
 
-  return a === undefined ? { r, g, b } : { r, g, b, a: +a.toFixed(3) };
+  return a === undefined ? { r, g, b, a: 1 } : { r, g, b, a: +a.toFixed(3) };
 }
 
-export function hexToRGB(hex: ColorHex): ColorRGB {
-  const { r, g, b } = parseHex(hex);
+function hexOrHex8ToRGB(hex: ColorHex | ColorHex8): ColorRGB {
+  const { r, g, b } = hexOrHex8ToRGBA(hex);
   return { r, g, b };
 }
 
-export function hexToRGBA(hex: ColorHex): ColorRGBA {
-  return parseHex(hex);
-}
-
-export function rgbaToRGB(color: ColorRGBA): ColorRGB {
-  const { r, g, b } = color;
-  return { r, g, b };
-}
-
-export function rgbToRGBA(color: ColorRGB, alpha?: number): ColorRGBA {
-  const { r, g, b } = color;
-  return alpha === undefined ? { r, g, b } : { r, g, b, a: alpha };
-}
-
-function formatHex(value: number): string {
+function numToHex(value: number): string {
   return value.toString(16).padStart(2, '0');
 }
 
-export function rgbaToHex(color: ColorRGBA): ColorHex {
-  if (!isValidRGBAColor(color)) {
-    throw new Error(`Invalid RGBA color: "${JSON.stringify(color)}"`);
-  }
-
+function rgbaToHex8(color: ColorRGBA): ColorHex8 {
   const { r, g, b, a } = color;
-  const alphaHex = a !== undefined ? formatHex(Math.round(a * 255)) : '';
-
-  return (`#${formatHex(r)}${formatHex(g)}${formatHex(b)}${alphaHex}`).toLowerCase() as ColorHex;
+  const alphaHex = a !== undefined ? numToHex(Math.round(a * 255)) : 'ff';
+  return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}${alphaHex}`.toLowerCase() as ColorHex8;
 }
 
-export function rgbToHex(color: ColorRGB): ColorHex {
-  return rgbaToHex(rgbToRGBA(color));
+function rgbaToHex(color: ColorRGBA): ColorHex {
+  const { r, g, b } = color;
+  return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}`.toLowerCase() as ColorHex;
 }
 
-export function rgbToHSL(color: ColorRGB): ColorHSL {
+function rgbToHex(color: ColorRGB): ColorHex {
+  return rgbaToHex8(rgbToRGBA(color)).substring(0, 7) as ColorHex;
+}
+
+function rgbToHex8(color: ColorRGB): ColorHex8 {
+  return `${rgbToHex(color)}ff` as ColorHex8;
+}
+
+function rgbToHSL(color: ColorRGB): ColorHSL {
   const { r, g, b } = color;
   const rNorm = r / 255;
   const gNorm = g / 255;
@@ -125,20 +114,12 @@ export function rgbToHSL(color: ColorRGB): ColorHSL {
   };
 }
 
-export function rgbaToHSL(color: ColorRGBA): ColorHSL {
-  return rgbToHSL(color);
-}
-
-export function rgbaToHSLA(color: ColorRGBA): ColorHSLA {
+function rgbaToHSLA(color: ColorRGBA): ColorHSLA {
   const hsl = rgbToHSL(color);
-  return color.a === undefined ? hsl : { ...hsl, a: color.a };
+  return { ...hsl, a: color.a };
 }
 
-export function hslToRGB(color: ColorHSL): ColorRGB {
-  if (!isValidHSLAColor(color)) {
-    throw new Error(`Invalid HSLA color: "${JSON.stringify(color)}"`);
-  }
-
+function hslToRGB(color: ColorHSL): ColorRGB {
   const h = (((color.h % 360) + 360) % 360) / 360;
   const s = color.s / 100;
   const l = color.l / 100;
@@ -184,13 +165,19 @@ export function hslToRGB(color: ColorHSL): ColorRGB {
   };
 }
 
-export function hslaToRGBA(color: ColorHSLA): ColorRGBA {
+function hslaToRGBA(color: ColorHSLA): ColorRGBA {
   const { a, ...hsl } = color;
   const rgb = hslToRGB(hsl);
   return rgbToRGBA(rgb, a);
 }
 
-export function rgbToHSV(color: ColorRGB): ColorHSV {
+function hsvaToRGBA(color: ColorHSVA): ColorRGBA {
+  const { a, ...hsv } = color;
+  const rgb = hsvToRGB(hsv);
+  return rgbToRGBA(rgb, a);
+}
+
+function rgbToHSV(color: ColorRGB): ColorHSV {
   const r = color.r / 255;
   const g = color.g / 255;
   const b = color.b / 255;
@@ -221,14 +208,12 @@ export function rgbToHSV(color: ColorRGB): ColorHSV {
   };
 }
 
-export function rgbaToHSV(color: ColorRGBA): ColorHSV {
-  return rgbToHSV(color);
+function rgbaToHSVA(color: ColorRGBA): ColorHSVA {
+  const hsv = rgbToHSV(color);
+  return { ...hsv, a: color.a };
 }
 
-export function hsvToRGB(color: ColorHSV): ColorRGB {
-  if (!isValidHSVColor(color)) {
-    throw new Error(`Invalid HSV color: "${JSON.stringify(color)}"`);
-  }
+function hsvToRGB(color: ColorHSV): ColorRGB {
   const h = (((color.h % 360) + 360) % 360) / 60;
   const s = color.s / 100;
   const v = color.v / 100;
@@ -264,12 +249,12 @@ export function hsvToRGB(color: ColorHSV): ColorRGB {
   };
 }
 
-export function hsvToRGBA(color: ColorHSV, alpha?: number): ColorRGBA {
+function hsvToRGBA(color: ColorHSV, alpha?: number): ColorRGBA {
   const rgb = hsvToRGB(color);
   return rgbToRGBA(rgb, alpha);
 }
 
-export function rgbToCMYK(color: ColorRGB): ColorCMYK {
+function rgbToCMYK(color: ColorRGB): ColorCMYK {
   const r = color.r / 255;
   const g = color.g / 255;
   const b = color.b / 255;
@@ -286,14 +271,7 @@ export function rgbToCMYK(color: ColorRGB): ColorCMYK {
   };
 }
 
-export function rgbaToCMYK(color: ColorRGBA): ColorCMYK {
-  return rgbToCMYK(color);
-}
-
-export function cmykToRGB(color: ColorCMYK): ColorRGB {
-  if (!isValidCMYKColor(color)) {
-    throw new Error(`Invalid CMYK color: "${JSON.stringify(color)}"`);
-  }
+function cmykToRGB(color: ColorCMYK): ColorRGB {
   const c = color.c / 100;
   const m = color.m / 100;
   const y = color.y / 100;
@@ -304,7 +282,7 @@ export function cmykToRGB(color: ColorCMYK): ColorRGB {
   return { r: Math.round(r), g: Math.round(g), b: Math.round(b) };
 }
 
-export function cmykToRGBA(color: ColorCMYK, alpha?: number): ColorRGBA {
+function cmykToRGBA(color: ColorCMYK, alpha?: number): ColorRGBA {
   const rgb = cmykToRGB(color);
   return rgbToRGBA(rgb, alpha);
 }
@@ -317,7 +295,7 @@ function unpivotRGB(n: number): number {
   return n > 0.0031308 ? 1.055 * Math.pow(n, 1 / 2.4) - 0.055 : 12.92 * n;
 }
 
-export function rgbToLCH(color: ColorRGB): ColorLCH {
+function rgbToLCH(color: ColorRGB): ColorLCH {
   const r = pivotRGB(color.r / 255);
   const g = pivotRGB(color.g / 255);
   const b = pivotRGB(color.b / 255);
@@ -329,9 +307,9 @@ export function rgbToLCH(color: ColorRGB): ColorLCH {
   x /= 0.95047;
   y /= 1.0;
   z /= 1.08883;
-  const fx = x > 0.008856 ? Math.cbrt(x) : (7.787 * x) + 16 / 116;
-  const fy = y > 0.008856 ? Math.cbrt(y) : (7.787 * y) + 16 / 116;
-  const fz = z > 0.008856 ? Math.cbrt(z) : (7.787 * z) + 16 / 116;
+  const fx = x > 0.008856 ? Math.cbrt(x) : 7.787 * x + 16 / 116;
+  const fy = y > 0.008856 ? Math.cbrt(y) : 7.787 * y + 16 / 116;
+  const fz = z > 0.008856 ? Math.cbrt(z) : 7.787 * z + 16 / 116;
   const l = 116 * fy - 16;
   const a = 500 * (fx - fy);
   const b2 = 200 * (fy - fz);
@@ -344,14 +322,7 @@ export function rgbToLCH(color: ColorRGB): ColorLCH {
   };
 }
 
-export function rgbaToLCH(color: ColorRGBA): ColorLCH {
-  return rgbToLCH(color);
-}
-
-export function lchToRGB(color: ColorLCH): ColorRGB {
-  if (!isValidLCHColor(color)) {
-    throw new Error(`Invalid LCH color: "${JSON.stringify(color)}"`);
-  }
+function lchToRGB(color: ColorLCH): ColorRGB {
   const hRad = (color.h * Math.PI) / 180;
   const a = color.c * Math.cos(hRad);
   const b = color.c * Math.sin(hRad);
@@ -362,14 +333,14 @@ export function lchToRGB(color: ColorLCH): ColorRGB {
   const fy3 = fy ** 3;
   const fz3 = fz ** 3;
   let x = fx3 > 0.008856 ? fx3 : (fx - 16 / 116) / 7.787;
-  let y = fy3 > 0.008856 ? fy3 : (color.l / 903.3);
+  let y = fy3 > 0.008856 ? fy3 : color.l / 903.3;
   let z = fz3 > 0.008856 ? fz3 : (fz - 16 / 116) / 7.787;
   x *= 0.95047;
   y *= 1.0;
   z *= 1.08883;
   const rLin = x * 3.2406 + y * -1.5372 + z * -0.4986;
   const gLin = x * -0.9689 + y * 1.8758 + z * 0.0415;
-  const bLin = x * 0.0557 + y * -0.2040 + z * 1.0570;
+  const bLin = x * 0.0557 + y * -0.204 + z * 1.057;
   const r = Math.max(0, Math.min(1, unpivotRGB(rLin)));
   const g = Math.max(0, Math.min(1, unpivotRGB(gLin)));
   const b3 = Math.max(0, Math.min(1, unpivotRGB(bLin)));
@@ -380,12 +351,12 @@ export function lchToRGB(color: ColorLCH): ColorRGB {
   };
 }
 
-export function lchToRGBA(color: ColorLCH, alpha?: number): ColorRGBA {
+function lchToRGBA(color: ColorLCH, alpha?: number): ColorRGBA {
   const rgb = lchToRGB(color);
   return rgbToRGBA(rgb, alpha);
 }
 
-export function rgbToOKLCH(color: ColorRGB): ColorOKLCH {
+function rgbToOKLCH(color: ColorRGB): ColorOKLCH {
   const r = pivotRGB(color.r / 255);
   const g = pivotRGB(color.g / 255);
   const b = pivotRGB(color.b / 255);
@@ -407,14 +378,7 @@ export function rgbToOKLCH(color: ColorRGB): ColorOKLCH {
   };
 }
 
-export function rgbaToOKLCH(color: ColorRGBA): ColorOKLCH {
-  return rgbToOKLCH(color);
-}
-
-export function oklchToRGB(color: ColorOKLCH): ColorRGB {
-  if (!isValidOKLCHColor(color)) {
-    throw new Error(`Invalid OKLCH color: "${JSON.stringify(color)}"`);
-  }
+function oklchToRGB(color: ColorOKLCH): ColorRGB {
   const hRad = (color.h * Math.PI) / 180;
   const a = color.c * Math.cos(hRad);
   const b = color.c * Math.sin(hRad);
@@ -437,82 +401,164 @@ export function oklchToRGB(color: ColorOKLCH): ColorRGB {
   };
 }
 
-export function oklchToRGBA(color: ColorOKLCH, alpha?: number): ColorRGBA {
+function oklchToRGBA(color: ColorOKLCH, alpha?: number): ColorRGBA {
   const rgb = oklchToRGB(color);
   return rgbToRGBA(rgb, alpha);
 }
 
-export function toRGBA(color: ColorFormat): ColorRGBA {
-  const { formatType, value } = getColorFormat(color);
-  switch (formatType) {
-    case ColorFormatType.HEX:
-      return hexToRGBA(value);
-    case ColorFormatType.HSL:
-      return rgbToRGBA(hslToRGB(value));
-    case ColorFormatType.HSLA:
-      return hslaToRGBA(value);
-    case ColorFormatType.HSV:
-      return hsvToRGBA(value);
-    case ColorFormatType.CMYK:
-      return cmykToRGBA(value);
-    case ColorFormatType.LCH:
-      return lchToRGBA(value);
-    case ColorFormatType.OKLCH:
-      return oklchToRGBA(value);
-    case ColorFormatType.RGBA:
-      return value;
-    default:
-      return rgbToRGBA(value);
-  }
-}
-
 export function toRGB(color: ColorFormat): ColorRGB {
-  const { formatType, value } = getColorFormat(color);
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
     case ColorFormatType.HEX:
-      return hexToRGB(value);
+    case ColorFormatType.HEX8:
+      return hexOrHex8ToRGB(value);
+    case ColorFormatType.RGB:
+      return value;
+    case ColorFormatType.RGBA:
+      return rgbaToRGB(value);
     case ColorFormatType.HSL:
       return hslToRGB(value);
     case ColorFormatType.HSLA:
-      return hslToRGB(value);
+      return rgbaToRGB(hslaToRGBA(value));
     case ColorFormatType.HSV:
       return hsvToRGB(value);
+    case ColorFormatType.HSVA:
+      return rgbaToRGB(hsvaToRGBA(value));
     case ColorFormatType.CMYK:
       return cmykToRGB(value);
     case ColorFormatType.LCH:
       return lchToRGB(value);
     case ColorFormatType.OKLCH:
       return oklchToRGB(value);
-    case ColorFormatType.RGBA:
-      return rgbaToRGB(value);
     default:
+      throw new Error(`[toRGB] unknown color format: ${formatType}`);
+  }
+}
+
+export function toRGBA(color: ColorFormat): ColorRGBA {
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  switch (formatType) {
+    case ColorFormatType.HEX:
+    case ColorFormatType.HEX8:
+      return hexOrHex8ToRGBA(value);
+    case ColorFormatType.RGB:
+      return rgbToRGBA(value);
+    case ColorFormatType.RGBA:
       return value;
+    case ColorFormatType.HSL:
+      return rgbToRGBA(hslToRGB(value));
+    case ColorFormatType.HSLA:
+      return hslaToRGBA(value);
+    case ColorFormatType.HSV:
+      return hsvToRGBA(value);
+    case ColorFormatType.HSVA:
+      return hsvaToRGBA(value);
+    case ColorFormatType.CMYK:
+      return cmykToRGBA(value);
+    case ColorFormatType.LCH:
+      return lchToRGBA(value);
+    case ColorFormatType.OKLCH:
+      return oklchToRGBA(value);
+    default:
+      throw new Error(`[toRGBA] unknown color format: ${formatType}`);
   }
 }
 
 export function toHex(color: ColorFormat): ColorHex {
-  const { formatType, value } = getColorFormat(color);
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
     case ColorFormatType.HEX:
-      if (!isValidHexColor(value)) {
-        throw new Error(`Invalid hex color: "${value}"`);
-      }
-      return value.toLowerCase() as ColorHex;
+      return value;
+    case ColorFormatType.HEX8:
+      return value.substring(0, 7) as ColorHex;
+    case ColorFormatType.RGB:
+      return rgbToHex(value);
+    case ColorFormatType.RGBA:
+      return rgbaToHex(value);
     case ColorFormatType.HSL:
       return rgbToHex(hslToRGB(value));
     case ColorFormatType.HSLA:
       return rgbaToHex(hslaToRGBA(value));
     case ColorFormatType.HSV:
       return rgbToHex(hsvToRGB(value));
+    case ColorFormatType.HSVA:
+      return rgbaToHex(hsvaToRGBA(value));
     case ColorFormatType.CMYK:
       return rgbToHex(cmykToRGB(value));
     case ColorFormatType.LCH:
       return rgbToHex(lchToRGB(value));
     case ColorFormatType.OKLCH:
       return rgbToHex(oklchToRGB(value));
-    case ColorFormatType.RGBA:
-      return rgbaToHex(value);
     default:
-      return rgbToHex(value);
+      throw new Error(`[toHex] unknown color format: ${formatType}`);
   }
+}
+
+export function toHex8(color: ColorFormat): ColorHex8 {
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  switch (formatType) {
+    case ColorFormatType.HEX:
+      return `${value}ff` as ColorHex8;
+    case ColorFormatType.HEX8:
+      return value;
+    case ColorFormatType.RGB:
+      return rgbToHex8(value);
+    case ColorFormatType.RGBA:
+      return rgbaToHex8(value);
+    case ColorFormatType.HSL:
+      return rgbToHex8(hslToRGB(value));
+    case ColorFormatType.HSLA:
+      return rgbaToHex8(hslaToRGBA(value));
+    case ColorFormatType.HSV:
+      return rgbToHex8(hsvToRGB(value));
+    case ColorFormatType.HSVA:
+      return rgbaToHex8(hsvaToRGBA(value));
+    case ColorFormatType.CMYK:
+      return rgbToHex8(cmykToRGB(value));
+    case ColorFormatType.LCH:
+      return rgbToHex8(lchToRGB(value));
+    case ColorFormatType.OKLCH:
+      return rgbToHex8(oklchToRGB(value));
+    default:
+      throw new Error(`[toHex8] unknown color format: ${formatType}`);
+  }
+}
+
+export function toHSL(color: ColorFormat): ColorHSL {
+  validateColorOrThrow(color);
+  return rgbToHSL(toRGB(color));
+}
+
+export function toHSLA(color: ColorFormat): ColorHSLA {
+  validateColorOrThrow(color);
+  return rgbaToHSLA(toRGBA(color));
+}
+
+export function toHSV(color: ColorFormat): ColorHSV {
+  validateColorOrThrow(color);
+  return rgbToHSV(toRGB(color));
+}
+
+export function toHSVA(color: ColorFormat): ColorHSVA {
+  validateColorOrThrow(color);
+  return rgbaToHSVA(toRGBA(color));
+}
+
+export function toCMYK(color: ColorFormat): ColorCMYK {
+  validateColorOrThrow(color);
+  return rgbToCMYK(toRGB(color));
+}
+
+export function toLCH(color: ColorFormat): ColorLCH {
+  validateColorOrThrow(color);
+  return rgbToLCH(toRGB(color));
+}
+
+export function toOKLCH(color: ColorFormat): ColorOKLCH {
+  validateColorOrThrow(color);
+  return rgbToOKLCH(toRGB(color));
 }
