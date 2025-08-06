@@ -5,6 +5,10 @@ import {
   ColorRGBA,
   ColorHSL,
   ColorHSLA,
+  ColorHSV,
+  ColorCMYK,
+  ColorLCH,
+  ColorOKLCH,
   ColorFormatType,
   getColorFormat,
 } from './formats';
@@ -13,6 +17,10 @@ import {
   isValidHexColor,
   isValidRGBAColor,
   isValidHSLAColor,
+  isValidHSVColor,
+  isValidCMYKColor,
+  isValidLCHColor,
+  isValidOKLCHColor,
 } from './validations';
 
 function parseHex(hex: string): { r: number; g: number; b: number; a?: number } {
@@ -182,6 +190,258 @@ export function hslaToRGBA(color: ColorHSLA): ColorRGBA {
   return rgbToRGBA(rgb, a);
 }
 
+export function rgbToHSV(color: ColorRGB): ColorHSV {
+  const r = color.r / 255;
+  const g = color.g / 255;
+  const b = color.b / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d !== 0) {
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+  const s = max === 0 ? 0 : d / max;
+  const v = max;
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    v: Math.round(v * 100),
+  };
+}
+
+export function rgbaToHSV(color: ColorRGBA): ColorHSV {
+  return rgbToHSV(color);
+}
+
+export function hsvToRGB(color: ColorHSV): ColorRGB {
+  if (!isValidHSVColor(color)) {
+    throw new Error(`Invalid HSV color: "${JSON.stringify(color)}"`);
+  }
+  const h = (((color.h % 360) + 360) % 360) / 60;
+  const s = color.s / 100;
+  const v = color.v / 100;
+  const c = v * s;
+  const x = c * (1 - Math.abs((h % 2) - 1));
+  const m = v - c;
+  let r1 = 0;
+  let g1 = 0;
+  let b1 = 0;
+  if (0 <= h && h < 1) {
+    r1 = c;
+    g1 = x;
+  } else if (1 <= h && h < 2) {
+    r1 = x;
+    g1 = c;
+  } else if (2 <= h && h < 3) {
+    g1 = c;
+    b1 = x;
+  } else if (3 <= h && h < 4) {
+    g1 = x;
+    b1 = c;
+  } else if (4 <= h && h < 5) {
+    r1 = x;
+    b1 = c;
+  } else {
+    r1 = c;
+    b1 = x;
+  }
+  return {
+    r: Math.round((r1 + m) * 255),
+    g: Math.round((g1 + m) * 255),
+    b: Math.round((b1 + m) * 255),
+  };
+}
+
+export function hsvToRGBA(color: ColorHSV, alpha?: number): ColorRGBA {
+  const rgb = hsvToRGB(color);
+  return rgbToRGBA(rgb, alpha);
+}
+
+export function rgbToCMYK(color: ColorRGB): ColorCMYK {
+  const r = color.r / 255;
+  const g = color.g / 255;
+  const b = color.b / 255;
+  const k = 1 - Math.max(r, g, b);
+  const denom = 1 - k;
+  const c = denom === 0 ? 0 : (1 - r - k) / denom;
+  const m = denom === 0 ? 0 : (1 - g - k) / denom;
+  const y = denom === 0 ? 0 : (1 - b - k) / denom;
+  return {
+    c: Math.round(c * 100),
+    m: Math.round(m * 100),
+    y: Math.round(y * 100),
+    k: Math.round(k * 100),
+  };
+}
+
+export function rgbaToCMYK(color: ColorRGBA): ColorCMYK {
+  return rgbToCMYK(color);
+}
+
+export function cmykToRGB(color: ColorCMYK): ColorRGB {
+  if (!isValidCMYKColor(color)) {
+    throw new Error(`Invalid CMYK color: "${JSON.stringify(color)}"`);
+  }
+  const c = color.c / 100;
+  const m = color.m / 100;
+  const y = color.y / 100;
+  const k = color.k / 100;
+  const r = 255 * (1 - c) * (1 - k);
+  const g = 255 * (1 - m) * (1 - k);
+  const b = 255 * (1 - y) * (1 - k);
+  return { r: Math.round(r), g: Math.round(g), b: Math.round(b) };
+}
+
+export function cmykToRGBA(color: ColorCMYK, alpha?: number): ColorRGBA {
+  const rgb = cmykToRGB(color);
+  return rgbToRGBA(rgb, alpha);
+}
+
+function pivotRGB(n: number): number {
+  return n > 0.04045 ? Math.pow((n + 0.055) / 1.055, 2.4) : n / 12.92;
+}
+
+function unpivotRGB(n: number): number {
+  return n > 0.0031308 ? 1.055 * Math.pow(n, 1 / 2.4) - 0.055 : 12.92 * n;
+}
+
+export function rgbToLCH(color: ColorRGB): ColorLCH {
+  const r = pivotRGB(color.r / 255);
+  const g = pivotRGB(color.g / 255);
+  const b = pivotRGB(color.b / 255);
+  // sRGB to XYZ (D65)
+  let x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+  let y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+  let z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+  // Normalize
+  x /= 0.95047;
+  y /= 1.0;
+  z /= 1.08883;
+  const fx = x > 0.008856 ? Math.cbrt(x) : (7.787 * x) + 16 / 116;
+  const fy = y > 0.008856 ? Math.cbrt(y) : (7.787 * y) + 16 / 116;
+  const fz = z > 0.008856 ? Math.cbrt(z) : (7.787 * z) + 16 / 116;
+  const l = 116 * fy - 16;
+  const a = 500 * (fx - fy);
+  const b2 = 200 * (fy - fz);
+  const c = Math.sqrt(a * a + b2 * b2);
+  const h = (Math.atan2(b2, a) * 180) / Math.PI;
+  return {
+    l: +l.toFixed(3),
+    c: +c.toFixed(3),
+    h: +((h + 360) % 360).toFixed(3),
+  };
+}
+
+export function rgbaToLCH(color: ColorRGBA): ColorLCH {
+  return rgbToLCH(color);
+}
+
+export function lchToRGB(color: ColorLCH): ColorRGB {
+  if (!isValidLCHColor(color)) {
+    throw new Error(`Invalid LCH color: "${JSON.stringify(color)}"`);
+  }
+  const hRad = (color.h * Math.PI) / 180;
+  const a = color.c * Math.cos(hRad);
+  const b = color.c * Math.sin(hRad);
+  const fy = (color.l + 16) / 116;
+  const fx = a / 500 + fy;
+  const fz = fy - b / 200;
+  const fx3 = fx ** 3;
+  const fy3 = fy ** 3;
+  const fz3 = fz ** 3;
+  let x = fx3 > 0.008856 ? fx3 : (fx - 16 / 116) / 7.787;
+  let y = fy3 > 0.008856 ? fy3 : (color.l / 903.3);
+  let z = fz3 > 0.008856 ? fz3 : (fz - 16 / 116) / 7.787;
+  x *= 0.95047;
+  y *= 1.0;
+  z *= 1.08883;
+  const rLin = x * 3.2406 + y * -1.5372 + z * -0.4986;
+  const gLin = x * -0.9689 + y * 1.8758 + z * 0.0415;
+  const bLin = x * 0.0557 + y * -0.2040 + z * 1.0570;
+  const r = Math.max(0, Math.min(1, unpivotRGB(rLin)));
+  const g = Math.max(0, Math.min(1, unpivotRGB(gLin)));
+  const b3 = Math.max(0, Math.min(1, unpivotRGB(bLin)));
+  return {
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b3 * 255),
+  };
+}
+
+export function lchToRGBA(color: ColorLCH, alpha?: number): ColorRGBA {
+  const rgb = lchToRGB(color);
+  return rgbToRGBA(rgb, alpha);
+}
+
+export function rgbToOKLCH(color: ColorRGB): ColorOKLCH {
+  const r = pivotRGB(color.r / 255);
+  const g = pivotRGB(color.g / 255);
+  const b = pivotRGB(color.b / 255);
+  const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+  const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+  const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+  const l_ = Math.cbrt(l);
+  const m_ = Math.cbrt(m);
+  const s_ = Math.cbrt(s);
+  const L = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_;
+  const a = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_;
+  const b2 = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_;
+  const C = Math.sqrt(a * a + b2 * b2);
+  const h = (Math.atan2(b2, a) * 180) / Math.PI;
+  return {
+    l: +L.toFixed(6),
+    c: +C.toFixed(6),
+    h: +((h + 360) % 360).toFixed(3),
+  };
+}
+
+export function rgbaToOKLCH(color: ColorRGBA): ColorOKLCH {
+  return rgbToOKLCH(color);
+}
+
+export function oklchToRGB(color: ColorOKLCH): ColorRGB {
+  if (!isValidOKLCHColor(color)) {
+    throw new Error(`Invalid OKLCH color: "${JSON.stringify(color)}"`);
+  }
+  const hRad = (color.h * Math.PI) / 180;
+  const a = color.c * Math.cos(hRad);
+  const b = color.c * Math.sin(hRad);
+  const l_ = color.l + 0.3963377774 * a + 0.2158037573 * b;
+  const m_ = color.l - 0.1055613458 * a - 0.0638541728 * b;
+  const s_ = color.l - 0.0894841775 * a - 1.291485548 * b;
+  const l = l_ ** 3;
+  const m = m_ ** 3;
+  const s = s_ ** 3;
+  const rLin = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+  const gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+  const bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
+  const r = Math.max(0, Math.min(1, unpivotRGB(rLin)));
+  const g = Math.max(0, Math.min(1, unpivotRGB(gLin)));
+  const b3 = Math.max(0, Math.min(1, unpivotRGB(bLin)));
+  return {
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b3 * 255),
+  };
+}
+
+export function oklchToRGBA(color: ColorOKLCH, alpha?: number): ColorRGBA {
+  const rgb = oklchToRGB(color);
+  return rgbToRGBA(rgb, alpha);
+}
+
 export function toRGBA(color: ColorFormat): ColorRGBA {
   const { formatType, value } = getColorFormat(color);
   switch (formatType) {
@@ -191,6 +451,14 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
       return rgbToRGBA(hslToRGB(value));
     case ColorFormatType.HSLA:
       return hslaToRGBA(value);
+    case ColorFormatType.HSV:
+      return hsvToRGBA(value);
+    case ColorFormatType.CMYK:
+      return cmykToRGBA(value);
+    case ColorFormatType.LCH:
+      return lchToRGBA(value);
+    case ColorFormatType.OKLCH:
+      return oklchToRGBA(value);
     case ColorFormatType.RGBA:
       return value;
     default:
@@ -207,6 +475,14 @@ export function toRGB(color: ColorFormat): ColorRGB {
       return hslToRGB(value);
     case ColorFormatType.HSLA:
       return hslToRGB(value);
+    case ColorFormatType.HSV:
+      return hsvToRGB(value);
+    case ColorFormatType.CMYK:
+      return cmykToRGB(value);
+    case ColorFormatType.LCH:
+      return lchToRGB(value);
+    case ColorFormatType.OKLCH:
+      return oklchToRGB(value);
     case ColorFormatType.RGBA:
       return rgbaToRGB(value);
     default:
@@ -226,6 +502,14 @@ export function toHex(color: ColorFormat): ColorHex {
       return rgbToHex(hslToRGB(value));
     case ColorFormatType.HSLA:
       return rgbaToHex(hslaToRGBA(value));
+    case ColorFormatType.HSV:
+      return rgbToHex(hsvToRGB(value));
+    case ColorFormatType.CMYK:
+      return rgbToHex(cmykToRGB(value));
+    case ColorFormatType.LCH:
+      return rgbToHex(lchToRGB(value));
+    case ColorFormatType.OKLCH:
+      return rgbToHex(oklchToRGB(value));
     case ColorFormatType.RGBA:
       return rgbaToHex(value);
     default:
