@@ -92,9 +92,18 @@ type ColorFormatTypeAndValue =
 
 export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue {
   if (typeof color === 'string') {
-    return color.length === 7
-      ? { formatType: ColorFormatType.HEX, value: color.toLowerCase() as ColorHex }
-      : { formatType: ColorFormatType.HEX8, value: color.toLowerCase() as ColorHex8 };
+    const lower = color.toLowerCase();
+    if (lower.startsWith('#')) {
+      if (lower.length === 4 || lower.length === 7) {
+        return { formatType: ColorFormatType.HEX, value: lower as ColorHex };
+      }
+      if (lower.length === 9) {
+        return { formatType: ColorFormatType.HEX8, value: lower as ColorHex8 };
+      }
+    }
+    throw new Error(
+      `[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`,
+    );
   }
 
   if ('c' in color && 'm' in color && 'y' in color && 'k' in color) {
