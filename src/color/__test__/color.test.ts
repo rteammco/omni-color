@@ -1,294 +1,123 @@
 import { Color } from '../color';
-import * as utils from '../utils';
+import type {
+  ColorHex,
+  ColorHex8,
+  ColorRGB,
+  ColorHSL,
+  ColorHSV,
+  ColorCMYK,
+  ColorLCH,
+  ColorOKLCH,
+} from '../formats';
 
-describe('Color', () => {
-  it('should initialize color correctly from hex', () => {
-    expect(new Color('#00ff00').toRGBA()).toEqual({ r: 0, g: 255, b: 0 });
-    expect(new Color('#00ff00').toRGB()).toEqual({ r: 0, g: 255, b: 0 });
-    expect(new Color('#00ff00').toHex()).toEqual('#00ff00');
-    expect(new Color('#00ff00').toHSL()).toEqual({ h: 120, s: 100, l: 50 });
-    expect(new Color('#00ff00').toHSLA()).toEqual({ h: 120, s: 100, l: 50 });
-    expect(new Color('#00ff00').toHSV()).toEqual({ h: 120, s: 100, v: 100 });
-    expect(new Color('#00ff00').toCMYK()).toEqual({ c: 100, m: 0, y: 100, k: 0 });
-    // TODO: expect(new Color('#00ff00').toLCH()).toEqual(???);
-    // TODO: expect(new Color('#00ff00').toOKLCH()).toEqual(???);
+const BASE_HEX: ColorHex = '#ff0000';
+const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
+const BASE_HSL: ColorHSL = { h: 0, s: 100, l: 50 };
+const BASE_HSV: ColorHSV = { h: 0, s: 100, v: 100 };
+const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
+const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
+const BASE_OKLCH: ColorOKLCH = { l: 0.627955, c: 0.257683, h: 29.234 };
 
-    expect(new Color('#ffffff').toRGBA()).toEqual({ r: 255, g: 255, b: 255 });
-    expect(new Color('#ffffff').toRGB()).toEqual({ r: 255, g: 255, b: 255 });
-    expect(new Color('#ffffff').toHex()).toEqual('#ffffff');
-    expect(new Color('#ffffff').toHSL()).toEqual({ h: 0, s: 0, l: 100 });
-    expect(new Color('#ffffff').toHSLA()).toEqual({ h: 0, s: 0, l: 100 });
-    expect(new Color('#ffffff').toHSV()).toEqual({ h: 0, s: 0, v: 100 });
-    expect(new Color('#ffffff').toCMYK()).toEqual({ c: 0, m: 0, y: 0, k: 0 });
-    // TODO: expect(new Color('#ffffff').toLCH()).toEqual(???);
-    // TODO: expect(new Color('#ffffff').toOKLCH()).toEqual(???);
+const HEX8_OPAQUE: ColorHex8 = '#ff0000ff';
+const HEX8_SEMI_TRANSPARENT: ColorHex8 = '#ff000080';
 
-    expect(new Color('#00ffff').toRGBA()).toEqual({ r: 0, g: 255, b: 255 });
-    expect(new Color('#00ffff').toRGB()).toEqual({ r: 0, g: 255, b: 255 });
-    expect(new Color('#00ffff').toHex()).toEqual('#00ffff');
-    expect(new Color('#00ffff').toHSL()).toEqual({ h: 180, s: 100, l: 50 });
-    expect(new Color('#00ffff').toHSLA()).toEqual({ h: 180, s: 100, l: 50 });
-    expect(new Color('#00ffff').toHSV()).toEqual({ h: 180, s: 100, v: 100 });
-    expect(new Color('#00ffff').toCMYK()).toEqual({ c: 100, m: 0, y: 0, k: 0 });
-    // TODO: expect(new Color('#00ffff').toLCH()).toEqual(rgbToLCH({ r: 0, g: 255, b: 255 }));
-    // TODO: expect(new Color('#00ffff').toOKLCH()).toEqual(rgbToOKLCH({ r: 0, g: 255, b: 255 }));
+function checkAllConversions(color: Color, alpha: number, hex8: ColorHex8) {
+  expect(color.toHex()).toBe(BASE_HEX);
+  expect(color.toHex8()).toBe(hex8);
+  expect(color.toRGB()).toEqual(BASE_RGB);
+  expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: alpha });
+  expect(color.toHSL()).toEqual(BASE_HSL);
+  expect(color.toHSLA()).toEqual({ ...BASE_HSL, a: alpha });
+  expect(color.toHSV()).toEqual(BASE_HSV);
+  expect(color.toHSVA()).toEqual({ ...BASE_HSV, a: alpha });
+  expect(color.toCMYK()).toEqual(BASE_CMYK);
+  const lch = color.toLCH();
+  expect(lch.l).toBeCloseTo(BASE_LCH.l, 3);
+  expect(lch.c).toBeCloseTo(BASE_LCH.c, 3);
+  expect(lch.h).toBeCloseTo(BASE_LCH.h, 3);
+  const oklch = color.toOKLCH();
+  expect(oklch.l).toBeCloseTo(BASE_OKLCH.l, 6);
+  expect(oklch.c).toBeCloseTo(BASE_OKLCH.c, 6);
+  expect(oklch.h).toBeCloseTo(BASE_OKLCH.h, 3);
+}
 
-    expect(new Color('#00000000').toRGBA()).toEqual({ r: 0, g: 0, b: 0, a: 0 });
-    expect(new Color('#00000000').toRGB()).toEqual({ r: 0, g: 0, b: 0 });
-    expect(new Color('#00000000').toHex()).toEqual('#00000000');
-    expect(new Color('#00000000').toHSL()).toEqual({ h: 0, s: 0, l: 0 });
-    expect(new Color('#00000000').toHSLA()).toEqual({ h: 0, s: 0, l: 0, a: 0 });
-    expect(new Color('#00000000').toHSV()).toEqual({ h: 0, s: 0, v: 0 });
-    expect(new Color('#00000000').toCMYK()).toEqual({ c: 0, m: 0, y: 0, k: 100 });
-    // TODO: expect(new Color('#00000000').toLCH()).toEqual(rgbToLCH({ r: 0, g: 0, b: 0 }));
-    // TODO: expect(new Color('#00000000').toOKLCH()).toEqual(rgbToOKLCH({ r: 0, g: 0, b: 0 }));
+describe('Color constructor and conversion tests', () => {
+  it('correctly initializes from and converts hex input', () => {
+    const color = new Color(BASE_HEX);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 
-  it('should initialize color correctly from RGBA', () => {
-    expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toRGBA()).toEqual({ r: 0, g: 255, b: 0, a: 1 });
-    expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toRGB()).toEqual({ r: 0, g: 255, b: 0 });
-    expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toHex()).toEqual('#00ff00ff');
-    expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toHSL()).toEqual({
-      h: 120,
-      s: 100,
-      l: 50,
-    });
-    expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toHSLA()).toEqual({
-      h: 120,
-      s: 100,
-      l: 50,
-      a: 1,
-    });
-    expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toHSV()).toEqual({
-      h: 120,
-      s: 100,
-      v: 100,
-    });
-    expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toCMYK()).toEqual({
-      c: 100,
-      m: 0,
-      y: 100,
-      k: 0,
-    });
-    // TODO: expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toLCH()).toEqual(???);
-    // TODO: expect(new Color({ r: 0, g: 255, b: 0, a: 1 }).toOKLCH()).toEqual(???);
-
-    expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toRGBA()).toEqual({
-      r: 255,
-      g: 255,
-      b: 255,
-      a: 1,
-    });
-    expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toRGB()).toEqual({
-      r: 255,
-      g: 255,
-      b: 255,
-    });
-    expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toHex()).toEqual('#ffffffff');
-    expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toHSL()).toEqual({
-      h: 0,
-      s: 0,
-      l: 100,
-    });
-    expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toHSLA()).toEqual({
-      h: 0,
-      s: 0,
-      l: 100,
-      a: 1,
-    });
-    expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toHSV()).toEqual({
-      h: 0,
-      s: 0,
-      v: 100,
-    });
-    expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toCMYK()).toEqual({
-      c: 0,
-      m: 0,
-      y: 0,
-      k: 0,
-    });
-    // TODO: expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toLCH()).toEqual(???);
-    // TODO: expect(new Color({ r: 255, g: 255, b: 255, a: 1 }).toOKLCH()).toEqual(???);
-
-    expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toRGBA()).toEqual({
-      r: 0,
-      g: 255,
-      b: 255,
-      a: 1,
-    });
-    expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toRGB()).toEqual({
-      r: 0,
-      g: 255,
-      b: 255,
-    });
-    expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toHex()).toEqual('#00ffffff');
-    expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toHSL()).toEqual({
-      h: 180,
-      s: 100,
-      l: 50,
-    });
-    expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toHSLA()).toEqual({
-      h: 180,
-      s: 100,
-      l: 50,
-      a: 1,
-    });
-    expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toHSV()).toEqual({
-      h: 180,
-      s: 100,
-      v: 100,
-    });
-    expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toCMYK()).toEqual({
-      c: 100,
-      m: 0,
-      y: 0,
-      k: 0,
-    });
-    // TODO: expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toLCH()).toEqual(???);
-    // TODO: expect(new Color({ r: 0, g: 255, b: 255, a: 1 }).toOKLCH()).toEqual(???);
-
-    expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toRGBA()).toEqual({ r: 0, g: 0, b: 0, a: 0 });
-    expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toRGB()).toEqual({ r: 0, g: 0, b: 0 });
-    expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toHex()).toEqual('#00000000');
-    expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toHSL()).toEqual({ h: 0, s: 0, l: 0 });
-    expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toHSLA()).toEqual({
-      h: 0,
-      s: 0,
-      l: 0,
-      a: 0,
-    });
-    expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toHSV()).toEqual({
-      h: 0,
-      s: 0,
-      v: 0,
-    });
-    expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toCMYK()).toEqual({
-      c: 0,
-      m: 0,
-      y: 0,
-      k: 100,
-    });
-    // TODO: expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toLCH()).toEqual(???);
-    // TODO: expect(new Color({ r: 0, g: 0, b: 0, a: 0 }).toOKLCH()).toEqual(???);
+  it('correctly initializes from and converts short hex input', () => {
+    const shortHex: ColorHex = '#fff';
+    const color = new Color(shortHex);
+    expect(color.toHex()).toBe('#ffffff');
+    expect(color.toHex8()).toBe('#ffffffff');
+    const rgb: ColorRGB = { r: 255, g: 255, b: 255 };
+    expect(color.toRGB()).toEqual(rgb);
+    expect(color.toRGBA()).toEqual({ ...rgb, a: 1 });
+    const hsl: ColorHSL = { h: 0, s: 0, l: 100 };
+    expect(color.toHSL()).toEqual(hsl);
+    expect(color.toHSLA()).toEqual({ ...hsl, a: 1 });
+    const hsv: ColorHSV = { h: 0, s: 0, v: 100 };
+    expect(color.toHSV()).toEqual(hsv);
+    expect(color.toHSVA()).toEqual({ ...hsv, a: 1 });
+    const cmyk: ColorCMYK = { c: 0, m: 0, y: 0, k: 0 };
+    expect(color.toCMYK()).toEqual(cmyk);
+    const lch = color.toLCH();
+    expect(lch.l).toBeCloseTo(100, 3);
+    expect(lch.c).toBeCloseTo(0, 1);
+    const oklch = color.toOKLCH();
+    expect(oklch.l).toBeCloseTo(1, 6);
+    expect(oklch.c).toBeCloseTo(0, 6);
   });
 
-  it('should initialize color correctly from RGB', () => {
-    expect(new Color({ r: 0, g: 255, b: 0 }).toRGBA()).toEqual({ r: 0, g: 255, b: 0 });
-    expect(new Color({ r: 0, g: 255, b: 0 }).toRGB()).toEqual({ r: 0, g: 255, b: 0 });
-    expect(new Color({ r: 0, g: 255, b: 0 }).toHex()).toEqual('#00ff00');
-    expect(new Color({ r: 0, g: 255, b: 0 }).toHSL()).toEqual({ h: 120, s: 100, l: 50 });
-    expect(new Color({ r: 0, g: 255, b: 0 }).toHSLA()).toEqual({
-      h: 120,
-      s: 100,
-      l: 50,
-    });
-    expect(new Color({ r: 0, g: 255, b: 0 }).toHSV()).toEqual({
-      h: 120,
-      s: 100,
-      v: 100,
-    });
-    expect(new Color({ r: 0, g: 255, b: 0 }).toCMYK()).toEqual({
-      c: 100,
-      m: 0,
-      y: 100,
-      k: 0,
-    });
-    // TODO: expect(new Color({ r: 0, g: 255, b: 0 }).toLCH()).toEqual(???);
-    // TODO: expect(new Color({ r: 0, g: 255, b: 0 }).toOKLCH()).toEqual(???);
+  it('correctly initializes from and converts hex8 input', () => {
+    const color = new Color(HEX8_SEMI_TRANSPARENT);
+    checkAllConversions(color, 0.502, HEX8_SEMI_TRANSPARENT);
   });
 
-  it('should initialize color correctly from HSL', () => {
-    expect(new Color({ h: 120, s: 100, l: 50 }).toRGB()).toEqual({
-      r: 0,
-      g: 255,
-      b: 0,
-    });
-    expect(new Color({ h: 120, s: 100, l: 50 }).toHex()).toEqual('#00ff00');
-    expect(new Color({ h: 120, s: 100, l: 50 }).toHSL()).toEqual({
-      h: 120,
-      s: 100,
-      l: 50,
-    });
-    expect(new Color({ h: 120, s: 100, l: 50 }).toHSLA()).toEqual({
-      h: 120,
-      s: 100,
-      l: 50,
-    });
+  it('correctly initializes from and converts rgb input', () => {
+    const color = new Color(BASE_RGB);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 
-  it('should initialize color correctly from HSLA', () => {
-    expect(new Color({ h: 0, s: 0, l: 0, a: 0.5 }).toRGBA()).toEqual({
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0.5,
-    });
-    expect(new Color({ h: 0, s: 0, l: 0, a: 0.5 }).toHex()).toEqual('#00000080');
-    expect(new Color({ h: 0, s: 0, l: 0, a: 0.5 }).toHSL()).toEqual({
-      h: 0,
-      s: 0,
-      l: 0,
-    });
-    expect(new Color({ h: 0, s: 0, l: 0, a: 0.5 }).toHSLA()).toEqual({
-      h: 0,
-      s: 0,
-      l: 0,
-      a: 0.5,
-    });
+  it('correctly initializes from and converts rgba input', () => {
+    const color = new Color({ ...BASE_RGB, a: 0.5 });
+    checkAllConversions(color, 0.5, HEX8_SEMI_TRANSPARENT);
   });
 
-  it('should initialize color correctly from HSV', () => {
-    expect(new Color({ h: 120, s: 100, v: 100 }).toRGB()).toEqual({
-      r: 0,
-      g: 255,
-      b: 0,
-    });
-    expect(new Color({ h: 120, s: 100, v: 100 }).toHSV()).toEqual({
-      h: 120,
-      s: 100,
-      v: 100,
-    });
+  it('correctly initializes from and converts hsl input', () => {
+    const color = new Color(BASE_HSL);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 
-  it('should initialize color correctly from CMYK', () => {
-    expect(new Color({ c: 100, m: 0, y: 100, k: 0 }).toRGB()).toEqual({
-      r: 0,
-      g: 255,
-      b: 0,
-    });
-    expect(new Color({ c: 100, m: 0, y: 100, k: 0 }).toCMYK()).toEqual({
-      c: 100,
-      m: 0,
-      y: 100,
-      k: 0,
-    });
+  it('correctly initializes from and converts hsla input', () => {
+    const color = new Color({ ...BASE_HSL, a: 0.5 });
+    checkAllConversions(color, 0.5, HEX8_SEMI_TRANSPARENT);
   });
 
-  it('should initialize color correctly from LCH', () => {
-    // TODO
-    // const lch = ???;
-    // expect(new Color(lch).toRGB()).toEqual({ r: 0, g: 255, b: 0 });
-    // expect(new Color(lch).toLCH()).toEqual(lch);
+  it('correctly initializes from and converts hsv input', () => {
+    const color = new Color(BASE_HSV);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 
-  it('should initialize color correctly from OKLCH', () => {
-    // TODO
-    // const oklch = ???;
-    // expect(new Color(oklch).toRGB()).toEqual({ r: 0, g: 255, b: 0 });
-    // expect(new Color(oklch).toOKLCH()).toEqual(oklch);
+  it('correctly initializes from and converts hsva input', () => {
+    const color = new Color({ ...BASE_HSV, a: 0.5 });
+    checkAllConversions(color, 0.5, HEX8_SEMI_TRANSPARENT);
   });
 
-  it('should initialize color correctly with no input', () => {
-    const mockGetRandomColor = jest
-      .spyOn(utils, 'getRandomColorRGBA')
-      .mockReturnValue({ r: 5, g: 10, b: 15, a: 1 });
+  it('correctly initializes from and converts cmyk input', () => {
+    const color = new Color(BASE_CMYK);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
+  });
 
-    expect(new Color().toRGBA()).toEqual({ r: 5, g: 10, b: 15, a: 1 });
-    expect(new Color().toRGB()).toEqual({ r: 5, g: 10, b: 15 });
-    expect(new Color().toHex()).toEqual('#050a0fff');
-    expect(new Color().toHSL()).toEqual({ h: 210, s: 50, l: 4 });
-    expect(new Color().toHSLA()).toEqual({ h: 210, s: 50, l: 4, a: 1 });
+  it('correctly initializes from and converts lch input', () => {
+    const color = new Color(BASE_LCH);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
+  });
 
-    mockGetRandomColor.mockRestore();
+  it('correctly initializes from and converts oklch input', () => {
+    const color = new Color(BASE_OKLCH);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 });
