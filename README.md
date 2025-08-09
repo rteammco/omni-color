@@ -33,3 +33,7 @@ These scripts are available in the `package.json`:
 
 * `npm run test` - run all tests.
 * `npm run test -- src/color/__test__/validations.test.ts` - run a specific test file.
+
+### Pre-Commit Hooks
+
+To automatically run pre-commit checks, run `npx simple-git-hooks` once to "install" the pre-commit checks.
