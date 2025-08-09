@@ -116,11 +116,6 @@ export function validateColorOrThrow(color?: ColorFormat | null): void {
         throw new Error(`[validateColorOrThrow] invalid hex color: "${value}"`);
       }
       break;
-    case ColorFormatType.HEX8:
-      if (!isValidHexColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid hex color: "${value}"`);
-      }
-      break;
     case ColorFormatType.RGB:
       if (!isValidRGBColor(value)) {
         throw new Error(`[validateColorOrThrow] invalid RGB color: "${JSON.stringify(value)}"`);
