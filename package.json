@@ -16,10 +16,10 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
+    "lint": "eslint . --ext .ts,.js",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --watch",
     "build": "tsup src/index.ts --format esm --dts --out-dir dist",
-    "prepare": "npm run build && npm run build",
-    "lint": "eslint . --ext .ts"
+    "prepare": "npm run build && npm run build"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run test"
