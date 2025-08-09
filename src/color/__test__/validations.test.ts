@@ -1,4 +1,7 @@
+import { validateColorOrThrow } from '../validations';
+
 describe('validateColorOrThrow', () => {
-  // TODO: test `validateColorOrThrow()` function for all possible input formats (each of `ColorFormat`)
-  // with edge cases
+  it('throws on invalid hex', () => {
+    expect(() => validateColorOrThrow('#gggggg')).toThrow();
+  });
 });
