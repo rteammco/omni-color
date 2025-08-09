@@ -19,7 +19,6 @@ import {
   ColorHSV,
   ColorHSVA,
   ColorHex,
-  ColorHex8,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
@@ -42,7 +41,7 @@ export class Color {
     return toHex(this.color);
   }
 
-  toHex8(): ColorHex8 {
+  toHex8(): ColorHex {
     return toHex8(this.color);
   }
 

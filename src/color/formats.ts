@@ -1,7 +1,5 @@
 export type ColorHex = `#${string}`;
 
-export type ColorHex8 = `#${string}`;
-
 export interface ColorRGB {
   r: number; // 0-255
   g: number; // 0-255
@@ -79,7 +77,7 @@ export enum ColorFormatType {
 
 type ColorFormatTypeAndValue =
   | { formatType: ColorFormatType.HEX; value: ColorHex }
-  | { formatType: ColorFormatType.HEX8; value: ColorHex8 }
+  | { formatType: ColorFormatType.HEX8; value: ColorHex }
   | { formatType: ColorFormatType.RGB; value: ColorRGB }
   | { formatType: ColorFormatType.RGBA; value: ColorRGBA }
   | { formatType: ColorFormatType.HSL; value: ColorHSL }
@@ -90,11 +88,29 @@ type ColorFormatTypeAndValue =
   | { formatType: ColorFormatType.LCH; value: ColorLCH }
   | { formatType: ColorFormatType.OKLCH; value: ColorOKLCH };
 
+function getHexColorFormatType(color: ColorHex): ColorFormatTypeAndValue {
+  const colorLowerCase = color.toLowerCase();
+  if (colorLowerCase.startsWith('#')) {
+    if (colorLowerCase.length === 4) {
+      return {
+        formatType: ColorFormatType.HEX,
+        value:
+          `#${colorLowerCase[1]}${colorLowerCase[1]}${colorLowerCase[2]}${colorLowerCase[2]}${colorLowerCase[3]}${colorLowerCase[3]}` as ColorHex,
+      };
+    }
+    if (colorLowerCase.length === 7) {
+      return { formatType: ColorFormatType.HEX, value: colorLowerCase as ColorHex };
+    }
+    if (colorLowerCase.length === 9) {
+      return { formatType: ColorFormatType.HEX8, value: colorLowerCase as ColorHex };
+    }
+  }
+  throw new Error(`[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`);
+}
+
 export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue {
   if (typeof color === 'string') {
-    return color.length === 7
-      ? { formatType: ColorFormatType.HEX, value: color.toLowerCase() as ColorHex }
-      : { formatType: ColorFormatType.HEX8, value: color.toLowerCase() as ColorHex8 };
+    return getHexColorFormatType(color);
   }
 
   if ('c' in color && 'm' in color && 'y' in color && 'k' in color) {
