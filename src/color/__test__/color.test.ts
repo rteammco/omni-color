@@ -1,7 +1,6 @@
 import { Color } from '../color';
 import type {
   ColorHex,
-  ColorHex8,
   ColorRGB,
   ColorHSL,
   ColorHSV,
@@ -18,10 +17,10 @@ const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
 const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
 const BASE_OKLCH: ColorOKLCH = { l: 0.627955, c: 0.257683, h: 29.234 };
 
-const HEX8_OPAQUE: ColorHex8 = '#ff0000ff';
-const HEX8_SEMI_TRANSPARENT: ColorHex8 = '#ff000080';
+const HEX8_OPAQUE: ColorHex = '#ff0000ff';
+const HEX8_SEMI_TRANSPARENT: ColorHex = '#ff000080';
 
-function checkAllConversions(color: Color, alpha: number, hex8: ColorHex8) {
+function checkAllConversions(color: Color, alpha: number, hex8: ColorHex) {
   expect(color.toHex()).toBe(BASE_HEX);
   expect(color.toHex8()).toBe(hex8);
   expect(color.toRGB()).toEqual(BASE_RGB);
