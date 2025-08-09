@@ -24,7 +24,7 @@ import {
   ColorRGB,
   ColorRGBA,
 } from './formats';
-import { getRandomColorRGBA } from './utils';
+import { getRandomColorRGBA, isColorDark } from './utils';
 
 export class Color {
   private color: ColorRGBA;
@@ -75,5 +75,9 @@ export class Color {
 
   toOKLCH(): ColorOKLCH {
     return toOKLCH(this.color);
+  }
+
+  isDark(): boolean {
+    return isColorDark(this);
   }
 }
