@@ -120,3 +120,10 @@ describe('Color constructor and conversion tests', () => {
     checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 });
+
+describe('Color.isDark sanity check', () => {
+  it('identifies dark and light colors', () => {
+    expect(new Color('#000000').isDark()).toBe(true);
+    expect(new Color('#ffffff').isDark()).toBe(false);
+  });
+});
