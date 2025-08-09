@@ -18,7 +18,8 @@
     "test:watch": "jest --watch",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --watch",
     "build": "tsup src/index.ts --format esm --dts --out-dir dist",
-    "prepare": "npm run build && npm run build"
+    "prepare": "npm run build && npm run build",
+    "lint": "eslint . --ext .ts"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run test"
@@ -34,6 +35,9 @@
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0"
   }
 }
