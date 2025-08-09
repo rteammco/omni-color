@@ -1,13 +1,11 @@
 import { validateColorOrThrow } from '../validations';
 
-describe('validateColorOrThrow base cases', () => {
+describe('validateColorOrThrow nullish cases', () => {
   it('throws on undefined or null', () => {
     expect(() => validateColorOrThrow(undefined)).toThrow(
-      '[validateColorOrThrow] color is undefined',
+      '[validateColorOrThrow] color is undefined'
     );
-    expect(() => validateColorOrThrow(null)).toThrow(
-      '[validateColorOrThrow] color is null',
-    );
+    expect(() => validateColorOrThrow(null)).toThrow('[validateColorOrThrow] color is null');
   });
 });
 
@@ -21,7 +19,7 @@ describe('validateColorOrThrow HEX format', () => {
   it('rejects invalid hex strings', () => {
     ['#ggg', '#gggggg'].forEach((hex) => {
       expect(() => validateColorOrThrow(hex as any)).toThrow(
-        /\[validateColorOrThrow\] invalid hex color/,
+        /\[validateColorOrThrow\] invalid hex color/
       );
     });
   });
@@ -29,7 +27,7 @@ describe('validateColorOrThrow HEX format', () => {
   it('throws on hex strings with invalid length', () => {
     ['#', '#12345', '#1234567', '#123456789'].forEach((hex) => {
       expect(() => validateColorOrThrow(hex as any)).toThrow(
-        /\[getColorFormatType\] unknown color format/,
+        /\[getColorFormatType\] unknown color format/
       );
     });
   });
@@ -44,7 +42,7 @@ describe('validateColorOrThrow HEX8 format', () => {
   it('rejects invalid hex8 strings', () => {
     ['#gggggggg', '#1234567g', '#1234567'].forEach((hex) => {
       expect(() => validateColorOrThrow(hex as any)).toThrow(
-        /\[validateColorOrThrow\] invalid hex color|\[getColorFormatType\] unknown color format/,
+        /\[validateColorOrThrow\] invalid hex color|\[getColorFormatType\] unknown color format/
       );
     });
   });
@@ -72,9 +70,7 @@ describe('validateColorOrThrow RGB format', () => {
       { r: '255', g: 0, b: 0 },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid RGB color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid RGB color/);
     });
   });
 });
@@ -94,9 +90,7 @@ describe('validateColorOrThrow RGBA format', () => {
       { r: 0.5, g: 0, b: 0, a: 0.5 },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid RGBA color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid RGBA color/);
     });
   });
 });
@@ -120,9 +114,7 @@ describe('validateColorOrThrow HSL format', () => {
       { h: 0, s: 0, l: 0.5 },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid HSL color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid HSL color/);
     });
   });
 });
@@ -145,9 +137,7 @@ describe('validateColorOrThrow HSLA format', () => {
       { h: 0, s: 0, l: 0, a: '0.5' },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid HSLA color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid HSLA color/);
     });
   });
 });
@@ -171,9 +161,7 @@ describe('validateColorOrThrow HSV format', () => {
       { h: 0, s: 0, v: 0.5 },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid HSV color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid HSV color/);
     });
   });
 });
@@ -196,9 +184,7 @@ describe('validateColorOrThrow HSVA format', () => {
       { h: 0, s: 0, v: 0, a: '0.5' },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid HSVA color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid HSVA color/);
     });
   });
 });
@@ -219,9 +205,7 @@ describe('validateColorOrThrow CMYK format', () => {
       { c: '0', m: 0, y: 0, k: 0 },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid CMYK color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid CMYK color/);
     });
   });
 });
@@ -241,9 +225,7 @@ describe('validateColorOrThrow LCH format', () => {
       { l: '50', c: 0, h: 0 },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid LCH color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid LCH color/);
     });
   });
 });
@@ -263,25 +245,17 @@ describe('validateColorOrThrow OKLCH format', () => {
       { l: 0, c: 0, h: 361 },
     ];
     cases.forEach((c) => {
-      expect(() => validateColorOrThrow(c)).toThrow(
-        /\[validateColorOrThrow\] invalid OKLCH color/,
-      );
+      expect(() => validateColorOrThrow(c)).toThrow(/\[validateColorOrThrow\] invalid OKLCH color/);
     });
   });
 });
 
 describe('validateColorOrThrow unknown format', () => {
-  const inputs: any[] = [
-    {},
-    { foo: 'bar' },
-    { r: 0 },
-    [],
-    'not-a-color',
-  ];
+  const inputs: any[] = [{}, { foo: 'bar' }, { r: 0 }, [], 'not-a-color'];
   inputs.forEach((input) => {
     it(`throws on input ${JSON.stringify(input)}`, () => {
       expect(() => validateColorOrThrow(input)).toThrow(
-        /\[getColorFormatType\] unknown color format/,
+        /\[getColorFormatType\] unknown color format/
       );
     });
   });
