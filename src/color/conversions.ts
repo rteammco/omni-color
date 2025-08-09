@@ -7,7 +7,6 @@ import {
   ColorHSV,
   ColorHSVA,
   ColorHex,
-  ColorHex8,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
@@ -26,7 +25,7 @@ function rgbaToRGB(color: ColorRGBA): ColorRGB {
   return { r, g, b };
 }
 
-function hexOrHex8ToRGBA(hex: ColorHex | ColorHex8): ColorRGBA {
+function hexOrHex8ToRGBA(hex: ColorHex): ColorRGBA {
   const raw = hex.replace(/^#/, '');
   let r = 0;
   let g = 0;
@@ -50,7 +49,7 @@ function hexOrHex8ToRGBA(hex: ColorHex | ColorHex8): ColorRGBA {
   return a === undefined ? { r, g, b, a: 1 } : { r, g, b, a: +a.toFixed(3) };
 }
 
-function hexOrHex8ToRGB(hex: ColorHex | ColorHex8): ColorRGB {
+function hexOrHex8ToRGB(hex: ColorHex): ColorRGB {
   const { r, g, b } = hexOrHex8ToRGBA(hex);
   return { r, g, b };
 }
@@ -59,10 +58,10 @@ function numToHex(value: number): string {
   return value.toString(16).padStart(2, '0');
 }
 
-function rgbaToHex8(color: ColorRGBA): ColorHex8 {
+function rgbaToHex8(color: ColorRGBA): ColorHex {
   const { r, g, b, a } = color;
   const alphaHex = a !== undefined ? numToHex(Math.round(a * 255)) : 'ff';
-  return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}${alphaHex}`.toLowerCase() as ColorHex8;
+  return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}${alphaHex}`.toLowerCase() as ColorHex;
 }
 
 function rgbaToHex(color: ColorRGBA): ColorHex {
@@ -74,8 +73,8 @@ function rgbToHex(color: ColorRGB): ColorHex {
   return rgbaToHex8(rgbToRGBA(color)).substring(0, 7) as ColorHex;
 }
 
-function rgbToHex8(color: ColorRGB): ColorHex8 {
-  return `${rgbToHex(color)}ff` as ColorHex8;
+function rgbToHex8(color: ColorRGB): ColorHex {
+  return `${rgbToHex(color)}ff` as ColorHex;
 }
 
 function rgbToHSL(color: ColorRGB): ColorHSL {
@@ -497,12 +496,12 @@ export function toHex(color: ColorFormat): ColorHex {
   }
 }
 
-export function toHex8(color: ColorFormat): ColorHex8 {
+export function toHex8(color: ColorFormat): ColorHex {
   validateColorOrThrow(color);
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
     case ColorFormatType.HEX:
-      return `${value}ff` as ColorHex8;
+      return `${value}ff` as ColorHex;
     case ColorFormatType.HEX8:
       return value;
     case ColorFormatType.RGB:

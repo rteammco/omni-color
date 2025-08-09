@@ -111,6 +111,7 @@ export function validateColorOrThrow(color?: ColorFormat | null): void {
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
     case ColorFormatType.HEX:
+    case ColorFormatType.HEX8:
       if (!isValidHexColor(value)) {
         throw new Error(`[validateColorOrThrow] invalid hex color: "${value}"`);
       }

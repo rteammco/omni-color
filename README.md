@@ -28,3 +28,8 @@ These scripts are available in the `package.json`:
 | `npm run dev`       | Starts the TypeScript compiler in watch mode for continuous rebuilding.     |
 | `npm run build`     | Compiles TypeScript source from `./src` to JavaScript in `./dist`.          |
 | `prepare` _(auto)_  | Automatically runs `npm run build` before `npm publish` or `npm install`.   |
+
+### Run Tests
+
+* `npm run test` - run all tests.
+* `npm run test -- src/color/__test__/validations.test.ts` - run a specific test file.
