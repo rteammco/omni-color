@@ -33,10 +33,8 @@ describe('conversions', () => {
   const BASE_RGBA: ColorRGBA = { r: 255, g: 0, b: 0, a: 1 };
   const SEMI_RGBA: ColorRGBA = { r: 255, g: 0, b: 0, a: 0.5 };
   const BASE_HSL: ColorHSL = { h: 0, s: 100, l: 50 };
-  const BASE_HSLA: ColorHSLA = { h: 0, s: 100, l: 50, a: 1 };
   const SEMI_HSLA: ColorHSLA = { h: 0, s: 100, l: 50, a: 0.5 };
   const BASE_HSV: ColorHSV = { h: 0, s: 100, v: 100 };
-  const BASE_HSVA: ColorHSVA = { h: 0, s: 100, v: 100, a: 1 };
   const SEMI_HSVA: ColorHSVA = { h: 0, s: 100, v: 100, a: 0.5 };
   const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
   const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
@@ -193,10 +191,20 @@ describe('conversions', () => {
 
   describe('toHSLA', () => {
     const expectedOpaque = { ...BASE_HSL, a: 1 };
-    const expectedSemi = { ...BASE_HSL, a: 0.5 };
-    const opaqueInputs = [BASE_HEX, BASE_HEX8, BASE_RGB, BASE_HSL, BASE_HSV, BASE_CMYK, BASE_LCH, BASE_OKLCH];
+    const opaqueInputs = [
+      BASE_HEX,
+      BASE_HEX8,
+      BASE_RGB,
+      BASE_HSL,
+      BASE_HSV,
+      BASE_CMYK,
+      BASE_LCH,
+      BASE_OKLCH,
+    ];
     for (const input of opaqueInputs) {
-      it(`from ${typeof input === 'string' ? input : JSON.stringify(input)} produces opaque HSLA`, () => {
+      it(`from ${
+        typeof input === 'string' ? input : JSON.stringify(input)
+      } produces opaque HSLA`, () => {
         expect(toHSLA(input)).toEqual(expectedOpaque);
       });
     }
@@ -207,7 +215,9 @@ describe('conversions', () => {
       [SEMI_HSVA, 0.5],
     ];
     for (const [input, alpha] of semiInputs) {
-      it(`from ${typeof input === 'string' ? input : JSON.stringify(input)} preserves alpha`, () => {
+      it(`from ${
+        typeof input === 'string' ? input : JSON.stringify(input)
+      } preserves alpha`, () => {
         const { a, h, s, l } = toHSLA(input);
         expect({ h, s, l }).toEqual(BASE_HSL);
         expect(a).toBeCloseTo(alpha, 3);
@@ -237,10 +247,20 @@ describe('conversions', () => {
 
   describe('toHSVA', () => {
     const expectedOpaque = { ...BASE_HSV, a: 1 };
-    const expectedSemi = { ...BASE_HSV, a: 0.5 };
-    const opaqueInputs = [BASE_HEX, BASE_HEX8, BASE_RGB, BASE_HSL, BASE_HSV, BASE_CMYK, BASE_LCH, BASE_OKLCH];
+    const opaqueInputs = [
+      BASE_HEX,
+      BASE_HEX8,
+      BASE_RGB,
+      BASE_HSL,
+      BASE_HSV,
+      BASE_CMYK,
+      BASE_LCH,
+      BASE_OKLCH,
+    ];
     for (const input of opaqueInputs) {
-      it(`from ${typeof input === 'string' ? input : JSON.stringify(input)} produces opaque HSVA`, () => {
+      it(`from ${
+        typeof input === 'string' ? input : JSON.stringify(input)
+      } produces opaque HSVA`, () => {
         expect(toHSVA(input)).toEqual(expectedOpaque);
       });
     }
@@ -251,7 +271,9 @@ describe('conversions', () => {
       [SEMI_HSVA, 0.5],
     ];
     for (const [input, alpha] of semiInputs) {
-      it(`from ${typeof input === 'string' ? input : JSON.stringify(input)} preserves alpha`, () => {
+      it(`from ${
+        typeof input === 'string' ? input : JSON.stringify(input)
+      } preserves alpha`, () => {
         const { a, h, s, v } = toHSVA(input);
         expect({ h, s, v }).toEqual(BASE_HSV);
         expect(a).toBeCloseTo(alpha, 3);
