@@ -3,7 +3,9 @@ import type {
   ColorHex,
   ColorRGB,
   ColorHSL,
+  ColorHSLA,
   ColorHSV,
+  ColorHSVA,
   ColorCMYK,
   ColorLCH,
   ColorOKLCH,
@@ -125,5 +127,35 @@ describe('Color.isDark sanity check', () => {
   it('identifies dark and light colors', () => {
     expect(new Color('#000000').isDark()).toBe(true);
     expect(new Color('#ffffff').isDark()).toBe(false);
+  });
+});
+
+describe('Color.getAlpha', () => {
+  it('returns the alpha channel value', () => {
+    const color = new Color({ ...BASE_RGB, a: 0.5 });
+    expect(color.getAlpha()).toBe(0.5);
+  });
+
+  it('parses alpha from hex8 strings', () => {
+    const opaque: ColorHex = '#ffffffff';
+    const transparent: ColorHex = '#00000000';
+    const semiTransparent: ColorHex = '#123456cc';
+
+    expect(new Color(opaque).getAlpha()).toBe(1);
+    expect(new Color(transparent).getAlpha()).toBe(0);
+    expect(new Color(semiTransparent).getAlpha()).toBeCloseTo(0.8, 3);
+  });
+
+  it('handles alpha in hsla and hsva inputs', () => {
+    const hsla: ColorHSLA = { h: 210, s: 40, l: 60, a: 0.25 };
+    const hsva: ColorHSVA = { h: 120, s: 70, v: 80, a: 0.75 };
+
+    expect(new Color(hsla).getAlpha()).toBe(0.25);
+    expect(new Color(hsva).getAlpha()).toBe(0.75);
+  });
+
+  it('accepts fully transparent rgba values', () => {
+    const color = new Color({ r: 10, g: 20, b: 30, a: 0 });
+    expect(color.getAlpha()).toBe(0);
   });
 });
