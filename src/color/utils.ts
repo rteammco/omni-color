@@ -12,13 +12,13 @@ export function getRandomColorRGBA(): ColorRGBA {
 
 export function isColorDark(color: Color): boolean {
   const { h, l } = color.toHSL();
-  let lightnessThreshold = 0.5;
+  let lightnessThreshold = 50;
   if (h >= 215 && h <= 280) {
     // blueish hues tend to feel a bit darker
-    lightnessThreshold = 0.65;
+    lightnessThreshold = 65;
   } else if (h >= 40 && h <= 190) {
     // yellowish hues tend to feel a bit brighter
-    lightnessThreshold = 0.4;
+    lightnessThreshold = 40;
   }
 
   return l <= lightnessThreshold;
