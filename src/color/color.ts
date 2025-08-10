@@ -77,6 +77,10 @@ export class Color {
     return toOKLCH(this.color);
   }
 
+  getAlpha(): number {
+    return this.color.a;
+  }
+
   isDark(): boolean {
     return isColorDark(this);
   }
