@@ -30,17 +30,16 @@ describe('getRandomColorRGBA', () => {
 
 describe('isColorDark', () => {
   const cases: Array<[ColorHex, boolean]> = [
-    // TODO: cases which are maybe incorrectly being classified:
-    // ['#00c0c0', false],
-    // ['#00c0ff', false],
-    // ['#40c000', false],
-    // ['#808080', false],
-    // ['#8080c0', false],
-    // ['#80c000', false],
-    // ['#c08000', false],
-    // ['#c08040', false],
-    // ['#c0c000', false],
-    // ['#ff8000', false],
+    ['#00c0c0', false],
+    ['#00c0ff', false],
+    ['#40c000', false],
+    ['#808080', false],
+    ['#8080c0', false],
+    ['#80c000', false],
+    ['#c08000', false],
+    ['#c08040', false],
+    ['#c0c000', false],
+    ['#ff8000', false],
     // Light color cases:
     ['#00ff00', false],
     ['#00ff40', false],
