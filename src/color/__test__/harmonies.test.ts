@@ -105,8 +105,7 @@ describe('color harmonies', () => {
     expect(brandPurpleComp2.toHex()).toBe('#6efca7');
     expect(brandPurpleComp3.toHex()).toBe('#c3fc6e');
 
-    const [brandBlueOrig, brandBlueComp2, brandBlueComp3] =
-      getSplitComplementaryColors(brandBlue);
+    const [brandBlueOrig, brandBlueComp2, brandBlueComp3] = getSplitComplementaryColors(brandBlue);
     expect(brandBlueOrig.toHex()).toBe('#2e3575');
     expect(brandBlueComp2.toHex()).toBe('#59762e');
     expect(brandBlueComp3.toHex()).toBe('#764a2e');
@@ -123,32 +122,27 @@ describe('color harmonies', () => {
     expect(brandGreenComp2.toHex()).toBe('#cc2851');
     expect(brandGreenComp3.toHex()).toBe('#a328cc');
 
-    const [brandPinkOrig, brandPinkComp2, brandPinkComp3] =
-      getSplitComplementaryColors(brandPink);
+    const [brandPinkOrig, brandPinkComp2, brandPinkComp3] = getSplitComplementaryColors(brandPink);
     expect(brandPinkOrig.toHex()).toBe('#811242');
     expect(brandPinkComp2.toHex()).toBe('#127b82');
     expect(brandPinkComp3.toHex()).toBe('#128219');
 
-    const [brandRedOrig, brandRedComp2, brandRedComp3] =
-      getSplitComplementaryColors(brandRed);
+    const [brandRedOrig, brandRedComp2, brandRedComp3] = getSplitComplementaryColors(brandRed);
     expect(brandRedOrig.toHex()).toBe('#de0d14');
     expect(brandRedComp2.toHex()).toBe('#0d7cde');
     expect(brandRedComp3.toHex()).toBe('#0dde6e');
 
-    const [blackOrig, blackComp2, blackComp3] =
-      getSplitComplementaryColors(black);
+    const [blackOrig, blackComp2, blackComp3] = getSplitComplementaryColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
     expect(blackComp2.toHex()).toBe('#000000');
     expect(blackComp3.toHex()).toBe('#000000');
 
-    const [whiteOrig, whiteComp2, whiteComp3] =
-      getSplitComplementaryColors(white);
+    const [whiteOrig, whiteComp2, whiteComp3] = getSplitComplementaryColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
     expect(whiteComp2.toHex()).toBe('#ffffff');
     expect(whiteComp3.toHex()).toBe('#ffffff');
 
-    const [lightGrayOrig, lightGrayComp2, lightGrayComp3] =
-      getSplitComplementaryColors(lightGray);
+    const [lightGrayOrig, lightGrayComp2, lightGrayComp3] = getSplitComplementaryColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
     expect(lightGrayComp2.toHex()).toBe('#d4d4d4');
     expect(lightGrayComp3.toHex()).toBe('#d4d4d4');
@@ -158,8 +152,7 @@ describe('color harmonies', () => {
     expect(grayComp2.toHex()).toBe('#808080');
     expect(grayComp3.toHex()).toBe('#808080');
 
-    const [darkGrayOrig, darkGrayComp2, darkGrayComp3] =
-      getSplitComplementaryColors(darkGray);
+    const [darkGrayOrig, darkGrayComp2, darkGrayComp3] = getSplitComplementaryColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
     expect(darkGrayComp2.toHex()).toBe('#333333');
     expect(darkGrayComp3.toHex()).toBe('#333333');
@@ -187,8 +180,7 @@ describe('color harmonies', () => {
     expect(brandPurpleTriad2.toHex()).toBe('#6efcee');
     expect(brandPurpleTriad3.toHex()).toBe('#fcee6e');
 
-    const [brandBlueOrig, brandBlueTriad2, brandBlueTriad3] =
-      getTriadicHarmonyColors(brandBlue);
+    const [brandBlueOrig, brandBlueTriad2, brandBlueTriad3] = getTriadicHarmonyColors(brandBlue);
     expect(brandBlueOrig.toHex()).toBe('#2e3575');
     expect(brandBlueTriad2.toHex()).toBe('#35762e');
     expect(brandBlueTriad3.toHex()).toBe('#762e35');
@@ -205,14 +197,12 @@ describe('color harmonies', () => {
     expect(brandGreenTriad2.toHex()).toBe('#cc5128');
     expect(brandGreenTriad3.toHex()).toBe('#5128cc');
 
-    const [brandPinkOrig, brandPinkTriad2, brandPinkTriad3] =
-      getTriadicHarmonyColors(brandPink);
+    const [brandPinkOrig, brandPinkTriad2, brandPinkTriad3] = getTriadicHarmonyColors(brandPink);
     expect(brandPinkOrig.toHex()).toBe('#811242');
     expect(brandPinkTriad2.toHex()).toBe('#124282');
     expect(brandPinkTriad3.toHex()).toBe('#428212');
 
-    const [brandRedOrig, brandRedTriad2, brandRedTriad3] =
-      getTriadicHarmonyColors(brandRed);
+    const [brandRedOrig, brandRedTriad2, brandRedTriad3] = getTriadicHarmonyColors(brandRed);
     expect(brandRedOrig.toHex()).toBe('#de0d14');
     expect(brandRedTriad2.toHex()).toBe('#0d14de');
     expect(brandRedTriad3.toHex()).toBe('#14de0d');
@@ -227,8 +217,7 @@ describe('color harmonies', () => {
     expect(whiteTriad2.toHex()).toBe('#ffffff');
     expect(whiteTriad3.toHex()).toBe('#ffffff');
 
-    const [lightGrayOrig, lightGrayTriad2, lightGrayTriad3] =
-      getTriadicHarmonyColors(lightGray);
+    const [lightGrayOrig, lightGrayTriad2, lightGrayTriad3] = getTriadicHarmonyColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
     expect(lightGrayTriad2.toHex()).toBe('#d4d4d4');
     expect(lightGrayTriad3.toHex()).toBe('#d4d4d4');
@@ -238,8 +227,7 @@ describe('color harmonies', () => {
     expect(grayTriad2.toHex()).toBe('#808080');
     expect(grayTriad3.toHex()).toBe('#808080');
 
-    const [darkGrayOrig, darkGrayTriad2, darkGrayTriad3] =
-      getTriadicHarmonyColors(darkGray);
+    const [darkGrayOrig, darkGrayTriad2, darkGrayTriad3] = getTriadicHarmonyColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
     expect(darkGrayTriad2.toHex()).toBe('#333333');
     expect(darkGrayTriad3.toHex()).toBe('#333333');
@@ -299,22 +287,19 @@ describe('color harmonies', () => {
     expect(brandPinkSq2.toHex()).toBe('#128251');
     expect(brandPinkSq3.toHex()).toBe('#191282');
 
-    const [brandRedOrig, brandRedSq1, brandRedSq2, brandRedSq3] =
-      getSquareHarmonyColors(brandRed);
+    const [brandRedOrig, brandRedSq1, brandRedSq2, brandRedSq3] = getSquareHarmonyColors(brandRed);
     expect(brandRedOrig.toHex()).toBe('#de0d14');
     expect(brandRedSq1.toHex()).toBe('#7cde0d');
     expect(brandRedSq2.toHex()).toBe('#0dded7');
     expect(brandRedSq3.toHex()).toBe('#6e0dde');
 
-    const [blackOrig, blackSq1, blackSq2, blackSq3] =
-      getSquareHarmonyColors(black);
+    const [blackOrig, blackSq1, blackSq2, blackSq3] = getSquareHarmonyColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
     expect(blackSq1.toHex()).toBe('#000000');
     expect(blackSq2.toHex()).toBe('#000000');
     expect(blackSq3.toHex()).toBe('#000000');
 
-    const [whiteOrig, whiteSq1, whiteSq2, whiteSq3] =
-      getSquareHarmonyColors(white);
+    const [whiteOrig, whiteSq1, whiteSq2, whiteSq3] = getSquareHarmonyColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
     expect(whiteSq1.toHex()).toBe('#ffffff');
     expect(whiteSq2.toHex()).toBe('#ffffff');
@@ -333,8 +318,7 @@ describe('color harmonies', () => {
     expect(graySq2.toHex()).toBe('#808080');
     expect(graySq3.toHex()).toBe('#808080');
 
-    const [darkGrayOrig, darkGraySq1, darkGraySq2, darkGraySq3] =
-      getSquareHarmonyColors(darkGray);
+    const [darkGrayOrig, darkGraySq1, darkGraySq2, darkGraySq3] = getSquareHarmonyColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
     expect(darkGraySq1.toHex()).toBe('#333333');
     expect(darkGraySq2.toHex()).toBe('#333333');
@@ -402,15 +386,13 @@ describe('color harmonies', () => {
     expect(brandRedTet3.toHex()).toBe('#0dded7');
     expect(brandRedTet4.toHex()).toBe('#0d14de');
 
-    const [blackOrig, blackTet2, blackTet3, blackTet4] =
-      getTetradicHarmonyColors(black);
+    const [blackOrig, blackTet2, blackTet3, blackTet4] = getTetradicHarmonyColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
     expect(blackTet2.toHex()).toBe('#000000');
     expect(blackTet3.toHex()).toBe('#000000');
     expect(blackTet4.toHex()).toBe('#000000');
 
-    const [whiteOrig, whiteTet2, whiteTet3, whiteTet4] =
-      getTetradicHarmonyColors(white);
+    const [whiteOrig, whiteTet2, whiteTet3, whiteTet4] = getTetradicHarmonyColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
     expect(whiteTet2.toHex()).toBe('#ffffff');
     expect(whiteTet3.toHex()).toBe('#ffffff');
@@ -423,8 +405,7 @@ describe('color harmonies', () => {
     expect(lightGrayTet3.toHex()).toBe('#d4d4d4');
     expect(lightGrayTet4.toHex()).toBe('#d4d4d4');
 
-    const [grayOrig, grayTet2, grayTet3, grayTet4] =
-      getTetradicHarmonyColors(gray);
+    const [grayOrig, grayTet2, grayTet3, grayTet4] = getTetradicHarmonyColors(gray);
     expect(grayOrig.toHex()).toBe('#808080');
     expect(grayTet2.toHex()).toBe('#808080');
     expect(grayTet3.toHex()).toBe('#808080');
@@ -463,8 +444,13 @@ describe('color harmonies', () => {
     expect(blueAnalog4.toHex()).toBe('#00ffff');
     expect(blueAnalog5.toHex()).toBe('#ff00ff');
 
-    const [brandPurpleOrig, brandPurpleAnalog2, brandPurpleAnalog3, brandPurpleAnalog4, brandPurpleAnalog5] =
-      getAnalogousHarmonyColors(brandPurple);
+    const [
+      brandPurpleOrig,
+      brandPurpleAnalog2,
+      brandPurpleAnalog3,
+      brandPurpleAnalog4,
+      brandPurpleAnalog5,
+    ] = getAnalogousHarmonyColors(brandPurple);
     expect(brandPurpleOrig.toHex()).toBe('#ee6ffc');
     expect(brandPurpleAnalog2.toHex()).toBe('#a76efc');
     expect(brandPurpleAnalog3.toHex()).toBe('#fc6ec3');
@@ -479,16 +465,26 @@ describe('color harmonies', () => {
     expect(brandBlueAnalog4.toHex()).toBe('#2e766e');
     expect(brandBlueAnalog5.toHex()).toBe('#6e2e76');
 
-    const [brandYellowOrig, brandYellowAnalog2, brandYellowAnalog3, brandYellowAnalog4, brandYellowAnalog5] =
-      getAnalogousHarmonyColors(brandYellow);
+    const [
+      brandYellowOrig,
+      brandYellowAnalog2,
+      brandYellowAnalog3,
+      brandYellowAnalog4,
+      brandYellowAnalog5,
+    ] = getAnalogousHarmonyColors(brandYellow);
     expect(brandYellowOrig.toHex()).toBe('#d3e204');
     expect(brandYellowAnalog2.toHex()).toBe('#e28203');
     expect(brandYellowAnalog3.toHex()).toBe('#64e203');
     expect(brandYellowAnalog4.toHex()).toBe('#e21203');
     expect(brandYellowAnalog5.toHex()).toBe('#03e212');
 
-    const [brandGreenOrig, brandGreenAnalog2, brandGreenAnalog3, brandGreenAnalog4, brandGreenAnalog5] =
-      getAnalogousHarmonyColors(brandGreen);
+    const [
+      brandGreenOrig,
+      brandGreenAnalog2,
+      brandGreenAnalog3,
+      brandGreenAnalog4,
+      brandGreenAnalog5,
+    ] = getAnalogousHarmonyColors(brandGreen);
     expect(brandGreenOrig.toHex()).toBe('#29cc53');
     expect(brandGreenAnalog2.toHex()).toBe('#51cc28');
     expect(brandGreenAnalog3.toHex()).toBe('#28cca3');
@@ -585,8 +581,13 @@ describe('color harmonies', () => {
     expect(blueMono4.toHex()).toBe('#0000ff');
     expect(blueMono5.toHex()).toBe('#1919e6');
 
-    const [brandPurpleOrig, brandPurpleMono2, brandPurpleMono3, brandPurpleMono4, brandPurpleMono5] =
-      getMonochromaticHarmonyColors(brandPurple);
+    const [
+      brandPurpleOrig,
+      brandPurpleMono2,
+      brandPurpleMono3,
+      brandPurpleMono4,
+      brandPurpleMono5,
+    ] = getMonochromaticHarmonyColors(brandPurple);
     expect(brandPurpleOrig.toHex()).toBe('#ee6ffc');
     expect(brandPurpleMono2.toHex()).toBe('#fad2fe');
     expect(brandPurpleMono3.toHex()).toBe('#e20afa');
@@ -601,8 +602,13 @@ describe('color harmonies', () => {
     expect(brandBlueMono4.toHex()).toBe('#1d2886');
     expect(brandBlueMono5.toHex()).toBe('#3e4265');
 
-    const [brandYellowOrig, brandYellowMono2, brandYellowMono3, brandYellowMono4, brandYellowMono5] =
-      getMonochromaticHarmonyColors(brandYellow);
+    const [
+      brandYellowOrig,
+      brandYellowMono2,
+      brandYellowMono3,
+      brandYellowMono4,
+      brandYellowMono5,
+    ] = getMonochromaticHarmonyColors(brandYellow);
     expect(brandYellowOrig.toHex()).toBe('#d3e204');
     expect(brandYellowMono2.toHex()).toBe('#f1fc4f');
     expect(brandYellowMono3.toHex()).toBe('#757e02');
