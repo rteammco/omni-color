@@ -181,7 +181,7 @@ describe('Color.getName', () => {
 describe('Color.getNameAsString', () => {
   it('formats the color name as a string', () => {
     const red = new Color(BASE_HEX);
-    expect(red.getNameAsString()).toBe('Red');
+    expect(red.getNameAsString()).toBe('red');
 
     const darkGreen: ColorHSL = { h: 120, s: 100, l: 20 };
     const green = new Color(darkGreen);

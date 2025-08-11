@@ -93,7 +93,7 @@ export class Color {
   getNameAsString(): string {
     const { name, lightness } = this.getName();
     if (lightness === ColorLightnessModifier.NORMAL) {
-      return name;
+      return name.toLowerCase();
     }
     return `${lightness} ${name}`.toLowerCase();
   }
