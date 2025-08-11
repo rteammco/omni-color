@@ -208,6 +208,128 @@ describe('Color.spin', () => {
   });
 });
 
+describe('Color.brighten', () => {
+  it('lightens the color without mutating the original', () => {
+    const base = new Color('#808080');
+    const brighter = base.brighten(10);
+    expect(brighter.toHex()).toBe('#999999');
+    expect(base.toHex()).toBe('#808080');
+  });
+});
+
+describe('Color.darken', () => {
+  it('darkens the color without mutating the original', () => {
+    const base = new Color('#808080');
+    const darker = base.darken(10);
+    expect(darker.toHex()).toBe('#666666');
+    expect(base.toHex()).toBe('#808080');
+  });
+});
+
+describe('Color.saturate', () => {
+  it('increases saturation without mutating the original', () => {
+    const base = new Color('#6699cc');
+    const saturated = base.saturate(20);
+    expect(saturated.toHex()).toBe('#5299e0');
+    expect(base.toHex()).toBe('#6699cc');
+  });
+});
+
+describe('Color.desaturate', () => {
+  it('decreases saturation without mutating the original', () => {
+    const base = new Color('#6699cc');
+    const desaturated = base.desaturate(20);
+    expect(desaturated.toHex()).toBe('#7a99b8');
+    expect(base.toHex()).toBe('#6699cc');
+  });
+});
+
+describe('Color.grayscale', () => {
+  it('converts the color to grayscale', () => {
+    const red = new Color('#ff0000');
+    const gray = red.grayscale();
+    expect(gray.toHex()).toBe('#808080');
+    expect(red.toHex()).toBe('#ff0000');
+  });
+});
+
+describe('Color.getComplementaryColors', () => {
+  it('returns the original color and its complement', () => {
+    const red = new Color('#ff0000');
+    const [orig, comp] = red.getComplementaryColors();
+    expect(orig.toHex()).toBe('#ff0000');
+    expect(comp.toHex()).toBe('#00ffff');
+    expect(orig).not.toBe(red);
+    expect(comp).not.toBe(red);
+  });
+});
+
+describe('Color.getSplitComplementaryColors', () => {
+  it('returns the split complementary colors', () => {
+    const red = new Color('#ff0000');
+    const [orig, comp1, comp2] = red.getSplitComplementaryColors();
+    expect(orig.toHex()).toBe('#ff0000');
+    expect(comp1.toHex()).toBe('#0080ff');
+    expect(comp2.toHex()).toBe('#00ff80');
+  });
+});
+
+describe('Color.getTriadicHarmonyColors', () => {
+  it('returns the triadic harmony colors', () => {
+    const red = new Color('#ff0000');
+    const [orig, triad1, triad2] = red.getTriadicHarmonyColors();
+    expect(orig.toHex()).toBe('#ff0000');
+    expect(triad1.toHex()).toBe('#0000ff');
+    expect(triad2.toHex()).toBe('#00ff00');
+  });
+});
+
+describe('Color.getSquareHarmonyColors', () => {
+  it('returns the square harmony colors', () => {
+    const red = new Color('#ff0000');
+    const [orig, sq1, sq2, sq3] = red.getSquareHarmonyColors();
+    expect(orig.toHex()).toBe('#ff0000');
+    expect(sq1.toHex()).toBe('#80ff00');
+    expect(sq2.toHex()).toBe('#00ffff');
+    expect(sq3.toHex()).toBe('#8000ff');
+  });
+});
+
+describe('Color.getTetradicHarmonyColors', () => {
+  it('returns the tetradic harmony colors', () => {
+    const red = new Color('#ff0000');
+    const [orig, t2, t3, t4] = red.getTetradicHarmonyColors();
+    expect(orig.toHex()).toBe('#ff0000');
+    expect(t2.toHex()).toBe('#ffff00');
+    expect(t3.toHex()).toBe('#00ffff');
+    expect(t4.toHex()).toBe('#0000ff');
+  });
+});
+
+describe('Color.getAnalogousHarmonyColors', () => {
+  it('returns the analogous harmony colors', () => {
+    const red = new Color('#ff0000');
+    const [orig, a2, a3, a4, a5] = red.getAnalogousHarmonyColors();
+    expect(orig.toHex()).toBe('#ff0000');
+    expect(a2.toHex()).toBe('#ff0080');
+    expect(a3.toHex()).toBe('#ff8000');
+    expect(a4.toHex()).toBe('#ff00ff');
+    expect(a5.toHex()).toBe('#ffff00');
+  });
+});
+
+describe('Color.getMonochromaticHarmonyColors', () => {
+  it('returns the monochromatic harmony colors', () => {
+    const red = new Color('#ff0000');
+    const [orig, mono2, mono3, mono4, mono5] = red.getMonochromaticHarmonyColors();
+    expect(orig.toHex()).toBe('#ff0000');
+    expect(mono2.toHex()).toBe('#ff6666');
+    expect(mono3.toHex()).toBe('#990000');
+    expect(mono4.toHex()).toBe('#ff0000');
+    expect(mono5.toHex()).toBe('#e61919');
+  });
+});
+
 describe('Color.isDark sanity check', () => {
   it('identifies dark and light colors', () => {
     expect(new Color('#000000').isDark()).toBe(true);
