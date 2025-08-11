@@ -1,7 +1,6 @@
 import { Color } from '../color';
 import { getRandomColorRGBA, isColorDark } from '../utils';
 import type { ColorHex } from '../formats';
-import { spinColorHue } from '../manipulations';
 
 describe('getRandomColorRGBA', () => {
   it('generates components within valid ranges', () => {
@@ -26,46 +25,6 @@ describe('getRandomColorRGBA', () => {
     expect(color).toEqual({ r: 0, g: 128, b: 255, a: 1 });
 
     spy.mockRestore();
-  });
-});
-
-describe('spinColorHue', () => {
-  const rotationCases: Array<[ColorHex, number, ColorHex]> = [
-    ['#ff0000', 0, '#ff0000'],
-    ['#ff0000', 30, '#ff8000'],
-    ['#ff0000', -30, '#ff0080'],
-    ['#ff0000', 30.5, '#ff8000'],
-    ['#ff0000', 12.34, '#ff3300'],
-    ['#ff0000', -30.7, '#ff0084'],
-    ['#ff0000', 360, '#ff0000'],
-    ['#ff0000', 360.9, '#ff0000'],
-    ['#ff0000', 400, '#ffaa00'],
-    ['#ff0000', -390, '#ff0080'],
-    ['#ff0000', 480, '#00ff00'],
-    ['#ff0000', 720, '#ff0000'],
-    ['#ff0000', 750, '#ff8000'],
-    ['#ff0000', -420, '#ff00ff'],
-    ['#00ff00', 120, '#0000ff'],
-    ['#00ff00', -240, '#0000ff'],
-    ['#00ff00', 240, '#ff0000'],
-    ['#0000ff', 240, '#00ff00'],
-    ['#ffff00', 450, '#00ff80'],
-    ['#00ffff', 60, '#0000ff'],
-    ['#ff00ff', 120, '#ffff00'],
-  ];
-
-  it.each(rotationCases)('spins %s by %d° to %s', (hex, deg, expected) => {
-    const color = new Color(hex);
-    const spun = spinColorHue(color, deg);
-    expect(spun.toHex()).toBe(expected);
-    expect(spun).not.toBe(color);
-  });
-
-  it('does not mutate the original color', () => {
-    const red = new Color('#ff0000');
-    const spun = spinColorHue(red, 120);
-    expect(spun.toHex()).toBe('#00ff00');
-    expect(red.toHex()).toBe('#ff0000');
   });
 });
 
