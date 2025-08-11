@@ -24,8 +24,9 @@ import {
   ColorRGB,
   ColorRGBA,
 } from './formats';
+import { getComplementaryColors } from './harmonies';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
-import { getRandomColorRGBA, isColorDark } from './utils';
+import { getRandomColorRGBA, isColorDark, spinColorHue } from './utils';
 
 export class Color {
   private color: ColorRGBA;
@@ -88,6 +89,14 @@ export class Color {
     }
     this.color.a = +alpha.toFixed(3);
     return this;
+  }
+
+  spin(degrees: number): Color {
+    return spinColorHue(this, degrees);
+  }
+
+  getComplementaryColors(): [Color, Color] {
+    return getComplementaryColors(this);
   }
 
   isDark(): boolean {
