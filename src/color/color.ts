@@ -24,8 +24,9 @@ import {
   ColorRGBA,
 } from './formats';
 import { getComplementaryColors } from './harmonies';
+import { spinColorHue } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
-import { getColorRGBAFromInput, isColorDark, spinColorHue } from './utils';
+import { getColorRGBAFromInput, isColorDark } from './utils';
 
 export class Color {
   private color: ColorRGBA;
