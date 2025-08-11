@@ -32,7 +32,14 @@ import {
   getTetradicHarmonyColors,
   getTriadicHarmonyColors,
 } from './harmonies';
-import { brightenColor, darkenColor, spinColorHue } from './manipulations';
+import {
+  brightenColor,
+  colorToGrayscale,
+  darkenColor,
+  desaturateColor,
+  saturateColor,
+  spinColorHue,
+} from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
@@ -109,6 +116,18 @@ export class Color {
 
   darken(percentage?: number): Color {
     return darkenColor(this, percentage);
+  }
+
+  saturate(percentage?: number): Color {
+    return saturateColor(this, percentage);
+  }
+
+  desaturate(percentage?: number): Color {
+    return desaturateColor(this, percentage);
+  }
+
+  grayscale(): Color {
+    return colorToGrayscale(this);
   }
 
   getComplementaryColors(): [Color, Color] {
