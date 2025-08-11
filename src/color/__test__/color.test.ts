@@ -1,5 +1,5 @@
 import { Color } from '../color';
-import { CSS_COLOR_NAME_TO_RGBA_MAP } from '../color.constants';
+import { CSS_COLOR_NAME_TO_HEX_MAP } from '../color.constants';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import type {
   ColorHex,
@@ -226,10 +226,13 @@ describe('Color.clone', () => {
 
 describe('Named color support', () => {
   it('initializes from all named colors (case insensitive)', () => {
-    for (const [name, rgba] of Object.entries(CSS_COLOR_NAME_TO_RGBA_MAP)) {
-      expect(new Color(name).toRGBA()).toEqual(rgba);
-      expect(new Color(name.toUpperCase()).toRGBA()).toEqual(rgba);
+    for (const [name, hex] of Object.entries(CSS_COLOR_NAME_TO_HEX_MAP)) {
+      expect(new Color(name).toHex()).toEqual(hex);
+      expect(new Color(name.toUpperCase()).toHex()).toEqual(hex);
     }
+
+    expect(new Color('Red').toRGBA()).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+    expect(new Color('blACK').toRGB()).toEqual({ r: 0, g: 0, b: 0 });
   });
 
   it('throws on unknown color names', () => {
