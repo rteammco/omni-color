@@ -26,6 +26,12 @@ export function getColorRGBAFromInput(color?: ColorFormat | string): ColorRGBA {
   return color ? toRGBA(color) : getRandomColorRGBA();
 }
 
+export function spinColorHue(color: Color, degrees: number): Color {
+  const hsl = color.toHSL();
+  hsl.h = Math.floor((hsl.h + degrees) % 360);
+  return new Color(hsl);
+}
+
 export function isColorDark(color: Color): boolean {
   // Weighted RGB luminance calculation:
   const { r, g, b } = color.toRGB();
