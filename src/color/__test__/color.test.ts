@@ -161,6 +161,27 @@ describe('Color.getAlpha', () => {
   });
 });
 
+describe('Color.setAlpha', () => {
+  it('updates the alpha channel', () => {
+    const color = new Color(BASE_RGB);
+    color.setAlpha(0.5);
+    expect(color.getAlpha()).toBe(0.5);
+    expect(color.toHex8()).toBe(HEX8_SEMI_TRANSPARENT);
+  });
+
+  it('throws when alpha is out of range', () => {
+    const color = new Color(BASE_RGB);
+    expect(() => color.setAlpha(1.5)).toThrow();
+    expect(() => color.setAlpha(-0.1)).toThrow();
+  });
+
+  it('is chainable', () => {
+    const color = new Color(BASE_RGB);
+    const result = color.setAlpha(0.25);
+    expect(result).toBe(color);
+  });
+});
+
 describe('Color.getName', () => {
   it('returns the base color name and lightness modifier', () => {
     const red = new Color(BASE_HEX);
