@@ -24,6 +24,7 @@ import {
   ColorRGB,
   ColorRGBA,
 } from './formats';
+import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
 import { getRandomColorRGBA, isColorDark } from './utils';
 
 export class Color {
@@ -83,5 +84,17 @@ export class Color {
 
   isDark(): boolean {
     return isColorDark(this);
+  }
+
+  getName(): ColorNameAndLightness {
+    return getBaseColorName(this);
+  }
+
+  getNameAsString(): string {
+    const { name, lightness } = this.getName();
+    if (lightness === ColorLightnessModifier.NORMAL) {
+      return name;
+    }
+    return `${lightness} ${name}`.toLowerCase();
   }
 }

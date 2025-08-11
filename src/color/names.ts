@@ -19,6 +19,11 @@ export enum ColorLightnessModifier {
   DARK = 'Dark',
 }
 
+export interface ColorNameAndLightness {
+  name: BaseColorName;
+  lightness: ColorLightnessModifier;
+}
+
 function getColorNameByHue(hue: number): BaseColorName {
   if (hue < 15 || hue >= 345) {
     return BaseColorName.RED;
@@ -52,10 +57,7 @@ function getLightnessModifier(l: number): ColorLightnessModifier {
   return ColorLightnessModifier.NORMAL;
 }
 
-export function getBaseColorName(color: Color): {
-  name: BaseColorName;
-  lightness: ColorLightnessModifier;
-} {
+export function getBaseColorName(color: Color): ColorNameAndLightness {
   const { h, s, l } = color.toHSL();
 
   if (s <= 10) {
