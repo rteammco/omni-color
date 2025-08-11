@@ -82,6 +82,14 @@ export class Color {
     return this.color.a;
   }
 
+  setAlpha(alpha: number): Color {
+    if (typeof alpha !== 'number' || alpha < 0 || alpha > 1) {
+      throw new Error('[setAlpha] alpha must be a number between 0 and 1');
+    }
+    this.color.a = +alpha.toFixed(3);
+    return this;
+  }
+
   isDark(): boolean {
     return isColorDark(this);
   }
