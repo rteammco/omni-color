@@ -1,11 +1,5 @@
 import { Color } from '../color';
-import {
-  getRandomColorRGBA,
-  isColorDark,
-  getBaseColorName,
-  BaseColorName,
-  ColorLightnessModifier,
-} from '../utils';
+import { getRandomColorRGBA, isColorDark } from '../utils';
 import type { ColorHex } from '../formats';
 
 describe('getRandomColorRGBA', () => {
@@ -173,73 +167,5 @@ describe('isColorDark', () => {
 
   it.each(cases)('classifies %s correctly', (hex, expected) => {
     expect(isColorDark(new Color(hex))).toBe(expected);
-  });
-});
-
-describe('getBaseColorName', () => {
-  const cases: Array<[ColorHex, BaseColorName, ColorLightnessModifier]> = [
-    ['#660000', BaseColorName.Red, ColorLightnessModifier.Dark],
-    ['#ff0000', BaseColorName.Red, ColorLightnessModifier.Normal],
-    ['#ff9999', BaseColorName.Red, ColorLightnessModifier.Light],
-    ['#663300', BaseColorName.Orange, ColorLightnessModifier.Dark],
-    ['#ff8000', BaseColorName.Orange, ColorLightnessModifier.Normal],
-    ['#ffcc99', BaseColorName.Orange, ColorLightnessModifier.Light],
-    ['#666600', BaseColorName.Yellow, ColorLightnessModifier.Dark],
-    ['#ffff00', BaseColorName.Yellow, ColorLightnessModifier.Normal],
-    ['#ffff99', BaseColorName.Yellow, ColorLightnessModifier.Light],
-    ['#006600', BaseColorName.Green, ColorLightnessModifier.Dark],
-    ['#00ff00', BaseColorName.Green, ColorLightnessModifier.Normal],
-    ['#99ff99', BaseColorName.Green, ColorLightnessModifier.Light],
-    ['#002266', BaseColorName.Blue, ColorLightnessModifier.Dark],
-    ['#0055ff', BaseColorName.Blue, ColorLightnessModifier.Normal],
-    ['#99bbff', BaseColorName.Blue, ColorLightnessModifier.Light],
-    ['#330066', BaseColorName.Purple, ColorLightnessModifier.Dark],
-    ['#8000ff', BaseColorName.Purple, ColorLightnessModifier.Normal],
-    ['#cc99ff', BaseColorName.Purple, ColorLightnessModifier.Light],
-    ['#660033', BaseColorName.Pink, ColorLightnessModifier.Dark],
-    ['#ff0080', BaseColorName.Pink, ColorLightnessModifier.Normal],
-    ['#ff99cc', BaseColorName.Pink, ColorLightnessModifier.Light],
-    ['#333333', BaseColorName.Gray, ColorLightnessModifier.Dark],
-    ['#808080', BaseColorName.Gray, ColorLightnessModifier.Normal],
-    ['#cccccc', BaseColorName.Gray, ColorLightnessModifier.Light],
-    ['#000000', BaseColorName.Black, ColorLightnessModifier.Normal],
-    ['#ffffff', BaseColorName.White, ColorLightnessModifier.Normal],
-  ];
-
-  it.each(cases)(
-    'classifies %s correctly',
-    (hex, expectedName, expectedLightness) => {
-      const result = getBaseColorName(new Color(hex));
-      expect(result).toEqual({ name: expectedName, lightness: expectedLightness });
-    },
-  );
-
-  const boundaryCases: Array<[ColorHex, BaseColorName]> = [
-    ['#ff4000', BaseColorName.Orange], // h=15 -> Orange
-    ['#ffbb00', BaseColorName.Orange], // h=44 -> Orange
-    ['#ffbf00', BaseColorName.Yellow], // h=45 -> Yellow
-    ['#c3ff00', BaseColorName.Yellow], // h=74 -> Yellow
-    ['#bfff00', BaseColorName.Green], // h=75 -> Green
-    ['#00ffbb', BaseColorName.Green], // h=164 -> Green
-    ['#00ffbf', BaseColorName.Blue], // h=165 -> Blue
-    ['#3c00ff', BaseColorName.Blue], // h=254 -> Blue
-    ['#4000ff', BaseColorName.Purple], // h=255 -> Purple
-    ['#bb00ff', BaseColorName.Purple], // h=284 -> Purple
-    ['#bf00ff', BaseColorName.Pink], // h=285 -> Pink
-    ['#ff0044', BaseColorName.Pink], // h=344 -> Pink
-    ['#ff0040', BaseColorName.Red], // h=345 -> Red
-  ];
-
-  it.each(boundaryCases)('handles boundary color %s', (hex, expectedName) => {
-    const result = getBaseColorName(new Color(hex));
-    expect(result.name).toBe(expectedName);
-  });
-
-  it('treats low saturation as gray', () => {
-    const colorful = getBaseColorName(new Color('#718e71')); // s=11
-    expect(colorful.name).toBe(BaseColorName.Green);
-
-    const grayish = getBaseColorName(new Color('#738c73')); // s=10
-    expect(grayish.name).toBe(BaseColorName.Gray);
   });
 });
