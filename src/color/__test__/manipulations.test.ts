@@ -2,9 +2,9 @@ import { Color } from '../color';
 import { ColorHex } from '../formats';
 import {
   brightenColor,
+  colorToGrayscale,
   darkenColor,
   desaturateColor,
-  grayscaleColor,
   saturateColor,
   spinColorHue,
 } from '../manipulations';
@@ -123,10 +123,10 @@ describe('desaturateColor', () => {
   });
 });
 
-describe('grayscaleColor', () => {
+describe('colorToGrayscale', () => {
   it('converts to grayscale and does not mutate original', () => {
     const red = new Color('#ff0000');
-    const gray = grayscaleColor(red);
+    const gray = colorToGrayscale(red);
     expect(gray.toHex()).toBe('#808080');
     expect(red.toHex()).toBe('#ff0000');
   });

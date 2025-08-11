@@ -30,7 +30,7 @@ export function desaturateColor(color: Color, percentage = 10): Color {
   return saturateColor(color, -percentage);
 }
 
-export function grayscaleColor(color: Color): Color {
+export function colorToGrayscale(color: Color): Color {
   const hsla = color.toHSLA();
   hsla.s = 0;
   return new Color(hsla);
