@@ -1,6 +1,13 @@
 import { Color } from '../color';
 import { ColorHex } from '../formats';
-import { brightenColor, darkenColor, spinColorHue } from '../manipulations';
+import {
+  brightenColor,
+  darkenColor,
+  desaturateColor,
+  grayscaleColor,
+  saturateColor,
+  spinColorHue,
+} from '../manipulations';
 
 describe('spinColorHue', () => {
   const rotationCases: Array<[ColorHex, number, ColorHex]> = [
@@ -76,5 +83,51 @@ describe('darkenColor', () => {
 
   it('clamps at black', () => {
     expect(darkenColor(new Color('#000000'), 10).toHex()).toBe('#000000');
+  });
+});
+
+describe('saturateColor', () => {
+  it('adjusts saturation by percentage and does not mutate original', () => {
+    const base = new Color('#6699cc');
+    const saturated = saturateColor(base, 20);
+    const desaturated = saturateColor(base, -20);
+
+    expect(saturated.toHex()).toBe('#5299e0');
+    expect(desaturated.toHex()).toBe('#7a99b8');
+    expect(base.toHex()).toBe('#6699cc');
+  });
+
+  it('clamps at saturation bounds (fully saturated or grayscale)', () => {
+    expect(saturateColor(new Color('#f90606'), 10).toHex()).toBe('#ff0000');
+    expect(saturateColor(new Color('#867979'), -10).toHex()).toBe('#808080');
+  });
+
+  it('uses the default 10% adjustment', () => {
+    expect(saturateColor(new Color('#4080bf')).toHex()).toBe('#3380cc');
+  });
+});
+
+describe('desaturateColor', () => {
+  it('is the inverse of saturateColor', () => {
+    const base = new Color('#6699cc');
+    const fromDesaturate = desaturateColor(base, 20);
+    const fromSaturate = saturateColor(base, -20);
+
+    expect(fromDesaturate.toHex()).toBe('#7a99b8');
+    expect(fromDesaturate.toHex()).toBe(fromSaturate.toHex());
+    expect(base.toHex()).toBe('#6699cc');
+  });
+
+  it('clamps at zero', () => {
+    expect(desaturateColor(new Color('#867979'), 10).toHex()).toBe('#808080');
+  });
+});
+
+describe('grayscaleColor', () => {
+  it('converts to grayscale and does not mutate original', () => {
+    const red = new Color('#ff0000');
+    const gray = grayscaleColor(red);
+    expect(gray.toHex()).toBe('#808080');
+    expect(red.toHex()).toBe('#ff0000');
   });
 });
