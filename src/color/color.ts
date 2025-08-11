@@ -9,7 +9,6 @@ import {
   toLCH,
   toOKLCH,
   toRGB,
-  toRGBA,
 } from './conversions';
 import {
   ColorCMYK,
@@ -25,13 +24,13 @@ import {
   ColorRGBA,
 } from './formats';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
-import { getRandomColorRGBA, isColorDark } from './utils';
+import { getColorRGBAFromInput, isColorDark } from './utils';
 
 export class Color {
   private color: ColorRGBA;
 
-  constructor(color?: ColorFormat) {
-    this.color = color ? toRGBA(color) : getRandomColorRGBA();
+  constructor(color?: ColorFormat | string) {
+    this.color = getColorRGBAFromInput(color);
   }
 
   toRGB(): ColorRGB {

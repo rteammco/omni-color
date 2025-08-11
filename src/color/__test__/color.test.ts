@@ -1,4 +1,5 @@
 import { Color } from '../color';
+import { CSS_COLOR_NAME_TO_RGBA_MAP } from '../color.constants';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import type {
   ColorHex,
@@ -199,5 +200,18 @@ describe('Color.clone', () => {
     const cloned = color.clone();
     expect(cloned).toEqual(color);
     expect(cloned).not.toBe(color);
+  });
+});
+
+describe('Named color support', () => {
+  it('initializes from all named colors (case insensitive)', () => {
+    for (const [name, rgba] of Object.entries(CSS_COLOR_NAME_TO_RGBA_MAP)) {
+      expect(new Color(name).toRGBA()).toEqual(rgba);
+      expect(new Color(name.toUpperCase()).toRGBA()).toEqual(rgba);
+    }
+  });
+
+  it('throws on unknown color names', () => {
+    expect(() => new Color('notacolor')).toThrow();
   });
 });

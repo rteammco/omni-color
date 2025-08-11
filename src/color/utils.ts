@@ -1,5 +1,7 @@
 import { Color } from './color';
-import { ColorRGBA } from './formats';
+import { CSS_COLOR_NAME_TO_RGBA_MAP } from './color.constants';
+import { toRGBA } from './conversions';
+import type { ColorFormat, ColorHex, ColorRGBA } from './formats';
 
 export function getRandomColorRGBA(): ColorRGBA {
   return {
@@ -8,6 +10,20 @@ export function getRandomColorRGBA(): ColorRGBA {
     b: Math.floor(Math.random() * 256),
     a: 1,
   };
+}
+
+export function getColorRGBAFromInput(color?: ColorFormat | string): ColorRGBA {
+  if (typeof color === 'string') {
+    if (color.startsWith('#')) {
+      return toRGBA(color as ColorHex);
+    }
+    const named = CSS_COLOR_NAME_TO_RGBA_MAP[color.toLowerCase()];
+    if (!named) {
+      throw new Error(`[Color] unknown color name: "${color}"`);
+    }
+    return named;
+  }
+  return color ? toRGBA(color) : getRandomColorRGBA();
 }
 
 export function isColorDark(color: Color): boolean {
