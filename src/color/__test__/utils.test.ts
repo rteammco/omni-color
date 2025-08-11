@@ -1,5 +1,5 @@
 import { Color } from '../color';
-import { getRandomColorRGBA, isColorDark } from '../utils';
+import { getRandomColorRGBA, isColorDark, spinColorHue } from '../utils';
 import type { ColorHex } from '../formats';
 
 describe('getRandomColorRGBA', () => {
@@ -25,6 +25,40 @@ describe('getRandomColorRGBA', () => {
     expect(color).toEqual({ r: 0, g: 128, b: 255, a: 1 });
 
     spy.mockRestore();
+  });
+});
+
+describe('spinColorHue', () => {
+  const rotationCases: Array<[ColorHex, number, number]> = [
+    ['#ff0000', 0, 0],
+    ['#ff0000', 30, 30],
+    ['#ff0000', 30.5, 30],
+    ['#ff0000', 360, 0],
+    ['#ff0000', 400, 40],
+    ['#ff0000', 720, 0],
+    ['#00ff00', 120, 240],
+    ['#00ff00', 240, 0],
+    ['#0000ff', 240, 120],
+    ['#ffff00', 450, 150],
+  ];
+
+  it.each(rotationCases)('spins %s by %d° to hue %d', (hex, deg, expected) => {
+    const color = new Color(hex);
+    const spun = spinColorHue(color, deg);
+    expect(spun.toHSL().h).toBe(expected);
+    expect(spun).not.toBe(color);
+  });
+
+  it('throws on negative rotation', () => {
+    const red = new Color('#ff0000');
+    expect(() => spinColorHue(red, -30)).toThrow();
+  });
+
+  it('does not mutate the original color', () => {
+    const red = new Color('#ff0000');
+    const spun = spinColorHue(red, 120);
+    expect(spun.toHex()).toBe('#00ff00');
+    expect(red.toHex()).toBe('#ff0000');
   });
 });
 
