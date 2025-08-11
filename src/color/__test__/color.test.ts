@@ -208,54 +208,6 @@ describe('Color.spin', () => {
   });
 });
 
-describe('Color.isDark sanity check', () => {
-  it('identifies dark and light colors', () => {
-    expect(new Color('#000000').isDark()).toBe(true);
-    expect(new Color('#ffffff').isDark()).toBe(false);
-  });
-});
-
-describe('Color.getName', () => {
-  it('returns the base color name and lightness modifier', () => {
-    const red = new Color(BASE_HEX);
-    expect(red.getName()).toEqual({
-      name: BaseColorName.RED,
-      lightness: ColorLightnessModifier.NORMAL,
-    });
-
-    const lightGray: ColorHSL = { h: 0, s: 0, l: 80 };
-    const gray = new Color(lightGray);
-    expect(gray.getName()).toEqual({
-      name: BaseColorName.GRAY,
-      lightness: ColorLightnessModifier.LIGHT,
-    });
-  });
-});
-
-describe('Color.getNameAsString', () => {
-  it('formats the color name as a string', () => {
-    const red = new Color(BASE_HEX);
-    expect(red.getNameAsString()).toBe('red');
-
-    const darkGreen: ColorHSL = { h: 120, s: 100, l: 20 };
-    const green = new Color(darkGreen);
-    expect(green.getNameAsString()).toBe('dark green');
-
-    const lightGray: ColorHSL = { h: 0, s: 0, l: 80 };
-    const gray = new Color(lightGray);
-    expect(gray.getNameAsString()).toBe('light gray');
-  });
-});
-
-describe('Color.clone', () => {
-  it('creates a copy of the color instance', () => {
-    const color = new Color(BASE_HEX);
-    const cloned = color.clone();
-    expect(cloned).toEqual(color);
-    expect(cloned).not.toBe(color);
-  });
-});
-
 describe('Color.brighten', () => {
   it('lightens the color without mutating the original', () => {
     const base = new Color('#808080');
@@ -375,5 +327,53 @@ describe('Color.getMonochromaticHarmonyColors', () => {
     expect(mono3.toHex()).toBe('#990000');
     expect(mono4.toHex()).toBe('#ff0000');
     expect(mono5.toHex()).toBe('#e61919');
+  });
+});
+
+describe('Color.isDark sanity check', () => {
+  it('identifies dark and light colors', () => {
+    expect(new Color('#000000').isDark()).toBe(true);
+    expect(new Color('#ffffff').isDark()).toBe(false);
+  });
+});
+
+describe('Color.getName', () => {
+  it('returns the base color name and lightness modifier', () => {
+    const red = new Color(BASE_HEX);
+    expect(red.getName()).toEqual({
+      name: BaseColorName.RED,
+      lightness: ColorLightnessModifier.NORMAL,
+    });
+
+    const lightGray: ColorHSL = { h: 0, s: 0, l: 80 };
+    const gray = new Color(lightGray);
+    expect(gray.getName()).toEqual({
+      name: BaseColorName.GRAY,
+      lightness: ColorLightnessModifier.LIGHT,
+    });
+  });
+});
+
+describe('Color.getNameAsString', () => {
+  it('formats the color name as a string', () => {
+    const red = new Color(BASE_HEX);
+    expect(red.getNameAsString()).toBe('red');
+
+    const darkGreen: ColorHSL = { h: 120, s: 100, l: 20 };
+    const green = new Color(darkGreen);
+    expect(green.getNameAsString()).toBe('dark green');
+
+    const lightGray: ColorHSL = { h: 0, s: 0, l: 80 };
+    const gray = new Color(lightGray);
+    expect(gray.getNameAsString()).toBe('light gray');
+  });
+});
+
+describe('Color.clone', () => {
+  it('creates a copy of the color instance', () => {
+    const color = new Color(BASE_HEX);
+    const cloned = color.clone();
+    expect(cloned).toEqual(color);
+    expect(cloned).not.toBe(color);
   });
 });
