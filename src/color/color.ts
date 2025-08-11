@@ -23,8 +23,16 @@ import {
   ColorRGB,
   ColorRGBA,
 } from './formats';
-import { getComplementaryColors } from './harmonies';
-import { spinColorHue } from './manipulations';
+import {
+  getAnalogousHarmonyColors,
+  getComplementaryColors,
+  getMonochromaticHarmonyColors,
+  getSplitComplementaryColors,
+  getSquareHarmonyColors,
+  getTetradicHarmonyColors,
+  getTriadicHarmonyColors,
+} from './harmonies';
+import { brightenColor, darkenColor, spinColorHue } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
@@ -95,8 +103,40 @@ export class Color {
     return spinColorHue(this, degrees);
   }
 
+  brighten(percentage?: number): Color {
+    return brightenColor(this, percentage);
+  }
+
+  darken(percentage?: number): Color {
+    return darkenColor(this, percentage);
+  }
+
   getComplementaryColors(): [Color, Color] {
     return getComplementaryColors(this);
+  }
+
+  getSplitComplementaryColors(): [Color, Color, Color] {
+    return getSplitComplementaryColors(this);
+  }
+
+  getTriadicHarmonyColors(): [Color, Color, Color] {
+    return getTriadicHarmonyColors(this);
+  }
+
+  getSquareHarmonyColors(): [Color, Color, Color, Color] {
+    return getSquareHarmonyColors(this);
+  }
+
+  getTetradicHarmonyColors(): [Color, Color, Color, Color] {
+    return getTetradicHarmonyColors(this);
+  }
+
+  getAnalogousHarmonyColors(): [Color, Color, Color, Color, Color] {
+    return getAnalogousHarmonyColors(this);
+  }
+
+  getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color] {
+    return getMonochromaticHarmonyColors(this);
   }
 
   isDark(): boolean {
