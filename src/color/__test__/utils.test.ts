@@ -29,23 +29,34 @@ describe('getRandomColorRGBA', () => {
 });
 
 describe('spinColorHue', () => {
-  const rotationCases: Array<[ColorHex, number, number]> = [
-    ['#ff0000', 0, 0],
-    ['#ff0000', 30, 30],
-    ['#ff0000', 30.5, 30],
-    ['#ff0000', 360, 0],
-    ['#ff0000', 400, 40],
-    ['#ff0000', 720, 0],
-    ['#00ff00', 120, 240],
-    ['#00ff00', 240, 0],
-    ['#0000ff', 240, 120],
-    ['#ffff00', 450, 150],
+  const rotationCases: Array<[ColorHex, number, ColorHex]> = [
+    ['#ff0000', 0, '#ff0000'],
+    ['#ff0000', 30, '#ff8000'],
+    ['#ff0000', -30, '#ff0080'],
+    ['#ff0000', 30.5, '#ff8000'],
+    ['#ff0000', 12.34, '#ff3300'],
+    ['#ff0000', -30.7, '#ff0084'],
+    ['#ff0000', 360, '#ff0000'],
+    ['#ff0000', 360.9, '#ff0000'],
+    ['#ff0000', 400, '#ffaa00'],
+    ['#ff0000', -390, '#ff0080'],
+    ['#ff0000', 480, '#00ff00'],
+    ['#ff0000', 720, '#ff0000'],
+    ['#ff0000', 750, '#ff8000'],
+    ['#ff0000', -420, '#ff00ff'],
+    ['#00ff00', 120, '#0000ff'],
+    ['#00ff00', -240, '#0000ff'],
+    ['#00ff00', 240, '#ff0000'],
+    ['#0000ff', 240, '#00ff00'],
+    ['#ffff00', 450, '#00ff80'],
+    ['#00ffff', 60, '#0000ff'],
+    ['#ff00ff', 120, '#ffff00'],
   ];
 
-  it.each(rotationCases)('spins %s by %d° to hue %d', (hex, deg, expected) => {
+  it.each(rotationCases)('spins %s by %d° to %s', (hex, deg, expected) => {
     const color = new Color(hex);
     const spun = spinColorHue(color, deg);
-    expect(spun.toHSL().h).toBe(expected);
+    expect(spun.toHex()).toBe(expected);
     expect(spun).not.toBe(color);
   });
 
