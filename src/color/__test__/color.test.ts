@@ -192,3 +192,12 @@ describe('Color.getNameAsString', () => {
     expect(gray.getNameAsString()).toBe('light gray');
   });
 });
+
+describe('Color.clone', () => {
+  it('creates a copy of the color instance', () => {
+    const color = new Color(BASE_HEX);
+    const cloned = color.clone();
+    expect(cloned).toEqual(color);
+    expect(cloned).not.toBe(color);
+  });
+});

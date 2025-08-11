@@ -97,4 +97,8 @@ export class Color {
     }
     return `${lightness} ${name}`.toLowerCase();
   }
+
+  clone(): Color {
+    return new Color(this.color);
+  }
 }
