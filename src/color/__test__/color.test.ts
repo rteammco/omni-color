@@ -1,4 +1,5 @@
 import { Color } from '../color';
+import { CSS_COLOR_NAME_TO_HEX_MAP } from '../color.constants';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import type {
   ColorHex,
@@ -124,10 +125,19 @@ describe('Color constructor and conversion tests', () => {
   });
 });
 
-describe('Color.isDark sanity check', () => {
-  it('identifies dark and light colors', () => {
-    expect(new Color('#000000').isDark()).toBe(true);
-    expect(new Color('#ffffff').isDark()).toBe(false);
+describe('Named color support', () => {
+  it('initializes from all named colors (case insensitive)', () => {
+    for (const [name, hex] of Object.entries(CSS_COLOR_NAME_TO_HEX_MAP)) {
+      expect(new Color(name).toHex()).toEqual(hex);
+      expect(new Color(name.toUpperCase()).toHex()).toEqual(hex);
+    }
+
+    expect(new Color('Red').toRGBA()).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+    expect(new Color('blACK').toRGB()).toEqual({ r: 0, g: 0, b: 0 });
+  });
+
+  it('throws on unknown color names', () => {
+    expect(() => new Color('notacolor')).toThrow();
   });
 });
 
@@ -182,6 +192,29 @@ describe('Color.setAlpha', () => {
   });
 });
 
+describe('Color.spin', () => {
+  it('returns a new color with the hue rotated', () => {
+    const red = new Color('#ff0000');
+
+    const spunForward = red.spin(180);
+    expect(spunForward).not.toBe(red);
+    expect(spunForward.toHex()).toBe('#00ffff');
+    expect(red.toHex()).toBe('#ff0000');
+
+    const spunBackward = red.spin(-180);
+    expect(spunBackward).not.toBe(red);
+    expect(spunBackward.toHex()).toBe('#00ffff');
+    expect(red.toHex()).toBe('#ff0000');
+  });
+});
+
+describe('Color.isDark sanity check', () => {
+  it('identifies dark and light colors', () => {
+    expect(new Color('#000000').isDark()).toBe(true);
+    expect(new Color('#ffffff').isDark()).toBe(false);
+  });
+});
+
 describe('Color.getName', () => {
   it('returns the base color name and lightness modifier', () => {
     const red = new Color(BASE_HEX);
@@ -220,21 +253,5 @@ describe('Color.clone', () => {
     const cloned = color.clone();
     expect(cloned).toEqual(color);
     expect(cloned).not.toBe(color);
-  });
-});
-
-describe('Color.spin', () => {
-  it('returns a new color with the hue rotated', () => {
-    const red = new Color('#ff0000');
-
-    const spunForward = red.spin(180);
-    expect(spunForward).not.toBe(red);
-    expect(spunForward.toHex()).toBe('#00ffff');
-    expect(red.toHex()).toBe('#ff0000');
-
-    const spunBackward = red.spin(-180);
-    expect(spunBackward).not.toBe(red);
-    expect(spunBackward.toHex()).toBe('#00ffff');
-    expect(red.toHex()).toBe('#ff0000');
   });
 });
