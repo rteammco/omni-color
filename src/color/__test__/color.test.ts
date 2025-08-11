@@ -1,4 +1,5 @@
 import { Color } from '../color';
+import { BaseColorName, ColorLightnessModifier } from '../names';
 import type {
   ColorHex,
   ColorRGB,
@@ -157,5 +158,37 @@ describe('Color.getAlpha', () => {
   it('accepts fully transparent rgba values', () => {
     const color = new Color({ r: 10, g: 20, b: 30, a: 0 });
     expect(color.getAlpha()).toBe(0);
+  });
+});
+
+describe('Color.getName', () => {
+  it('returns the base color name and lightness modifier', () => {
+    const red = new Color(BASE_HEX);
+    expect(red.getName()).toEqual({
+      name: BaseColorName.RED,
+      lightness: ColorLightnessModifier.NORMAL,
+    });
+
+    const lightGray: ColorHSL = { h: 0, s: 0, l: 80 };
+    const gray = new Color(lightGray);
+    expect(gray.getName()).toEqual({
+      name: BaseColorName.GRAY,
+      lightness: ColorLightnessModifier.LIGHT,
+    });
+  });
+});
+
+describe('Color.getNameAsString', () => {
+  it('formats the color name as a string', () => {
+    const red = new Color(BASE_HEX);
+    expect(red.getNameAsString()).toBe('red');
+
+    const darkGreen: ColorHSL = { h: 120, s: 100, l: 20 };
+    const green = new Color(darkGreen);
+    expect(green.getNameAsString()).toBe('dark green');
+
+    const lightGray: ColorHSL = { h: 0, s: 0, l: 80 };
+    const gray = new Color(lightGray);
+    expect(gray.getNameAsString()).toBe('light gray');
   });
 });
