@@ -49,11 +49,6 @@ describe('spinColorHue', () => {
     expect(spun).not.toBe(color);
   });
 
-  it('throws on negative rotation', () => {
-    const red = new Color('#ff0000');
-    expect(() => spinColorHue(red, -30)).toThrow();
-  });
-
   it('does not mutate the original color', () => {
     const red = new Color('#ff0000');
     const spun = spinColorHue(red, 120);

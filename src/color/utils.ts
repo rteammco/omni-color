@@ -12,7 +12,11 @@ export function getRandomColorRGBA(): ColorRGBA {
 
 export function spinColorHue(color: Color, degrees: number): Color {
   const hsl = color.toHSL();
-  hsl.h = Math.floor((hsl.h + degrees) % 360);
+  let rotatedHue = Math.floor((hsl.h + degrees) % 360);
+  if (rotatedHue < 0) {
+    rotatedHue += 360; // ensure hue is always positive
+  }
+  hsl.h = rotatedHue;
   return new Color(hsl);
 }
 

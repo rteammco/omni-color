@@ -226,14 +226,15 @@ describe('Color.clone', () => {
 describe('Color.spin', () => {
   it('returns a new color with the hue rotated', () => {
     const red = new Color('#ff0000');
-    const spun = red.spin(180);
-    expect(spun).not.toBe(red);
-    expect(spun.toHex()).toBe('#00ffff');
-    expect(red.toHex()).toBe('#ff0000');
-  });
 
-  it('throws on negative rotation values', () => {
-    const red = new Color('#ff0000');
-    expect(() => red.spin(-30)).toThrow();
+    const spunForward = red.spin(180);
+    expect(spunForward).not.toBe(red);
+    expect(spunForward.toHex()).toBe('#00ffff');
+    expect(red.toHex()).toBe('#ff0000');
+
+    const spunBackward = red.spin(-180);
+    expect(spunBackward).not.toBe(red);
+    expect(spunBackward.toHex()).toBe('#00ffff');
+    expect(red.toHex()).toBe('#ff0000');
   });
 });
