@@ -1,3 +1,4 @@
+import { getConstrainedValue } from '../utils';
 import { Color } from './color';
 
 export function spinColorHue(color: Color, degrees: number): Color {
@@ -12,7 +13,7 @@ export function spinColorHue(color: Color, degrees: number): Color {
 
 export function brightenColor(color: Color, percentage = 10): Color {
   const hsla = color.toHSLA();
-  hsla.l = Math.min(100, Math.max(0, hsla.l + percentage));
+  hsla.l = getConstrainedValue(hsla.l + percentage, 0, 100);
   return new Color(hsla);
 }
 
@@ -22,7 +23,7 @@ export function darkenColor(color: Color, percentage = 10): Color {
 
 export function saturateColor(color: Color, percentage = 10): Color {
   const hsla = color.toHSLA();
-  hsla.s = Math.min(100, Math.max(0, hsla.s + percentage));
+  hsla.s = getConstrainedValue(hsla.s + percentage, 0, 100);
   return new Color(hsla);
 }
 
