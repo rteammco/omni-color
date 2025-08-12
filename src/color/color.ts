@@ -41,6 +41,7 @@ import {
   spinColorHue,
 } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
+import { getPaletteColorVariations, PaletteColorVariations } from './palette';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
 export class Color {
@@ -156,6 +157,10 @@ export class Color {
 
   getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color] {
     return getMonochromaticHarmonyColors(this);
+  }
+
+  getPaletteColorVariations(): PaletteColorVariations {
+    return getPaletteColorVariations(this);
   }
 
   isDark(): boolean {
