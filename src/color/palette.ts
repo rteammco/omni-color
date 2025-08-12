@@ -15,46 +15,48 @@ export interface PaletteColorVariations {
 
 export function getPaletteColorVariations(baseColor: Color): PaletteColorVariations {
   const { h: baseH, s: baseS, l: baseL } = baseColor.toHSL();
+  const getAdjustedS = (delta: number): number =>
+    baseS === 0 ? 0 : getConstrainedValue(baseS + delta, 0, 100);
   return {
     100: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS + 20, 0, 100),
+      s: getAdjustedS(20),
       l: getConstrainedValue(baseL + 40, 0, 100),
     }),
     200: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS + 15, 0, 100),
+      s: getAdjustedS(15),
       l: getConstrainedValue(baseL + 30, 0, 100),
     }),
     300: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS + 10, 0, 100),
+      s: getAdjustedS(10),
       l: getConstrainedValue(baseL + 20, 0, 100),
     }),
     400: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS + 5, 0, 100),
+      s: getAdjustedS(5),
       l: getConstrainedValue(baseL + 10, 0, 100),
     }),
     500: baseColor.clone(),
     600: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS - 5, 0, 100),
+      s: getAdjustedS(-5),
       l: getConstrainedValue(baseL - 10, 0, 100),
     }),
     700: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS - 10, 0, 100),
+      s: getAdjustedS(-10),
       l: getConstrainedValue(baseL - 20, 0, 100),
     }),
     800: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS - 15, 0, 100),
+      s: getAdjustedS(-15),
       l: getConstrainedValue(baseL - 30, 0, 100),
     }),
     900: new Color({
       h: baseH,
-      s: getConstrainedValue(baseS - 20, 0, 100),
+      s: getAdjustedS(-20),
       l: getConstrainedValue(baseL - 40, 0, 100),
     }),
   };
