@@ -330,6 +330,22 @@ describe('Color.getMonochromaticHarmonyColors', () => {
   });
 });
 
+describe('Color.getColorSwatch', () => {
+  it('returns the correct swatch for a color', () => {
+    const baseColor = new Color('#625aa5');
+    const swatch = baseColor.getColorSwatch();
+    expect(swatch[100].toHex()).toBe('#dcd9f2');
+    expect(swatch[200].toHex()).toBe('#bab6e2');
+    expect(swatch[300].toHex()).toBe('#9b95d0');
+    expect(swatch[400].toHex()).toBe('#7d76bc');
+    expect(swatch[500].toHex()).toBe('#625aa5');
+    expect(swatch[600].toHex()).toBe('#524e7e');
+    expect(swatch[700].toHex()).toBe('#413e5b');
+    expect(swatch[800].toHex()).toBe('#2d2c3a');
+    expect(swatch[900].toHex()).toBe('#18171c');
+  });
+});
+
 describe('Color.isDark sanity check', () => {
   it('identifies dark and light colors', () => {
     expect(new Color('#000000').isDark()).toBe(true);
