@@ -41,7 +41,7 @@ import {
   spinColorHue,
 } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
-import { ColorSwatch, getColorSwatch } from './palette';
+import { ColorSwatch, getColorSwatch } from './swatch';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
 export class Color {

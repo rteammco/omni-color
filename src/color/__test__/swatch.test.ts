@@ -1,5 +1,5 @@
 import { Color } from '../color';
-import { getColorSwatch } from '../palette';
+import { getColorSwatch } from '../swatch';
 
 describe('getPaletteColorVariations', () => {
   describe('black', () => {
