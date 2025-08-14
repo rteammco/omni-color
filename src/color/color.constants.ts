@@ -1,5 +1,8 @@
 import type { ColorHex } from './formats';
 
+export const BLACK_HEX = '#000000';
+export const WHITE_HEX = '#ffffff';
+
 export const CSS_COLOR_NAME_TO_HEX_MAP: Record<string, ColorHex> = {
   aliceblue: '#f0f8ff',
   antiquewhite: '#faebd7',
@@ -8,7 +11,7 @@ export const CSS_COLOR_NAME_TO_HEX_MAP: Record<string, ColorHex> = {
   azure: '#f0ffff',
   beige: '#f5f5dc',
   bisque: '#ffe4c4',
-  black: '#000000',
+  black: BLACK_HEX,
   blanchedalmond: '#ffebcd',
   blue: '#0000ff',
   blueviolet: '#8a2be2',
@@ -145,7 +148,7 @@ export const CSS_COLOR_NAME_TO_HEX_MAP: Record<string, ColorHex> = {
   turquoise: '#40e0d0',
   violet: '#ee82ee',
   wheat: '#f5deb3',
-  white: '#ffffff',
+  white: WHITE_HEX,
   whitesmoke: '#f5f5f5',
   yellow: '#ffff00',
   yellowgreen: '#9acd32',

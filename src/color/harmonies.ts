@@ -3,6 +3,16 @@ import { Color } from './color';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 
+export enum ColorHarmony {
+  COMPLEMENTARY = 'Complementary',
+  SPLIT_COMPLEMENTARY = 'Split Complementary',
+  TRIADIC = 'Triadic',
+  SQUARE = 'Square',
+  TETRADIC = 'Tetradic',
+  ANALOGOUS = 'Analogous',
+  MONOCHROMATIC = 'Monochromatic',
+}
+
 export function getComplementaryColors(color: Color): [Color, Color] {
   return [color.clone(), color.spin(180)];
 }
@@ -38,4 +48,25 @@ export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Colo
   const saturated = new Color({ ...hsl, s: getConstrainedValue(hsl.s + 20, 0, 100) });
   const desaturated = new Color({ ...hsl, s: getConstrainedValue(hsl.s - 20, 0, 100) });
   return [color.clone(), lighter, darker, saturated, desaturated];
+}
+
+export function getHarmonyColors(color: Color, harmony: ColorHarmony): Color[] {
+  switch (harmony) {
+    case ColorHarmony.COMPLEMENTARY:
+      return getComplementaryColors(color);
+    case ColorHarmony.SPLIT_COMPLEMENTARY:
+      return getSplitComplementaryColors(color);
+    case ColorHarmony.TRIADIC:
+      return getTriadicHarmonyColors(color);
+    case ColorHarmony.SQUARE:
+      return getSquareHarmonyColors(color);
+    case ColorHarmony.TETRADIC:
+      return getTetradicHarmonyColors(color);
+    case ColorHarmony.ANALOGOUS:
+      return getAnalogousHarmonyColors(color);
+    case ColorHarmony.MONOCHROMATIC:
+      return getMonochromaticHarmonyColors(color);
+    default:
+      throw new Error(`[getHarmonyColors] unknown color harmony: ${harmony}`);
+  }
 }

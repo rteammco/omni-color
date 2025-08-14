@@ -24,8 +24,10 @@ import {
   ColorRGBA,
 } from './formats';
 import {
+  ColorHarmony,
   getAnalogousHarmonyColors,
   getComplementaryColors,
+  getHarmonyColors,
   getMonochromaticHarmonyColors,
   getSplitComplementaryColors,
   getSquareHarmonyColors,
@@ -157,6 +159,10 @@ export class Color {
 
   getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color] {
     return getMonochromaticHarmonyColors(this);
+  }
+
+  getHarmonyColors(harmony: ColorHarmony): Color[] {
+    return getHarmonyColors(this, harmony);
   }
 
   getColorSwatch(): ColorSwatch {
