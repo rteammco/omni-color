@@ -49,7 +49,7 @@ import { getColorRGBAFromInput, isColorDark } from './utils';
 export class Color {
   private color: ColorRGBA;
 
-  constructor(color?: ColorFormat | string) {
+  constructor(color?: ColorFormat | Color | string) {
     this.color = getColorRGBAFromInput(color);
   }
 

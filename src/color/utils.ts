@@ -12,7 +12,10 @@ export function getRandomColorRGBA(): ColorRGBA {
   };
 }
 
-export function getColorRGBAFromInput(color?: ColorFormat | string): ColorRGBA {
+export function getColorRGBAFromInput(color?: ColorFormat | Color | string): ColorRGBA {
+  if (color instanceof Color) {
+    return color.toRGBA();
+  }
   if (typeof color === 'string') {
     if (color.startsWith('#')) {
       return toRGBA(color as ColorHex);

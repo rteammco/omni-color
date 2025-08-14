@@ -123,6 +123,13 @@ describe('Color constructor and conversion tests', () => {
     const color = new Color(BASE_OKLCH);
     checkAllConversions(color, 1, HEX8_OPAQUE);
   });
+
+  it('correctly initializes from another color instance', () => {
+    const color1 = new Color('#7c74f0');
+    const color2 = new Color(color1);
+    expect(color2.toRGB()).toEqual(color1.toRGB());
+    expect(color1).not.toBe(color2);
+  });
 });
 
 describe('Named color support', () => {
