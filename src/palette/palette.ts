@@ -1,8 +1,8 @@
+import { Color } from '../color/color';
+import { BLACK_HEX, WHITE_HEX } from '../color/color.constants';
+import { ColorHarmony } from '../color/harmonies';
+import { ColorSwatch } from '../color/swatch';
 import { clampValue } from '../utils';
-import { Color } from './color';
-import { BLACK_HEX, WHITE_HEX } from './color.constants';
-import { ColorHarmony } from './harmonies';
-import { ColorSwatch } from './swatch';
 
 enum SemanticColor {
   INFO = 'info',
