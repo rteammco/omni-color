@@ -44,13 +44,17 @@ import {
 } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
 import { ColorSwatch, getColorSwatch } from './swatch';
-import { getColorRGBAFromInput, isColorDark } from './utils';
+import { getColorRGBAFromInput, getRandomColorRGBA, isColorDark } from './utils';
 
 export class Color {
   private color: ColorRGBA;
 
   constructor(color?: ColorFormat | Color | string) {
     this.color = getColorRGBAFromInput(color);
+  }
+
+  static random(): Color {
+    return new Color(getRandomColorRGBA());
   }
 
   toRGB(): ColorRGB {
