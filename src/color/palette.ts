@@ -1,4 +1,4 @@
-import { getConstrainedValue } from '../utils';
+import { clampValue } from '../utils';
 import { Color } from './color';
 import { BLACK_HEX, WHITE_HEX } from './color.constants';
 import { ColorHarmony } from './harmonies';
@@ -88,7 +88,7 @@ function harmonizeSemanticColor(
   options: SemanticColorHarmonizationOptions
 ): Color {
   // Constrain hue pull option to its valid range:
-  const huePullOption = getConstrainedValue(options.huePull, 0, 1);
+  const huePullOption = clampValue(options.huePull, 0, 1);
 
   // Constrain chroma options to their valid ranges:
   const [inputMinChroma, inputMaxChroma] = options.chromaRange;
@@ -105,7 +105,7 @@ function harmonizeSemanticColor(
       : interpolateHueShortestPath(defaultSemanticH, baseH, huePullOption); // TODO: just use the base brand hue for neutrals
 
   const { chromaFactor, minAllowableChroma } = SEMANTIC_COLOR_TO_CHROMA_FACTOR_MAP[semanticColor];
-  const resultChroma = getConstrainedValue(
+  const resultChroma = clampValue(
     Math.max(baseC * chromaFactor, minAllowableChroma), // ensure minimum chroma for very low‑chroma base colors (overrides `minChroma` option if necessary)
     Math.max(minChromaOption, minAllowableChroma),
     maxChromaOption

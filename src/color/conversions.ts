@@ -1,4 +1,4 @@
-import { getConstrainedValue } from '../utils';
+import { clampValue } from '../utils';
 import {
   ColorCMYK,
   ColorFormat,
@@ -341,9 +341,9 @@ function lchToRGB(color: ColorLCH): ColorRGB {
   const rLin = x * 3.2406 + y * -1.5372 + z * -0.4986;
   const gLin = x * -0.9689 + y * 1.8758 + z * 0.0415;
   const bLin = x * 0.0557 + y * -0.204 + z * 1.057;
-  const r = getConstrainedValue(unpivotRGB(rLin), 0, 1);
-  const g = getConstrainedValue(unpivotRGB(gLin), 0, 1);
-  const b3 = getConstrainedValue(unpivotRGB(bLin), 0, 1);
+  const r = clampValue(unpivotRGB(rLin), 0, 1);
+  const g = clampValue(unpivotRGB(gLin), 0, 1);
+  const b3 = clampValue(unpivotRGB(bLin), 0, 1);
   return {
     r: Math.round(r * 255),
     g: Math.round(g * 255),
@@ -391,9 +391,9 @@ function oklchToRGB(color: ColorOKLCH): ColorRGB {
   const rLin = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
   const gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
   const bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
-  const r = getConstrainedValue(unpivotRGB(rLin), 0, 1);
-  const g = getConstrainedValue(unpivotRGB(gLin), 0, 1);
-  const b3 = getConstrainedValue(unpivotRGB(bLin), 0, 1);
+  const r = clampValue(unpivotRGB(rLin), 0, 1);
+  const g = clampValue(unpivotRGB(gLin), 0, 1);
+  const b3 = clampValue(unpivotRGB(bLin), 0, 1);
   return {
     r: Math.round(r * 255),
     g: Math.round(g * 255),

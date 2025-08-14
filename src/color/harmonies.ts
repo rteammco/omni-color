@@ -1,4 +1,4 @@
-import { getConstrainedValue } from '../utils';
+import { clampValue } from '../utils';
 import { Color } from './color';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
@@ -43,10 +43,10 @@ export function getAnalogousHarmonyColors(color: Color): [Color, Color, Color, C
 
 export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Color, Color, Color] {
   const hsl = color.toHSL();
-  const lighter = new Color({ ...hsl, l: getConstrainedValue(hsl.l + 20, 0, 100) });
-  const darker = new Color({ ...hsl, l: getConstrainedValue(hsl.l - 20, 0, 100) });
-  const saturated = new Color({ ...hsl, s: getConstrainedValue(hsl.s + 20, 0, 100) });
-  const desaturated = new Color({ ...hsl, s: getConstrainedValue(hsl.s - 20, 0, 100) });
+  const lighter = new Color({ ...hsl, l: clampValue(hsl.l + 20, 0, 100) });
+  const darker = new Color({ ...hsl, l: clampValue(hsl.l - 20, 0, 100) });
+  const saturated = new Color({ ...hsl, s: clampValue(hsl.s + 20, 0, 100) });
+  const desaturated = new Color({ ...hsl, s: clampValue(hsl.s - 20, 0, 100) });
   return [color.clone(), lighter, darker, saturated, desaturated];
 }
 

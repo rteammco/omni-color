@@ -1,4 +1,4 @@
-import { getConstrainedValue } from '../utils';
+import { clampValue } from '../utils';
 import { Color } from './color';
 
 export interface ColorSwatch {
@@ -20,7 +20,7 @@ function getAdjustedSaturation(baseSaturation: number, delta: number): number {
     return baseSaturation;
   }
 
-  return getConstrainedValue(baseSaturation + delta, 0, 100);
+  return clampValue(baseSaturation + delta, 0, 100);
 }
 
 export function getColorSwatch(baseColor: Color): ColorSwatch {
@@ -29,43 +29,43 @@ export function getColorSwatch(baseColor: Color): ColorSwatch {
     100: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, 20),
-      l: getConstrainedValue(baseL + 40, 0, 100),
+      l: clampValue(baseL + 40, 0, 100),
     }),
     200: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, 15),
-      l: getConstrainedValue(baseL + 30, 0, 100),
+      l: clampValue(baseL + 30, 0, 100),
     }),
     300: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, 10),
-      l: getConstrainedValue(baseL + 20, 0, 100),
+      l: clampValue(baseL + 20, 0, 100),
     }),
     400: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, 5),
-      l: getConstrainedValue(baseL + 10, 0, 100),
+      l: clampValue(baseL + 10, 0, 100),
     }),
     500: baseColor.clone(),
     600: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, -5),
-      l: getConstrainedValue(baseL - 10, 0, 100),
+      l: clampValue(baseL - 10, 0, 100),
     }),
     700: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, -10),
-      l: getConstrainedValue(baseL - 20, 0, 100),
+      l: clampValue(baseL - 20, 0, 100),
     }),
     800: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, -15),
-      l: getConstrainedValue(baseL - 30, 0, 100),
+      l: clampValue(baseL - 30, 0, 100),
     }),
     900: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, -20),
-      l: getConstrainedValue(baseL - 40, 0, 100),
+      l: clampValue(baseL - 40, 0, 100),
     }),
   };
 }
