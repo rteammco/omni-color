@@ -4,7 +4,7 @@
   "parserOptions": {
     "project": ["./tsconfig.json"]
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "simple-import-sort"],
   "env": {
     "node": true,
     "es2022": true
@@ -23,6 +23,8 @@
     "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/no-inferrable-types": "warn",
     "@typescript-eslint/prefer-nullish-coalescing": "warn",
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn",
     "prefer-const": "warn",
     "no-nested-ternary": "warn",
     "no-console": "warn"

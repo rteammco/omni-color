@@ -1,17 +1,17 @@
 import { Color } from '../color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from '../color.constants';
-import { BaseColorName, ColorLightnessModifier } from '../names';
 import type {
+  ColorCMYK,
   ColorHex,
-  ColorRGB,
   ColorHSL,
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
-  ColorCMYK,
   ColorLCH,
   ColorOKLCH,
+  ColorRGB,
 } from '../formats';
+import { BaseColorName, ColorLightnessModifier } from '../names';
 
 const BASE_HEX: ColorHex = '#ff0000';
 const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };

@@ -1,27 +1,27 @@
 import {
-  toRGB,
-  toRGBA,
+  toCMYK,
   toHex,
   toHex8,
   toHSL,
   toHSLA,
   toHSV,
   toHSVA,
-  toCMYK,
   toLCH,
   toOKLCH,
+  toRGB,
+  toRGBA,
 } from '../conversions';
 import type {
+  ColorCMYK,
   ColorHex,
-  ColorRGB,
-  ColorRGBA,
   ColorHSL,
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
-  ColorCMYK,
   ColorLCH,
   ColorOKLCH,
+  ColorRGB,
+  ColorRGBA,
 } from '../formats';
 
 describe('conversions', () => {

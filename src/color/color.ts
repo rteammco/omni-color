@@ -13,11 +13,11 @@ import {
 import {
   ColorCMYK,
   ColorFormat,
+  ColorHex,
   ColorHSL,
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
-  ColorHex,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,

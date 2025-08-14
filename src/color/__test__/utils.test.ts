@@ -1,6 +1,6 @@
 import { Color } from '../color';
-import { getRandomColorRGBA, isColorDark } from '../utils';
 import type { ColorHex } from '../formats';
+import { getRandomColorRGBA, isColorDark } from '../utils';
 
 describe('getRandomColorRGBA', () => {
   it('generates components within valid ranges', () => {
