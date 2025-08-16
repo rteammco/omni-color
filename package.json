@@ -19,7 +19,6 @@
     "lint": "eslint . --ext .ts,.js",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --watch",
     "build": "tsup src/index.ts --format esm --dts --out-dir dist",
-    "build:demo": "npm run build && cd demo && npm ci && npm run build && cp ../docs/index.html ../docs/404.html",
     "prepare": "npm run build && npm run build"
   },
   "simple-git-hooks": {

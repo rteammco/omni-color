@@ -1,0 +1,63 @@
+name: Deploy demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # Build the library (root)
+      - name: Install root library deps
+        run: npm ci
+      - name: Build library
+        run: npm run build
+
+      # Build the demo
+      - name: Install demo deps
+        working-directory: demo
+        run: npm ci
+      - name: Build demo
+        working-directory: demo
+        run: npm run build
+
+      # SPA routing on GitHub Pages: serve index.html on 404
+      - name: Add 404.html
+        run: cp demo/dist/index.html demo/dist/404.html
+
+      # Upload the static site as the Pages artifact
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo/dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

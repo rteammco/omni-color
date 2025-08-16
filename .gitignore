@@ -1,6 +1,5 @@
 # Build output
 dist/
-docs/
 
 # Node
 node_modules
