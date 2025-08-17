@@ -1,17 +1,12 @@
-import { useMemo } from 'react';
 import type { Color } from '../../../dist';
+import { useColorBackgroundAndBorderColors } from '../components/utils';
 
 interface Props {
   color: Color;
 }
 
 export function ColorInfo({ color }: Props) {
-  const { backgroundColor, borderColor } = useMemo(() => {
-    return {
-      backgroundColor: color.toHex(),
-      borderColor: color.getComplementaryColors()[1].toHex(),
-    };
-  }, [color]);
+  const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
 
   return (
     <div
