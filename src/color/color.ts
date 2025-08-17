@@ -61,7 +61,7 @@ import { getColorRGBAFromInput, getRandomColorRGBA, isColorDark } from './utils'
 export class Color {
   private color: ColorRGBA;
 
-  constructor(color?: ColorFormat | Color | string) {
+  constructor(color?: ColorFormat | Color | string | null) {
     this.color = getColorRGBAFromInput(color);
   }
 
