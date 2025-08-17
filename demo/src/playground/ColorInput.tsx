@@ -55,9 +55,9 @@ export function ColorInput({ defaultColor, onColorChanged }: Props) {
         <span>Enter a color above, or choose:</span>
         <a onClick={() => handlePresetColorSelected(new Color('red'))}>red</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected(new Color('green'))}>green</a>
+        <a onClick={() => handlePresetColorSelected(new Color('darkgreen'))}>dark green</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected(new Color('blue'))}>blue</a>
+        <a onClick={() => handlePresetColorSelected(new Color('lightblue'))}>light blue</a>
         &middot;
         <a onClick={() => handlePresetColorSelected(new Color())}>random</a>
       </div>
