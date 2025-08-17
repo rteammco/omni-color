@@ -15,7 +15,7 @@ export function ColorInfo({ color }: Props) {
 
   return (
     <div
-      className={`mt-4 p-4 w-full ${
+      className={`p-4 w-full ${
         color.isDark() ? 'text-neutral-100' : 'text-neutral-900'
       } flex flex-col gap-2 border-2`}
       style={{ backgroundColor, borderColor }}
