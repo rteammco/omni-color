@@ -8,8 +8,35 @@ import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorSwatch } from './ColorSwatch';
 import { ColorPaletteDemo } from './ColorPaletteDemo';
 
+function initializeColor(): Color {
+  const params = new URLSearchParams(window.location.search);
+  const colorParam = params.get('color');
+  if (colorParam) {
+    try {
+      return new Color(colorParam);
+    } catch {
+      const fallbackColor = new Color();
+      params.set('color', fallbackColor.toHex());
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+      return fallbackColor;
+    }
+  }
+  return new Color();
+}
+
+function setColorQueryParam(color: Color) {
+  const params = new URLSearchParams(window.location.search);
+  params.set('color', color.toHex());
+  window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+}
+
 export function Playground() {
-  const [color, setColor] = useState<Color>(new Color());
+  const [color, setColorState] = useState<Color>(() => initializeColor());
+
+  const setColor = (newColor: Color) => {
+    setColorState(newColor);
+    setColorQueryParam(newColor);
+  };
 
   return (
     <div>
