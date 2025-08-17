@@ -163,6 +163,15 @@ describe('Named color support', () => {
   it('throws on unknown color names', () => {
     expect(() => new Color('notacolor')).toThrow();
   });
+
+  it('accepts CSS color format strings', () => {
+    expect(new Color('rgb(255, 0, 0)').toHex()).toEqual('#ff0000');
+    expect(new Color('hsla(0, 100%, 50%, 0.5)').toHex8()).toEqual('#ff000080');
+  });
+
+  it('throws on invalid color format strings', () => {
+    expect(() => new Color('rgb(255, 0)')).toThrow();
+  });
 });
 
 describe('Color.getAlpha', () => {
