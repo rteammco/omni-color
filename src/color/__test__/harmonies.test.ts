@@ -64,15 +64,15 @@ describe('color harmonies', () => {
 
     const [blackOrig, blackComp] = getComplementaryColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
-    expect(blackComp.toHex()).toBe('#000000');
+    expect(blackComp.toHex()).toBe('#ffffff');
 
     const [whiteOrig, whiteComp] = getComplementaryColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
-    expect(whiteComp.toHex()).toBe('#ffffff');
+    expect(whiteComp.toHex()).toBe('#000000');
 
     const [lightGrayOrig, lightGrayComp] = getComplementaryColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
-    expect(lightGrayComp.toHex()).toBe('#d4d4d4');
+    expect(lightGrayComp.toHex()).toBe('#2b2b2b');
 
     const [grayOrig, grayComp] = getComplementaryColors(gray);
     expect(grayOrig.toHex()).toBe('#808080');
@@ -80,7 +80,7 @@ describe('color harmonies', () => {
 
     const [darkGrayOrig, darkGrayComp] = getComplementaryColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
-    expect(darkGrayComp.toHex()).toBe('#333333');
+    expect(darkGrayComp.toHex()).toBe('#cccccc');
   });
 
   it('computes split complementary colors', () => {
@@ -134,18 +134,18 @@ describe('color harmonies', () => {
 
     const [blackOrig, blackComp2, blackComp3] = getSplitComplementaryColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
-    expect(blackComp2.toHex()).toBe('#000000');
-    expect(blackComp3.toHex()).toBe('#000000');
+    expect(blackComp2.toHex()).toBe('#d4d4d4');
+    expect(blackComp3.toHex()).toBe('#d4d4d4');
 
     const [whiteOrig, whiteComp2, whiteComp3] = getSplitComplementaryColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
-    expect(whiteComp2.toHex()).toBe('#ffffff');
-    expect(whiteComp3.toHex()).toBe('#ffffff');
+    expect(whiteComp2.toHex()).toBe('#2b2b2b');
+    expect(whiteComp3.toHex()).toBe('#2b2b2b');
 
     const [lightGrayOrig, lightGrayComp2, lightGrayComp3] = getSplitComplementaryColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
-    expect(lightGrayComp2.toHex()).toBe('#d4d4d4');
-    expect(lightGrayComp3.toHex()).toBe('#d4d4d4');
+    expect(lightGrayComp2.toHex()).toBe('#474747');
+    expect(lightGrayComp3.toHex()).toBe('#474747');
 
     const [grayOrig, grayComp2, grayComp3] = getSplitComplementaryColors(gray);
     expect(grayOrig.toHex()).toBe('#808080');
@@ -154,8 +154,8 @@ describe('color harmonies', () => {
 
     const [darkGrayOrig, darkGrayComp2, darkGrayComp3] = getSplitComplementaryColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
-    expect(darkGrayComp2.toHex()).toBe('#333333');
-    expect(darkGrayComp3.toHex()).toBe('#333333');
+    expect(darkGrayComp2.toHex()).toBe('#b3b3b3');
+    expect(darkGrayComp3.toHex()).toBe('#b3b3b3');
   });
 
   it('computes triadic harmony colors', () => {
@@ -209,18 +209,18 @@ describe('color harmonies', () => {
 
     const [blackOrig, blackTriad2, blackTriad3] = getTriadicHarmonyColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
-    expect(blackTriad2.toHex()).toBe('#000000');
-    expect(blackTriad3.toHex()).toBe('#000000');
+    expect(blackTriad2.toHex()).toBe('#ababab');
+    expect(blackTriad3.toHex()).toBe('#ababab');
 
     const [whiteOrig, whiteTriad2, whiteTriad3] = getTriadicHarmonyColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
-    expect(whiteTriad2.toHex()).toBe('#ffffff');
-    expect(whiteTriad3.toHex()).toBe('#ffffff');
+    expect(whiteTriad2.toHex()).toBe('#545454');
+    expect(whiteTriad3.toHex()).toBe('#545454');
 
     const [lightGrayOrig, lightGrayTriad2, lightGrayTriad3] = getTriadicHarmonyColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
-    expect(lightGrayTriad2.toHex()).toBe('#d4d4d4');
-    expect(lightGrayTriad3.toHex()).toBe('#d4d4d4');
+    expect(lightGrayTriad2.toHex()).toBe('#636363');
+    expect(lightGrayTriad3.toHex()).toBe('#636363');
 
     const [grayOrig, grayTriad2, grayTriad3] = getTriadicHarmonyColors(gray);
     expect(grayOrig.toHex()).toBe('#808080');
@@ -229,8 +229,8 @@ describe('color harmonies', () => {
 
     const [darkGrayOrig, darkGrayTriad2, darkGrayTriad3] = getTriadicHarmonyColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
-    expect(darkGrayTriad2.toHex()).toBe('#333333');
-    expect(darkGrayTriad3.toHex()).toBe('#333333');
+    expect(darkGrayTriad2.toHex()).toBe('#999999');
+    expect(darkGrayTriad3.toHex()).toBe('#999999');
   });
 
   it('computes square harmony colors', () => {
@@ -295,22 +295,22 @@ describe('color harmonies', () => {
 
     const [blackOrig, blackSq1, blackSq2, blackSq3] = getSquareHarmonyColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
-    expect(blackSq1.toHex()).toBe('#000000');
-    expect(blackSq2.toHex()).toBe('#000000');
-    expect(blackSq3.toHex()).toBe('#000000');
+    expect(blackSq1.toHex()).toBe('#808080');
+    expect(blackSq2.toHex()).toBe('#ffffff');
+    expect(blackSq3.toHex()).toBe('#808080');
 
     const [whiteOrig, whiteSq1, whiteSq2, whiteSq3] = getSquareHarmonyColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
-    expect(whiteSq1.toHex()).toBe('#ffffff');
-    expect(whiteSq2.toHex()).toBe('#ffffff');
-    expect(whiteSq3.toHex()).toBe('#ffffff');
+    expect(whiteSq1.toHex()).toBe('#808080');
+    expect(whiteSq2.toHex()).toBe('#000000');
+    expect(whiteSq3.toHex()).toBe('#808080');
 
     const [lightGrayOrig, lightGraySq1, lightGraySq2, lightGraySq3] =
       getSquareHarmonyColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
-    expect(lightGraySq1.toHex()).toBe('#d4d4d4');
-    expect(lightGraySq2.toHex()).toBe('#d4d4d4');
-    expect(lightGraySq3.toHex()).toBe('#d4d4d4');
+    expect(lightGraySq1.toHex()).toBe('#808080');
+    expect(lightGraySq2.toHex()).toBe('#2b2b2b');
+    expect(lightGraySq3.toHex()).toBe('#808080');
 
     const [grayOrig, graySq1, graySq2, graySq3] = getSquareHarmonyColors(gray);
     expect(grayOrig.toHex()).toBe('#808080');
@@ -320,9 +320,9 @@ describe('color harmonies', () => {
 
     const [darkGrayOrig, darkGraySq1, darkGraySq2, darkGraySq3] = getSquareHarmonyColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
-    expect(darkGraySq1.toHex()).toBe('#333333');
-    expect(darkGraySq2.toHex()).toBe('#333333');
-    expect(darkGraySq3.toHex()).toBe('#333333');
+    expect(darkGraySq1.toHex()).toBe('#808080');
+    expect(darkGraySq2.toHex()).toBe('#cccccc');
+    expect(darkGraySq3.toHex()).toBe('#808080');
   });
 
   it('computes tetradic harmony colors', () => {
@@ -388,22 +388,22 @@ describe('color harmonies', () => {
 
     const [blackOrig, blackTet2, blackTet3, blackTet4] = getTetradicHarmonyColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
-    expect(blackTet2.toHex()).toBe('#000000');
-    expect(blackTet3.toHex()).toBe('#000000');
-    expect(blackTet4.toHex()).toBe('#000000');
+    expect(blackTet2.toHex()).toBe('#545454');
+    expect(blackTet3.toHex()).toBe('#ffffff');
+    expect(blackTet4.toHex()).toBe('#ababab');
 
     const [whiteOrig, whiteTet2, whiteTet3, whiteTet4] = getTetradicHarmonyColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
-    expect(whiteTet2.toHex()).toBe('#ffffff');
-    expect(whiteTet3.toHex()).toBe('#ffffff');
-    expect(whiteTet4.toHex()).toBe('#ffffff');
+    expect(whiteTet2.toHex()).toBe('#ababab');
+    expect(whiteTet3.toHex()).toBe('#000000');
+    expect(whiteTet4.toHex()).toBe('#545454');
 
     const [lightGrayOrig, lightGrayTet2, lightGrayTet3, lightGrayTet4] =
       getTetradicHarmonyColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
-    expect(lightGrayTet2.toHex()).toBe('#d4d4d4');
-    expect(lightGrayTet3.toHex()).toBe('#d4d4d4');
-    expect(lightGrayTet4.toHex()).toBe('#d4d4d4');
+    expect(lightGrayTet2.toHex()).toBe('#9c9c9c');
+    expect(lightGrayTet3.toHex()).toBe('#2b2b2b');
+    expect(lightGrayTet4.toHex()).toBe('#636363');
 
     const [grayOrig, grayTet2, grayTet3, grayTet4] = getTetradicHarmonyColors(gray);
     expect(grayOrig.toHex()).toBe('#808080');
@@ -414,9 +414,9 @@ describe('color harmonies', () => {
     const [darkGrayOrig, darkGrayTet2, darkGrayTet3, darkGrayTet4] =
       getTetradicHarmonyColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
-    expect(darkGrayTet2.toHex()).toBe('#333333');
-    expect(darkGrayTet3.toHex()).toBe('#333333');
-    expect(darkGrayTet4.toHex()).toBe('#333333');
+    expect(darkGrayTet2.toHex()).toBe('#666666');
+    expect(darkGrayTet3.toHex()).toBe('#cccccc');
+    expect(darkGrayTet4.toHex()).toBe('#999999');
   });
 
   it('computes analogous harmony colors', () => {
@@ -510,26 +510,26 @@ describe('color harmonies', () => {
     const [blackOrig, blackAnalog2, blackAnalog3, blackAnalog4, blackAnalog5] =
       getAnalogousHarmonyColors(black);
     expect(blackOrig.toHex()).toBe('#000000');
-    expect(blackAnalog2.toHex()).toBe('#000000');
-    expect(blackAnalog3.toHex()).toBe('#000000');
-    expect(blackAnalog4.toHex()).toBe('#000000');
-    expect(blackAnalog5.toHex()).toBe('#000000');
+    expect(blackAnalog2.toHex()).toBe('#2b2b2b');
+    expect(blackAnalog3.toHex()).toBe('#2b2b2b');
+    expect(blackAnalog4.toHex()).toBe('#545454');
+    expect(blackAnalog5.toHex()).toBe('#545454');
 
     const [whiteOrig, whiteAnalog2, whiteAnalog3, whiteAnalog4, whiteAnalog5] =
       getAnalogousHarmonyColors(white);
     expect(whiteOrig.toHex()).toBe('#ffffff');
-    expect(whiteAnalog2.toHex()).toBe('#ffffff');
-    expect(whiteAnalog3.toHex()).toBe('#ffffff');
-    expect(whiteAnalog4.toHex()).toBe('#ffffff');
-    expect(whiteAnalog5.toHex()).toBe('#ffffff');
+    expect(whiteAnalog2.toHex()).toBe('#d4d4d4');
+    expect(whiteAnalog3.toHex()).toBe('#d4d4d4');
+    expect(whiteAnalog4.toHex()).toBe('#ababab');
+    expect(whiteAnalog5.toHex()).toBe('#ababab');
 
     const [lightGrayOrig, lightGrayAnalog2, lightGrayAnalog3, lightGrayAnalog4, lightGrayAnalog5] =
       getAnalogousHarmonyColors(lightGray);
     expect(lightGrayOrig.toHex()).toBe('#d3d3d3');
-    expect(lightGrayAnalog2.toHex()).toBe('#d4d4d4');
-    expect(lightGrayAnalog3.toHex()).toBe('#d4d4d4');
-    expect(lightGrayAnalog4.toHex()).toBe('#d4d4d4');
-    expect(lightGrayAnalog5.toHex()).toBe('#d4d4d4');
+    expect(lightGrayAnalog2.toHex()).toBe('#b8b8b8');
+    expect(lightGrayAnalog3.toHex()).toBe('#b8b8b8');
+    expect(lightGrayAnalog4.toHex()).toBe('#9c9c9c');
+    expect(lightGrayAnalog5.toHex()).toBe('#9c9c9c');
 
     const [grayOrig, grayAnalog2, grayAnalog3, grayAnalog4, grayAnalog5] =
       getAnalogousHarmonyColors(gray);
@@ -542,10 +542,10 @@ describe('color harmonies', () => {
     const [darkGrayOrig, darkGrayAnalog2, darkGrayAnalog3, darkGrayAnalog4, darkGrayAnalog5] =
       getAnalogousHarmonyColors(darkGray);
     expect(darkGrayOrig.toHex()).toBe('#333333');
-    expect(darkGrayAnalog2.toHex()).toBe('#333333');
-    expect(darkGrayAnalog3.toHex()).toBe('#333333');
-    expect(darkGrayAnalog4.toHex()).toBe('#333333');
-    expect(darkGrayAnalog5.toHex()).toBe('#333333');
+    expect(darkGrayAnalog2.toHex()).toBe('#4d4d4d');
+    expect(darkGrayAnalog3.toHex()).toBe('#4d4d4d');
+    expect(darkGrayAnalog4.toHex()).toBe('#666666');
+    expect(darkGrayAnalog5.toHex()).toBe('#666666');
   });
 
   it('computes monochromatic harmony colors', () => {
