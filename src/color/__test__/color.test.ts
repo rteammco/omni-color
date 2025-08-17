@@ -11,6 +11,7 @@ import type {
   ColorOKLCH,
   ColorRGB,
 } from '../formats';
+import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 
 const BASE_HEX: ColorHex = '#ff0000';
@@ -363,6 +364,41 @@ describe('Color.getColorSwatch', () => {
     expect(swatch[700].toHex()).toBe('#413e5b');
     expect(swatch[800].toHex()).toBe('#2d2c3a');
     expect(swatch[900].toHex()).toBe('#18171c');
+  });
+});
+
+describe('Color.getColorPalette', () => {
+  it('generates palettes with different harmonies and options', () => {
+    const baseColor = new Color('#625aa5');
+
+    // Default complementary palette
+    const defaultPalette = baseColor.getColorPalette();
+    expect(defaultPalette.secondaryColors).toHaveLength(1);
+    const complement = baseColor.spin(180);
+    expect(defaultPalette.secondaryColors[0][500].toHex()).toBe(complement.toHex());
+
+    // Triadic palette
+    const triadicPalette = baseColor.getColorPalette(ColorHarmony.TRIADIC);
+    expect(triadicPalette.secondaryColors).toHaveLength(2);
+    const triadic1 = baseColor.spin(-120);
+    const triadic2 = baseColor.spin(120);
+    expect(triadicPalette.secondaryColors[0][500].toHex()).toBe(triadic1.toHex());
+    expect(triadicPalette.secondaryColors[1][500].toHex()).toBe(triadic2.toHex());
+
+    // Semantic color harmonization options
+    const noPullPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+      huePull: 0,
+      chromaRange: [0.02, 0.25],
+    });
+    const fullPullPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+      huePull: 1,
+      chromaRange: [0.02, 0.25],
+    });
+    const baseHue = baseColor.toOKLCH().h;
+    const infoHueDefault = noPullPalette.info[500].toOKLCH().h;
+    const infoHuePulled = fullPullPalette.info[500].toOKLCH().h;
+    expect(infoHueDefault).toBeCloseTo(265, 0);
+    expect(infoHuePulled).toBeCloseTo(baseHue, 0);
   });
 });
 
