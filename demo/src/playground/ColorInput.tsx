@@ -28,9 +28,10 @@ export function ColorInput({ defaultColor, onColorChanged }: Props) {
   );
 
   const handlePresetColorSelected = useCallback(
-    (color: Color) => {
+    (colorString?: string) => {
+      const color = new Color(colorString);
       onColorChanged(color);
-      setInputValue(color.toHex());
+      setInputValue(colorString ?? color.toHex());
     },
     [onColorChanged]
   );
@@ -53,13 +54,13 @@ export function ColorInput({ defaultColor, onColorChanged }: Props) {
       </div>
       <div className="mt-3 flex flex-row justify-center gap-2">
         <span>Enter a color above, or choose:</span>
-        <a onClick={() => handlePresetColorSelected(new Color('red'))}>red</a>
+        <a onClick={() => handlePresetColorSelected('red')}>red</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected(new Color('darkgreen'))}>dark green</a>
+        <a onClick={() => handlePresetColorSelected('darkgreen')}>dark green</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected(new Color('lightblue'))}>light blue</a>
+        <a onClick={() => handlePresetColorSelected('lightblue')}>light blue</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected(new Color())}>random</a>
+        <a onClick={() => handlePresetColorSelected()}>random</a>
       </div>
     </div>
   );
