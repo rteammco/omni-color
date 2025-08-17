@@ -7,17 +7,33 @@ interface Props {
 export function ColorInfo({ color }: Props) {
   return (
     <div
-      className={`mt-4 p-2 w-full ${
+      className={`mt-4 p-4 w-full ${
         color.isDark() ? 'text-neutral-100' : 'text-neutral-900'
-      } flex flex-row justify-center gap-2`}
+      } flex flex-col gap-2`}
       style={{ backgroundColor: color.toHex() }}
     >
-      <b>{color.getNameAsString()}</b>
-      &middot;
-      <span>{color.toHex()}</span>
-      &middot;
-      <span>{color.toHex8()}</span>
-      {/* TODO: readable RGB, HSL, etc. with "css" ready strings */}
+      <div className="flex flex-row justify-center gap-2">
+        <b>{color.getNameAsString()}</b>
+        &middot;
+        <span>{color.toHex()}</span>
+        &middot;
+        <span>{color.toHex8()}</span>
+      </div>
+      <div className="flex flex-row justify-center gap-2">
+        <span>{color.toRGBString()}</span>
+        &middot;
+        <span>{color.toRGBAString()}</span>
+        &middot;
+        <span>{color.toHSLString()}</span>
+        &middot;
+        <span>{color.toHSLAString()}</span>
+        &middot;
+        <span>{color.toCMYKString()}</span>
+        &middot;
+        <span>{color.toLCHString()}</span>
+        &middot;
+        <span>{color.toOKLCHString()}</span>
+      </div>
     </div>
   );
 }
