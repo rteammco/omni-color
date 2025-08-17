@@ -147,3 +147,39 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
 
   throw new Error(`[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`);
 }
+
+function getDecimalString(value: number, digits = 3): number {
+  return +value.toFixed(digits);
+}
+
+export function rgbToString({ r, g, b }: ColorRGB): string {
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+export function rgbaToString({ r, g, b, a }: ColorRGBA): string {
+  return `rgba(${r}, ${g}, ${b}, ${getDecimalString(a)})`;
+}
+
+export function hslToString({ h, s, l }: ColorHSL): string {
+  return `hsl(${getDecimalString(h)}, ${getDecimalString(s)}%, ${getDecimalString(l)}%)`;
+}
+
+export function hslaToString({ h, s, l, a }: ColorHSLA): string {
+  return `hsla(${getDecimalString(h)}, ${getDecimalString(s)}%, ${getDecimalString(
+    l
+  )}%, ${getDecimalString(a)})`;
+}
+
+export function cmykToString({ c, m, y, k }: ColorCMYK): string {
+  return `cmyk(${getDecimalString(c)}%, ${getDecimalString(m)}%, ${getDecimalString(
+    y
+  )}%, ${getDecimalString(k)}%)`;
+}
+
+export function lchToString({ l, c, h }: ColorLCH): string {
+  return `lch(${getDecimalString(l)}% ${getDecimalString(c)} ${getDecimalString(h)})`;
+}
+
+export function oklchToString({ l, c, h }: ColorOKLCH): string {
+  return `oklch(${getDecimalString(l, 6)} ${getDecimalString(c, 6)} ${getDecimalString(h)})`;
+}
