@@ -13,7 +13,7 @@ export function getRandomColorRGBA(): ColorRGBA {
   };
 }
 
-export function getColorRGBAFromInput(color?: ColorFormat | Color | string): ColorRGBA {
+export function getColorRGBAFromInput(color?: ColorFormat | Color | string | null): ColorRGBA {
   if (color instanceof Color) {
     return color.toRGBA();
   }
