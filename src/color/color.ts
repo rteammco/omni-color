@@ -57,16 +57,16 @@ export class Color {
     return new Color(getRandomColorRGBA());
   }
 
-  toRGB(): ColorRGB {
-    return toRGB(this.color);
-  }
-
   toHex(): ColorHex {
     return toHex(this.color);
   }
 
   toHex8(): ColorHex {
     return toHex8(this.color);
+  }
+
+  toRGB(): ColorRGB {
+    return toRGB(this.color);
   }
 
   toRGBA(): ColorRGBA {
