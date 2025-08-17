@@ -14,34 +14,33 @@ export enum ColorHarmony {
   MONOCHROMATIC = 'Monochromatic',
 }
 
+// "spins" lightness around grayscale degrees, where 0 is black and 180 is white, and
+// everything in between is grayish. 180-360 loop back in the opposite direction.
+// This is meant to handle grayscale colors with 0 saturation where spinning on hue does nothing.
 function spinLightness(hsl: ColorHSL, degrees: number): Color {
   const normalized = ((degrees % 360) + 360) % 360;
   const distance = normalized > 180 ? 360 - normalized : normalized;
   const ratio = distance / 180;
   const complementL = 100 - hsl.l;
-  const newL = clampValue(
-    Math.round(hsl.l + (complementL - hsl.l) * ratio),
-    0,
-    100,
-  );
+  const newL = clampValue(Math.round(hsl.l + (complementL - hsl.l) * ratio), 0, 100);
   return new Color({ ...hsl, l: newL });
 }
 
-function spinHarmonyColor(color: Color, hsl: ColorHSL, degrees: number): Color {
+function spinColorOnHueOrLightness(color: Color, hsl: ColorHSL, degrees: number): Color {
   return hsl.s === 0 ? spinLightness(hsl, degrees) : color.spin(degrees);
 }
 
 export function getComplementaryColors(color: Color): [Color, Color] {
   const hsl = color.toHSL();
-  return [color.clone(), spinHarmonyColor(color, hsl, 180)];
+  return [color.clone(), spinColorOnHueOrLightness(color, hsl, 180)];
 }
 
 export function getSplitComplementaryColors(color: Color): [Color, Color, Color] {
   const hsl = color.toHSL();
   return [
     color.clone(),
-    spinHarmonyColor(color, hsl, -150),
-    spinHarmonyColor(color, hsl, 150),
+    spinColorOnHueOrLightness(color, hsl, -150),
+    spinColorOnHueOrLightness(color, hsl, 150),
   ];
 }
 
@@ -49,8 +48,8 @@ export function getTriadicHarmonyColors(color: Color): [Color, Color, Color] {
   const hsl = color.toHSL();
   return [
     color.clone(),
-    spinHarmonyColor(color, hsl, -120),
-    spinHarmonyColor(color, hsl, 120),
+    spinColorOnHueOrLightness(color, hsl, -120),
+    spinColorOnHueOrLightness(color, hsl, 120),
   ];
 }
 
@@ -58,9 +57,9 @@ export function getSquareHarmonyColors(color: Color): [Color, Color, Color, Colo
   const hsl = color.toHSL();
   return [
     color.clone(),
-    spinHarmonyColor(color, hsl, 90),
-    spinHarmonyColor(color, hsl, 180),
-    spinHarmonyColor(color, hsl, 270),
+    spinColorOnHueOrLightness(color, hsl, 90),
+    spinColorOnHueOrLightness(color, hsl, 180),
+    spinColorOnHueOrLightness(color, hsl, 270),
   ];
 }
 
@@ -71,9 +70,9 @@ export function getTetradicHarmonyColors(color: Color): [Color, Color, Color, Co
   const hsl = color.toHSL();
   return [
     color.clone(),
-    spinHarmonyColor(color, hsl, 60),
-    spinHarmonyColor(color, hsl, 180),
-    spinHarmonyColor(color, hsl, 240),
+    spinColorOnHueOrLightness(color, hsl, 60),
+    spinColorOnHueOrLightness(color, hsl, 180),
+    spinColorOnHueOrLightness(color, hsl, 240),
   ];
 }
 
@@ -82,10 +81,10 @@ export function getAnalogousHarmonyColors(color: Color): [Color, Color, Color, C
   const hsl = color.toHSL();
   return [
     color.clone(),
-    spinHarmonyColor(color, hsl, -30),
-    spinHarmonyColor(color, hsl, 30),
-    spinHarmonyColor(color, hsl, -60),
-    spinHarmonyColor(color, hsl, 60),
+    spinColorOnHueOrLightness(color, hsl, -30),
+    spinColorOnHueOrLightness(color, hsl, 30),
+    spinColorOnHueOrLightness(color, hsl, -60),
+    spinColorOnHueOrLightness(color, hsl, 60),
   ];
 }
 
