@@ -1,4 +1,9 @@
 import {
+  ColorPalette,
+  generateColorPaletteFromBaseColor,
+  SemanticColorHarmonizationOptions,
+} from '../palette/palette';
+import {
   toCMYK,
   toHex,
   toHex8,
@@ -206,6 +211,13 @@ export class Color {
 
   getColorSwatch(): ColorSwatch {
     return getColorSwatch(this);
+  }
+
+  getColorPalette(
+    harmony: ColorHarmony = ColorHarmony.COMPLEMENTARY,
+    semanticColorHarmonizationOptions?: SemanticColorHarmonizationOptions
+  ): ColorPalette {
+    return generateColorPaletteFromBaseColor(this, harmony, semanticColorHarmonizationOptions);
   }
 
   isDark(): boolean {

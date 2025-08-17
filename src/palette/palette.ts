@@ -52,7 +52,7 @@ const SEMANTIC_COLOR_TO_CHROMA_FACTOR_MAP: {
   // TODO: support neutral: 0.15 ???
 } as const;
 
-interface SemanticColorHarmonizationOptions {
+export interface SemanticColorHarmonizationOptions {
   huePull: number; // how much to pull hue toward main palette color (0 to 1)
   chromaRange: [number, number]; // the range of chroma values to consider (each >= 0, min <= max); for sRGB, the max range tops out at ~0.32
 }
