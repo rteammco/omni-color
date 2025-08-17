@@ -1,4 +1,6 @@
 export enum IconType {
+  ARROW_RIGHT = 'ARROW_RIGHT',
   CHECK_CIRCLE = 'CHECK_CIRCLE',
+  PLUS = 'PLUS',
   X_CIRCLE = 'X_CIRCLE',
 }
