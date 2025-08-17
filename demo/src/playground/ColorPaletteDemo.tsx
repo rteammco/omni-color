@@ -19,43 +19,43 @@ export function ColorPaletteDemo({ color }: Props) {
             <tr>
               <td className="pb-2 pr-4 text-right">Primary</td>
               <td className="pb-2">
-                <ColorSwatch swatch={palette.primary} />
+                <ColorSwatch swatch={palette.primary} withLabels />
               </td>
             </tr>
             <tr>
               <td className="pb-2 pr-4 text-right">Neutrals</td>
               <td className="pb-2">
-                <ColorSwatch swatch={palette.neutrals} />
+                <ColorSwatch swatch={palette.neutrals} withLabels />
               </td>
             </tr>
             <tr>
               <td className="pb-2 pr-4 text-right">Info (semantic)</td>
               <td className="pb-2">
-                <ColorSwatch swatch={palette.info} />
+                <ColorSwatch swatch={palette.info} withLabels />
               </td>
             </tr>
             <tr>
               <td className="pb-2 pr-4 text-right">Positive (semantic)</td>
               <td className="pb-2">
-                <ColorSwatch swatch={palette.positive} />
+                <ColorSwatch swatch={palette.positive} withLabels />
               </td>
             </tr>
             <tr>
               <td className="pb-2 pr-4 text-right">Negative (semantic)</td>
               <td className="pb-2">
-                <ColorSwatch swatch={palette.negative} />
+                <ColorSwatch swatch={palette.negative} withLabels />
               </td>
             </tr>
             <tr>
               <td className="pb-2 pr-4 text-right">Warning (semantic)</td>
               <td className="pb-2">
-                <ColorSwatch swatch={palette.warning} />
+                <ColorSwatch swatch={palette.warning} withLabels />
               </td>
             </tr>
             <tr>
               <td className="pr-4 text-right">Special (semantic)</td>
               <td>
-                <ColorSwatch swatch={palette.special} />
+                <ColorSwatch swatch={palette.special} withLabels />
               </td>
             </tr>
           </tbody>
