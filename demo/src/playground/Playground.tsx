@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Color } from '../../../dist';
 import { ColorInput } from './ColorInput';
 import { ColorInfo } from './ColorInfo';
@@ -8,39 +8,45 @@ import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorSwatch } from './ColorSwatch';
 import { ColorPaletteDemo } from './ColorPaletteDemo';
 
-function initializeColor(): Color {
-  const params = new URLSearchParams(window.location.search);
-  const colorParam = params.get('color');
-  if (colorParam) {
-    try {
-      return new Color(colorParam);
-    } catch {
-      const fallbackColor = new Color();
-      params.set('color', fallbackColor.toHex());
-      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-      return fallbackColor;
-    }
-  }
-  return new Color();
+const COLOR_SEARCH_PARAM_KEY = 'color' as const;
+
+function setColorSearchParam(color: Color) {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  urlSearchParams.set(COLOR_SEARCH_PARAM_KEY, color.toHex());
+  window.history.replaceState({}, '', `${window.location.pathname}?${urlSearchParams.toString()}`);
 }
 
-function setColorQueryParam(color: Color) {
-  const params = new URLSearchParams(window.location.search);
-  params.set('color', color.toHex());
-  window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+function initializeRandomColor(): Color {
+  const initialColor = new Color();
+  setColorSearchParam(initialColor);
+  return initialColor;
+}
+
+function getColorFromSearchParams(): Color {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const colorParam = urlSearchParams.get(COLOR_SEARCH_PARAM_KEY);
+  if (!colorParam) {
+    return initializeRandomColor();
+  }
+
+  try {
+    return new Color(colorParam);
+  } catch {
+    return initializeRandomColor();
+  }
 }
 
 export function Playground() {
-  const [color, setColorState] = useState<Color>(() => initializeColor());
+  const [color, setColor] = useState<Color>(getColorFromSearchParams());
 
-  const setColor = (newColor: Color) => {
-    setColorState(newColor);
-    setColorQueryParam(newColor);
-  };
+  const handleColorChanged = useCallback((newColor: Color) => {
+    setColor(newColor);
+    setColorSearchParam(newColor);
+  }, []);
 
   return (
     <div>
-      <ColorInput defaultColor={color.toHex()} onColorChanged={setColor} />
+      <ColorInput defaultColor={color.toHex()} onColorChanged={handleColorChanged} />
       <VSpace height={24} />
       <ColorInfo color={color} />
       <VSpace height={8} />
