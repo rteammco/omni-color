@@ -1,5 +1,6 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
+import { ColorHSL } from './formats';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 
@@ -13,32 +14,79 @@ export enum ColorHarmony {
   MONOCHROMATIC = 'Monochromatic',
 }
 
+function spinLightness(hsl: ColorHSL, degrees: number): Color {
+  const normalized = ((degrees % 360) + 360) % 360;
+  const distance = normalized > 180 ? 360 - normalized : normalized;
+  const ratio = distance / 180;
+  const complementL = 100 - hsl.l;
+  const newL = clampValue(
+    Math.round(hsl.l + (complementL - hsl.l) * ratio),
+    0,
+    100,
+  );
+  return new Color({ ...hsl, l: newL });
+}
+
+function spinHarmonyColor(color: Color, hsl: ColorHSL, degrees: number): Color {
+  return hsl.s === 0 ? spinLightness(hsl, degrees) : color.spin(degrees);
+}
+
 export function getComplementaryColors(color: Color): [Color, Color] {
-  return [color.clone(), color.spin(180)];
+  const hsl = color.toHSL();
+  return [color.clone(), spinHarmonyColor(color, hsl, 180)];
 }
 
 export function getSplitComplementaryColors(color: Color): [Color, Color, Color] {
-  return [color.clone(), color.spin(-150), color.spin(150)];
+  const hsl = color.toHSL();
+  return [
+    color.clone(),
+    spinHarmonyColor(color, hsl, -150),
+    spinHarmonyColor(color, hsl, 150),
+  ];
 }
 
 export function getTriadicHarmonyColors(color: Color): [Color, Color, Color] {
-  return [color.clone(), color.spin(-120), color.spin(120)];
+  const hsl = color.toHSL();
+  return [
+    color.clone(),
+    spinHarmonyColor(color, hsl, -120),
+    spinHarmonyColor(color, hsl, 120),
+  ];
 }
 
 export function getSquareHarmonyColors(color: Color): [Color, Color, Color, Color] {
-  return [color.clone(), color.spin(90), color.spin(180), color.spin(270)];
+  const hsl = color.toHSL();
+  return [
+    color.clone(),
+    spinHarmonyColor(color, hsl, 90),
+    spinHarmonyColor(color, hsl, 180),
+    spinHarmonyColor(color, hsl, 270),
+  ];
 }
 
 export function getTetradicHarmonyColors(color: Color): [Color, Color, Color, Color] {
   // TODO: tetradic harmonies can also be "wide" (120, 180, 300) or go in the other direction, or potentially any rectangle
   // e.g. #0000ff => #0000ff, #ff00ff, #ffff00, #00ff00
   // vs.  #0000ff => #0000ff, #00ffff, #ffff00, #ff0000
-  return [color.clone(), color.spin(60), color.spin(180), color.spin(240)];
+  const hsl = color.toHSL();
+  return [
+    color.clone(),
+    spinHarmonyColor(color, hsl, 60),
+    spinHarmonyColor(color, hsl, 180),
+    spinHarmonyColor(color, hsl, 240),
+  ];
 }
 
 export function getAnalogousHarmonyColors(color: Color): [Color, Color, Color, Color, Color] {
   // TODO: verify, because other libraries seem to have a slightly narrower angle
-  return [color.clone(), color.spin(-30), color.spin(30), color.spin(-60), color.spin(60)];
+  const hsl = color.toHSL();
+  return [
+    color.clone(),
+    spinHarmonyColor(color, hsl, -30),
+    spinHarmonyColor(color, hsl, 30),
+    spinHarmonyColor(color, hsl, -60),
+    spinHarmonyColor(color, hsl, 60),
+  ];
 }
 
 export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Color, Color, Color] {
