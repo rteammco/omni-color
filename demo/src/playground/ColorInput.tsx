@@ -56,9 +56,25 @@ export function ColorInput({ defaultColor, onColorChanged }: Props) {
         <span>Enter a color above, or choose:</span>
         <a onClick={() => handlePresetColorSelected('red')}>red</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected('darkgreen')}>dark green</a>
+        <a onClick={() => handlePresetColorSelected('darkgreen')}>darkgreen</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected('lightblue')}>light blue</a>
+        <a onClick={() => handlePresetColorSelected('light blue')}>light blue</a>
+        &middot;
+        <a onClick={() => handlePresetColorSelected('#6c18b9')}>#6c18b9</a>
+        &middot;
+        <a onClick={() => handlePresetColorSelected('#e6a13799')}>#e6a13799</a>
+        &middot;
+        <a onClick={() => handlePresetColorSelected('rgb(232, 243, 17)')}>rgb(232, 243, 17)</a>
+        &middot;
+        <a onClick={() => handlePresetColorSelected('hsla(335, 49%, 37%, 0.75)')}>
+          hsla(335, 49%, 37%, 0.75)
+        </a>
+        &middot;
+        <a onClick={() => handlePresetColorSelected('cmyk(0%, 0%, 0%, 100%)')}>
+          cmyk(0%, 0%, 0%, 100%)
+        </a>
+        &middot;
+        <a onClick={() => handlePresetColorSelected('oklch(0.35 0 89.5)')}>oklch(0.35 0 89.5)</a>
         &middot;
         <a onClick={() => handlePresetColorSelected()}>random</a>
       </div>
