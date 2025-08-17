@@ -2,6 +2,7 @@ import { Color } from './color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.constants';
 import { toRGBA } from './conversions';
 import type { ColorFormat, ColorHex, ColorRGBA } from './formats';
+import { parseCSSColorFormatString } from './parse';
 
 export function getRandomColorRGBA(): ColorRGBA {
   return {
@@ -16,16 +17,28 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string): Col
   if (color instanceof Color) {
     return color.toRGBA();
   }
+
   if (typeof color === 'string') {
+    // Hex string (e.g. "#ff0000"):
     if (color.startsWith('#')) {
       return toRGBA(color as ColorHex);
     }
+
+    // Named color (e.g. "red"):
     const namedColorHex = CSS_COLOR_NAME_TO_HEX_MAP[color.toLowerCase()];
-    if (!namedColorHex) {
-      throw new Error(`[getColorRGBAFromInput] unknown color name: "${color}"`);
+    if (namedColorHex) {
+      return toRGBA(namedColorHex);
     }
-    return toRGBA(namedColorHex);
+
+    // Other CSS color format string (e.g. "rgb(255, 0, 0)"):
+    const parsedColor = parseCSSColorFormatString(color.toLowerCase());
+    if (parsedColor) {
+      return parsedColor.toRGBA();
+    }
+
+    throw new Error(`[getColorRGBAFromInput] unknown color name or format: "${color}"`);
   }
+
   return color ? toRGBA(color) : getRandomColorRGBA();
 }
 
