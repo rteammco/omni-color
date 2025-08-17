@@ -1,12 +1,18 @@
-import type { Color } from '../../../dist';
+import type { Color, ColorSwatch as ColorSwatchType } from '../../../dist';
 import { ColorBox } from '../components/ColorBox';
 
-interface Props {
+interface PropsFromColor {
   color: Color;
 }
 
-export function ColorSwatch({ color }: Props) {
-  const swatch = color.getColorSwatch();
+interface PropsFromSwatch {
+  swatch: ColorSwatchType;
+}
+
+type Props = PropsFromColor | PropsFromSwatch;
+
+export function ColorSwatch(props: Props) {
+  const swatch = 'swatch' in props ? props.swatch : props.color.getColorSwatch();
 
   return (
     <div className="w-full flex flex-row justify-center gap-0">

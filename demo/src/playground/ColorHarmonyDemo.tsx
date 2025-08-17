@@ -22,7 +22,7 @@ interface Props {
   color: Color;
 }
 
-export function ColorHarmonyExamples({ color }: Props) {
+export function ColorHarmonyDemo({ color }: Props) {
   return (
     <div>
       <h5 className="mb-3">Harmonies</h5>

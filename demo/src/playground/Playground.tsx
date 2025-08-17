@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Color } from '../../../dist';
 import { ColorInput } from './ColorInput';
 import { ColorInfo } from './ColorInfo';
-import { ColorManipulationExamples } from './ColorManipulationExamples';
+import { ColorManipulationDemo } from './ColorManipulationDemo';
 import { VSpace } from '../components/VSpace';
-import { ColorHarmonyExamples } from './ColorHarmonyExamples';
+import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorSwatch } from './ColorSwatch';
+import { ColorPaletteDemo } from './ColorPaletteDemo';
 
 export function Playground() {
   const [color, setColor] = useState<Color>(new Color());
@@ -18,9 +19,11 @@ export function Playground() {
       <VSpace height={8} />
       <ColorSwatch color={color} />
       <VSpace height={24} />
-      <ColorManipulationExamples color={color} />
+      <ColorManipulationDemo color={color} />
       <VSpace height={24} />
-      <ColorHarmonyExamples color={color} />
+      <ColorHarmonyDemo color={color} />
+      <VSpace height={24} />
+      <ColorPaletteDemo color={color} />
     </div>
   );
 }
