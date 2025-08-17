@@ -1,5 +1,40 @@
 import { Color } from './color/color';
+import {
+  ColorCMYK,
+  ColorFormat,
+  ColorHex,
+  ColorHSL,
+  ColorHSLA,
+  ColorHSV,
+  ColorHSVA,
+  ColorLCH,
+  ColorOKLCH,
+  ColorRGB,
+  ColorRGBA,
+} from './color/formats';
+import { ColorHarmony } from './color/harmonies';
+import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
 import { ColorSwatch } from './color/swatch';
 import { ColorPalette, SemanticColorHarmonizationOptions } from './palette/palette';
 
-export { Color, ColorPalette, ColorSwatch, SemanticColorHarmonizationOptions };
+export {
+  BaseColorName,
+  Color,
+  ColorCMYK,
+  ColorFormat,
+  ColorHarmony,
+  ColorHex,
+  ColorHSL,
+  ColorHSLA,
+  ColorHSV,
+  ColorHSVA,
+  ColorLCH,
+  ColorLightnessModifier,
+  ColorNameAndLightness,
+  ColorOKLCH,
+  ColorPalette,
+  ColorRGB,
+  ColorRGBA,
+  ColorSwatch,
+  SemanticColorHarmonizationOptions,
+};
