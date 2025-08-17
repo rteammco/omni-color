@@ -108,38 +108,6 @@ function getHexColorFormatType(color: ColorHex): ColorFormatTypeAndValue {
   throw new Error(`[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`);
 }
 
-function format(value: number, digits = 3): number {
-  return +value.toFixed(digits);
-}
-
-export function rgbToString({ r, g, b }: ColorRGB): string {
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
-export function rgbaToString({ r, g, b, a }: ColorRGBA): string {
-  return `rgba(${r}, ${g}, ${b}, ${format(a)})`;
-}
-
-export function hslToString({ h, s, l }: ColorHSL): string {
-  return `hsl(${format(h)}, ${format(s)}%, ${format(l)}%)`;
-}
-
-export function hslaToString({ h, s, l, a }: ColorHSLA): string {
-  return `hsla(${format(h)}, ${format(s)}%, ${format(l)}%, ${format(a)})`;
-}
-
-export function cmykToString({ c, m, y, k }: ColorCMYK): string {
-  return `cmyk(${format(c)}%, ${format(m)}%, ${format(y)}%, ${format(k)}%)`;
-}
-
-export function lchToString({ l, c, h }: ColorLCH): string {
-  return `lch(${format(l)}% ${format(c)} ${format(h)})`;
-}
-
-export function oklchToString({ l, c, h }: ColorOKLCH): string {
-  return `oklch(${format(l, 6)} ${format(c, 6)} ${format(h)})`;
-}
-
 export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue {
   if (typeof color === 'string') {
     return getHexColorFormatType(color);
@@ -178,4 +146,40 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
   }
 
   throw new Error(`[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`);
+}
+
+function getDecimalString(value: number, digits = 3): number {
+  return +value.toFixed(digits);
+}
+
+export function rgbToString({ r, g, b }: ColorRGB): string {
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+export function rgbaToString({ r, g, b, a }: ColorRGBA): string {
+  return `rgba(${r}, ${g}, ${b}, ${getDecimalString(a)})`;
+}
+
+export function hslToString({ h, s, l }: ColorHSL): string {
+  return `hsl(${getDecimalString(h)}, ${getDecimalString(s)}%, ${getDecimalString(l)}%)`;
+}
+
+export function hslaToString({ h, s, l, a }: ColorHSLA): string {
+  return `hsla(${getDecimalString(h)}, ${getDecimalString(s)}%, ${getDecimalString(
+    l
+  )}%, ${getDecimalString(a)})`;
+}
+
+export function cmykToString({ c, m, y, k }: ColorCMYK): string {
+  return `cmyk(${getDecimalString(c)}%, ${getDecimalString(m)}%, ${getDecimalString(
+    y
+  )}%, ${getDecimalString(k)}%)`;
+}
+
+export function lchToString({ l, c, h }: ColorLCH): string {
+  return `lch(${getDecimalString(l)}% ${getDecimalString(c)} ${getDecimalString(h)})`;
+}
+
+export function oklchToString({ l, c, h }: ColorOKLCH): string {
+  return `oklch(${getDecimalString(l, 6)} ${getDecimalString(c, 6)} ${getDecimalString(h)})`;
 }

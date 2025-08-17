@@ -76,16 +76,32 @@ export class Color {
     return toRGB(this.color);
   }
 
+  toRGBString(): string {
+    return rgbToString(this.toRGB());
+  }
+
   toRGBA(): ColorRGBA {
     return this.color;
+  }
+
+  toRGBAString(): string {
+    return rgbaToString(this.toRGBA());
   }
 
   toHSL(): ColorHSL {
     return toHSL(this.color);
   }
 
+  toHSLString(): string {
+    return hslToString(this.toHSL());
+  }
+
   toHSLA(): ColorHSLA {
     return toHSLA(this.color);
+  }
+
+  toHSLAString(): string {
+    return hslaToString(this.toHSLA());
   }
 
   toHSV(): ColorHSV {
@@ -100,36 +116,20 @@ export class Color {
     return toCMYK(this.color);
   }
 
-  toLCH(): ColorLCH {
-    return toLCH(this.color);
-  }
-
-  toOKLCH(): ColorOKLCH {
-    return toOKLCH(this.color);
-  }
-
-  toRGBString(): string {
-    return rgbToString(this.toRGB());
-  }
-
-  toRGBAString(): string {
-    return rgbaToString(this.toRGBA());
-  }
-
-  toHSLString(): string {
-    return hslToString(this.toHSL());
-  }
-
-  toHSLAString(): string {
-    return hslaToString(this.toHSLA());
-  }
-
   toCMYKString(): string {
     return cmykToString(this.toCMYK());
   }
 
+  toLCH(): ColorLCH {
+    return toLCH(this.color);
+  }
+
   toLCHString(): string {
     return lchToString(this.toLCH());
+  }
+
+  toOKLCH(): ColorOKLCH {
+    return toOKLCH(this.color);
   }
 
   toOKLCHString(): string {
