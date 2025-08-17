@@ -4,6 +4,7 @@ import { ColorInput } from './ColorInput';
 import { ColorInfo } from './ColorInfo';
 import { ColorManipulationExamples } from './ColorManipulationExamples';
 import { VSpace } from '../components/VSpace';
+import { ColorHarmonyExamples } from './ColorHarmonyExamples';
 
 export function Playground() {
   const [color, setColor] = useState<Color>(new Color());
@@ -15,6 +16,8 @@ export function Playground() {
       <ColorInfo color={color} />
       <VSpace height={24} />
       <ColorManipulationExamples color={color} />
+      <VSpace height={24} />
+      <ColorHarmonyExamples color={color} />
     </div>
   );
 }
