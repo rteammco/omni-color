@@ -7,6 +7,7 @@ import {
   getSquareHarmonyColors,
   getTetradicHarmonyColors,
   getTriadicHarmonyColors,
+  GrayscaleHandlingMode,
 } from '../harmonies';
 
 describe('color harmonies', () => {
@@ -678,5 +679,192 @@ describe('color harmonies', () => {
     expect(darkGrayMono3.toHex()).toBe('#000000');
     expect(darkGrayMono4.toHex()).toBe('#3d2929');
     expect(darkGrayMono5.toHex()).toBe('#333333');
+  });
+
+  describe('GrayscaleHandlingMode', () => {
+    describe('getComplementaryColors', () => {
+      it('handles grayscale color', () => {
+        const spin = getComplementaryColors(
+          black,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        expect(spin).toEqual(['#000000', '#ffffff']);
+
+        const ignore = getComplementaryColors(black, GrayscaleHandlingMode.IGNORE).map(
+          (c) => c.toHex()
+        );
+        expect(ignore).toEqual(['#000000', '#000000']);
+      });
+
+      it('handles non-grayscale color', () => {
+        const expected = ['#ff0000', '#00ffff'];
+        const spin = getComplementaryColors(
+          red,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        const ignore = getComplementaryColors(red, GrayscaleHandlingMode.IGNORE).map(
+          (c) => c.toHex()
+        );
+        expect(spin).toEqual(expected);
+        expect(ignore).toEqual(expected);
+      });
+    });
+
+    describe('getSplitComplementaryColors', () => {
+      it('handles grayscale color', () => {
+        const spin = getSplitComplementaryColors(
+          black,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        expect(spin).toEqual(['#000000', '#d4d4d4', '#d4d4d4']);
+
+        const ignore = getSplitComplementaryColors(
+          black,
+          GrayscaleHandlingMode.IGNORE
+        ).map((c) => c.toHex());
+        expect(ignore).toEqual(['#000000', '#000000', '#000000']);
+      });
+
+      it('handles non-grayscale color', () => {
+        const expected = ['#ff0000', '#0080ff', '#00ff80'];
+        const spin = getSplitComplementaryColors(
+          red,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        const ignore = getSplitComplementaryColors(
+          red,
+          GrayscaleHandlingMode.IGNORE
+        ).map((c) => c.toHex());
+        expect(spin).toEqual(expected);
+        expect(ignore).toEqual(expected);
+      });
+    });
+
+    describe('getTriadicHarmonyColors', () => {
+      it('handles grayscale color', () => {
+        const spin = getTriadicHarmonyColors(
+          black,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        expect(spin).toEqual(['#000000', '#ababab', '#ababab']);
+
+        const ignore = getTriadicHarmonyColors(black, GrayscaleHandlingMode.IGNORE).map(
+          (c) => c.toHex()
+        );
+        expect(ignore).toEqual(['#000000', '#000000', '#000000']);
+      });
+
+      it('handles non-grayscale color', () => {
+        const expected = ['#ff0000', '#0000ff', '#00ff00'];
+        const spin = getTriadicHarmonyColors(
+          red,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        const ignore = getTriadicHarmonyColors(red, GrayscaleHandlingMode.IGNORE).map(
+          (c) => c.toHex()
+        );
+        expect(spin).toEqual(expected);
+        expect(ignore).toEqual(expected);
+      });
+    });
+
+    describe('getSquareHarmonyColors', () => {
+      it('handles grayscale color', () => {
+        const spin = getSquareHarmonyColors(
+          black,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        expect(spin).toEqual(['#000000', '#808080', '#ffffff', '#808080']);
+
+        const ignore = getSquareHarmonyColors(
+          black,
+          GrayscaleHandlingMode.IGNORE
+        ).map((c) => c.toHex());
+        expect(ignore).toEqual(['#000000', '#000000', '#000000', '#000000']);
+      });
+
+      it('handles non-grayscale color', () => {
+        const expected = ['#ff0000', '#80ff00', '#00ffff', '#8000ff'];
+        const spin = getSquareHarmonyColors(
+          red,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        const ignore = getSquareHarmonyColors(red, GrayscaleHandlingMode.IGNORE).map(
+          (c) => c.toHex()
+        );
+        expect(spin).toEqual(expected);
+        expect(ignore).toEqual(expected);
+      });
+    });
+
+    describe('getTetradicHarmonyColors', () => {
+      it('handles grayscale color', () => {
+        const spin = getTetradicHarmonyColors(
+          black,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        expect(spin).toEqual(['#000000', '#545454', '#ffffff', '#ababab']);
+
+        const ignore = getTetradicHarmonyColors(
+          black,
+          GrayscaleHandlingMode.IGNORE
+        ).map((c) => c.toHex());
+        expect(ignore).toEqual(['#000000', '#000000', '#000000', '#000000']);
+      });
+
+      it('handles non-grayscale color', () => {
+        const expected = ['#ff0000', '#ffff00', '#00ffff', '#0000ff'];
+        const spin = getTetradicHarmonyColors(
+          red,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        const ignore = getTetradicHarmonyColors(red, GrayscaleHandlingMode.IGNORE).map(
+          (c) => c.toHex()
+        );
+        expect(spin).toEqual(expected);
+        expect(ignore).toEqual(expected);
+      });
+    });
+
+    describe('getAnalogousHarmonyColors', () => {
+      it('handles grayscale color', () => {
+        const spin = getAnalogousHarmonyColors(
+          black,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        expect(spin).toEqual([
+          '#000000',
+          '#2b2b2b',
+          '#2b2b2b',
+          '#545454',
+          '#545454',
+        ]);
+
+        const ignore = getAnalogousHarmonyColors(
+          black,
+          GrayscaleHandlingMode.IGNORE
+        ).map((c) => c.toHex());
+        expect(ignore).toEqual([
+          '#000000',
+          '#000000',
+          '#000000',
+          '#000000',
+          '#000000',
+        ]);
+      });
+
+      it('handles non-grayscale color', () => {
+        const expected = ['#ff0000', '#ff0080', '#ff8000', '#ff00ff', '#ffff00'];
+        const spin = getAnalogousHarmonyColors(
+          red,
+          GrayscaleHandlingMode.SPIN_LIGHTNESS
+        ).map((c) => c.toHex());
+        const ignore = getAnalogousHarmonyColors(red, GrayscaleHandlingMode.IGNORE).map(
+          (c) => c.toHex()
+        );
+        expect(spin).toEqual(expected);
+        expect(ignore).toEqual(expected);
+      });
+    });
   });
 });
