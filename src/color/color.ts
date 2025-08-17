@@ -11,6 +11,7 @@ import {
   toRGB,
 } from './conversions';
 import {
+  cmykToString,
   ColorCMYK,
   ColorFormat,
   ColorHex,
@@ -22,6 +23,12 @@ import {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
+  hslaToString,
+  hslToString,
+  lchToString,
+  oklchToString,
+  rgbaToString,
+  rgbToString,
 } from './formats';
 import {
   ColorHarmony,
@@ -99,6 +106,34 @@ export class Color {
 
   toOKLCH(): ColorOKLCH {
     return toOKLCH(this.color);
+  }
+
+  toRGBString(): string {
+    return rgbToString(this.toRGB());
+  }
+
+  toRGBAString(): string {
+    return rgbaToString(this.toRGBA());
+  }
+
+  toHSLString(): string {
+    return hslToString(this.toHSL());
+  }
+
+  toHSLAString(): string {
+    return hslaToString(this.toHSLA());
+  }
+
+  toCMYKString(): string {
+    return cmykToString(this.toCMYK());
+  }
+
+  toLCHString(): string {
+    return lchToString(this.toLCH());
+  }
+
+  toOKLCHString(): string {
+    return oklchToString(this.toOKLCH());
   }
 
   getAlpha(): number {
