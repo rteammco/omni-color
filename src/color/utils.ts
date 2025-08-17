@@ -25,7 +25,7 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string): Col
     }
 
     // Named color (e.g. "red"):
-    const namedColorHex = CSS_COLOR_NAME_TO_HEX_MAP[color.toLowerCase()];
+    const namedColorHex = CSS_COLOR_NAME_TO_HEX_MAP[color.toLowerCase().replace(/ /g, '')];
     if (namedColorHex) {
       return toRGBA(namedColorHex);
     }

@@ -153,8 +153,11 @@ describe('Named color support', () => {
       expect(new Color(name.toUpperCase()).toHex()).toEqual(hex);
     }
 
+    // Check other named input formatting (ignore caps, whitespace):
     expect(new Color('Red').toRGBA()).toEqual({ r: 255, g: 0, b: 0, a: 1 });
     expect(new Color('blACK').toRGB()).toEqual({ r: 0, g: 0, b: 0 });
+    expect(new Color('light blue').toHex()).toEqual('#add8e6');
+    expect(new Color('light Golden rod YELLOW').toHex()).toEqual('#fafad2');
   });
 
   it('throws on unknown color names', () => {
