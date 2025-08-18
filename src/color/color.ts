@@ -59,6 +59,22 @@ import { getRandomColorRGBA, RandomColorOptions } from './random';
 import { ColorSwatch, getColorSwatch } from './swatch';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
+/**
+ * Immutable utility class for representing and working with colors.
+ *
+ * A {@link Color} provides helpers for converting between formats, generating
+ * palettes, and performing operations like darkening or desaturating. Instances
+ * do not change once created; methods that might normally mutate a color instead
+ * return computed values or new {@link Color} objects.
+ *
+ * @example
+ * ```ts
+ * const red = new Color('#ff0000');
+ * red.toHSL(); // { h: 0, s: 100, l: 50 }
+ * const darker = red.darken(20); // new Color
+ * red.toHex(); // '#ff0000'
+ * ```
+ */
 export class Color {
   private color: ColorRGBA;
 
