@@ -60,12 +60,14 @@ import { ColorSwatch, getColorSwatch } from './swatch';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
 /**
- * Immutable utility class for representing and working with colors.
+ * The base omni-color object.
  *
- * A {@link Color} provides helpers for converting between formats, generating
- * palettes, and performing operations like darkening or desaturating. Instances
- * do not change once created; methods that might normally mutate a color instead
- * return computed values or new {@link Color} objects.
+ * The {@link Color} class represents a specific color and provides methods for
+ * converting between formats, performing manipulations like darkening or desaturating,
+ * and generating harmonies and color palettes.
+ *
+ * {@link Color} instances are immutable - all operations except `setAlpha()` will return
+ * a new {@link Color} instance representing the modified color.
  *
  * @example
  * ```ts
