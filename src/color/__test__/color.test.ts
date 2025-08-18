@@ -133,6 +133,34 @@ describe('Color constructor and conversion tests', () => {
   });
 });
 
+describe('Color.random', () => {
+  it('creates a Color instance with default options', () => {
+    const color = Color.random();
+    expect(color).toBeInstanceOf(Color);
+  });
+
+  it('respects provided options', () => {
+    const spy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
+    const anchored = Color.random({ anchorColor: BaseColorName.BLUE });
+    expect(anchored.getName().name).toBe(BaseColorName.BLUE);
+
+    const palette = Color.random({ paletteSuitable: true });
+    const paletteHSL = palette.toHSL();
+    expect(paletteHSL.s).toBeGreaterThanOrEqual(40);
+    expect(paletteHSL.l).toBeGreaterThanOrEqual(25);
+    expect(paletteHSL.l).toBeLessThanOrEqual(75);
+
+    const alphaColor = Color.random({ alpha: 0.25 });
+    expect(alphaColor.getAlpha()).toBe(0.25);
+
+    const randomizedAlpha = Color.random({ randomizeAlpha: true });
+    expect(randomizedAlpha.getAlpha()).toBe(0.5);
+
+    spy.mockRestore();
+  });
+});
+
 describe('Color.toXString methods', () => {
   it('returns string representations of the color', () => {
     const color = new Color({ ...BASE_RGB, a: 0.5 });
