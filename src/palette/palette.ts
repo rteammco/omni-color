@@ -58,7 +58,7 @@ export interface SemanticColorHarmonizationOptions {
 }
 
 const DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS: SemanticColorHarmonizationOptions = {
-  huePull: 0.3,
+  huePull: 0.1,
   chromaRange: [0.02, 0.25],
 };
 
