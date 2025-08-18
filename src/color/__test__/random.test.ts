@@ -104,13 +104,11 @@ describe('getRandomColorRGBA', () => {
       const expected = toRGBA({
         h: Math.floor(randomValue * (range.end - range.start + 1)) + range.start,
         s:
-          Math.floor(
-            randomValue * (101 - GRAYSCALE_MIN_SATURATION_THRESHOLD)
-          ) + GRAYSCALE_MIN_SATURATION_THRESHOLD,
+          Math.floor(randomValue * (101 - GRAYSCALE_MIN_SATURATION_THRESHOLD)) +
+          GRAYSCALE_MIN_SATURATION_THRESHOLD,
         l:
           Math.floor(
-            randomValue *
-              (WHITE_MAX_LIGHTNESS_THRESHOLD - BLACK_MIN_LIGHTNESS_THRESHOLD + 1)
+            randomValue * (WHITE_MAX_LIGHTNESS_THRESHOLD - BLACK_MIN_LIGHTNESS_THRESHOLD + 1)
           ) + BLACK_MIN_LIGHTNESS_THRESHOLD,
         a: 1,
       });
@@ -148,9 +146,7 @@ describe('getRandomColorRGBA', () => {
       ].forEach(({ anchor, min, max }) => {
         const colorRGBA = getRandomColorRGBA({ anchorColor: anchor, paletteSuitable: true });
         const expectedH = Math.floor(randomValue * 360);
-        const expectedS = Math.floor(
-          randomValue * GRAYSCALE_MIN_SATURATION_THRESHOLD
-        );
+        const expectedS = Math.floor(randomValue * GRAYSCALE_MIN_SATURATION_THRESHOLD);
         const expectedL = Math.floor(randomValue * (max - min + 1)) + min;
         const expected = toRGBA({ h: expectedH, s: expectedS, l: expectedL, a: 1 });
         expect(colorRGBA).toEqual(expected);
