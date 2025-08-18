@@ -14,6 +14,7 @@ import {
 } from './color/formats';
 import { ColorHarmony } from './color/harmonies';
 import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
+import { RandomColorOptions } from './color/random';
 import { ColorSwatch } from './color/swatch';
 import { ColorPalette, SemanticColorHarmonizationOptions } from './palette/palette';
 
@@ -36,5 +37,6 @@ export {
   ColorRGB,
   ColorRGBA,
   ColorSwatch,
+  RandomColorOptions,
   SemanticColorHarmonizationOptions,
 };
