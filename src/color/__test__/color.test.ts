@@ -240,10 +240,15 @@ describe('Color.setAlpha', () => {
     expect(color.toHex8()).toBe(HEX8_SEMI_TRANSPARENT);
   });
 
-  it('throws when alpha is out of range', () => {
-    const color = new Color(BASE_RGB);
-    expect(() => color.setAlpha(1.5)).toThrow();
-    expect(() => color.setAlpha(-0.1)).toThrow();
+  it('clamps correctly when alpha is out of range', () => {
+    const color = new Color({ ...BASE_RGB, a: 0.5 });
+    expect(color.getAlpha()).toBe(0.5);
+    color.setAlpha(1.5);
+    expect(color.getAlpha()).toBe(1);
+    expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: 1 });
+    color.setAlpha(-0.1);
+    expect(color.getAlpha()).toBe(0);
+    expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: 0 });
   });
 
   it('is chainable', () => {

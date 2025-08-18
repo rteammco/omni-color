@@ -3,6 +3,7 @@ import {
   generateColorPaletteFromBaseColor,
   SemanticColorHarmonizationOptions,
 } from '../palette/palette';
+import { clampValue } from '../utils';
 import {
   toCMYK,
   toHex,
@@ -270,13 +271,9 @@ export class Color {
    * Set the alpha channel of the color.
    *
    * @param alpha - New alpha value between `0` and `1`.
-   * @throws If `alpha` is outside the valid range.
    */
   setAlpha(alpha: number): Color {
-    if (typeof alpha !== 'number' || alpha < 0 || alpha > 1) {
-      throw new Error('[setAlpha] alpha must be a number between 0 and 1');
-    }
-    this.color.a = +alpha.toFixed(3);
+    this.color.a = +clampValue(alpha, 0, 1).toFixed(3);
     return this;
   }
 
