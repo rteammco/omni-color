@@ -3,15 +3,7 @@ import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.constants';
 import { toRGBA } from './conversions';
 import type { ColorFormat, ColorHex, ColorRGBA } from './formats';
 import { parseCSSColorFormatString } from './parse';
-
-export function getRandomColorRGBA(): ColorRGBA {
-  return {
-    r: Math.floor(Math.random() * 256),
-    g: Math.floor(Math.random() * 256),
-    b: Math.floor(Math.random() * 256),
-    a: 1,
-  };
-}
+import { getRandomColorRGBA } from './random';
 
 export function getColorRGBAFromInput(color?: ColorFormat | Color | string | null): ColorRGBA {
   if (color instanceof Color) {

@@ -55,8 +55,9 @@ import {
   spinColorHue,
 } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
+import { getRandomColorRGBA, RandomColorOptions } from './random';
 import { ColorSwatch, getColorSwatch } from './swatch';
-import { getColorRGBAFromInput, getRandomColorRGBA, isColorDark } from './utils';
+import { getColorRGBAFromInput, isColorDark } from './utils';
 
 export class Color {
   private color: ColorRGBA;
@@ -90,13 +91,15 @@ export class Color {
   /**
    * Create a {@link Color} with a random RGB value.
    *
+   * @param options - Optional {@link RandomColorOptions} for extra controls on alpha, hue, and readability.
+   *
    * @example
    * ```ts
    * const color = Color.random();
    * ```
    */
-  static random(): Color {
-    return new Color(getRandomColorRGBA());
+  static random(options?: RandomColorOptions): Color {
+    return new Color(getRandomColorRGBA(options));
   }
 
   /**
