@@ -46,7 +46,7 @@ export function Playground() {
 
   return (
     <div>
-      <ColorInput defaultColor={color.toHex()} onColorChanged={handleColorChanged} />
+      <ColorInput color={color} onColorChanged={handleColorChanged} />
       <VSpace height={24} />
       <ColorInfo color={color} />
       <VSpace height={8} />

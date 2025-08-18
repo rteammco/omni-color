@@ -1,16 +1,16 @@
 import { useCallback, useState } from 'react';
-import { Color } from '../../../dist';
+import { Color, type RandomColorOptions } from '../../../dist';
 import { Icon } from '../components/Icon';
 
 interface Props {
-  defaultColor: string;
+  color: Color;
   onColorChanged: (color: Color) => void;
 }
 
-export function ColorInput({ defaultColor, onColorChanged }: Props) {
+export function ColorInput({ color, onColorChanged }: Props) {
   const [isInputColorValid, setIsInputColorValid] = useState(true);
 
-  const [inputValue, setInputValue] = useState(defaultColor);
+  const [inputValue, setInputValue] = useState<string>(color.toHex());
 
   const handleColorInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +36,15 @@ export function ColorInput({ defaultColor, onColorChanged }: Props) {
     [onColorChanged]
   );
 
+  const handleRandomColorSelected = useCallback(
+    (options: RandomColorOptions) => {
+      const color = Color.random(options);
+      onColorChanged(color);
+      setInputValue(color.toHex());
+    },
+    [onColorChanged]
+  );
+
   return (
     <div>
       <div className="flex flex-row justify-center items-center gap-4">
@@ -52,8 +61,8 @@ export function ColorInput({ defaultColor, onColorChanged }: Props) {
           <Icon color="red" size={32} type={Icon.TYPE.X_CIRCLE} />
         )}
       </div>
-      <div className="mt-3 flex flex-row justify-center gap-2">
-        <span>Enter a color above, or choose:</span>
+      <div className="mt-2">Enter a color above, or choose:</div>
+      <div className="mt-1 flex flex-row justify-center gap-2">
         <a onClick={() => handlePresetColorSelected('red')}>red</a>
         &middot;
         <a onClick={() => handlePresetColorSelected('darkgreen')}>darkgreen</a>
@@ -75,8 +84,18 @@ export function ColorInput({ defaultColor, onColorChanged }: Props) {
         </a>
         &middot;
         <a onClick={() => handlePresetColorSelected('oklch(0.35 0 89.5)')}>oklch(0.35 0 89.5)</a>
+      </div>
+      <div>or randomize:</div>
+      <div className="flex flex-row justify-center gap-2">
+        <a onClick={() => handleRandomColorSelected({})}>random</a>
         &middot;
-        <a onClick={() => handlePresetColorSelected()}>random</a>
+        <a onClick={() => handleRandomColorSelected({ anchorColor: color.getName().name })}>
+          random (same hue)
+        </a>
+        &middot;
+        <a onClick={() => handleRandomColorSelected({ paletteSuitable: true })}>
+          random (suitable for palette)
+        </a>
       </div>
     </div>
   );
