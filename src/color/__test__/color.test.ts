@@ -252,9 +252,8 @@ describe('Color.setAlpha', () => {
   });
 
   it('is chainable', () => {
-    const color = new Color(BASE_RGB);
-    const result = color.setAlpha(0.25);
-    expect(result).toBe(color);
+    const color = new Color(BASE_RGB).setAlpha(0.25);
+    expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: 0.25 });
   });
 });
 
