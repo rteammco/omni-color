@@ -1,86 +1,81 @@
 import { clampValue } from '../utils';
 import { toRGBA } from './conversions';
 import { ColorRGBA } from './formats';
-import { BaseColorName } from './names';
+import { BASE_COLOR_HUE_RANGES, BaseColorName } from './names';
 
 export interface RandomColorOptions {
-  alpha?: number;
-  hue?: BaseColorName;
   /**
-   * When `true`, generated colors will have moderate lightness and
-   * sufficient saturation to make them suitable for creating color palettes.
+   * The alpha value of the random color (0-1). If not specified, it will default to 1 (opaque)
+   * unless `randomizeAlpha` is `true`.
    */
-  isPaletteColor?: boolean;
-  shouldRandomizeAlpha?: boolean;
+  alpha?: number;
+  /**
+   * Randomize within range of the anchor color. For example, if `anchorColor` is `BaseColorName.GREEN`,
+   * the generated color will have a random hue in the green range (75° to 164°). Grayscale anchor
+   * colors will restrict the random color's lightness and saturation to the appropriate ranges.
+   */
+  anchorColor?: BaseColorName;
+  /**
+   * If `paletteSuitable` is `true`, generated colors will have moderate lightness and
+   * sufficient saturation to make them suitable for creating color palettes.
+   *
+   * This option will be ignored if `anchorColor` is `BaseColorName.BLACK`, `BaseColorName.WHITE`,
+   * or `BaseColorName.GRAY`.
+   */
+  paletteSuitable?: boolean;
+  /**
+   * If `randomizeAlpha` is `true`, the alpha value of the generated color will be randomized (0-1).
+   * This option is ignored if an `alpha` value is explicitly provided.
+   */
+  randomizeAlpha?: boolean;
 }
 
-interface HueRange {
-  start: number;
-  end: number;
-}
-
-const BASE_COLOR_HUE_RANGES: Record<BaseColorName, HueRange[]> = {
-  [BaseColorName.RED]: [
-    { start: 345, end: 360 },
-    { start: 0, end: 15 },
-  ],
-  [BaseColorName.ORANGE]: [{ start: 15, end: 45 }],
-  [BaseColorName.YELLOW]: [{ start: 45, end: 75 }],
-  [BaseColorName.GREEN]: [{ start: 75, end: 165 }],
-  [BaseColorName.BLUE]: [{ start: 165, end: 255 }],
-  [BaseColorName.PURPLE]: [{ start: 255, end: 285 }],
-  [BaseColorName.PINK]: [{ start: 285, end: 345 }],
-  // Hue doesn't matter for neutrals, but keep a default full range.
-  [BaseColorName.BLACK]: [{ start: 0, end: 360 }],
-  [BaseColorName.GRAY]: [{ start: 0, end: 360 }],
-  [BaseColorName.WHITE]: [{ start: 0, end: 360 }],
-};
-
-function randomIntInclusive(min: number, max: number): number {
+function getRandomIntInclusive(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getRandomHue(name: BaseColorName): number {
+function getRandomAnchoredHueValue(name: BaseColorName): number {
   const ranges = BASE_COLOR_HUE_RANGES[name];
   const range = ranges[Math.floor(Math.random() * ranges.length)];
-  // Treat range end as exclusive
-  return randomIntInclusive(range.start, range.end - 1);
+  return getRandomIntInclusive(range.start, range.end);
 }
 
 export function getRandomColorRGBA(options: RandomColorOptions = {}): ColorRGBA {
-  const { alpha, hue, isPaletteColor, shouldRandomizeAlpha } = options;
+  const { alpha, anchorColor, paletteSuitable, randomizeAlpha } = options;
 
   let h: number;
   let s: number;
   let l: number;
 
-  if (hue === BaseColorName.BLACK || hue === BaseColorName.GRAY || hue === BaseColorName.WHITE) {
-    h = randomIntInclusive(0, 359);
-    s = randomIntInclusive(0, 10);
-    if (hue === BaseColorName.BLACK) {
-      l = randomIntInclusive(0, 10);
-    } else if (hue === BaseColorName.WHITE) {
-      l = randomIntInclusive(90, 100);
+  if (
+    anchorColor &&
+    [BaseColorName.BLACK, BaseColorName.WHITE, BaseColorName.GRAY].includes(anchorColor)
+  ) {
+    h = getRandomIntInclusive(0, 359);
+    s = getRandomIntInclusive(0, 10);
+    if (anchorColor === BaseColorName.BLACK) {
+      l = getRandomIntInclusive(0, 10); // black-ish
+    } else if (anchorColor === BaseColorName.WHITE) {
+      l = getRandomIntInclusive(90, 100); // white-ish
     } else {
-      // GRAY
-      l = randomIntInclusive(10, 90);
+      l = getRandomIntInclusive(10, 90); // gray
     }
   } else {
-    h = hue ? getRandomHue(hue) : randomIntInclusive(0, 359);
-    if (isPaletteColor) {
-      s = randomIntInclusive(40, 100);
-      l = randomIntInclusive(25, 75);
+    h = anchorColor ? getRandomAnchoredHueValue(anchorColor) : getRandomIntInclusive(0, 359);
+    if (paletteSuitable) {
+      s = getRandomIntInclusive(40, 100);
+      l = getRandomIntInclusive(25, 75);
     } else {
-      s = randomIntInclusive(0, 100);
-      l = randomIntInclusive(0, 100);
+      s = getRandomIntInclusive(0, 100);
+      l = getRandomIntInclusive(0, 100);
     }
   }
 
   let a: number;
   if (alpha !== undefined) {
     a = clampValue(alpha, 0, 1);
-  } else if (shouldRandomizeAlpha) {
-    a = Math.random();
+  } else if (randomizeAlpha) {
+    a = +Math.random().toFixed(3);
   } else {
     a = 1;
   }
