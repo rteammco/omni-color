@@ -91,7 +91,7 @@ export class Color {
   /**
    * Create a {@link Color} with a random RGB value.
    *
-   * @param options - Optional {@link RandomColorOptions} for extra controls on alpha, hue, and readability.
+   * @param options - Optional {@link RandomColorOptions} for extra controls on alpha, hue, and palette suitability.
    *
    * @example
    * ```ts

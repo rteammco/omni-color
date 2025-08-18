@@ -24,23 +24,49 @@ export interface ColorNameAndLightness {
   lightness: ColorLightnessModifier;
 }
 
+interface HueRangeInclusive {
+  start: number; // 0-360
+  end: number; // 0-360
+}
+
+export const BASE_COLOR_HUE_RANGES: { [key in BaseColorName]: HueRangeInclusive[] } = {
+  [BaseColorName.RED]: [
+    { start: 345, end: 360 },
+    { start: 0, end: 14 },
+  ],
+  [BaseColorName.ORANGE]: [{ start: 15, end: 44 }],
+  [BaseColorName.YELLOW]: [{ start: 45, end: 74 }],
+  [BaseColorName.GREEN]: [{ start: 75, end: 164 }],
+  [BaseColorName.BLUE]: [{ start: 165, end: 254 }],
+  [BaseColorName.PURPLE]: [{ start: 255, end: 284 }],
+  [BaseColorName.PINK]: [{ start: 285, end: 344 }],
+  // Hue doesn't matter for neutrals, but keep a default full range:
+  [BaseColorName.BLACK]: [{ start: 0, end: 360 }],
+  [BaseColorName.GRAY]: [{ start: 0, end: 360 }],
+  [BaseColorName.WHITE]: [{ start: 0, end: 360 }],
+};
+
+function isWithinHueRange(name: BaseColorName, hue: number): boolean {
+  return BASE_COLOR_HUE_RANGES[name].some((range) => hue >= range.start && hue <= range.end);
+}
+
 function getColorNameByHue(hue: number): BaseColorName {
-  if (hue < 15 || hue >= 345) {
+  if (isWithinHueRange(BaseColorName.RED, hue)) {
     return BaseColorName.RED;
   }
-  if (hue < 45) {
+  if (isWithinHueRange(BaseColorName.ORANGE, hue)) {
     return BaseColorName.ORANGE;
   }
-  if (hue < 75) {
+  if (isWithinHueRange(BaseColorName.YELLOW, hue)) {
     return BaseColorName.YELLOW;
   }
-  if (hue < 165) {
+  if (isWithinHueRange(BaseColorName.GREEN, hue)) {
     return BaseColorName.GREEN;
   }
-  if (hue < 255) {
+  if (isWithinHueRange(BaseColorName.BLUE, hue)) {
     return BaseColorName.BLUE;
   }
-  if (hue < 285) {
+  if (isWithinHueRange(BaseColorName.PURPLE, hue)) {
     return BaseColorName.PURPLE;
   }
   // else, hue < 345:
