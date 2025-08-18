@@ -142,14 +142,14 @@ describe('Color.random', () => {
   it('respects provided options', () => {
     const spy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
 
-    const anchored = Color.random({ anchorColor: BaseColorName.BLUE });
-    expect(anchored.getName().name).toBe(BaseColorName.BLUE);
+    const anchoredColor = Color.random({ anchorColor: BaseColorName.BLUE });
+    expect(anchoredColor.getName().name).toBe(BaseColorName.BLUE);
 
-    const palette = Color.random({ paletteSuitable: true });
-    const paletteHSL = palette.toHSL();
-    expect(paletteHSL.s).toBeGreaterThanOrEqual(40);
-    expect(paletteHSL.l).toBeGreaterThanOrEqual(25);
-    expect(paletteHSL.l).toBeLessThanOrEqual(75);
+    const paletteSuitableColor = Color.random({ paletteSuitable: true });
+    const paletteSuitableHSL = paletteSuitableColor.toHSL();
+    expect(paletteSuitableHSL.s).toBeGreaterThanOrEqual(40);
+    expect(paletteSuitableHSL.l).toBeGreaterThanOrEqual(25);
+    expect(paletteSuitableHSL.l).toBeLessThanOrEqual(75);
 
     const alphaColor = Color.random({ alpha: 0.25 });
     expect(alphaColor.getAlpha()).toBe(0.25);
