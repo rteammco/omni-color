@@ -64,18 +64,22 @@ export class Color {
   /**
    * Create a new {@link Color} instance.
    *
-   * The input can be any CSS color format: a hex string, color object,
+   * The input can be any CSS color string, a hex string, any {@link ColorFormat} object,
    * {@link Color} instance, or a named color such as `'lightblue'` or
    * `'green'`. Passing `null` or `undefined` results in a random color.
    * Invalid input will throw an error.
    *
    * @param color - Initial color value.
    *
+   * @throws If `color` input is invalid.
+   *
    * @example
    * ```ts
    * const red = new Color('#ff0000');
-   * const named = new Color('lightblue');
    * const sameRed = new Color(red.toRGB());
+   * const fromObj = new Color({ h: 0, s: 100, l: 50 });
+   * const parsed = new Color('rgb(255, 0, 0)');
+   * const named = new Color('lightblue');
    * const random = new Color();
    * ```
    */
@@ -109,13 +113,18 @@ export class Color {
 
   /**
    * Get the color as an 8-digit hex string including alpha (`#rrggbbaa`).
+   *
+   * @example
+   * ```ts
+   * new Color('rgba(255, 0, 0, 0.5)').toHex(); // '#ff000080'
+   * ```
    */
   toHex8(): ColorHex {
     return toHex8(this.color);
   }
 
   /**
-   * Get the color as an `{ r, g, b }` object.
+   * Get the color as a {@link ColorRGB} `{ r, g, b }` object.
    */
   toRGB(): ColorRGB {
     return toRGB(this.color);
@@ -129,7 +138,7 @@ export class Color {
   }
 
   /**
-   * Get the color as an `{ r, g, b, a }` object.
+   * Get the color as a {@link ColorRGBA} `{ r, g, b, a }` object.
    */
   toRGBA(): ColorRGBA {
     return this.color;
@@ -143,7 +152,8 @@ export class Color {
   }
 
   /**
-   * Get the color as an `{ h, s, l }` object.
+   * Get the color as a {@link ColorHSL} `{ h, s, l }` object where `h` is 0–360 and `s`
+   * and `l` are 0–100.
    */
   toHSL(): ColorHSL {
     return toHSL(this.color);
@@ -157,7 +167,7 @@ export class Color {
   }
 
   /**
-   * Get the color as an `{ h, s, l, a }` object.
+   * Get the color as a {@link ColorHSLA} `{ h, s, l, a }` object.
    */
   toHSLA(): ColorHSLA {
     return toHSLA(this.color);
@@ -171,7 +181,7 @@ export class Color {
   }
 
   /**
-   * Get the color as an HSV object `{ h, s, v }` where `h` is 0–360 and `s`
+   * Get the color as a {@link ColorHSV} `{ h, s, v }` object where `h` is 0–360 and `s`
    * and `v` are 0–100.
    */
   toHSV(): ColorHSV {
@@ -179,14 +189,14 @@ export class Color {
   }
 
   /**
-   * Get the color as an HSVA object `{ h, s, v, a }`.
+   * Get the color as a {@link ColorHSVA} `{ h, s, v, a }` object.
    */
   toHSVA(): ColorHSVA {
     return toHSVA(this.color);
   }
 
   /**
-   * Get the color as a CMYK object `{ c, m, y, k }` where each channel is
+   * Get the color as a {@link ColorCMYK} `{ c, m, y, k }` where each channel is
    * 0–100.
    */
   toCMYK(): ColorCMYK {
@@ -201,28 +211,28 @@ export class Color {
   }
 
   /**
-   * Get the color as a CIELCH object `{ l, c, h }`.
+   * Get the color as a {@link ColorLCH} (CIELCh) `{ l, c, h }` object.
    */
   toLCH(): ColorLCH {
     return toLCH(this.color);
   }
 
   /**
-   * Get the color as an `lch(l c h / a)` string.
+   * Get the color as an `lch(l% c h)` string.
    */
   toLCHString(): string {
     return lchToString(this.toLCH());
   }
 
   /**
-   * Get the color as an OKLCH object `{ l, c, h }`.
+   * Get the color as a {@link ColorOKLCH} `{ l, c, h }` object.
    */
   toOKLCH(): ColorOKLCH {
     return toOKLCH(this.color);
   }
 
   /**
-   * Get the color as an `oklch(l c h / a)` string.
+   * Get the color as an `oklch(l c h)` string.
    */
   toOKLCHString(): string {
     return oklchToString(this.toOKLCH());
@@ -322,7 +332,8 @@ export class Color {
   }
 
   /**
-   * Convert the color to a grayscale equivalent.
+   * Convert the color to a grayscale equivalent. The color's lightness is preserved,
+   * but saturation is reduced to 0.
    */
   grayscale(): Color {
     return colorToGrayscale(this);
@@ -345,11 +356,15 @@ export class Color {
 
   /**
    * Get the split-complementary harmony for the color. Returns the base
-   * color and the two colors adjacent to its complement on the color wheel.
+   * color and the two colors adjacent to its complement on the color wheel
+   * (hues rotated by 150° and 210°).
    *
    * @example
    * ```ts
-   * const [base, left, right] = new Color('#ff0000').getSplitComplementaryColors();
+   * const [a, b, c] = new Color('#ff0000').getSplitComplementaryColors();
+   * a.toHex(); // '#ff0000'
+   * b.toHex(); // '#0080ff'
+   * c.toHex(); // '#00ff80'
    * ```
    */
   getSplitComplementaryColors(): [Color, Color, Color] {
@@ -364,6 +379,9 @@ export class Color {
    * @example
    * ```ts
    * const [a, b, c] = new Color('#ff0000').getTriadicHarmonyColors();
+   * a.toHex(); // '#ff0000'
+   * b.toHex(); // '#0000ff'
+   * c.toHex(); // '#00ff00'
    * ```
    */
   getTriadicHarmonyColors(): [Color, Color, Color] {
@@ -377,6 +395,10 @@ export class Color {
    * @example
    * ```ts
    * const [a, b, c, d] = new Color('#ff0000').getSquareHarmonyColors();
+   * a.toHex(); // '#ff0000'
+   * b.toHex(); // '#80ff00'
+   * c.toHex(); // '#00ffff'
+   * d.toHex(); // '#8000ff'
    * ```
    */
   getSquareHarmonyColors(): [Color, Color, Color, Color] {
@@ -390,6 +412,10 @@ export class Color {
    * @example
    * ```ts
    * const [a, b, c, d] = new Color('#ff0000').getTetradicHarmonyColors();
+   * a.toHex(); // '#ff0000'
+   * b.toHex(); // '#ffff00'
+   * c.toHex(); // '#00ffff'
+   * d.toHex(); // '#0000ff'
    * ```
    */
   getTetradicHarmonyColors(): [Color, Color, Color, Color] {
@@ -403,6 +429,11 @@ export class Color {
    * @example
    * ```ts
    * const [a, b, c, d, e] = new Color('#ff0000').getAnalogousHarmonyColors();
+   * a.toHex(); // '#ff0000'
+   * b.toHex(); // '#ff0080'
+   * c.toHex(); // '#ff8000'
+   * d.toHex(); // '#ff00ff'
+   * e.toHex(); // '#ffff00'
    * ```
    */
   getAnalogousHarmonyColors(): [Color, Color, Color, Color, Color] {
@@ -416,6 +447,11 @@ export class Color {
    * @example
    * ```ts
    * const [a, b, c, d, e] = new Color('#ff0000').getMonochromaticHarmonyColors();
+   * a.toHex(); // '#ff0000'
+   * b.toHex(); // '#ff6666'
+   * c.toHex(); // '#990000'
+   * d.toHex(); // '#ff0000'
+   * e.toHex(); // '#e61919'
    * ```
    */
   getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color] {
@@ -432,7 +468,7 @@ export class Color {
   }
 
   /**
-   * Generate a swatch of lighter and darker variants of the color. The
+   * Returns a {@link ColorSwatch} of lighter and darker variants of the color. The
    * returned object has keys `100`–`900` where `500` is the base color, lower
    * numbers are lighter and higher numbers are darker.
    *
@@ -448,13 +484,13 @@ export class Color {
   }
 
   /**
-   * Build a semantic color palette based on the current color. The palette
+   * Returns a {@link ColorPalette} built around the current color. The palette
    * includes a primary swatch, additional swatches derived from the selected
-   * harmony as secondary colors, neutral colors, background/foreground colors
-   * and semantic swatches for statuses like info or warning.
+   * harmony as secondary colors, neutral colors, and color-matched semantic
+   * swatches for statuses like info or warning.
    *
-   * @param harmony - Harmony type to generate from (default `ColorHarmony.COMPLEMENTARY`).
-   * @param semanticColorHarmonizationOptions - Optional semantic adjustments.
+   * @param harmony - {@link ColorHarmony} used to generate secondary colors (default `ColorHarmony.COMPLEMENTARY`).
+   * @param semanticColorHarmonizationOptions - Optional semantic color options.
    *
    * @example
    * ```ts
@@ -490,8 +526,8 @@ export class Color {
    *
    * @example
    * ```ts
-   * new Color('#ff0000').getName();
-   * // { name: 'Red', lightness: ColorLightnessModifier.NORMAL }
+   * new Color('#ff0000').getName(); // { name: 'Red', lightness: ColorLightnessModifier.NORMAL }
+   * new Color('#006400').getName(); // { name: 'Green', lightness: ColorLightnessModifier.DARK }
    * ```
    */
   getName(): ColorNameAndLightness {
