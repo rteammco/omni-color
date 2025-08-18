@@ -1,6 +1,14 @@
 import { Color } from '../color';
 import { toHSLA, toRGBA } from '../conversions';
-import { BaseColorName } from '../names';
+import {
+  BASE_COLOR_HUE_RANGES,
+  BaseColorName,
+  BLACK_MIN_LIGHTNESS_THRESHOLD,
+  BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
+  GRAYSCALE_MIN_SATURATION_THRESHOLD,
+  WHITE_MAX_LIGHTNESS_THRESHOLD,
+  WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
+} from '../names';
 import { getRandomColorRGBA } from '../random';
 
 describe('getRandomColorRGBA', () => {
@@ -84,57 +92,76 @@ describe('getRandomColorRGBA', () => {
     spy.mockRestore();
   });
 
-  // TODO: need to fix this test
-  // it.each([0.1, 0.5, 0.9])('limits hue to specified base color (%f)', (randomValue) => {
-  //   const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
-  //   const coloredAnchors = Object.values(BaseColorName).filter(
-  //     (name) => ![BaseColorName.BLACK, BaseColorName.GRAY, BaseColorName.WHITE].includes(name)
-  //   );
-  //   coloredAnchors.forEach((name) => {
-  //     const colorRGBA = getRandomColorRGBA({ anchorColor: name });
-  //     const ranges = BASE_COLOR_HUE_RANGES[name];
-  //     const range = ranges[Math.floor(randomValue * ranges.length)];
-  //     const expected = toRGBA({
-  //       h: Math.floor(randomValue * (range.end - range.start + 1)) + range.start,
-  //       s: Math.floor(randomValue * 101),
-  //       l: Math.floor(randomValue * 101),
-  //       a: 1,
-  //     });
-  //     expect(colorRGBA).toEqual(expected);
-  //   });
-  //   spy.mockRestore();
-  // });
+  it.each([0.1, 0.5, 0.9])('limits hue to specified base color (%f)', (randomValue) => {
+    const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
+    const coloredAnchors = Object.values(BaseColorName).filter(
+      (name) => ![BaseColorName.BLACK, BaseColorName.GRAY, BaseColorName.WHITE].includes(name)
+    );
+    coloredAnchors.forEach((name) => {
+      const colorRGBA = getRandomColorRGBA({ anchorColor: name });
+      const ranges = BASE_COLOR_HUE_RANGES[name];
+      const range = ranges[Math.floor(randomValue * ranges.length)];
+      const expected = toRGBA({
+        h: Math.floor(randomValue * (range.end - range.start + 1)) + range.start,
+        s:
+          Math.floor(
+            randomValue * (101 - GRAYSCALE_MIN_SATURATION_THRESHOLD)
+          ) + GRAYSCALE_MIN_SATURATION_THRESHOLD,
+        l:
+          Math.floor(
+            randomValue *
+              (WHITE_MAX_LIGHTNESS_THRESHOLD - BLACK_MIN_LIGHTNESS_THRESHOLD + 1)
+          ) + BLACK_MIN_LIGHTNESS_THRESHOLD,
+        a: 1,
+      });
+      expect(colorRGBA).toEqual(expected);
+      const { name: detectedName } = new Color(colorRGBA).getName();
+      expect(detectedName).toBe(name);
+      const colorHSLA = toHSLA(colorRGBA);
+      expect(colorHSLA.s).toBeGreaterThanOrEqual(GRAYSCALE_MIN_SATURATION_THRESHOLD);
+      expect(colorHSLA.l).toBeGreaterThanOrEqual(BLACK_MIN_LIGHTNESS_THRESHOLD);
+      expect(colorHSLA.l).toBeLessThanOrEqual(WHITE_MAX_LIGHTNESS_THRESHOLD);
+    });
+    spy.mockRestore();
+  });
 
-  // TODO: need to fix this test
-  // it.each([0.1, 0.5, 0.9])(
-  //   'ignores paletteSuitable for grayscale anchor colors (%f)',
-  //   (randomValue) => {
-  //     const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
-  //     [
-  //       { anchor: BaseColorName.BLACK, min: 0, max: 10 },
-  //       { anchor: BaseColorName.WHITE, min: 90, max: 100 },
-  //       { anchor: BaseColorName.GRAY, min: 10, max: 90 },
-  //     ].forEach(({ anchor, min, max }) => {
-  //       const colorRGBA = getRandomColorRGBA({ anchorColor: anchor, paletteSuitable: true });
-  //       const expectedH = Math.floor(randomValue * 360);
-  //       const expectedS = Math.floor(randomValue * 11);
-  //       let expectedL;
-  //       if (anchor === BaseColorName.BLACK) {
-  //         expectedL = Math.floor(randomValue * 11);
-  //       } else if (anchor === BaseColorName.WHITE) {
-  //         expectedL = Math.floor(randomValue * 11) + 90;
-  //       } else {
-  //         expectedL = Math.floor(randomValue * 81) + 10;
-  //       }
-  //       const expected = toRGBA({ h: expectedH, s: expectedS, l: expectedL, a: 1 });
-  //       expect(colorRGBA).toEqual(expected);
-  //       expect(expectedS).toBeLessThanOrEqual(10);
-  //       expect(expectedL).toBeGreaterThanOrEqual(min);
-  //       expect(expectedL).toBeLessThanOrEqual(max);
-  //     });
-  //     spy.mockRestore();
-  //   }
-  // );
+  it.each([0.1, 0.5, 0.9])(
+    'ignores paletteSuitable for grayscale anchor colors (%f)',
+    (randomValue) => {
+      const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
+      [
+        {
+          anchor: BaseColorName.BLACK,
+          min: 0,
+          max: BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1,
+        },
+        {
+          anchor: BaseColorName.WHITE,
+          min: WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1,
+          max: 100,
+        },
+        {
+          anchor: BaseColorName.GRAY,
+          min: BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
+          max: WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
+        },
+      ].forEach(({ anchor, min, max }) => {
+        const colorRGBA = getRandomColorRGBA({ anchorColor: anchor, paletteSuitable: true });
+        const expectedH = Math.floor(randomValue * 360);
+        const expectedS = Math.floor(
+          randomValue * GRAYSCALE_MIN_SATURATION_THRESHOLD
+        );
+        const expectedL = Math.floor(randomValue * (max - min + 1)) + min;
+        const expected = toRGBA({ h: expectedH, s: expectedS, l: expectedL, a: 1 });
+        expect(colorRGBA).toEqual(expected);
+        const colorHSLA = toHSLA(colorRGBA);
+        expect(colorHSLA.s).toBeLessThan(GRAYSCALE_MIN_SATURATION_THRESHOLD);
+        expect(colorHSLA.l).toBeGreaterThanOrEqual(min);
+        expect(colorHSLA.l).toBeLessThanOrEqual(max);
+      });
+      spy.mockRestore();
+    }
+  );
 
   it.each([0.0001, 0.1, 0.23452346, 0.5, 0.6734253, 0.9, 0.9999])(
     'generates palette-friendly colors when requested (%f)',
