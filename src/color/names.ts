@@ -46,6 +46,12 @@ export const BASE_COLOR_HUE_RANGES: { [key in BaseColorName]: HueRangeInclusive[
   [BaseColorName.WHITE]: [{ start: 0, end: 360 }],
 };
 
+export const BLACK_MIN_LIGHTNESS_THRESHOLD = 5; // colors below this lightness will alway be considered black
+export const WHITE_MAX_LIGHTNESS_THRESHOLD = 99; // colors above this lightness will alway be considered white
+export const GRAYSCALE_MIN_SATURATION_THRESHOLD = 10; // colors below this saturation will always be considered gray, black, or white
+export const BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION = 10; // colors below this lightness will be considered black if saturation < GRAYSCALE_MIN_SATURATION_THRESHOLD
+export const WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION = 90; // colors above this lightness will be considered white if saturation < GRAYSCALE_MIN_SATURATION_THRESHOLD
+
 function isWithinHueRange(name: BaseColorName, hue: number): boolean {
   return BASE_COLOR_HUE_RANGES[name].some((range) => hue >= range.start && hue <= range.end);
 }
@@ -86,11 +92,19 @@ function getLightnessModifier(l: number): ColorLightnessModifier {
 export function getBaseColorName(color: Color): ColorNameAndLightness {
   const { h, s, l } = color.toHSL();
 
-  if (s <= 10) {
-    if (l <= 10) {
+  if (l < BLACK_MIN_LIGHTNESS_THRESHOLD) {
+    return { name: BaseColorName.BLACK, lightness: ColorLightnessModifier.NORMAL };
+  }
+
+  if (l > WHITE_MAX_LIGHTNESS_THRESHOLD) {
+    return { name: BaseColorName.WHITE, lightness: ColorLightnessModifier.NORMAL };
+  }
+
+  if (s < GRAYSCALE_MIN_SATURATION_THRESHOLD) {
+    if (l < BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION) {
       return { name: BaseColorName.BLACK, lightness: ColorLightnessModifier.NORMAL };
     }
-    if (l >= 90) {
+    if (l > WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION) {
       return { name: BaseColorName.WHITE, lightness: ColorLightnessModifier.NORMAL };
     }
     return { name: BaseColorName.GRAY, lightness: getLightnessModifier(l) };

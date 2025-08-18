@@ -1,7 +1,19 @@
 import { clampValue } from '../utils';
 import { toRGBA } from './conversions';
 import { ColorRGBA } from './formats';
-import { BASE_COLOR_HUE_RANGES, BaseColorName } from './names';
+import {
+  BASE_COLOR_HUE_RANGES,
+  BaseColorName,
+  BLACK_MIN_LIGHTNESS_THRESHOLD,
+  BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
+  GRAYSCALE_MIN_SATURATION_THRESHOLD,
+  WHITE_MAX_LIGHTNESS_THRESHOLD,
+  WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
+} from './names';
+
+const SUITABLE_PALETTE_MIN_SATURATION = 40;
+const SUITABLE_PALETTE_MIN_LIGHTNESS = 25;
+const SUITABLE_PALETTE_MAX_LIGHTNESS = 75;
 
 export interface RandomColorOptions {
   /**
@@ -52,23 +64,34 @@ export function getRandomColorRGBA(options: RandomColorOptions = {}): ColorRGBA 
     [BaseColorName.BLACK, BaseColorName.WHITE, BaseColorName.GRAY].includes(anchorColor)
   ) {
     h = getRandomIntInclusive(0, 359);
-    s = getRandomIntInclusive(0, 10);
+    s = getRandomIntInclusive(0, GRAYSCALE_MIN_SATURATION_THRESHOLD - 1);
     if (anchorColor === BaseColorName.BLACK) {
-      l = getRandomIntInclusive(0, 10); // black-ish
+      l = getRandomIntInclusive(0, BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1);
     } else if (anchorColor === BaseColorName.WHITE) {
-      l = getRandomIntInclusive(90, 100); // white-ish
+      l = getRandomIntInclusive(WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1, 100);
     } else {
-      l = getRandomIntInclusive(10, 90); // gray
+      l = getRandomIntInclusive(
+        BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
+        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
+      );
     }
   } else {
     h = anchorColor ? getRandomAnchoredHueValue(anchorColor) : getRandomIntInclusive(0, 359);
-    if (paletteSuitable) {
-      s = getRandomIntInclusive(40, 100);
-      l = getRandomIntInclusive(25, 75);
-    } else {
-      s = getRandomIntInclusive(0, 100);
-      l = getRandomIntInclusive(0, 100);
+    let minS = 0;
+    let minL = 0;
+    let maxL = 100;
+    if (anchorColor) {
+      minS = Math.max(minS, GRAYSCALE_MIN_SATURATION_THRESHOLD);
+      minL = Math.max(minL, BLACK_MIN_LIGHTNESS_THRESHOLD);
+      maxL = Math.min(maxL, WHITE_MAX_LIGHTNESS_THRESHOLD);
     }
+    if (paletteSuitable) {
+      minS = Math.max(minS, SUITABLE_PALETTE_MIN_SATURATION);
+      minL = Math.max(minL, SUITABLE_PALETTE_MIN_LIGHTNESS);
+      maxL = Math.min(maxL, SUITABLE_PALETTE_MAX_LIGHTNESS);
+    }
+    s = getRandomIntInclusive(minS, 100);
+    l = getRandomIntInclusive(minL, maxL);
   }
 
   let a: number;

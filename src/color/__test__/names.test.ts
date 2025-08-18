@@ -59,10 +59,10 @@ describe('getBaseColorName', () => {
   });
 
   it('treats low saturation as gray', () => {
-    const colorful = getBaseColorName(new Color('#718e71')); // s=11
+    const colorful = getBaseColorName(new Color('#718e71')); // s > 10
     expect(colorful.name).toBe(BaseColorName.GREEN);
 
-    const grayish = getBaseColorName(new Color('#738c73')); // s=10
+    const grayish = getBaseColorName(new Color('#748b74')); // s < 10
     expect(grayish.name).toBe(BaseColorName.GRAY);
   });
 });
