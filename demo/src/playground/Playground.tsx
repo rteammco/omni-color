@@ -48,14 +48,18 @@ export function Playground() {
     <div>
       <ColorInput color={color} onColorChanged={handleColorChanged} />
       <VSpace height={24} />
+      <h5 className="mb-3">Color info</h5>
       <ColorInfo color={color} />
       <VSpace height={8} />
       <ColorSwatch color={color} />
       <VSpace height={24} />
+      <h5 className="mb-3">Manipulations</h5>
       <ColorManipulationDemo color={color} />
       <VSpace height={24} />
+      <h5 className="mb-3">Harmonies</h5>
       <ColorHarmonyDemo color={color} />
       <VSpace height={24} />
+      <h5 className="mb-2">Palette</h5>
       <ColorPaletteDemo color={color} />
     </div>
   );

@@ -101,7 +101,6 @@ export function ColorPaletteDemo({ color }: Props) {
 
   return (
     <div>
-      <h5 className="mb-2">Palette</h5>
       <PaletteHarmonyOptions
         selectedHarmony={selectedHarmony}
         onHarmonySelectionChanged={setSelectedHarmony}
