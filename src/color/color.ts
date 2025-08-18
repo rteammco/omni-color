@@ -59,6 +59,24 @@ import { getRandomColorRGBA, RandomColorOptions } from './random';
 import { ColorSwatch, getColorSwatch } from './swatch';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
+/**
+ * The base omni-color object.
+ *
+ * The {@link Color} class represents a specific color and provides methods for
+ * converting between formats, performing manipulations like darkening or desaturating,
+ * and generating harmonies and color palettes.
+ *
+ * {@link Color} instances are immutable - all operations except `setAlpha()` will return
+ * a new {@link Color} instance representing the modified color.
+ *
+ * @example
+ * ```ts
+ * const red = new Color('#ff0000');
+ * red.toHSL(); // { h: 0, s: 100, l: 50 }
+ * const darker = red.darken(20); // new Color
+ * red.toHex(); // '#ff0000'
+ * ```
+ */
 export class Color {
   private color: ColorRGBA;
 
