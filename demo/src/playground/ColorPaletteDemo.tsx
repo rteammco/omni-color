@@ -131,6 +131,12 @@ export function ColorPaletteDemo({ color }: Props) {
               </td>
             </tr>
             <tr>
+              <td className="pb-2 pr-4 text-right">Tinted neutrals</td>
+              <td className="pb-2">
+                <ColorSwatch swatch={palette.tintedNeutrals} withLabels />
+              </td>
+            </tr>
+            <tr>
               <td className="pb-2 pr-4 text-right">Info (semantic)</td>
               <td className="pb-2">
                 <ColorSwatch swatch={palette.info} withLabels />

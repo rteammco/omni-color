@@ -431,12 +431,16 @@ describe('Color.getColorPalette', () => {
 
     // Semantic color harmonization options
     const noPullPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
-      huePull: 0,
-      chromaRange: [0.02, 0.25],
+      semanticHarmonization: {
+        huePull: 0,
+        chromaRange: [0.02, 0.25],
+      },
     });
     const fullPullPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
-      huePull: 1,
-      chromaRange: [0.02, 0.25],
+      semanticHarmonization: {
+        huePull: 1,
+        chromaRange: [0.02, 0.25],
+      },
     });
     const baseHue = baseColor.toOKLCH().h;
     const infoHueDefault = noPullPalette.info[500].toOKLCH().h;
