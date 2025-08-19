@@ -19,14 +19,22 @@
   width: 100%;
 }
 
-a {
-  font-weight: 500;
+button {
+  background-color: transparent;
+  background: transparent;
   color: #646cff;
-  text-decoration: inherit;
+  cursor: 'pointer';
+  font-size: 1.1em;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
 }
-a:hover {
-  color: #535bf2;
+button:hover {
+  color: #858dff;
   cursor: pointer;
+}
+button:active {
+  color: #a4acff;
 }
 
 body {
@@ -71,10 +79,10 @@ h6 {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
-    color: #747bff;
+  button:hover {
+    color: #434bf2;
   }
-  button {
-    background-color: #f9f9f9;
+  button:active {
+    color: #242ccf;
   }
 }
