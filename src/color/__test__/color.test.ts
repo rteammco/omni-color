@@ -447,6 +447,43 @@ describe('Color.getColorPalette', () => {
     const infoHuePulled = fullPullPalette.info[500].toOKLCH().h;
     expect(infoHueDefault).toBeCloseTo(265, 0);
     expect(infoHuePulled).toBeCloseTo(baseHue, 0);
+
+    // Neutral color harmonization options
+    const neutralMatchPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+      neutralHarmonization: {
+        tintChromaFactor: 0,
+        maxTintChroma: 0.04,
+      },
+    });
+    expect(neutralMatchPalette.tintedNeutrals[500].toHex()).toBe(
+      neutralMatchPalette.neutrals[500].toHex()
+    );
+
+    const cappedTintPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+      neutralHarmonization: {
+        tintChromaFactor: 1,
+        maxTintChroma: 0.02,
+      },
+    });
+    const cappedTintChroma = cappedTintPalette.tintedNeutrals[500].toOKLCH().c;
+    expect(cappedTintChroma).toBeGreaterThan(0);
+    expect(cappedTintChroma).toBeLessThanOrEqual(0.02);
+
+    // Semantic chroma range option
+    const defaultInfoChroma = defaultPalette.info[500].toOKLCH().c;
+    const limitedChromaPalette = baseColor.getColorPalette(
+      ColorHarmony.COMPLEMENTARY,
+      {
+        semanticHarmonization: {
+          huePull: 0,
+          chromaRange: [0.02, 0.05],
+        },
+      }
+    );
+    const limitedInfoChroma = limitedChromaPalette.info[500].toOKLCH().c;
+    expect(limitedInfoChroma).toBeGreaterThanOrEqual(0.02);
+    expect(limitedInfoChroma).toBeLessThanOrEqual(0.05);
+    expect(limitedInfoChroma).toBeLessThan(defaultInfoChroma);
   });
 });
 
