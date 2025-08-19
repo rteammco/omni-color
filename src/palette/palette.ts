@@ -19,9 +19,9 @@ export interface ColorPalette {
 
   // Neutrals:
   neutrals: ColorSwatch;
+  tintedNeutrals: ColorSwatch;
   back: Color;
   white: Color;
-  // TODO: "tinted" neutrals (idk what to call it, Apple calls it "tinted")
 
   // Semantic colors:
   [SemanticColor.INFO]: ColorSwatch;
@@ -60,6 +60,16 @@ export interface SemanticColorHarmonizationOptions {
 const DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS: SemanticColorHarmonizationOptions = {
   huePull: 0.1,
   chromaRange: [0.02, 0.25],
+};
+
+export interface NeutralColorHarmonizationOptions {
+  tintChromaFactor: number; // fraction of base color's chroma to use for tinted neutrals
+  maxTintChroma: number; // upper bound of chroma for tinted neutrals
+}
+
+const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: NeutralColorHarmonizationOptions = {
+  tintChromaFactor: 0.1,
+  maxTintChroma: 0.04,
 };
 
 /**
@@ -114,10 +124,27 @@ function harmonizeSemanticColor(
   return new Color({ l: baseL, c: resultChroma, h: resultHue });
 }
 
+function harmonizeNeutrals(paletteBaseColor: Color): Color {
+  const { l: baseL, h: baseH } = paletteBaseColor.toOKLCH();
+  return new Color({ l: baseL, c: 0, h: baseH });
+}
+
+function harmonizeTintedNeutrals(
+  paletteBaseColor: Color,
+  options: NeutralColorHarmonizationOptions
+): Color {
+  const { l: baseL, c: baseC, h: baseH } = paletteBaseColor.toOKLCH();
+  const chromaFactor = clampValue(options.tintChromaFactor, 0, 1);
+  const maxChroma = Math.max(options.maxTintChroma, 0);
+  const resultChroma = clampValue(baseC * chromaFactor, 0, maxChroma);
+  return new Color({ l: baseL, c: resultChroma, h: baseH });
+}
+
 export function generateColorPaletteFromBaseColor(
   baseColor: Color,
   harmony: ColorHarmony = ColorHarmony.COMPLEMENTARY,
-  semanticColorHarmonizationOptions: SemanticColorHarmonizationOptions = DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS
+  semanticColorHarmonizationOptions: SemanticColorHarmonizationOptions = DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS,
+  neutralColorHarmonizationOptions: NeutralColorHarmonizationOptions = DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS
 ): ColorPalette {
   // TODO: helpers or warnings if the palette is suboptimal
 
@@ -127,7 +154,11 @@ export function generateColorPaletteFromBaseColor(
   return {
     primary,
     secondaryColors: harmonyColors.slice(1).map((color) => color.getColorSwatch()),
-    neutrals: new Color('gray').getColorSwatch(), // TODO: extend `harmonizeSemanticColor()` for neutral color generation as well
+    neutrals: harmonizeNeutrals(baseColor).getColorSwatch(),
+    tintedNeutrals: harmonizeTintedNeutrals(
+      baseColor,
+      neutralColorHarmonizationOptions
+    ).getColorSwatch(),
     back: new Color(BLACK_HEX),
     white: new Color(WHITE_HEX),
     [SemanticColor.INFO]: harmonizeSemanticColor(
