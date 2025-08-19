@@ -120,11 +120,6 @@ function harmonizeSemanticColor(
   // Constrain hue pull option to its valid range:
   const huePullOption = clampValue(options.huePull, 0, 1);
 
-  // Constrain chroma options to their valid ranges:
-  const [inputMinChroma, inputMaxChroma] = options.chromaRange;
-  const minChromaOption = Math.max(inputMinChroma, 0); // must be at least 0
-  const maxChromaOption = Math.max(inputMaxChroma, minChromaOption); // must be at least `minChroma`
-
   const { l: baseL, c: baseC, h: baseH } = paletteBaseColor.toOKLCH();
 
   // Resolve target hue:
@@ -134,7 +129,11 @@ function harmonizeSemanticColor(
       ? defaultSemanticH
       : interpolateHueShortestPath(defaultSemanticH, baseH, huePullOption);
 
+  // Resolve target chroma:
   const { chromaFactor, minAllowableChroma } = SEMANTIC_COLOR_TO_CHROMA_FACTOR_MAP[semanticColor];
+  const [inputMinChroma, inputMaxChroma] = options.chromaRange;
+  const minChromaOption = Math.max(inputMinChroma, 0);
+  const maxChromaOption = Math.max(inputMaxChroma, minChromaOption, minAllowableChroma);
   const resultChroma = clampValue(
     Math.max(baseC * chromaFactor, minAllowableChroma), // ensure minimum chroma for very low‑chroma base colors (overrides `minChroma` option if necessary)
     Math.max(minChromaOption, minAllowableChroma),
