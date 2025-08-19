@@ -1,7 +1,7 @@
 import {
   ColorPalette,
   generateColorPaletteFromBaseColor,
-  SemanticColorHarmonizationOptions,
+  GenerateColorPaletteOptions,
 } from '../palette/palette';
 import { clampValue } from '../utils';
 import {
@@ -508,7 +508,7 @@ export class Color {
    * swatches for statuses like info or warning.
    *
    * @param harmony - {@link ColorHarmony} used to generate secondary colors (default `ColorHarmony.COMPLEMENTARY`).
-   * @param semanticColorHarmonizationOptions - Optional semantic color options.
+   * @param options - Optional {@link GenerateColorPaletteOptions} options for harmonizing neutral and semantic colors.
    *
    * @example
    * ```ts
@@ -518,9 +518,9 @@ export class Color {
    */
   getColorPalette(
     harmony: ColorHarmony = ColorHarmony.COMPLEMENTARY,
-    semanticColorHarmonizationOptions?: SemanticColorHarmonizationOptions
+    options?: GenerateColorPaletteOptions
   ): ColorPalette {
-    return generateColorPaletteFromBaseColor(this, harmony, semanticColorHarmonizationOptions);
+    return generateColorPaletteFromBaseColor(this, harmony, options);
   }
 
   /**

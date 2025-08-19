@@ -19,9 +19,9 @@ export interface ColorPalette {
 
   // Neutrals:
   neutrals: ColorSwatch;
+  tintedNeutrals: ColorSwatch;
   back: Color;
   white: Color;
-  // TODO: "tinted" neutrals (idk what to call it, Apple calls it "tinted")
 
   // Semantic colors:
   [SemanticColor.INFO]: ColorSwatch;
@@ -49,10 +49,9 @@ const SEMANTIC_COLOR_TO_CHROMA_FACTOR_MAP: {
   [SemanticColor.NEGATIVE]: { chromaFactor: 1.1, minAllowableChroma: 0.06 },
   [SemanticColor.WARNING]: { chromaFactor: 1.1, minAllowableChroma: 0.06 },
   [SemanticColor.SPECIAL]: { chromaFactor: 1.0, minAllowableChroma: 0.05 },
-  // TODO: support neutral: 0.15 ???
 } as const;
 
-export interface SemanticColorHarmonizationOptions {
+interface SemanticColorHarmonizationOptions {
   huePull: number; // how much to pull hue toward main palette color (0 to 1)
   chromaRange: [number, number]; // the range of chroma values to consider (each >= 0, min <= max); for sRGB, the max range tops out at ~0.32
 }
@@ -61,6 +60,37 @@ const DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS: SemanticColorHarmonizationOp
   huePull: 0.1,
   chromaRange: [0.02, 0.25],
 };
+
+interface NeutralColorHarmonizationOptions {
+  tintChromaFactor: number; // fraction of base color's chroma to use for tinted neutrals
+  maxTintChroma: number; // upper bound of chroma for tinted neutrals
+}
+
+const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: NeutralColorHarmonizationOptions = {
+  tintChromaFactor: 0.1,
+  maxTintChroma: 0.04,
+};
+
+export interface GenerateColorPaletteOptions {
+  neutralHarmonization?: NeutralColorHarmonizationOptions;
+  semanticHarmonization?: SemanticColorHarmonizationOptions;
+}
+
+function harmonizeNeutrals(paletteBaseColor: Color): Color {
+  const { l: baseL, h: baseH } = paletteBaseColor.toOKLCH();
+  return new Color({ l: baseL, c: 0, h: baseH });
+}
+
+function harmonizeTintedNeutrals(
+  paletteBaseColor: Color,
+  options: NeutralColorHarmonizationOptions
+): Color {
+  const { l: baseL, c: baseC, h: baseH } = paletteBaseColor.toOKLCH();
+  const chromaFactor = clampValue(options.tintChromaFactor, 0, 1);
+  const maxChroma = Math.max(options.maxTintChroma, 0);
+  const resultChroma = clampValue(baseC * chromaFactor, 0, maxChroma);
+  return new Color({ l: baseL, c: resultChroma, h: baseH });
+}
 
 /**
  * Interpolate between two angles (in degrees) along the shortest path.
@@ -102,7 +132,7 @@ function harmonizeSemanticColor(
   const resultHue =
     baseC < CHROMA_THRESHOLD_FOR_USABLE_HUE
       ? defaultSemanticH
-      : interpolateHueShortestPath(defaultSemanticH, baseH, huePullOption); // TODO: just use the base brand hue for neutrals
+      : interpolateHueShortestPath(defaultSemanticH, baseH, huePullOption);
 
   const { chromaFactor, minAllowableChroma } = SEMANTIC_COLOR_TO_CHROMA_FACTOR_MAP[semanticColor];
   const resultChroma = clampValue(
@@ -117,9 +147,15 @@ function harmonizeSemanticColor(
 export function generateColorPaletteFromBaseColor(
   baseColor: Color,
   harmony: ColorHarmony = ColorHarmony.COMPLEMENTARY,
-  semanticColorHarmonizationOptions: SemanticColorHarmonizationOptions = DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS
+  options?: GenerateColorPaletteOptions
 ): ColorPalette {
   // TODO: helpers or warnings if the palette is suboptimal
+
+  const {
+    neutralHarmonization: neutralHarmonizationOptions = DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS,
+    semanticHarmonization:
+      semanticHarmonizationOptions = DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS,
+  } = options ?? {};
 
   const harmonyColors = baseColor.getHarmonyColors(harmony);
   const primary = harmonyColors[0].getColorSwatch();
@@ -127,33 +163,37 @@ export function generateColorPaletteFromBaseColor(
   return {
     primary,
     secondaryColors: harmonyColors.slice(1).map((color) => color.getColorSwatch()),
-    neutrals: new Color('gray').getColorSwatch(), // TODO: extend `harmonizeSemanticColor()` for neutral color generation as well
+    neutrals: harmonizeNeutrals(baseColor).getColorSwatch(),
+    tintedNeutrals: harmonizeTintedNeutrals(
+      baseColor,
+      neutralHarmonizationOptions
+    ).getColorSwatch(),
     back: new Color(BLACK_HEX),
     white: new Color(WHITE_HEX),
     [SemanticColor.INFO]: harmonizeSemanticColor(
       baseColor,
       SemanticColor.INFO,
-      semanticColorHarmonizationOptions
+      semanticHarmonizationOptions
     ).getColorSwatch(),
     [SemanticColor.POSITIVE]: harmonizeSemanticColor(
       baseColor,
       SemanticColor.POSITIVE,
-      semanticColorHarmonizationOptions
+      semanticHarmonizationOptions
     ).getColorSwatch(),
     [SemanticColor.NEGATIVE]: harmonizeSemanticColor(
       baseColor,
       SemanticColor.NEGATIVE,
-      semanticColorHarmonizationOptions
+      semanticHarmonizationOptions
     ).getColorSwatch(),
     [SemanticColor.WARNING]: harmonizeSemanticColor(
       baseColor,
       SemanticColor.WARNING,
-      semanticColorHarmonizationOptions
+      semanticHarmonizationOptions
     ).getColorSwatch(),
     [SemanticColor.SPECIAL]: harmonizeSemanticColor(
       baseColor,
       SemanticColor.SPECIAL,
-      semanticColorHarmonizationOptions
+      semanticHarmonizationOptions
     ).getColorSwatch(),
   };
 }
