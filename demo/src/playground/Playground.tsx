@@ -7,6 +7,7 @@ import { VSpace } from '../components/VSpace';
 import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorSwatch } from './ColorSwatch';
 import { ColorPaletteDemo } from './palette/ColorPaletteDemo';
+import { ColorCombinationDemo } from './ColorCombinationDemo';
 
 const COLOR_SEARCH_PARAM_KEY = 'color' as const;
 
@@ -55,6 +56,9 @@ export function Playground() {
       <VSpace height={24} />
       <h5 className="mb-3">Manipulations</h5>
       <ColorManipulationDemo color={color} />
+      <VSpace height={24} />
+      <h5 className="mb-3">Combinations</h5>
+      <ColorCombinationDemo color={color} />
       <VSpace height={24} />
       <h5 className="mb-3">Harmonies</h5>
       <ColorHarmonyDemo color={color} />
