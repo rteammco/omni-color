@@ -127,4 +127,3 @@ describe('blendColors', () => {
     expect(result.toHex()).toBe('#00ff00');
   });
 });
-

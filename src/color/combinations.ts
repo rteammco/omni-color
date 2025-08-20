@@ -236,7 +236,7 @@ export enum BlendSpace {
 export interface BlendOptions {
   mode?: BlendMode;
   space?: BlendSpace;
-  ratio?: number; // 0..1 amount of blend color over base
+  ratio?: number; // amount of blend color over base (0 - 1)
 }
 
 function blendChannel(mode: BlendMode, base: number, blend: number): number {
@@ -246,20 +246,14 @@ function blendChannel(mode: BlendMode, base: number, blend: number): number {
     case BlendMode.SCREEN:
       return 255 - ((255 - base) * (255 - blend)) / 255;
     case BlendMode.OVERLAY:
-      return base < 128
-        ? (2 * base * blend) / 255
-        : 255 - (2 * (255 - base) * (255 - blend)) / 255;
+      return base < 128 ? (2 * base * blend) / 255 : 255 - (2 * (255 - base) * (255 - blend)) / 255;
     case BlendMode.NORMAL:
     default:
       return blend;
   }
 }
 
-export function blendColors(
-  base: Color,
-  blend: Color,
-  options: BlendOptions = {}
-): Color {
+export function blendColors(base: Color, blend: Color, options: BlendOptions = {}): Color {
   const { mode = BlendMode.NORMAL, space = BlendSpace.RGB, ratio = 0.5 } = options;
   const t = clampValue(ratio, 0, 1);
   switch (space) {
@@ -291,4 +285,3 @@ export function blendColors(
     }
   }
 }
-

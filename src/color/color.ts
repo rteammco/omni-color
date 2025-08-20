@@ -4,6 +4,7 @@ import {
   GenerateColorPaletteOptions,
 } from '../palette/palette';
 import { clampValue } from '../utils';
+import { averageColors, blendColors, mixColors } from './combinations';
 import {
   toCMYK,
   toHex,
@@ -355,6 +356,18 @@ export class Color {
    */
   grayscale(): Color {
     return colorToGrayscale(this);
+  }
+
+  mix(others: Color[]) {
+    return mixColors([this, ...others]);
+  }
+
+  blend(other: Color): Color {
+    return blendColors(this, other);
+  }
+
+  average(others: Color[]): Color {
+    return averageColors([this, ...others]);
   }
 
   /**
