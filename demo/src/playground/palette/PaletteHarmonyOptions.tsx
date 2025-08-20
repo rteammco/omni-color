@@ -1,16 +1,13 @@
-import { useState } from 'react';
-import { Color, ColorHarmony } from '../../../dist';
-import { ColorSwatch } from './ColorSwatch';
+import { ColorHarmony } from '../../../../dist';
 
 const PALETTE_HARMONY_RADIO_GROUP_NAME = 'palette-color-harmony';
 
-function PaletteHarmonyOptions({
-  selectedHarmony,
-  onHarmonySelectionChanged,
-}: {
+interface Props {
   selectedHarmony: ColorHarmony;
   onHarmonySelectionChanged: (harmony: ColorHarmony) => void;
-}) {
+}
+
+export function PaletteHarmonyOptions({ selectedHarmony, onHarmonySelectionChanged }: Props) {
   return (
     <div className="w-full flex flex-row justify-center items-center gap-4">
       <label className="flex flex-row items-center gap-1">
@@ -83,86 +80,6 @@ function PaletteHarmonyOptions({
         />
         Monochromatic
       </label>
-    </div>
-  );
-}
-
-interface Props {
-  color: Color;
-}
-
-export function ColorPaletteDemo({ color }: Props) {
-  const [selectedHarmony, setSelectedHarmony] = useState(ColorHarmony.COMPLEMENTARY);
-
-  const palette = color.getColorPalette(selectedHarmony);
-  /*
-    secondaryColors: ColorSwatch[];
-  */
-
-  return (
-    <div>
-      <PaletteHarmonyOptions
-        selectedHarmony={selectedHarmony}
-        onHarmonySelectionChanged={setSelectedHarmony}
-      />
-      <div className="w-full mt-3 flex flex-row justify-center">
-        <table className="table-auto">
-          <tbody>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Primary</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.primary} withLabels />
-              </td>
-            </tr>
-            {palette.secondaryColors.map((swatch, index) => (
-              <tr key={index}>
-                <td className="pb-2 pr-4 text-right">{`Secondary${
-                  palette.secondaryColors.length > 1 ? ` ${index + 1}` : ''
-                }`}</td>
-                <td className="pb-2">
-                  <ColorSwatch swatch={swatch} withLabels />
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td className="pb-2 pr-4 text-right">Neutrals</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.neutrals} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Info (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.info} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Positive (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.positive} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Negative (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.negative} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Warning (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.warning} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pr-4 text-right">Special (semantic)</td>
-              <td>
-                <ColorSwatch swatch={palette.special} withLabels />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 }
