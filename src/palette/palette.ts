@@ -52,21 +52,21 @@ const SEMANTIC_COLOR_TO_CHROMA_FACTOR_MAP: {
 } as const;
 
 interface SemanticColorHarmonizationOptions {
-  huePull: number; // how much to pull hue toward main palette color (0 to 1)
-  chromaRange: [number, number]; // the range of chroma values to consider (each >= 0, min <= max); for sRGB, the max range tops out at ~0.32
+  huePull?: number; // how much to pull hue toward main palette color (0 to 1)
+  chromaRange?: [number, number]; // the range of chroma values to consider (each >= 0, min <= max); for sRGB, the max range tops out at ~0.32
 }
 
-const DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS: SemanticColorHarmonizationOptions = {
+const DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS: Required<SemanticColorHarmonizationOptions> = {
   huePull: 0.1,
   chromaRange: [0.02, 0.25],
 };
 
 interface NeutralColorHarmonizationOptions {
-  tintChromaFactor: number; // fraction of base color's chroma to use for tinted neutrals
-  maxTintChroma: number; // upper bound of chroma for tinted neutrals
+  tintChromaFactor?: number; // fraction of base color's chroma to use for tinted neutrals (0 to 1)
+  maxTintChroma?: number; // upper bound of chroma for tinted neutrals
 }
 
-const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: NeutralColorHarmonizationOptions = {
+const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: Required<NeutralColorHarmonizationOptions> = {
   tintChromaFactor: 0.1,
   maxTintChroma: 0.04,
 };
@@ -83,7 +83,7 @@ function harmonizeNeutrals(paletteBaseColor: Color): Color {
 
 function harmonizeTintedNeutrals(
   paletteBaseColor: Color,
-  options: NeutralColorHarmonizationOptions
+  options: Required<NeutralColorHarmonizationOptions>
 ): Color {
   const { l: baseL, c: baseC, h: baseH } = paletteBaseColor.toOKLCH();
   const chromaFactor = clampValue(options.tintChromaFactor, 0, 1);
@@ -115,7 +115,7 @@ const CHROMA_THRESHOLD_FOR_USABLE_HUE = 0.015; // below this threshold, colors a
 function harmonizeSemanticColor(
   paletteBaseColor: Color,
   semanticColor: SemanticColor,
-  options: SemanticColorHarmonizationOptions
+  options: Required<SemanticColorHarmonizationOptions>
 ): Color {
   // Constrain hue pull option to its valid range:
   const huePullOption = clampValue(options.huePull, 0, 1);
@@ -150,11 +150,23 @@ export function generateColorPaletteFromBaseColor(
 ): ColorPalette {
   // TODO: helpers or warnings if the palette is suboptimal
 
-  const {
-    neutralHarmonization: neutralHarmonizationOptions = DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS,
-    semanticHarmonization:
-      semanticHarmonizationOptions = DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS,
-  } = options ?? {};
+  const neutralHarmonizationOptions = {
+    tintChromaFactor:
+      options?.neutralHarmonization?.tintChromaFactor ??
+      DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS.tintChromaFactor,
+    maxTintChroma:
+      options?.neutralHarmonization?.maxTintChroma ??
+      DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS.maxTintChroma,
+  };
+
+  const semanticHarmonizationOptions = {
+    huePull:
+      options?.semanticHarmonization?.huePull ??
+      DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS.huePull,
+    chromaRange:
+      options?.semanticHarmonization?.chromaRange ??
+      DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS.chromaRange,
+  };
 
   const harmonyColors = baseColor.getHarmonyColors(harmony);
   const primary = harmonyColors[0].getColorSwatch();
