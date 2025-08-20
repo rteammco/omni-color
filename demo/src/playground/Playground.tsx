@@ -6,7 +6,7 @@ import { ColorManipulationDemo } from './ColorManipulationDemo';
 import { VSpace } from '../components/VSpace';
 import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorSwatch } from './ColorSwatch';
-import { ColorPaletteDemo } from './ColorPaletteDemo';
+import { ColorPaletteDemo } from './palette/ColorPaletteDemo';
 
 const COLOR_SEARCH_PARAM_KEY = 'color' as const;
 
