@@ -1,7 +1,16 @@
 import { useMemo, useState } from 'react';
-import { Color, MixSpace, MixType, type MixColorsOptions } from '../../../../dist';
+import {
+  BlendMode,
+  BlendSpace,
+  Color,
+  MixSpace,
+  MixType,
+  type BlendColorsOptions,
+  type MixColorsOptions,
+} from '../../../../dist';
 import { ColorBox } from '../../components/ColorBox';
 import { MixColorsOptionInputs } from './MixColorsOptionInputs';
+import { BlendColorsOptionInputs } from './BlendColorsOptionInputs';
 
 interface Props {
   color: Color;
@@ -11,6 +20,12 @@ export function ColorCombinationDemo({ color }: Props) {
   const [mixOptions, setMixOptions] = useState<MixColorsOptions>({
     space: MixSpace.RGB,
     type: MixType.ADDITIVE,
+  });
+
+  const [blendOptions, setBlendOptions] = useState<BlendColorsOptions>({
+    mode: BlendMode.NORMAL,
+    space: BlendSpace.RGB,
+    ratio: 0.5,
   });
 
   const { red, green, blue } = useMemo(() => {
@@ -59,16 +74,21 @@ export function ColorCombinationDemo({ color }: Props) {
               <ColorBox color={color} />
             </td>
             <td className="pb-2 px-2">
-              <ColorBox color={color.blend(red)} />
+              <ColorBox color={color.blend(red, blendOptions)} />
             </td>
             <td className="pb-2 px-2">
-              <ColorBox color={color.blend(green)} />
+              <ColorBox color={color.blend(green, blendOptions)} />
             </td>
             <td className="pb-2 px-2">
-              <ColorBox color={color.blend(blue)} />
+              <ColorBox color={color.blend(blue, blendOptions)} />
             </td>
             <td className="pb-2 px-2">N / A</td>
-            <td className="pb-2 px-2">TODO - options</td>
+            <td className="pb-2 px-2">
+              <BlendColorsOptionInputs
+                blendOptions={blendOptions}
+                onOptionsChanged={setBlendOptions}
+              />
+            </td>
           </tr>
           <tr>
             <td className="pb-2 pr-2 text-right">Average</td>
