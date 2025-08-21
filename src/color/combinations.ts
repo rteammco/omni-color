@@ -15,58 +15,65 @@ export enum MixSpace {
   OKLCH = 'OKLCH',
 }
 
-export interface MixOptions {
-  type?: MixType;
+export interface MixColorsOptions {
   space?: MixSpace;
+  type?: MixType;
+  /**
+   * Array of non-normalized `weights` for how much each color is weighed during combination.
+   * Length of weights must match number of colors being combined.
+   * @example
+   * ```ts
+   * { weights: [1, 1, 2] }
+   * ```
+   */
   weights?: number[];
-  /** Optional white point placeholder for future use */
-  whitePoint?: unknown;
-  /** Clamp the resulting color into gamut */
-  gamutMap?: 'clip';
 }
 
-function getWeights(count: number, weights?: number[]): number[] {
-  return weights && weights.length === count ? weights : Array(count).fill(1);
+function getWeights(
+  count: number,
+  inputRawWeights?: number[]
+): { weights: number[]; sumOfWeights: number; normalizedWeights: number[] } {
+  const weights =
+    inputRawWeights && inputRawWeights.length === count
+      ? inputRawWeights
+      : new Array<number>(count).fill(1);
+  const sumOfWeights = weights.reduce((sum, w) => sum + w, 0);
+  if (sumOfWeights === 0) {
+    // This is a sort of undefined behavior case, so just return what we can
+    return { weights, sumOfWeights, normalizedWeights: weights };
+  }
+  return { weights, sumOfWeights, normalizedWeights: weights.map((w) => w / sumOfWeights) };
 }
 
-export function mixColors(colors: Color[], options: MixOptions = {}): Color {
-  if (colors.length < 2) {
-    throw new Error('mixColors requires at least two colors');
-  }
-  const { type = MixType.ADDITIVE, space = MixSpace.RGB, weights } = options;
-  const w = getWeights(colors.length, weights);
+function mixColorsSubtractive(colors: Color[], normalizedWeights: number[]): Color {
+  let c = 1;
+  let m = 1;
+  let y = 1;
+  let k = 1;
+  colors.forEach((color, i) => {
+    const part = toCMYK(color.toRGBA());
+    const weight = normalizedWeights[i];
+    c *= Math.pow(1 - part.c / 100, weight);
+    m *= Math.pow(1 - part.m / 100, weight);
+    y *= Math.pow(1 - part.y / 100, weight);
+    k *= Math.pow(1 - part.k / 100, weight);
+  });
+  const result: ColorCMYK = {
+    c: +(100 * (1 - c)).toFixed(2),
+    m: +(100 * (1 - m)).toFixed(2),
+    y: +(100 * (1 - y)).toFixed(2),
+    k: +(100 * (1 - k)).toFixed(2),
+  };
+  return new Color(result);
+}
 
-  switch (type) {
-    case MixType.SUBTRACTIVE: {
-      const norm = w.map((v) => v / w.reduce((a, b) => a + b, 0));
-      let c = 1;
-      let m = 1;
-      let y = 1;
-      let k = 1;
-      colors.forEach((color, i) => {
-        const part = toCMYK(color.toRGBA());
-        const weight = norm[i];
-        c *= Math.pow(1 - part.c / 100, weight);
-        m *= Math.pow(1 - part.m / 100, weight);
-        y *= Math.pow(1 - part.y / 100, weight);
-        k *= Math.pow(1 - part.k / 100, weight);
-      });
-      const result: ColorCMYK = {
-        c: +(100 * (1 - c)).toFixed(2),
-        m: +(100 * (1 - m)).toFixed(2),
-        y: +(100 * (1 - y)).toFixed(2),
-        k: +(100 * (1 - k)).toFixed(2),
-      };
-      return new Color(result);
-    }
-    case MixType.ADDITIVE:
-    default:
-      break;
-  }
-
-  const total = w.reduce((a, b) => a + b, 0);
-  const norm = w.map((v) => v / total);
-
+function mixColorsAdditive(
+  colors: Color[],
+  space: MixSpace,
+  weights: number[],
+  sumOfWeights: number,
+  normalizedWeights: number[]
+) {
   switch (space) {
     case MixSpace.RGB:
     default: {
@@ -76,7 +83,7 @@ export function mixColors(colors: Color[], options: MixOptions = {}): Color {
       let a = 0;
       colors.forEach((color, i) => {
         const val: ColorRGBA = color.toRGBA();
-        const weight = w[i];
+        const weight = weights[i];
         r += val.r * weight;
         g += val.g * weight;
         b += val.b * weight;
@@ -86,7 +93,7 @@ export function mixColors(colors: Color[], options: MixOptions = {}): Color {
         r: Math.round(clampValue(r, 0, 255)),
         g: Math.round(clampValue(g, 0, 255)),
         b: Math.round(clampValue(b, 0, 255)),
-        a: +clampValue(a / total, 0, 1).toFixed(3),
+        a: +clampValue(a / sumOfWeights, 0, 1).toFixed(3),
       };
       return new Color(result);
     }
@@ -96,7 +103,7 @@ export function mixColors(colors: Color[], options: MixOptions = {}): Color {
       let l = 0;
       colors.forEach((color, i) => {
         const val: ColorHSL = color.toHSL();
-        const weight = norm[i];
+        const weight = normalizedWeights[i];
         h += val.h * weight;
         s += val.s * weight;
         l += val.l * weight;
@@ -114,7 +121,7 @@ export function mixColors(colors: Color[], options: MixOptions = {}): Color {
       let h = 0;
       colors.forEach((color, i) => {
         const val: ColorLCH = color.toLCH();
-        const weight = norm[i];
+        const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
         h += val.h * weight;
@@ -128,7 +135,7 @@ export function mixColors(colors: Color[], options: MixOptions = {}): Color {
       let h = 0;
       colors.forEach((color, i) => {
         const val: ColorOKLCH = color.toOKLCH();
-        const weight = norm[i];
+        const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
         h += val.h * weight;
@@ -139,6 +146,20 @@ export function mixColors(colors: Color[], options: MixOptions = {}): Color {
   }
 }
 
+export function mixColors(colors: Color[], options: MixColorsOptions = {}): Color {
+  if (colors.length < 2) {
+    throw new Error('[mixColors] at least two colors are required for mixing');
+  }
+  const { type = MixType.ADDITIVE, space = MixSpace.RGB } = options;
+  const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
+
+  if (type === MixType.SUBTRACTIVE) {
+    return mixColorsSubtractive(colors, normalizedWeights);
+  }
+
+  return mixColorsAdditive(colors, space, weights, sumOfWeights, normalizedWeights);
+}
+
 export interface AverageOptions {
   space?: MixSpace;
   weights?: number[];
@@ -146,12 +167,10 @@ export interface AverageOptions {
 
 export function averageColors(colors: Color[], options: AverageOptions = {}): Color {
   if (colors.length < 2) {
-    throw new Error('averageColors requires at least two colors');
+    throw new Error('[averageColors] at least two colors are required for averaging');
   }
-  const { space = MixSpace.RGB, weights } = options;
-  const w = getWeights(colors.length, weights);
-  const total = w.reduce((a, b) => a + b, 0);
-  const norm = w.map((v) => v / total);
+  const { space = MixSpace.RGB } = options;
+  const { normalizedWeights } = getWeights(colors.length, options.weights);
 
   switch (space) {
     case MixSpace.RGB:
@@ -162,7 +181,7 @@ export function averageColors(colors: Color[], options: AverageOptions = {}): Co
       let a = 0;
       colors.forEach((color, i) => {
         const val: ColorRGBA = color.toRGBA();
-        const weight = norm[i];
+        const weight = normalizedWeights[i];
         r += val.r * weight;
         g += val.g * weight;
         b += val.b * weight;
@@ -181,7 +200,7 @@ export function averageColors(colors: Color[], options: AverageOptions = {}): Co
       let l = 0;
       colors.forEach((color, i) => {
         const val: ColorHSL = color.toHSL();
-        const weight = norm[i];
+        const weight = normalizedWeights[i];
         h += val.h * weight;
         s += val.s * weight;
         l += val.l * weight;
@@ -198,7 +217,7 @@ export function averageColors(colors: Color[], options: AverageOptions = {}): Co
       let h = 0;
       colors.forEach((color, i) => {
         const val: ColorLCH = color.toLCH();
-        const weight = norm[i];
+        const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
         h += val.h * weight;
@@ -211,7 +230,7 @@ export function averageColors(colors: Color[], options: AverageOptions = {}): Co
       let h = 0;
       colors.forEach((color, i) => {
         const val: ColorOKLCH = color.toOKLCH();
-        const weight = norm[i];
+        const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
         h += val.h * weight;

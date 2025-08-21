@@ -1,4 +1,5 @@
 import { Color } from './color/color';
+import { MixColorsOptions, MixSpace, MixType } from './color/combinations';
 import {
   ColorCMYK,
   ColorFormat,
@@ -38,5 +39,8 @@ export {
   ColorRGBA,
   ColorSwatch,
   GenerateColorPaletteOptions,
+  MixColorsOptions,
+  MixSpace,
+  MixType,
   RandomColorOptions,
 };

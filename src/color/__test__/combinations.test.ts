@@ -46,7 +46,9 @@ describe('mixColors', () => {
 
   it('throws when fewer than two colors are provided', () => {
     const red = new Color('#ff0000');
-    expect(() => mixColors([red])).toThrow('mixColors requires at least two colors');
+    expect(() => mixColors([red])).toThrow(
+      '[mixColors] at least two colors are required for mixing'
+    );
   });
 });
 
@@ -77,7 +79,9 @@ describe('averageColors', () => {
 
   it('throws when fewer than two colors are provided', () => {
     const red = new Color('#ff0000');
-    expect(() => averageColors([red])).toThrow('averageColors requires at least two colors');
+    expect(() => averageColors([red])).toThrow(
+      '[averageColors] at least two colors are required for averaging'
+    );
   });
 });
 
