@@ -19,8 +19,8 @@ export interface MixColorsOptions {
   space?: MixSpace;
   type?: MixType;
   /**
-   * Array of non-normalized `weights` for how much each color is weighed during combination.
-   * Length of weights must match number of colors being combined.
+   * Array of non-normalized `weights` for how much each color is weighed during mixing.
+   * Length of weights must match number of colors being mixed.
    * @example
    * ```ts
    * { weights: [1, 1, 2] }
@@ -230,12 +230,21 @@ export function blendColors(base: Color, blend: Color, options: BlendColorsOptio
   return blendColorsInHSLSpace(base, blend, ratio);
 }
 
-export interface AverageOptions {
+export interface AverageColorsOptions {
   space?: MixSpace;
+  /**
+   * Array `weights` for how much each color is weighed during averaging.
+   * Length of weights must match number of colors being averaged.
+   * Weights will be normalized automatically if not already normalized.
+   * @example
+   * ```ts
+   * { weights: [0.25, 0.25, 0.5] }
+   * ```
+   */
   weights?: number[];
 }
 
-export function averageColors(colors: Color[], options: AverageOptions = {}): Color {
+export function averageColors(colors: Color[], options: AverageColorsOptions = {}): Color {
   if (colors.length < 2) {
     throw new Error('[averageColors] at least two colors are required for averaging');
   }

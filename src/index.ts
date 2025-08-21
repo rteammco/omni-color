@@ -1,5 +1,6 @@
 import { Color } from './color/color';
 import {
+  AverageColorsOptions,
   BlendColorsOptions,
   BlendMode,
   BlendSpace,
@@ -27,6 +28,7 @@ import { ColorSwatch } from './color/swatch';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
+  AverageColorsOptions,
   BaseColorName,
   BlendColorsOptions,
   BlendMode,

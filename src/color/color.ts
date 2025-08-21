@@ -6,6 +6,7 @@ import {
 import { clampValue } from '../utils';
 import {
   averageColors,
+  AverageColorsOptions,
   blendColors,
   BlendColorsOptions,
   mixColors,
@@ -389,11 +390,18 @@ export class Color {
     return blendColors(this, other, options);
   }
 
-  average(others: Color[]): Color {
+  /**
+   * Average this color with one or more other colors by averaging their channels in the selected color space.
+   *
+   * @param others - Array of one or more other colors to average with.
+   * @param options - Optional {@link AverageColorsOptions} mix space and weights.
+   * @returns A new color that is the result of the averaging.
+   */
+  average(others: Color[], options?: AverageColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors([this, ...others]);
+    return averageColors([this, ...others], options);
   }
 
   /**
