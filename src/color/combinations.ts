@@ -160,6 +160,76 @@ export function mixColors(colors: Color[], options: MixColorsOptions = {}): Colo
   return mixColorsAdditive(colors, space, weights, sumOfWeights, normalizedWeights);
 }
 
+export enum BlendMode {
+  NORMAL = 'NORMAL',
+  MULTIPLY = 'MULTIPLY',
+  SCREEN = 'SCREEN',
+  OVERLAY = 'OVERLAY',
+}
+
+export enum BlendSpace {
+  RGB = 'RGB',
+  HSL = 'HSL',
+}
+
+export interface BlendColorsOptions {
+  mode?: BlendMode;
+  space?: BlendSpace;
+  ratio?: number; // amount of blend color over base (0 - 1)
+}
+
+function blendChannel(mode: BlendMode, base: number, blend: number): number {
+  switch (mode) {
+    case BlendMode.MULTIPLY:
+      return (base * blend) / 255;
+    case BlendMode.SCREEN:
+      return 255 - ((255 - base) * (255 - blend)) / 255;
+    case BlendMode.OVERLAY:
+      return base < 128 ? (2 * base * blend) / 255 : 255 - (2 * (255 - base) * (255 - blend)) / 255;
+    case BlendMode.NORMAL:
+    default:
+      return blend;
+  }
+}
+
+function blendColorsInRGBSpace(base: Color, blend: Color, mode: BlendMode, ratio: number): Color {
+  const baseRGBA = base.toRGBA();
+  const blendRGBA = blend.toRGBA();
+  const r = (1 - ratio) * baseRGBA.r + ratio * blendChannel(mode, baseRGBA.r, blendRGBA.r);
+  const g = (1 - ratio) * baseRGBA.g + ratio * blendChannel(mode, baseRGBA.g, blendRGBA.g);
+  const b = (1 - ratio) * baseRGBA.b + ratio * blendChannel(mode, baseRGBA.b, blendRGBA.b);
+  const a = (1 - ratio) * (baseRGBA.a ?? 1) + ratio * (blendRGBA.a ?? 1);
+  const resultRGBA: ColorRGBA = {
+    r: Math.round(clampValue(r, 0, 255)),
+    g: Math.round(clampValue(g, 0, 255)),
+    b: Math.round(clampValue(b, 0, 255)),
+    a: +clampValue(a, 0, 1).toFixed(3),
+  };
+  return new Color(resultRGBA);
+}
+
+function blendColorsInHSLSpace(base: Color, blend: Color, ratio: number): Color {
+  const b = base.toHSL();
+  const a = blend.toHSL();
+  const result: ColorHSL = {
+    h: (1 - ratio) * b.h + ratio * a.h,
+    s: (1 - ratio) * b.s + ratio * a.s,
+    l: (1 - ratio) * b.l + ratio * a.l,
+  };
+  return new Color(result);
+}
+
+export function blendColors(base: Color, blend: Color, options: BlendColorsOptions = {}): Color {
+  const { mode = BlendMode.NORMAL, space = BlendSpace.RGB, ratio: inputRatio = 0.5 } = options;
+  const ratio = clampValue(inputRatio, 0, 1);
+
+  if (space === BlendSpace.RGB) {
+    return blendColorsInRGBSpace(base, blend, mode, ratio);
+  }
+
+  return blendColorsInHSLSpace(base, blend, ratio);
+}
+
 export interface AverageOptions {
   space?: MixSpace;
   weights?: number[];
@@ -236,71 +306,6 @@ export function averageColors(colors: Color[], options: AverageOptions = {}): Co
         h += val.h * weight;
       });
       return new Color({ l, c, h });
-    }
-  }
-}
-
-export enum BlendMode {
-  NORMAL = 'NORMAL',
-  MULTIPLY = 'MULTIPLY',
-  SCREEN = 'SCREEN',
-  OVERLAY = 'OVERLAY',
-}
-
-export enum BlendSpace {
-  RGB = 'RGB',
-  HSL = 'HSL',
-}
-
-export interface BlendOptions {
-  mode?: BlendMode;
-  space?: BlendSpace;
-  ratio?: number; // amount of blend color over base (0 - 1)
-}
-
-function blendChannel(mode: BlendMode, base: number, blend: number): number {
-  switch (mode) {
-    case BlendMode.MULTIPLY:
-      return (base * blend) / 255;
-    case BlendMode.SCREEN:
-      return 255 - ((255 - base) * (255 - blend)) / 255;
-    case BlendMode.OVERLAY:
-      return base < 128 ? (2 * base * blend) / 255 : 255 - (2 * (255 - base) * (255 - blend)) / 255;
-    case BlendMode.NORMAL:
-    default:
-      return blend;
-  }
-}
-
-export function blendColors(base: Color, blend: Color, options: BlendOptions = {}): Color {
-  const { mode = BlendMode.NORMAL, space = BlendSpace.RGB, ratio = 0.5 } = options;
-  const t = clampValue(ratio, 0, 1);
-  switch (space) {
-    case BlendSpace.HSL: {
-      const b = base.toHSL();
-      const a = blend.toHSL();
-      const result: ColorHSL = {
-        h: (1 - t) * b.h + t * a.h,
-        s: (1 - t) * b.s + t * a.s,
-        l: (1 - t) * b.l + t * a.l,
-      };
-      return new Color(result);
-    }
-    case BlendSpace.RGB:
-    default: {
-      const b = base.toRGBA();
-      const a = blend.toRGBA();
-      const r = (1 - t) * b.r + t * blendChannel(mode, b.r, a.r);
-      const g = (1 - t) * b.g + t * blendChannel(mode, b.g, a.g);
-      const bb = (1 - t) * b.b + t * blendChannel(mode, b.b, a.b);
-      const alpha = (1 - t) * (b.a ?? 1) + t * (a.a ?? 1);
-      const result: ColorRGBA = {
-        r: Math.round(clampValue(r, 0, 255)),
-        g: Math.round(clampValue(g, 0, 255)),
-        b: Math.round(clampValue(bb, 0, 255)),
-        a: +clampValue(alpha, 0, 1).toFixed(3),
-      };
-      return new Color(result);
     }
   }
 }

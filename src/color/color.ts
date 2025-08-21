@@ -4,7 +4,13 @@ import {
   GenerateColorPaletteOptions,
 } from '../palette/palette';
 import { clampValue } from '../utils';
-import { averageColors, blendColors, mixColors, MixColorsOptions } from './combinations';
+import {
+  averageColors,
+  blendColors,
+  BlendColorsOptions,
+  mixColors,
+  MixColorsOptions,
+} from './combinations';
 import {
   toCMYK,
   toHex,
@@ -362,7 +368,7 @@ export class Color {
    * Mix this color with one or more other colors.
    *
    * @param others - Array of one or more other colors to mix with.
-   * @param options - optional {@link MixColorsOptions} mixing options and weights.
+   * @param options - Optional {@link MixColorsOptions} mixing options and weights.
    * @returns A new color that is the result of the mix.
    */
   mix(others: Color[], options?: MixColorsOptions): Color {
@@ -372,8 +378,15 @@ export class Color {
     return mixColors([this, ...others], options);
   }
 
-  blend(other: Color): Color {
-    return blendColors(this, other);
+  /**
+   * Blend this color with another color.
+   *
+   * @param other - The color to blend with.
+   * @param options - Optional {@link BlendColorsOptions} for blend mode, space, and ratio.
+   * @returns A new color that is the result of the blend.
+   */
+  blend(other: Color, options?: BlendColorsOptions): Color {
+    return blendColors(this, other, options);
   }
 
   average(others: Color[]): Color {

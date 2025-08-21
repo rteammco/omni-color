@@ -1,5 +1,12 @@
 import { Color } from './color/color';
-import { MixColorsOptions, MixSpace, MixType } from './color/combinations';
+import {
+  BlendColorsOptions,
+  BlendMode,
+  BlendSpace,
+  MixColorsOptions,
+  MixSpace,
+  MixType,
+} from './color/combinations';
 import {
   ColorCMYK,
   ColorFormat,
@@ -21,6 +28,9 @@ import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
   BaseColorName,
+  BlendColorsOptions,
+  BlendMode,
+  BlendSpace,
   Color,
   ColorCMYK,
   ColorFormat,
