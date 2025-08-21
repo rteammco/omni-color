@@ -5,12 +5,14 @@ import {
   Color,
   MixSpace,
   MixType,
+  type AverageColorsOptions,
   type BlendColorsOptions,
   type MixColorsOptions,
 } from '../../../../dist';
 import { ColorBox } from '../../components/ColorBox';
 import { MixColorsOptionInputs } from './MixColorsOptionInputs';
 import { BlendColorsOptionInputs } from './BlendColorsOptionInputs';
+import { AverageColorsOptionInputs } from './AverageColorsOptionInputs';
 
 interface Props {
   color: Color;
@@ -26,6 +28,10 @@ export function ColorCombinationDemo({ color }: Props) {
     mode: BlendMode.NORMAL,
     space: BlendSpace.RGB,
     ratio: 0.5,
+  });
+
+  const [averageOptions, setAverageOptions] = useState<AverageColorsOptions>({
+    space: MixSpace.RGB,
   });
 
   const { red, green, blue } = useMemo(() => {
@@ -96,18 +102,23 @@ export function ColorCombinationDemo({ color }: Props) {
               <ColorBox color={color} />
             </td>
             <td className="pb-2 px-2">
-              <ColorBox color={color.average([red])} />
+              <ColorBox color={color.average([red], averageOptions)} />
             </td>
             <td className="pb-2 px-2">
-              <ColorBox color={color.average([green])} />
+              <ColorBox color={color.average([green], averageOptions)} />
             </td>
             <td className="pb-2 px-2">
-              <ColorBox color={color.average([blue])} />
+              <ColorBox color={color.average([blue], averageOptions)} />
             </td>
             <td className="pb-2 px-2">
-              <ColorBox color={color.average([red, green, blue])} />
+              <ColorBox color={color.average([red, green, blue], averageOptions)} />
             </td>
-            <td className="pb-2 px-2">TODO - options</td>
+            <td className="pb-2 px-2">
+              <AverageColorsOptionInputs
+                mixOptions={averageOptions}
+                onOptionsChanged={setAverageOptions}
+              />
+            </td>
           </tr>
         </tbody>
       </table>
