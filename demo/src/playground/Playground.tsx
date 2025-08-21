@@ -7,7 +7,7 @@ import { VSpace } from '../components/VSpace';
 import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorSwatch } from './ColorSwatch';
 import { ColorPaletteDemo } from './palette/ColorPaletteDemo';
-import { ColorCombinationDemo } from './ColorCombinationDemo';
+import { ColorCombinationDemo } from './combinations/ColorCombinationDemo';
 
 const COLOR_SEARCH_PARAM_KEY = 'color' as const;
 
