@@ -37,6 +37,10 @@ button:active {
   color: #a4acff;
 }
 
+select:hover {
+  cursor: pointer;
+}
+
 body {
   margin: 0;
   display: flex;

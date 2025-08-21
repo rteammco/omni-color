@@ -1,5 +1,14 @@
 import { Color } from './color/color';
 import {
+  AverageColorsOptions,
+  BlendColorsOptions,
+  BlendMode,
+  BlendSpace,
+  MixColorsOptions,
+  MixSpace,
+  MixType,
+} from './color/combinations';
+import {
   ColorCMYK,
   ColorFormat,
   ColorHex,
@@ -19,7 +28,11 @@ import { ColorSwatch } from './color/swatch';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
+  AverageColorsOptions,
   BaseColorName,
+  BlendColorsOptions,
+  BlendMode,
+  BlendSpace,
   Color,
   ColorCMYK,
   ColorFormat,
@@ -38,5 +51,8 @@ export {
   ColorRGBA,
   ColorSwatch,
   GenerateColorPaletteOptions,
+  MixColorsOptions,
+  MixSpace,
+  MixType,
   RandomColorOptions,
 };

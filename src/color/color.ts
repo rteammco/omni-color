@@ -5,6 +5,14 @@ import {
 } from '../palette/palette';
 import { clampValue } from '../utils';
 import {
+  averageColors,
+  AverageColorsOptions,
+  blendColors,
+  BlendColorsOptions,
+  mixColors,
+  MixColorsOptions,
+} from './combinations';
+import {
   toCMYK,
   toHex,
   toHex8,
@@ -355,6 +363,45 @@ export class Color {
    */
   grayscale(): Color {
     return colorToGrayscale(this);
+  }
+
+  /**
+   * Mix this color with one or more other colors.
+   *
+   * @param others - Array of one or more other colors to mix with.
+   * @param options - Optional {@link MixColorsOptions} mixing options and weights.
+   * @returns A new color that is the result of the mix.
+   */
+  mix(others: Color[], options?: MixColorsOptions): Color {
+    if (others.length === 0) {
+      return this.clone();
+    }
+    return mixColors([this, ...others], options);
+  }
+
+  /**
+   * Blend this color with another color.
+   *
+   * @param other - The color to blend with.
+   * @param options - Optional {@link BlendColorsOptions} for blend mode, space, and ratio.
+   * @returns A new color that is the result of the blend.
+   */
+  blend(other: Color, options?: BlendColorsOptions): Color {
+    return blendColors(this, other, options);
+  }
+
+  /**
+   * Average this color with one or more other colors by averaging their channels in the selected color space.
+   *
+   * @param others - Array of one or more other colors to average with.
+   * @param options - Optional {@link AverageColorsOptions} mix space and weights.
+   * @returns A new color that is the result of the averaging.
+   */
+  average(others: Color[], options?: AverageColorsOptions): Color {
+    if (others.length === 0) {
+      return this.clone();
+    }
+    return averageColors([this, ...others], options);
   }
 
   /**
