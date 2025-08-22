@@ -471,15 +471,12 @@ describe('Color.getColorPalette', () => {
 
     // Semantic chroma range option
     const defaultInfoChroma = defaultPalette.info[500].toOKLCH().c;
-    const limitedChromaPalette = baseColor.getColorPalette(
-      ColorHarmony.COMPLEMENTARY,
-      {
-        semanticHarmonization: {
-          huePull: 0,
-          chromaRange: [0.02, 0.05],
-        },
-      }
-    );
+    const limitedChromaPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+      semanticHarmonization: {
+        huePull: 0,
+        chromaRange: [0.02, 0.05],
+      },
+    });
     const limitedInfoChroma = limitedChromaPalette.info[500].toOKLCH().c;
     expect(limitedInfoChroma).toBeGreaterThanOrEqual(0.02);
     expect(limitedInfoChroma).toBeLessThanOrEqual(0.05);
@@ -491,6 +488,14 @@ describe('Color.isDark sanity check', () => {
   it('identifies dark and light colors', () => {
     expect(new Color('#000000').isDark()).toBe(true);
     expect(new Color('#ffffff').isDark()).toBe(false);
+  });
+});
+
+describe('Color.isOffWhite sanity check', () => {
+  it('identifies off-white and non-off-white colors', () => {
+    expect(new Color('#ffffff').isOffWhite()).toBe(true);
+    expect(new Color('#f0f0f0').isOffWhite()).toBe(true);
+    expect(new Color('#dddddd').isOffWhite()).toBe(false);
   });
 });
 
