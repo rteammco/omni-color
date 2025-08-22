@@ -8,9 +8,8 @@ interface Props {
 }
 
 export function ColorInput({ color, onColorChanged }: Props) {
-  const [isInputColorValid, setIsInputColorValid] = useState(true);
-
   const [inputValue, setInputValue] = useState<string>(color.toHex());
+  const [isInputColorValid, setIsInputColorValid] = useState(true);
 
   const handleColorInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +31,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
       const color = new Color(colorString);
       onColorChanged(color);
       setInputValue(colorString ?? color.toHex());
+      setIsInputColorValid(true);
     },
     [onColorChanged]
   );
@@ -41,6 +41,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
       const color = Color.random(options);
       onColorChanged(color);
       setInputValue(color.toHex());
+      setIsInputColorValid(true);
     },
     [onColorChanged]
   );
