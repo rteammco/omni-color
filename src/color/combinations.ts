@@ -30,17 +30,17 @@ export interface MixColorsOptions {
 }
 
 function getWeights(
-  count: number,
+  numColors: number,
   inputRawWeights?: number[]
 ): { weights: number[]; sumOfWeights: number; normalizedWeights: number[] } {
   let weights =
-    inputRawWeights && inputRawWeights.length === count
+    inputRawWeights && inputRawWeights.length === numColors
       ? inputRawWeights
-      : new Array<number>(count).fill(1);
+      : new Array<number>(numColors).fill(1);
   let sumOfWeights = weights.reduce((sum, w) => sum + w, 0);
   if (sumOfWeights === 0) {
-    weights = new Array<number>(count).fill(1);
-    sumOfWeights = count;
+    weights = new Array<number>(numColors).fill(1);
+    sumOfWeights = numColors;
   }
   const normalizedWeights = weights.map((w) => w / sumOfWeights);
   return { weights, sumOfWeights, normalizedWeights };
@@ -153,6 +153,7 @@ export function mixColors(colors: Color[], options: MixColorsOptions = {}): Colo
   }
   const { type = MixType.ADDITIVE, space = MixSpace.RGB } = options;
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
+
   if (type === MixType.SUBTRACTIVE) {
     return mixColorsSubtractive(colors, normalizedWeights);
   }
