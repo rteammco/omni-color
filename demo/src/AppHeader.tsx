@@ -5,7 +5,7 @@ export function AppHeader() {
       <h3 className="mb-4">A fast, powerful, and lightweight color library for TypeScript</h3>
       <h6 className="font-mono">
         conversions &middot; manipulations &middot; combinations &middot; harmonies &middot; color
-        palettes
+        palettes &middot; accessibility
       </h6>
     </div>
   );

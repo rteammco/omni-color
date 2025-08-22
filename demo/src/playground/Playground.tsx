@@ -8,6 +8,7 @@ import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorSwatch } from './ColorSwatch';
 import { ColorPaletteDemo } from './palette/ColorPaletteDemo';
 import { ColorCombinationDemo } from './combinations/ColorCombinationDemo';
+import { ReadabilityDemo } from './ReadabilityDemo';
 
 const COLOR_SEARCH_PARAM_KEY = 'color' as const;
 
@@ -53,6 +54,9 @@ export function Playground() {
       <ColorInfo color={color} />
       <VSpace height={8} />
       <ColorSwatch color={color} />
+      <VSpace height={24} />
+      <h5 className="mb-3">Readability</h5>
+      <ReadabilityDemo color={color} />
       <VSpace height={24} />
       <h5 className="mb-3">Manipulations</h5>
       <ColorManipulationDemo color={color} />
