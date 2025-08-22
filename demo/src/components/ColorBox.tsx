@@ -1,9 +1,11 @@
 import { Color } from '../../../dist';
 import { useColorBackgroundAndBorderColors } from './utils';
 
-function getFirstLetterOfColorName(color: Color): string {
+function getOverlayColorLetters(color: Color): string {
   const { name } = color.getName();
-  return name.substring(0, 1).toUpperCase();
+  const firstLetterOfName = name.substring(0, 1).toUpperCase();
+  const lastLetterOfName = name.substring(name.length - 1).toLowerCase();
+  return `${firstLetterOfName}${lastLetterOfName}`;
 }
 
 interface Props {
@@ -26,7 +28,7 @@ export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColo
     >
       {overlayColor && (
         <h4 className="font-bold" style={{ color: overlayColor.toHex() }}>
-          {getFirstLetterOfColorName(overlayColor)}
+          {getOverlayColorLetters(overlayColor)}
         </h4>
       )}
       <span className={`pb-1 text-xs ${color.isDark() ? 'text-white' : 'text-black'}`}>
