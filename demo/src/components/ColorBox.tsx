@@ -1,6 +1,11 @@
 import { Color } from '../../../dist';
 import { useColorBackgroundAndBorderColors } from './utils';
 
+function getFirstLetterOfColorName(color: Color): string {
+  const { name } = color.getName();
+  return name.substring(0, 1).toUpperCase();
+}
+
 interface Props {
   color: Color;
   hideBorder?: boolean;
@@ -11,11 +16,6 @@ interface Props {
 
 export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColor }: Props) {
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
-
-  const getFirstLetterOfColorName = (c: Color): string => {
-    const { name } = c.getName();
-    return name.substring(0, 1).toUpperCase();
-  };
 
   return (
     <div
