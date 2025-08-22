@@ -65,7 +65,7 @@ import {
 } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
 import { getRandomColorRGBA, RandomColorOptions } from './random';
-import { getWCAGContrastRatio } from './readability';
+import { getAPCAReadabilityScore, getWCAGContrastRatio } from './readability';
 import { ColorSwatch, getColorSwatch } from './swatch';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
@@ -593,6 +593,18 @@ export class Color {
    */
   getContrastRatio(other: Color): number {
     return getWCAGContrastRatio(this, other);
+  }
+
+  /**
+   * Get the readability score of this color against a given background color.
+   *
+   * NOTE: This is based on draft recommendations and is provided for advisory use only as WCAG 3 is not finalized.
+   *
+   * @param backgroundColor The background {@link Color} to compare against.
+   * @returns The APCA readability score as a number.
+   */
+  getReadabilityScore(backgroundColor: Color): number {
+    return getAPCAReadabilityScore(this, backgroundColor);
   }
 
   /**

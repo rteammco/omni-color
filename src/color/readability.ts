@@ -14,17 +14,17 @@ function getCompositeRGBA(fg: ColorRGBA, bg: ColorRGBA): ColorRGBA {
   return { r, g, b, a: compositeAlpha };
 }
 
-// Does a gamma correction by converting sRGB to linear RGB values. To calculate proper
-// luminance, we need the actual linear light intensities, not the gamma-encoded ones.
-function linearizeRGBChannel(channel: number): number {
-  const c = channel / 255; // normalize
-  if (c <= 0.03928) {
-    return c / 12.92; // linear portion for dark colors
-  }
-  return Math.pow((c + 0.055) / 1.055, 2.4); // gamma correction for brighter colors
-}
-
 function getRelativeLuminance(rgb: ColorRGBA): number {
+  // Does a gamma correction by converting sRGB to linear RGB values. To calculate proper
+  // luminance, we need the actual linear light intensities, not the gamma-encoded ones.
+  const linearizeRGBChannel = (channel: number): number => {
+    const c = channel / 255; // normalize
+    if (c <= 0.03928) {
+      return c / 12.92; // linear portion for dark colors
+    }
+    return Math.pow((c + 0.055) / 1.055, 2.4); // gamma correction for brighter colors
+  };
+
   const r = linearizeRGBChannel(rgb.r);
   const g = linearizeRGBChannel(rgb.g);
   const b = linearizeRGBChannel(rgb.b);
@@ -48,33 +48,56 @@ export function getWCAGContrastRatio(color1: Color, color2: Color): number {
   return +ratio.toFixed(2);
 }
 
+// SA98G stands for "Silver Algorithm 98 Gamma" or "Somers Algorithm 98 Gamma"
+// and contains the constants used for the APCA algorithm.
 const SA98G = {
-  mainTRC: 2.4,
-  sRco: 0.2126729,
-  sGco: 0.7151522,
-  sBco: 0.072175,
-  normBG: 0.56,
-  normTXT: 0.57,
-  revTXT: 0.62,
-  revBG: 0.65,
-  blkThrs: 0.022,
-  blkClmp: 1.414,
-  scaleBoW: 1.14,
-  scaleWoB: 1.14,
-  loBoWoffset: 0.027,
-  loWoBoffset: 0.027,
-  deltaYmin: 0.0005,
-  loClip: 0.1,
-};
+  // Color space and gamma correction:
+  mainTRC: 2.4, // APCA gamma correction exponent
 
+  // Luminance coefficients:
+  sRco: 0.2126729, // APCA red color coefficient
+  sGco: 0.7151522, // APCA green color coefficient
+  sBco: 0.072175, // APCA blue color coefficient
+
+  // Normalization exponents:
+  normBG: 0.56, // background normalization for normal polarity (dark text on light background)
+  normTXT: 0.57, // text normalization for normal polarity
+  revBG: 0.65, // background normalization for reverse polarity (light text on dark background)
+  revTXT: 0.62, // text normalization for reverse polarity
+
+  // Scaling factors:
+  scaleBoW: 1.14, // scale factor for normal polarity (black on white)
+  scaleWoB: 1.14, // scale factor for reverse polarity (white on black)
+
+  // Threshold and clipping values:
+  blkThresh: 0.022, // black threshold below which special handling is applied
+  blkClamp: 1.414, // black clamp exponent for handling very dark colors
+  deltaYmin: 0.0005, // minimum luminance difference threshold
+  loClip: 0.1, // low contrast clipping threshold
+
+  // Offset values:
+  loBoWOffset: 0.027, // low contrast offset for Black on White
+  loWoBOffset: 0.027, // low contrast offset for White on Black
+} as const;
+
+// Converts RGB to Y (luminance) value using the APCA method
 function sRGBtoY(rgb: ColorRGBA): number {
-  const exp = SA98G.mainTRC;
-  const lin = (c: number): number => Math.pow(c / 255, exp);
-  return SA98G.sRco * lin(rgb.r) + SA98G.sGco * lin(rgb.g) + SA98G.sBco * lin(rgb.b);
+  // Normalizes each channel and applies gamma correction (SA98G.mainTRC exponent)
+  const linearizeRGBChannel = (c: number): number => Math.pow(c / 255, SA98G.mainTRC);
+
+  // Calculate weighted luminance using APCA-specified coefficients:
+  return (
+    SA98G.sRco * linearizeRGBChannel(rgb.r) +
+    SA98G.sGco * linearizeRGBChannel(rgb.g) +
+    SA98G.sBco * linearizeRGBChannel(rgb.b)
+  );
 }
 
-function APCAcontrast(txtY: number, bgY: number): number {
-  const icp = [0.0, 1.1];
+// Given the text luminance `txtY` and the background luminance `bgY`, returns the APCA contrast value
+// as a percentage (-100 to +100).
+function getAPCAContrast(txtY: number, bgY: number): number {
+  // Input validation:
+  const icp = [0.0, 1.1]; // input color processing range
   if (
     Number.isNaN(txtY) ||
     Number.isNaN(bgY) ||
@@ -83,37 +106,45 @@ function APCAcontrast(txtY: number, bgY: number): number {
   ) {
     return 0;
   }
-  txtY = txtY > SA98G.blkThrs ? txtY : txtY + Math.pow(SA98G.blkThrs - txtY, SA98G.blkClmp);
-  bgY = bgY > SA98G.blkThrs ? bgY : bgY + Math.pow(SA98G.blkThrs - bgY, SA98G.blkClmp);
-  if (Math.abs(bgY - txtY) < SA98G.deltaYmin) {
+
+  // Black level clamping:
+  const clampedTxtY =
+    txtY > SA98G.blkThresh ? txtY : txtY + Math.pow(SA98G.blkThresh - txtY, SA98G.blkClamp);
+  const clampedBgY =
+    bgY > SA98G.blkThresh ? bgY : bgY + Math.pow(SA98G.blkThresh - bgY, SA98G.blkClamp);
+
+  // Minimum delta check (min perceptual difference) - if the colors are too similar, contrast is effectively zero:
+  if (Math.abs(clampedBgY - clampedTxtY) < SA98G.deltaYmin) {
     return 0;
   }
-  let SAPC = 0;
+
+  // Polarity-based contrast calculation:
+  let SAPC = 0; // "Somers Algorithm Perceptual Contrast"
   let outputContrast = 0;
-  if (bgY > txtY) {
-    SAPC = (Math.pow(bgY, SA98G.normBG) - Math.pow(txtY, SA98G.normTXT)) * SA98G.scaleBoW;
-    outputContrast = SAPC < SA98G.loClip ? 0 : SAPC - SA98G.loBoWoffset;
+  if (clampedBgY > clampedTxtY) {
+    SAPC =
+      (Math.pow(clampedBgY, SA98G.normBG) - Math.pow(clampedTxtY, SA98G.normTXT)) * SA98G.scaleBoW;
+    outputContrast = SAPC < SA98G.loClip ? 0 : SAPC - SA98G.loBoWOffset;
   } else {
-    SAPC = (Math.pow(bgY, SA98G.revBG) - Math.pow(txtY, SA98G.revTXT)) * SA98G.scaleWoB;
-    outputContrast = SAPC > -SA98G.loClip ? 0 : SAPC + SA98G.loWoBoffset;
+    SAPC =
+      (Math.pow(clampedBgY, SA98G.revBG) - Math.pow(clampedTxtY, SA98G.revTXT)) * SA98G.scaleWoB;
+    outputContrast = SAPC > -SA98G.loClip ? 0 : SAPC + SA98G.loWoBOffset;
   }
+
+  // Scale output to percentage (-100 to +100) and return:
   return outputContrast * 100;
 }
 
-/**
- * Calculate the APCA readability score (Lc value).
- *
- * Note: This is based on draft recommendations and is provided for advisory use only as WCAG 3 is not finalized.
- */
+// Calculates the APCA readability score (Lc value).
+// NOTE: This is based on draft recommendations and is provided for advisory use only as WCAG 3 is not finalized.
 export function getAPCAReadabilityScore(foreground: Color, background: Color): number {
   const fg = foreground.toRGBA();
   const bg = background.toRGBA();
 
-  const bgOpaque =
-    bg.a !== undefined && bg.a < 1 ? getCompositeRGBA(bg, { r: 255, g: 255, b: 255, a: 1 }) : bg;
-  const fgOpaque = fg.a !== undefined && fg.a < 1 ? getCompositeRGBA(fg, bgOpaque) : fg;
+  const bgOpaque = bg.a < 1 ? getCompositeRGBA(bg, { r: 255, g: 255, b: 255, a: 1 }) : bg;
+  const fgOpaque = fg.a < 1 ? getCompositeRGBA(fg, bgOpaque) : fg;
 
   const txtY = sRGBtoY(fgOpaque);
   const bgY = sRGBtoY(bgOpaque);
-  return APCAcontrast(txtY, bgY);
+  return getAPCAContrast(txtY, bgY);
 }
