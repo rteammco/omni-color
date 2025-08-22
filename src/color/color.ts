@@ -279,10 +279,10 @@ export class Color {
   /**
    * Set the alpha channel of the color.
    *
-   * @param alpha - New alpha value between `0` and `1`.
+   * @param alpha - New alpha value between `0` and `1`; defaults to `1` when the input is not a finite number.
    */
   setAlpha(alpha: number): Color {
-    this.color.a = +clampValue(alpha, 0, 1).toFixed(3);
+    this.color.a = Number.isFinite(alpha) ? +clampValue(alpha, 0, 1).toFixed(3) : 1;
     return this;
   }
 
