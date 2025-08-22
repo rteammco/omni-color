@@ -19,8 +19,8 @@ describe('getWCAGContrastRatio', () => {
   it('red dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red dark on #ffffff alpha 1', () => {
@@ -40,8 +40,8 @@ describe('getWCAGContrastRatio', () => {
   it('red dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red dark on #777777 alpha 1', () => {
@@ -61,8 +61,8 @@ describe('getWCAGContrastRatio', () => {
   it('red dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red normal on #000000 alpha 1', () => {
@@ -82,15 +82,15 @@ describe('getWCAGContrastRatio', () => {
   it('red normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 0, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red normal on #ffffff alpha 1', () => {
     const fg = new Color('#ff0000');
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(4.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(4.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(4.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(4.0, 2);
   });
 
   it('red normal on #ffffff alpha 0.5', () => {
@@ -103,8 +103,8 @@ describe('getWCAGContrastRatio', () => {
   it('red normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 0, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red normal on #777777 alpha 1', () => {
@@ -124,8 +124,8 @@ describe('getWCAGContrastRatio', () => {
   it('red normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 0, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red light on #000000 alpha 1', () => {
@@ -145,8 +145,8 @@ describe('getWCAGContrastRatio', () => {
   it('red light on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 153, b: 153, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red light on #ffffff alpha 1', () => {
@@ -166,8 +166,8 @@ describe('getWCAGContrastRatio', () => {
   it('red light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 153, b: 153, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('red light on #777777 alpha 1', () => {
@@ -187,8 +187,8 @@ describe('getWCAGContrastRatio', () => {
   it('red light on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 153, b: 153, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange dark on #000000 alpha 1', () => {
@@ -208,15 +208,15 @@ describe('getWCAGContrastRatio', () => {
   it('orange dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange dark on #ffffff alpha 1', () => {
     const fg = new Color('#994c00');
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(6.20, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(6.20, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(6.2, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(6.2, 2);
   });
 
   it('orange dark on #ffffff alpha 0.5', () => {
@@ -229,8 +229,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange dark on #777777 alpha 1', () => {
@@ -250,8 +250,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange normal on #000000 alpha 1', () => {
@@ -271,8 +271,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 127, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange normal on #ffffff alpha 1', () => {
@@ -292,8 +292,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 127, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange normal on #777777 alpha 1', () => {
@@ -313,8 +313,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 127, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange light on #000000 alpha 1', () => {
@@ -334,8 +334,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange light on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 178, b: 102, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange light on #ffffff alpha 1', () => {
@@ -355,8 +355,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 178, b: 102, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('orange light on #777777 alpha 1', () => {
@@ -376,8 +376,8 @@ describe('getWCAGContrastRatio', () => {
   it('orange light on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 178, b: 102, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow dark on #000000 alpha 1', () => {
@@ -397,8 +397,8 @@ describe('getWCAGContrastRatio', () => {
   it('yellow dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow dark on #ffffff alpha 1', () => {
@@ -418,8 +418,8 @@ describe('getWCAGContrastRatio', () => {
   it('yellow dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow dark on #777777 alpha 1', () => {
@@ -432,15 +432,15 @@ describe('getWCAGContrastRatio', () => {
   it('yellow dark on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.20, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.20, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.2, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.2, 2);
   });
 
   it('yellow dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow normal on #000000 alpha 1', () => {
@@ -460,8 +460,8 @@ describe('getWCAGContrastRatio', () => {
   it('yellow normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow normal on #ffffff alpha 1', () => {
@@ -481,8 +481,8 @@ describe('getWCAGContrastRatio', () => {
   it('yellow normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow normal on #777777 alpha 1', () => {
@@ -502,8 +502,8 @@ describe('getWCAGContrastRatio', () => {
   it('yellow normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow light on #000000 alpha 1', () => {
@@ -523,8 +523,8 @@ describe('getWCAGContrastRatio', () => {
   it('yellow light on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 153, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow light on #ffffff alpha 1', () => {
@@ -544,8 +544,8 @@ describe('getWCAGContrastRatio', () => {
   it('yellow light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 153, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('yellow light on #777777 alpha 1', () => {
@@ -565,15 +565,15 @@ describe('getWCAGContrastRatio', () => {
   it('yellow light on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 153, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green dark on #000000 alpha 1', () => {
     const fg = new Color('#006600');
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(2.90, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(2.90, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(2.9, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(2.9, 2);
   });
 
   it('green dark on #000000 alpha 0.5', () => {
@@ -586,8 +586,8 @@ describe('getWCAGContrastRatio', () => {
   it('green dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green dark on #ffffff alpha 1', () => {
@@ -607,8 +607,8 @@ describe('getWCAGContrastRatio', () => {
   it('green dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green dark on #777777 alpha 1', () => {
@@ -628,15 +628,15 @@ describe('getWCAGContrastRatio', () => {
   it('green dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green normal on #000000 alpha 1', () => {
     const fg = new Color('#00ff00');
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(15.30, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(15.30, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(15.3, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(15.3, 2);
   });
 
   it('green normal on #000000 alpha 0.5', () => {
@@ -649,8 +649,8 @@ describe('getWCAGContrastRatio', () => {
   it('green normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 255, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green normal on #ffffff alpha 1', () => {
@@ -670,8 +670,8 @@ describe('getWCAGContrastRatio', () => {
   it('green normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 255, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green normal on #777777 alpha 1', () => {
@@ -691,8 +691,8 @@ describe('getWCAGContrastRatio', () => {
   it('green normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 255, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green light on #000000 alpha 1', () => {
@@ -712,8 +712,8 @@ describe('getWCAGContrastRatio', () => {
   it('green light on #000000 alpha 0', () => {
     const fg = new Color({ r: 102, g: 255, b: 102, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green light on #ffffff alpha 1', () => {
@@ -733,8 +733,8 @@ describe('getWCAGContrastRatio', () => {
   it('green light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 102, g: 255, b: 102, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('green light on #777777 alpha 1', () => {
@@ -754,8 +754,8 @@ describe('getWCAGContrastRatio', () => {
   it('green light on #777777 alpha 0', () => {
     const fg = new Color({ r: 102, g: 255, b: 102, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue dark on #000000 alpha 1', () => {
@@ -775,8 +775,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue dark on #ffffff alpha 1', () => {
@@ -796,8 +796,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue dark on #777777 alpha 1', () => {
@@ -817,8 +817,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue normal on #000000 alpha 1', () => {
@@ -838,8 +838,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 255, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue normal on #ffffff alpha 1', () => {
@@ -859,8 +859,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 255, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue normal on #777777 alpha 1', () => {
@@ -880,8 +880,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 255, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue light on #000000 alpha 1', () => {
@@ -901,8 +901,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue light on #000000 alpha 0', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue light on #ffffff alpha 1', () => {
@@ -922,8 +922,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('blue light on #777777 alpha 1', () => {
@@ -943,8 +943,8 @@ describe('getWCAGContrastRatio', () => {
   it('blue light on #777777 alpha 0', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo dark on #000000 alpha 1', () => {
@@ -964,8 +964,8 @@ describe('getWCAGContrastRatio', () => {
   it('indigo dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo dark on #ffffff alpha 1', () => {
@@ -985,8 +985,8 @@ describe('getWCAGContrastRatio', () => {
   it('indigo dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo dark on #777777 alpha 1', () => {
@@ -1006,8 +1006,8 @@ describe('getWCAGContrastRatio', () => {
   it('indigo dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo normal on #000000 alpha 1', () => {
@@ -1027,8 +1027,8 @@ describe('getWCAGContrastRatio', () => {
   it('indigo normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 75, g: 0, b: 130, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo normal on #ffffff alpha 1', () => {
@@ -1048,8 +1048,8 @@ describe('getWCAGContrastRatio', () => {
   it('indigo normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 75, g: 0, b: 130, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo normal on #777777 alpha 1', () => {
@@ -1069,15 +1069,15 @@ describe('getWCAGContrastRatio', () => {
   it('indigo normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 75, g: 0, b: 130, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo light on #000000 alpha 1', () => {
     const fg = new Color('#9370ff');
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(6.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(6.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(6.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(6.0, 2);
   });
 
   it('indigo light on #000000 alpha 0.5', () => {
@@ -1090,15 +1090,15 @@ describe('getWCAGContrastRatio', () => {
   it('indigo light on #000000 alpha 0', () => {
     const fg = new Color({ r: 147, g: 112, b: 255, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo light on #ffffff alpha 1', () => {
     const fg = new Color('#9370ff');
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(3.50, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(3.50, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(3.5, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(3.5, 2);
   });
 
   it('indigo light on #ffffff alpha 0.5', () => {
@@ -1111,8 +1111,8 @@ describe('getWCAGContrastRatio', () => {
   it('indigo light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 147, g: 112, b: 255, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('indigo light on #777777 alpha 1', () => {
@@ -1132,8 +1132,8 @@ describe('getWCAGContrastRatio', () => {
   it('indigo light on #777777 alpha 0', () => {
     const fg = new Color({ r: 147, g: 112, b: 255, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet dark on #000000 alpha 1', () => {
@@ -1153,8 +1153,8 @@ describe('getWCAGContrastRatio', () => {
   it('violet dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet dark on #ffffff alpha 1', () => {
@@ -1167,15 +1167,15 @@ describe('getWCAGContrastRatio', () => {
   it('violet dark on #ffffff alpha 0.5', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0.5 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(3.30, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(3.30, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(3.3, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(3.3, 2);
   });
 
   it('violet dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet dark on #777777 alpha 1', () => {
@@ -1195,8 +1195,8 @@ describe('getWCAGContrastRatio', () => {
   it('violet dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet normal on #000000 alpha 1', () => {
@@ -1216,8 +1216,8 @@ describe('getWCAGContrastRatio', () => {
   it('violet normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 238, g: 130, b: 238, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet normal on #ffffff alpha 1', () => {
@@ -1237,8 +1237,8 @@ describe('getWCAGContrastRatio', () => {
   it('violet normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 238, g: 130, b: 238, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet normal on #777777 alpha 1', () => {
@@ -1258,8 +1258,8 @@ describe('getWCAGContrastRatio', () => {
   it('violet normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 238, g: 130, b: 238, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet light on #000000 alpha 1', () => {
@@ -1279,8 +1279,8 @@ describe('getWCAGContrastRatio', () => {
   it('violet light on #000000 alpha 0', () => {
     const fg = new Color({ r: 242, g: 179, b: 242, a: 0 });
     const bg = new Color('#000000');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet light on #ffffff alpha 1', () => {
@@ -1300,8 +1300,8 @@ describe('getWCAGContrastRatio', () => {
   it('violet light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 242, g: 179, b: 242, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('violet light on #777777 alpha 1', () => {
@@ -1321,15 +1321,15 @@ describe('getWCAGContrastRatio', () => {
   it('violet light on #777777 alpha 0', () => {
     const fg = new Color({ r: 242, g: 179, b: 242, a: 0 });
     const bg = new Color('#777777');
-    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.00, 2);
-    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.00, 2);
+    expect(getWCAGContrastRatio(fg, bg)).toBeCloseTo(1.0, 2);
+    expect(getWCAGContrastRatio(bg, fg)).toBeCloseTo(1.0, 2);
   });
 
   it('#000000 vs #ffffff', () => {
     const c1 = new Color('#000000');
     const c2 = new Color('#ffffff');
-    expect(getWCAGContrastRatio(c1, c2)).toBeCloseTo(21.00, 2);
-    expect(getWCAGContrastRatio(c2, c1)).toBeCloseTo(21.00, 2);
+    expect(getWCAGContrastRatio(c1, c2)).toBeCloseTo(21.0, 2);
+    expect(getWCAGContrastRatio(c2, c1)).toBeCloseTo(21.0, 2);
   });
 
   it('#111111 vs #eeeeee', () => {
@@ -1380,28 +1380,27 @@ describe('getWCAGContrastRatio', () => {
     expect(getWCAGContrastRatio(c1, c2)).toBeCloseTo(1.26, 2);
     expect(getWCAGContrastRatio(c2, c1)).toBeCloseTo(1.26, 2);
   });
-
 });
 
 describe('getAPCAReadabilityScore', () => {
   it('red dark on #000000 alpha 1', () => {
     const fg = new Color('#990000');
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-14.30, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-14.3, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(16.15, 2);
   });
 
   it('red dark on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(47.22, 2);
   });
 
   it('red dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1416,14 +1415,14 @@ describe('getAPCAReadabilityScore', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0.5 });
     const bg = new Color('#ffffff');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(56.84, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-62.20, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-62.2, 2);
   });
 
   it('red dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('red dark on #777777 alpha 1', () => {
@@ -1443,7 +1442,7 @@ describe('getAPCAReadabilityScore', () => {
   it('red dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1464,7 +1463,7 @@ describe('getAPCAReadabilityScore', () => {
   it('red normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 0, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1485,28 +1484,28 @@ describe('getAPCAReadabilityScore', () => {
   it('red normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 0, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('red normal on #777777 alpha 1', () => {
     const fg = new Color('#ff0000');
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('red normal on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(21.63, 2);
   });
 
   it('red normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 0, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1527,7 +1526,7 @@ describe('getAPCAReadabilityScore', () => {
   it('red light on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 153, b: 153, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1548,8 +1547,8 @@ describe('getAPCAReadabilityScore', () => {
   it('red light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 153, b: 153, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('red light on #777777 alpha 1', () => {
@@ -1569,7 +1568,7 @@ describe('getAPCAReadabilityScore', () => {
   it('red light on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 153, b: 153, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1583,14 +1582,14 @@ describe('getAPCAReadabilityScore', () => {
   it('orange dark on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(59.47, 2);
   });
 
   it('orange dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1604,35 +1603,35 @@ describe('getAPCAReadabilityScore', () => {
   it('orange dark on #ffffff alpha 0.5', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0.5 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(44.50, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(44.5, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-49.32, 2);
   });
 
   it('orange dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('orange dark on #777777 alpha 1', () => {
     const fg = new Color('#994c00');
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-8.20, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-8.2, 2);
   });
 
   it('orange dark on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(24.54, 2);
   });
 
   it('orange dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 153, g: 76, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1653,7 +1652,7 @@ describe('getAPCAReadabilityScore', () => {
   it('orange normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 127, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1674,8 +1673,8 @@ describe('getAPCAReadabilityScore', () => {
   it('orange normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 127, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('orange normal on #777777 alpha 1', () => {
@@ -1695,7 +1694,7 @@ describe('getAPCAReadabilityScore', () => {
   it('orange normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 127, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1716,7 +1715,7 @@ describe('getAPCAReadabilityScore', () => {
   it('orange light on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 178, b: 102, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1737,8 +1736,8 @@ describe('getAPCAReadabilityScore', () => {
   it('orange light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 178, b: 102, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('orange light on #777777 alpha 1', () => {
@@ -1751,14 +1750,14 @@ describe('getAPCAReadabilityScore', () => {
   it('orange light on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 255, g: 178, b: 102, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-17.30, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-17.3, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(52.41, 2);
   });
 
   it('orange light on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 178, b: 102, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1779,7 +1778,7 @@ describe('getAPCAReadabilityScore', () => {
   it('yellow dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1800,8 +1799,8 @@ describe('getAPCAReadabilityScore', () => {
   it('yellow dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('yellow dark on #777777 alpha 1', () => {
@@ -1814,14 +1813,14 @@ describe('getAPCAReadabilityScore', () => {
   it('yellow dark on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(39.24, 2);
   });
 
   it('yellow dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 153, g: 153, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1842,29 +1841,29 @@ describe('getAPCAReadabilityScore', () => {
   it('yellow normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
   it('yellow normal on #ffffff alpha 1', () => {
     const fg = new Color('#ffff00');
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('yellow normal on #ffffff alpha 0.5', () => {
     const fg = new Color({ r: 255, g: 255, b: 0, a: 0.5 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('yellow normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('yellow normal on #777777 alpha 1', () => {
@@ -1884,7 +1883,7 @@ describe('getAPCAReadabilityScore', () => {
   it('yellow normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1905,29 +1904,29 @@ describe('getAPCAReadabilityScore', () => {
   it('yellow light on #000000 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 153, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
   it('yellow light on #ffffff alpha 1', () => {
     const fg = new Color('#ffff99');
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('yellow light on #ffffff alpha 0.5', () => {
     const fg = new Color({ r: 255, g: 255, b: 153, a: 0.5 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('yellow light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 153, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('yellow light on #777777 alpha 1', () => {
@@ -1947,7 +1946,7 @@ describe('getAPCAReadabilityScore', () => {
   it('yellow light on #777777 alpha 0', () => {
     const fg = new Color({ r: 255, g: 255, b: 153, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -1961,14 +1960,14 @@ describe('getAPCAReadabilityScore', () => {
   it('green dark on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(56.15, 2);
   });
 
   it('green dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -1989,8 +1988,8 @@ describe('getAPCAReadabilityScore', () => {
   it('green dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('green dark on #777777 alpha 1', () => {
@@ -2003,14 +2002,14 @@ describe('getAPCAReadabilityScore', () => {
   it('green dark on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(21.22, 2);
   });
 
   it('green dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 102, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -2024,14 +2023,14 @@ describe('getAPCAReadabilityScore', () => {
   it('green normal on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 0, g: 255, b: 0, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-26.90, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-26.9, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(90.46, 2);
   });
 
   it('green normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 255, b: 0, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2052,15 +2051,15 @@ describe('getAPCAReadabilityScore', () => {
   it('green normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 255, b: 0, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('green normal on #777777 alpha 1', () => {
     const fg = new Color('#00ff00');
     const bg = new Color('#777777');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-55.19, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(51.60, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(51.6, 2);
   });
 
   it('green normal on #777777 alpha 0.5', () => {
@@ -2073,28 +2072,28 @@ describe('getAPCAReadabilityScore', () => {
   it('green normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 255, b: 0, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
   it('green light on #000000 alpha 1', () => {
     const fg = new Color('#66ff66');
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-89.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-89.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(88.84, 2);
   });
 
   it('green light on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 102, g: 255, b: 102, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-27.80, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-27.8, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(95.17, 2);
   });
 
   it('green light on #000000 alpha 0', () => {
     const fg = new Color({ r: 102, g: 255, b: 102, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2115,14 +2114,14 @@ describe('getAPCAReadabilityScore', () => {
   it('green light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 102, g: 255, b: 102, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('green light on #777777 alpha 1', () => {
     const fg = new Color('#66ff66');
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-57.70, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-57.7, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(53.91, 2);
   });
 
@@ -2136,28 +2135,28 @@ describe('getAPCAReadabilityScore', () => {
   it('green light on #777777 alpha 0', () => {
     const fg = new Color({ r: 102, g: 255, b: 102, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
   it('blue dark on #000000 alpha 1', () => {
     const fg = new Color('#000099');
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('blue dark on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(40.62, 2);
   });
 
   it('blue dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2178,8 +2177,8 @@ describe('getAPCAReadabilityScore', () => {
   it('blue dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('blue dark on #777777 alpha 1', () => {
@@ -2193,13 +2192,13 @@ describe('getAPCAReadabilityScore', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0.5 });
     const bg = new Color('#777777');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(18.97, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('blue dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 153, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -2207,20 +2206,20 @@ describe('getAPCAReadabilityScore', () => {
     const fg = new Color('#0000ff');
     const bg = new Color('#000000');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-16.23, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(18.20, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(18.2, 2);
   });
 
   it('blue normal on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 0, g: 0, b: 255, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(44.25, 2);
   });
 
   it('blue normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 255, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2241,8 +2240,8 @@ describe('getAPCAReadabilityScore', () => {
   it('blue normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 255, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('blue normal on #777777 alpha 1', () => {
@@ -2262,7 +2261,7 @@ describe('getAPCAReadabilityScore', () => {
   it('blue normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 0, g: 0, b: 255, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -2283,7 +2282,7 @@ describe('getAPCAReadabilityScore', () => {
   it('blue light on #000000 alpha 0', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2297,56 +2296,56 @@ describe('getAPCAReadabilityScore', () => {
   it('blue light on #ffffff alpha 0.5', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0.5 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(37.50, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(37.5, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-41.87, 2);
   });
 
   it('blue light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('blue light on #777777 alpha 1', () => {
     const fg = new Color('#6666ff');
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('blue light on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(31.48, 2);
   });
 
   it('blue light on #777777 alpha 0', () => {
     const fg = new Color({ r: 102, g: 102, b: 255, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
   it('indigo dark on #000000 alpha 1', () => {
     const fg = new Color('#2e004f');
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('indigo dark on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(41.07, 2);
   });
 
   it('indigo dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2360,15 +2359,15 @@ describe('getAPCAReadabilityScore', () => {
   it('indigo dark on #ffffff alpha 0.5', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0.5 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(63.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(63.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-68.49, 2);
   });
 
   it('indigo dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('indigo dark on #777777 alpha 1', () => {
@@ -2382,34 +2381,34 @@ describe('getAPCAReadabilityScore', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0.5 });
     const bg = new Color('#777777');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(19.17, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('indigo dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 46, g: 0, b: 79, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
   it('indigo normal on #000000 alpha 1', () => {
     const fg = new Color('#4b0082');
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('indigo normal on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 75, g: 0, b: 130, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(44.15, 2);
   });
 
   it('indigo normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 75, g: 0, b: 130, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2430,8 +2429,8 @@ describe('getAPCAReadabilityScore', () => {
   it('indigo normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 75, g: 0, b: 130, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('indigo normal on #777777 alpha 1', () => {
@@ -2451,7 +2450,7 @@ describe('getAPCAReadabilityScore', () => {
   it('indigo normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 75, g: 0, b: 130, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -2472,14 +2471,14 @@ describe('getAPCAReadabilityScore', () => {
   it('indigo light on #000000 alpha 0', () => {
     const fg = new Color({ r: 147, g: 112, b: 255, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
   it('indigo light on #ffffff alpha 1', () => {
     const fg = new Color('#9370ff');
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(62.20, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(62.2, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-67.67, 2);
   });
 
@@ -2493,49 +2492,49 @@ describe('getAPCAReadabilityScore', () => {
   it('indigo light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 147, g: 112, b: 255, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('indigo light on #777777 alpha 1', () => {
     const fg = new Color('#9370ff');
     const bg = new Color('#777777');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-8.19, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('indigo light on #777777 alpha 0.5', () => {
     const fg = new Color({ r: 147, g: 112, b: 255, a: 0.5 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(35.90, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(35.9, 2);
   });
 
   it('indigo light on #777777 alpha 0', () => {
     const fg = new Color({ r: 147, g: 112, b: 255, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
   it('violet dark on #000000 alpha 1', () => {
     const fg = new Color('#4c0073');
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('violet dark on #000000 alpha 0.5', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0.5 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(43.81, 2);
   });
 
   it('violet dark on #000000 alpha 0', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2556,8 +2555,8 @@ describe('getAPCAReadabilityScore', () => {
   it('violet dark on #ffffff alpha 0', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('violet dark on #777777 alpha 1', () => {
@@ -2577,14 +2576,14 @@ describe('getAPCAReadabilityScore', () => {
   it('violet dark on #777777 alpha 0', () => {
     const fg = new Color({ r: 76, g: 0, b: 115, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
   it('violet normal on #000000 alpha 1', () => {
     const fg = new Color('#ee82ee');
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-56.80, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-56.8, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(58.68, 2);
   });
 
@@ -2592,20 +2591,20 @@ describe('getAPCAReadabilityScore', () => {
     const fg = new Color({ r: 238, g: 130, b: 238, a: 0.5 });
     const bg = new Color('#000000');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-16.31, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(79.80, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(79.8, 2);
   });
 
   it('violet normal on #000000 alpha 0', () => {
     const fg = new Color({ r: 238, g: 130, b: 238, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
   it('violet normal on #ffffff alpha 1', () => {
     const fg = new Color('#ee82ee');
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(45.30, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(45.3, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-50.17, 2);
   });
 
@@ -2619,8 +2618,8 @@ describe('getAPCAReadabilityScore', () => {
   it('violet normal on #ffffff alpha 0', () => {
     const fg = new Color({ r: 238, g: 130, b: 238, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('violet normal on #777777 alpha 1', () => {
@@ -2640,7 +2639,7 @@ describe('getAPCAReadabilityScore', () => {
   it('violet normal on #777777 alpha 0', () => {
     const fg = new Color({ r: 238, g: 130, b: 238, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -2648,7 +2647,7 @@ describe('getAPCAReadabilityScore', () => {
     const fg = new Color('#f2b3f2');
     const bg = new Color('#000000');
     expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-73.21, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(74.20, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(74.2, 2);
   });
 
   it('violet light on #000000 alpha 0.5', () => {
@@ -2661,7 +2660,7 @@ describe('getAPCAReadabilityScore', () => {
   it('violet light on #000000 alpha 0', () => {
     const fg = new Color({ r: 242, g: 179, b: 242, a: 0 });
     const bg = new Color('#000000');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(106.04, 2);
   });
 
@@ -2675,21 +2674,21 @@ describe('getAPCAReadabilityScore', () => {
   it('violet light on #ffffff alpha 0.5', () => {
     const fg = new Color({ r: 242, g: 179, b: 242, a: 0.5 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(14.30, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(14.3, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(-16.48, 2);
   });
 
   it('violet light on #ffffff alpha 0', () => {
     const fg = new Color({ r: 242, g: 179, b: 242, a: 0 });
     const bg = new Color('#ffffff');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
-    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
+    expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(0.0, 2);
   });
 
   it('violet light on #777777 alpha 1', () => {
     const fg = new Color('#f2b3f2');
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-41.90, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(-41.9, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(39.27, 2);
   });
 
@@ -2703,7 +2702,7 @@ describe('getAPCAReadabilityScore', () => {
   it('violet light on #777777 alpha 0', () => {
     const fg = new Color({ r: 242, g: 179, b: 242, a: 0 });
     const bg = new Color('#777777');
-    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(fg, bg)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(bg, fg)).toBeCloseTo(71.11, 2);
   });
 
@@ -2759,9 +2758,7 @@ describe('getAPCAReadabilityScore', () => {
   it('#777777 vs #888888', () => {
     const c1 = new Color('#777777');
     const c2 = new Color('#888888');
-    expect(getAPCAReadabilityScore(c1, c2)).toBeCloseTo(0.00, 2);
+    expect(getAPCAReadabilityScore(c1, c2)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(c2, c1)).toBeCloseTo(-7.32, 2);
   });
-
 });
-
