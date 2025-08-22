@@ -14,7 +14,7 @@ export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColo
 
   const getFirstLetterOfColorName = (c: Color): string => {
     const { name } = c.getName();
-    return name.toUpperCase().substring(0, 1);
+    return name.substring(0, 1).toUpperCase();
   };
 
   return (
