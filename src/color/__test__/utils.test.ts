@@ -1,6 +1,6 @@
 import { Color } from '../color';
 import type { ColorHex } from '../formats';
-import { isColorDark } from '../utils';
+import { isColorDark, isColorOffWhite } from '../utils';
 
 describe('isColorDark', () => {
   const cases: Array<[ColorHex, boolean]> = [
@@ -141,5 +141,47 @@ describe('isColorDark', () => {
 
   it.each(cases)('classifies %s correctly', (hex, expected) => {
     expect(isColorDark(new Color(hex))).toBe(expected);
+  });
+});
+
+describe('isColorOffWhite', () => {
+  const cases: Array<[ColorHex, boolean]> = [
+    // Off-white color cases:
+    ['#ffffff', true],
+    ['#fefefe', true],
+    ['#fdfdfd', true],
+    ['#fcfcfc', true],
+    ['#fafafa', true],
+    ['#f5f5f5', true],
+    ['#f0f0f0', true],
+    ['#fffafa', true],
+    ['#fffaf0', true],
+    ['#f0fff0', true],
+    ['#f0ffff', true],
+    ['#f0f8ff', true],
+    ['#fff5ee', true],
+    ['#f8f8ff', true],
+    ['#fffff0', true],
+
+    // Not off-white color cases:
+    ['#eeeeee', false],
+    ['#dddddd', false],
+    ['#cccccc', false],
+    ['#fff0dd', false],
+    ['#ffff00', false],
+    ['#ff0000', false],
+    ['#00ff00', false],
+    ['#0000ff', false],
+    ['#f5deb3', false],
+    ['#e0ffff', false],
+    ['#dcdcdc', false],
+    ['#f0e68c', false],
+    ['#fffacd', false],
+    ['#ffebcd', false],
+    ['#808080', false],
+  ];
+
+  it.each(cases)('classifies %s correctly', (hex, expected) => {
+    expect(isColorOffWhite(new Color(hex))).toBe(expected);
   });
 });

@@ -67,7 +67,7 @@ import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from 
 import { getRandomColorRGBA, RandomColorOptions } from './random';
 import { getAPCAReadabilityScore, getWCAGContrastRatio } from './readability';
 import { ColorSwatch, getColorSwatch } from './swatch';
-import { getColorRGBAFromInput, isColorDark } from './utils';
+import { getColorRGBAFromInput, isColorDark, isColorOffWhite } from './utils';
 
 /**
  * The base omni-color object.
@@ -583,6 +583,20 @@ export class Color {
    */
   isDark(): boolean {
     return isColorDark(this);
+  }
+
+  /**
+   * Determine if the color is pure white or a very light off-white.
+   *
+   * @example
+   * ```ts
+   * new Color('#ffffff').isOffWhite(); // true
+   * new Color('#f0f0f0').isOffWhite(); // true
+   * new Color('#cccccc').isOffWhite(); // false
+   * ```
+   */
+  isOffWhite(): boolean {
+    return isColorOffWhite(this);
   }
 
   /**

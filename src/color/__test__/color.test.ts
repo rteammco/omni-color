@@ -494,6 +494,14 @@ describe('Color.isDark sanity check', () => {
   });
 });
 
+describe('Color.isOffWhite sanity check', () => {
+  it('identifies off-white and non-off-white colors', () => {
+    expect(new Color('#ffffff').isOffWhite()).toBe(true);
+    expect(new Color('#f0f0f0').isOffWhite()).toBe(true);
+    expect(new Color('#dddddd').isOffWhite()).toBe(false);
+  });
+});
+
 describe('Color.getName', () => {
   it('returns the base color name and lightness modifier', () => {
     const red = new Color(BASE_HEX);
