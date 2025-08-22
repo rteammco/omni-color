@@ -1,34 +1,37 @@
 import { Color } from './color';
+import { ColorHSL } from './formats';
 
 export enum ColorTemperatureLabel {
+  // Warm:
   CANDLELIGHT = 'Candlelight',
-  INCANDESCENT = 'Incandescent bulb',
-  HALOGEN = 'Halogen',
-  FLUORESCENT = 'Fluorescent',
+  INCANDESCENT = 'Incandescent lamp',
+  // Neutral:
+  HALOGEN = 'Halogen lamp',
+  FLUORESCENT = 'Fluorescent lamp',
   DAYLIGHT = 'Daylight',
+  // Cool:
   CLOUDY = 'Cloudy sky',
   SHADE = 'Shade',
   BLUE_SKY = 'Blue sky',
 }
 
-export interface ColorTemperatureAndDescription {
+export interface ColorTemperatureAndLabel {
   temperature: number; // in Kelvin
   label: ColorTemperatureLabel;
 }
 
-// Mapping of temperature ranges to their descriptive label
-const TEMPERATURE_LABELS: { limit: number; label: ColorTemperatureLabel }[] = [
-  { limit: 2000, label: ColorTemperatureLabel.CANDLELIGHT },
-  { limit: 3000, label: ColorTemperatureLabel.INCANDESCENT },
-  { limit: 4000, label: ColorTemperatureLabel.HALOGEN },
-  { limit: 5000, label: ColorTemperatureLabel.FLUORESCENT },
-  { limit: 6500, label: ColorTemperatureLabel.DAYLIGHT },
-  { limit: 7500, label: ColorTemperatureLabel.CLOUDY },
-  { limit: 9000, label: ColorTemperatureLabel.SHADE },
-  { limit: Infinity, label: ColorTemperatureLabel.BLUE_SKY },
-];
+const SORTED_TEMPERATURE_LABELS: { label: ColorTemperatureLabel; temperatureLimit: number }[] = [
+  { label: ColorTemperatureLabel.CANDLELIGHT, temperatureLimit: 2000 },
+  { label: ColorTemperatureLabel.INCANDESCENT, temperatureLimit: 3000 },
+  { label: ColorTemperatureLabel.HALOGEN, temperatureLimit: 4000 },
+  { label: ColorTemperatureLabel.FLUORESCENT, temperatureLimit: 5000 },
+  { label: ColorTemperatureLabel.DAYLIGHT, temperatureLimit: 6500 },
+  { label: ColorTemperatureLabel.CLOUDY, temperatureLimit: 7500 },
+  { label: ColorTemperatureLabel.SHADE, temperatureLimit: 9000 },
+  { label: ColorTemperatureLabel.BLUE_SKY, temperatureLimit: Infinity },
+] as const;
 
-const LABEL_TO_TEMPERATURE: Record<ColorTemperatureLabel, number> = {
+const LABEL_TO_TEMPERATURE_MAP: { [key in ColorTemperatureLabel]: number } = {
   [ColorTemperatureLabel.CANDLELIGHT]: 1900,
   [ColorTemperatureLabel.INCANDESCENT]: 2700,
   [ColorTemperatureLabel.HALOGEN]: 3200,
@@ -37,9 +40,9 @@ const LABEL_TO_TEMPERATURE: Record<ColorTemperatureLabel, number> = {
   [ColorTemperatureLabel.CLOUDY]: 7000,
   [ColorTemperatureLabel.SHADE]: 8000,
   [ColorTemperatureLabel.BLUE_SKY]: 10000,
-};
+} as const;
 
-const LABEL_TO_COLOR_HSL: Record<ColorTemperatureLabel, { h: number; s: number; l: number }> = {
+const LABEL_TO_COLOR_HSL_MAP: { [key in ColorTemperatureLabel]: ColorHSL } = {
   [ColorTemperatureLabel.CANDLELIGHT]: { h: 30, s: 20, l: 88 },
   [ColorTemperatureLabel.INCANDESCENT]: { h: 35, s: 18, l: 92 },
   [ColorTemperatureLabel.HALOGEN]: { h: 40, s: 16, l: 94 },
@@ -48,44 +51,43 @@ const LABEL_TO_COLOR_HSL: Record<ColorTemperatureLabel, { h: number; s: number; 
   [ColorTemperatureLabel.CLOUDY]: { h: 210, s: 12, l: 95 },
   [ColorTemperatureLabel.SHADE]: { h: 220, s: 12, l: 93 },
   [ColorTemperatureLabel.BLUE_SKY]: { h: 230, s: 15, l: 92 },
-};
+} as const;
 
 function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
-  const found = TEMPERATURE_LABELS.find((t) => temperature < t.limit);
+  const found = SORTED_TEMPERATURE_LABELS.find((t) => temperature < t.temperatureLimit);
   return found ? found.label : ColorTemperatureLabel.DAYLIGHT;
 }
 
-export function getColorTemperature(color: Color): ColorTemperatureAndDescription {
+export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
+  // TODO: wtf is this?
   const rgb = color.toRGB();
   let closest: ColorTemperatureLabel = ColorTemperatureLabel.DAYLIGHT;
   let minDist = Number.MAX_VALUE;
   for (const label of Object.values(ColorTemperatureLabel)) {
-    const refRGB = new Color(LABEL_TO_COLOR_HSL[label]).toRGB();
+    const refRGB = new Color(LABEL_TO_COLOR_HSL_MAP[label]).toRGB();
     const dist =
-      Math.pow(rgb.r - refRGB.r, 2) +
-      Math.pow(rgb.g - refRGB.g, 2) +
-      Math.pow(rgb.b - refRGB.b, 2);
+      Math.pow(rgb.r - refRGB.r, 2) + Math.pow(rgb.g - refRGB.g, 2) + Math.pow(rgb.b - refRGB.b, 2);
     if (dist < minDist) {
       minDist = dist;
       closest = label as ColorTemperatureLabel;
     }
   }
-  return { temperature: LABEL_TO_TEMPERATURE[closest], label: closest };
+  return { temperature: LABEL_TO_TEMPERATURE_MAP[closest], label: closest };
 }
 
 export function getColorTemperatureString(color: Color): string {
   const { temperature, label } = getColorTemperature(color);
   const { s, l } = color.toHSL();
+  // TODO: migrate this to a util and add direct as a `Color` method
   const isOffWhite = s < 25 && l > 70;
   return isOffWhite ? `${temperature}K (${label})` : `${temperature}K`;
 }
 
 export function getColorFromTemperature(temperature: number): Color {
   const label = getLabelForTemperature(temperature);
-  return new Color(LABEL_TO_COLOR_HSL[label]);
+  return new Color(LABEL_TO_COLOR_HSL_MAP[label]);
 }
 
 export function getColorFromTemperatureLabel(label: ColorTemperatureLabel): Color {
-  return new Color(LABEL_TO_COLOR_HSL[label]);
+  return new Color(LABEL_TO_COLOR_HSL_MAP[label]);
 }
-

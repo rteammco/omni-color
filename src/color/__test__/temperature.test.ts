@@ -35,4 +35,3 @@ describe('color temperature utilities', () => {
     expect(result.label).toBe(ColorTemperatureLabel.DAYLIGHT);
   });
 });
-
