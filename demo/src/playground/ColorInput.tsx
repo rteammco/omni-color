@@ -2,13 +2,38 @@ import { useCallback, useState } from 'react';
 import { Color, type RandomColorOptions } from '../../../dist';
 import { Icon } from '../components/Icon';
 
+function getRandomInputValueFromColor(color: Color): string {
+  const zeroToEight = Math.floor(Math.random() * 9);
+  switch (zeroToEight) {
+    case 0:
+      return color.toHex8();
+    case 1:
+      return color.toRGBString();
+    case 2:
+      return color.toRGBAString();
+    case 3:
+      return color.toHSLString();
+    case 4:
+      return color.toHSLAString();
+    case 5:
+      return color.toCMYKString();
+    case 6:
+      return color.toLCHString();
+    case 7:
+      return color.toOKLCHString();
+    case 8:
+    default:
+      return color.toHex();
+  }
+}
+
 interface Props {
   color: Color;
   onColorChanged: (color: Color) => void;
 }
 
 export function ColorInput({ color, onColorChanged }: Props) {
-  const [inputValue, setInputValue] = useState<string>(color.toHex());
+  const [inputValue, setInputValue] = useState<string>(getRandomInputValueFromColor(color));
   const [isInputColorValid, setIsInputColorValid] = useState(true);
 
   const handleColorInputChange = useCallback(
@@ -39,7 +64,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
   const handleRandomColorSelected = useCallback(
     (options: RandomColorOptions) => {
       const color = Color.random(options);
-      setInputValue(color.toHex());
+      setInputValue(getRandomInputValueFromColor(color));
       setIsInputColorValid(true);
       onColorChanged(color);
     },
