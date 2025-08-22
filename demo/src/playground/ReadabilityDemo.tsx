@@ -29,7 +29,7 @@ export function ReadabilityDemo({ color }: Props) {
           <tr>
             <td className="pb-2 pr-4 text-right">Contrast ratio</td>
             <td className="pb-2">
-              <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row items-center gap-2 flex-wrap">
                 {backgroundColors.map((bgColor) => (
                   <ColorBox
                     key={bgColor.toHex()}
@@ -44,7 +44,7 @@ export function ReadabilityDemo({ color }: Props) {
           <tr>
             <td className="pb-2 pr-4 text-right">Readability score</td>
             <td className="pb-2">
-              <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row items-center gap-2 flex-wrap">
                 {backgroundColors.map((bgColor) => (
                   <ColorBox
                     key={bgColor.toHex()}

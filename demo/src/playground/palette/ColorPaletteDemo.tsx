@@ -29,7 +29,7 @@ export function ColorPaletteDemo({ color }: Props) {
   const palette = color.getColorPalette(selectedHarmony, options);
 
   return (
-    <div>
+    <div className="w-full overflow-scroll">
       <PaletteHarmonyOptions
         selectedHarmony={selectedHarmony}
         onHarmonySelectionChanged={setSelectedHarmony}

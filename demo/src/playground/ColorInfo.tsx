@@ -15,14 +15,14 @@ export function ColorInfo({ color }: Props) {
       } flex flex-col gap-2 border-2`}
       style={{ backgroundColor, borderColor }}
     >
-      <div className="flex flex-row justify-center gap-2">
+      <div className="flex flex-row justify-center gap-2 flex-wrap">
         <b>{color.getNameAsString()}</b>
         &middot;
         <span>{color.toHex()}</span>
         &middot;
         <span>{color.toHex8()}</span>
       </div>
-      <div className="flex flex-row justify-center gap-2">
+      <div className="flex flex-row justify-center gap-2 flex-wrap">
         <span>{color.toRGBString()}</span>
         &middot;
         <span>{color.toRGBAString()}</span>

@@ -39,7 +39,7 @@ export function ColorCombinationDemo({ color }: Props) {
   }, []);
 
   return (
-    <div className="w-full flex flex-row justify-center">
+    <div className="w-full flex flex-row justify-center overflow-scroll">
       <table className="table-auto">
         <thead>
           <tr>

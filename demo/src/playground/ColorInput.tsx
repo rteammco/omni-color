@@ -88,7 +88,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
         )}
       </div>
       <div className="mt-2">Enter a color above, or choose:</div>
-      <div className="mt-1 flex flex-row justify-center gap-2">
+      <div className="mt-1 flex flex-row justify-center gap-2 flex-wrap">
         <button onClick={() => handlePresetColorSelected('red')}>red</button>
         &middot;
         <button onClick={() => handlePresetColorSelected('darkgreen')}>darkgreen</button>
@@ -116,7 +116,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
         </button>
       </div>
       <div>or randomize:</div>
-      <div className="flex flex-row justify-center gap-2">
+      <div className="flex flex-row justify-center gap-2 flex-wrap">
         <button onClick={() => handleRandomColorSelected({})}>random</button>
         &middot;
         <button onClick={() => handleRandomColorSelected({ anchorColor: color.getName().name })}>
