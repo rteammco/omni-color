@@ -471,15 +471,12 @@ describe('Color.getColorPalette', () => {
 
     // Semantic chroma range option
     const defaultInfoChroma = defaultPalette.info[500].toOKLCH().c;
-    const limitedChromaPalette = baseColor.getColorPalette(
-      ColorHarmony.COMPLEMENTARY,
-      {
-        semanticHarmonization: {
-          huePull: 0,
-          chromaRange: [0.02, 0.05],
-        },
-      }
-    );
+    const limitedChromaPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+      semanticHarmonization: {
+        huePull: 0,
+        chromaRange: [0.02, 0.05],
+      },
+    });
     const limitedInfoChroma = limitedChromaPalette.info[500].toOKLCH().c;
     expect(limitedInfoChroma).toBeGreaterThanOrEqual(0.02);
     expect(limitedInfoChroma).toBeLessThanOrEqual(0.05);
