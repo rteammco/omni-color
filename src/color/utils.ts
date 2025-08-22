@@ -52,3 +52,11 @@ export function isColorDark(color: Color): boolean {
   }
   return brightness < 128;
 }
+
+export function isColorOffWhite(color: Color): boolean {
+  const { r, g, b } = color.toRGB();
+  const brightness = (299 * r + 587 * g + 114 * b) / 1000;
+  const maxChannel = Math.max(r, g, b);
+  const minChannel = Math.min(r, g, b);
+  return brightness >= 240 && maxChannel - minChannel <= 30;
+}
