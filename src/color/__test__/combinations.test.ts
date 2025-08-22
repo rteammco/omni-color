@@ -50,6 +50,13 @@ describe('mixColors', () => {
       '[mixColors] at least two colors are required for mixing'
     );
   });
+
+  it('defaults weights to 1 when provided weights sum to 0', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = mixColors([red, blue], { weights: [1, -1] });
+    expect(result.toHex()).toBe('#ff00ff');
+  });
 });
 
 describe('averageColors', () => {
