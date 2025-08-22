@@ -16,9 +16,9 @@ export function ColorInput({ color, onColorChanged }: Props) {
       const inputColorValue = e.target.value;
       setInputValue(inputColorValue);
       try {
-        const color = new Color(inputColorValue);
+        const newColor = new Color(inputColorValue);
         setIsInputColorValid(true);
-        onColorChanged(color);
+        onColorChanged(newColor);
       } catch {
         setIsInputColorValid(false);
       }
@@ -27,11 +27,11 @@ export function ColorInput({ color, onColorChanged }: Props) {
   );
 
   const handlePresetColorSelected = useCallback(
-    (colorString?: string) => {
-      const color = new Color(colorString);
-      onColorChanged(color);
-      setInputValue(colorString ?? color.toHex());
+    (colorString: string) => {
+      const newColor = new Color(colorString);
+      setInputValue(colorString);
       setIsInputColorValid(true);
+      onColorChanged(newColor);
     },
     [onColorChanged]
   );
@@ -39,9 +39,9 @@ export function ColorInput({ color, onColorChanged }: Props) {
   const handleRandomColorSelected = useCallback(
     (options: RandomColorOptions) => {
       const color = Color.random(options);
-      onColorChanged(color);
       setInputValue(color.toHex());
       setIsInputColorValid(true);
+      onColorChanged(color);
     },
     [onColorChanged]
   );
