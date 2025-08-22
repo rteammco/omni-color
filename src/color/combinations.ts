@@ -33,16 +33,17 @@ function getWeights(
   count: number,
   inputRawWeights?: number[]
 ): { weights: number[]; sumOfWeights: number; normalizedWeights: number[] } {
-  const weights =
+  let weights =
     inputRawWeights && inputRawWeights.length === count
       ? inputRawWeights
       : new Array<number>(count).fill(1);
-  const sumOfWeights = weights.reduce((sum, w) => sum + w, 0);
+  let sumOfWeights = weights.reduce((sum, w) => sum + w, 0);
   if (sumOfWeights === 0) {
-    // This is a sort of undefined behavior case, so just return what we can
-    return { weights, sumOfWeights, normalizedWeights: weights };
+    weights = new Array<number>(count).fill(1);
+    sumOfWeights = count;
   }
-  return { weights, sumOfWeights, normalizedWeights: weights.map((w) => w / sumOfWeights) };
+  const normalizedWeights = weights.map((w) => w / sumOfWeights);
+  return { weights, sumOfWeights, normalizedWeights };
 }
 
 function mixColorsSubtractive(colors: Color[], normalizedWeights: number[]): Color {
@@ -152,7 +153,6 @@ export function mixColors(colors: Color[], options: MixColorsOptions = {}): Colo
   }
   const { type = MixType.ADDITIVE, space = MixSpace.RGB } = options;
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
-
   if (type === MixType.SUBTRACTIVE) {
     return mixColorsSubtractive(colors, normalizedWeights);
   }
