@@ -251,6 +251,15 @@ describe('Color.setAlpha', () => {
     expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: 0 });
   });
 
+  it('defaults to full opacity for non-finite alpha values', () => {
+    const invalidValues = [undefined, NaN, 'foo'];
+    for (const value of invalidValues) {
+      const color = new Color({ ...BASE_RGB, a: 0 });
+      color.setAlpha(value as unknown as number);
+      expect(color.getAlpha()).toBe(1);
+    }
+  });
+
   it('is chainable', () => {
     const color = new Color(BASE_RGB).setAlpha(0.25);
     expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: 0.25 });
