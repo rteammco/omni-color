@@ -12,6 +12,11 @@ interface Props {
 export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColor }: Props) {
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
 
+  const getFirstLetterOfColorName = (c: Color): string => {
+    const { name } = c.getName();
+    return name.toUpperCase().substring(0, 1);
+  };
+
   return (
     <div
       style={{ backgroundColor, borderColor }}
@@ -21,14 +26,10 @@ export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColo
     >
       {overlayColor && (
         <h4 className="font-bold" style={{ color: overlayColor.toHex() }}>
-          {overlayColor.getName().name.toUpperCase().substring(0, 1)}
+          {getFirstLetterOfColorName(overlayColor)}
         </h4>
       )}
-      <span
-        className={`pb-1 text-xs ${
-          new Color(backgroundColor).isDark() ? 'text-white' : 'text-black'
-        }`}
-      >
+      <span className={`pb-1 text-xs ${color.isDark() ? 'text-white' : 'text-black'}`}>
         {label}
       </span>
     </div>
