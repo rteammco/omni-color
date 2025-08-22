@@ -1,6 +1,6 @@
 import { Color } from '../color';
 import type { ColorHex } from '../formats';
-import { isColorDark } from '../utils';
+import { getColorRGBAFromInput, isColorDark } from '../utils';
 
 describe('isColorDark', () => {
   const cases: Array<[ColorHex, boolean]> = [
@@ -141,5 +141,25 @@ describe('isColorDark', () => {
 
   it.each(cases)('classifies %s correctly', (hex, expected) => {
     expect(isColorDark(new Color(hex))).toBe(expected);
+  });
+});
+
+describe('getColorRGBAFromInput', () => {
+  it('parses hex strings with leading/trailing spaces', () => {
+    expect(getColorRGBAFromInput('  #ff0000  ')).toEqual({
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 1,
+    });
+  });
+
+  it('parses CSS color strings with leading/trailing spaces', () => {
+    expect(getColorRGBAFromInput('  rgb(255, 0, 0)  ')).toEqual({
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 1,
+    });
   });
 });
