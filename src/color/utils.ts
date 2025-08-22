@@ -11,19 +11,21 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string | nul
   }
 
   if (typeof color === 'string') {
+    const colorString = color.trim().toLowerCase();
+
     // Hex string (e.g. "#ff0000"):
-    if (color.startsWith('#')) {
-      return toRGBA(color as ColorHex);
+    if (colorString.startsWith('#')) {
+      return toRGBA(colorString as ColorHex);
     }
 
     // Named color (e.g. "red"):
-    const namedColorHex = CSS_COLOR_NAME_TO_HEX_MAP[color.toLowerCase().replace(/ /g, '')];
+    const namedColorHex = CSS_COLOR_NAME_TO_HEX_MAP[colorString.replace(/ /g, '')];
     if (namedColorHex) {
       return toRGBA(namedColorHex);
     }
 
     // Other CSS color format string (e.g. "rgb(255, 0, 0)"):
-    const parsedColor = parseCSSColorFormatString(color.toLowerCase());
+    const parsedColor = parseCSSColorFormatString(colorString);
     if (parsedColor) {
       return parsedColor.toRGBA();
     }

@@ -1,5 +1,5 @@
 import { Color } from '../color';
-import { isColorDark, isColorOffWhite } from '../utils';
+import { getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
 
 describe('isColorDark', () => {
   it('classifies colors correctly', () => {
@@ -175,5 +175,25 @@ describe('isColorOffWhite', () => {
     expect(isColorOffWhite(new Color('#fffacd'))).toBe(false);
     expect(isColorOffWhite(new Color('#ffebcd'))).toBe(false);
     expect(isColorOffWhite(new Color('#808080'))).toBe(false);
+  });
+});
+
+describe('getColorRGBAFromInput', () => {
+  it('parses hex strings with leading/trailing spaces', () => {
+    expect(getColorRGBAFromInput('  #ff0000  ')).toEqual({
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 1,
+    });
+  });
+
+  it('parses CSS color strings with leading/trailing spaces', () => {
+    expect(getColorRGBAFromInput('  rgb(255, 0, 0)  ')).toEqual({
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 1,
+    });
   });
 });
