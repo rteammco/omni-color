@@ -1,40 +1,47 @@
 import { Color } from './color';
 import type { ColorRGBA } from './formats';
 
-function compositeRGBA(fg: ColorRGBA, bg: ColorRGBA): ColorRGBA {
-  const fgA = fg.a ?? 1;
-  const bgA = bg.a ?? 1;
-  const outA = fgA + bgA * (1 - fgA);
-  if (outA === 0) {
+// Does alpha blending between the two RGBA colors. Calculates what the a
+// semi-transparent foreground color would look like on the background color.
+function getCompositeRGBA(fg: ColorRGBA, bg: ColorRGBA): ColorRGBA {
+  const compositeAlpha = fg.a + bg.a * (1 - fg.a);
+  if (compositeAlpha === 0) {
     return { r: bg.r, g: bg.g, b: bg.b, a: 0 };
   }
-  const r = (fg.r * fgA + bg.r * bgA * (1 - fgA)) / outA;
-  const g = (fg.g * fgA + bg.g * bgA * (1 - fgA)) / outA;
-  const b = (fg.b * fgA + bg.b * bgA * (1 - fgA)) / outA;
-  return { r, g, b, a: outA };
+  const r = (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / compositeAlpha;
+  const g = (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / compositeAlpha;
+  const b = (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / compositeAlpha;
+  return { r, g, b, a: compositeAlpha };
 }
 
-function relativeLuminance(rgb: ColorRGBA): number {
-  const toLinear = (channel: number): number => {
-    const c = channel / 255;
-    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-  };
-  const r = toLinear(rgb.r);
-  const g = toLinear(rgb.g);
-  const b = toLinear(rgb.b);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+// Does a gamma correction by converting sRGB to linear RGB values. To calculate proper
+// luminance, we need the actual linear light intensities, not the gamma-encoded ones.
+function linearizeRGBChannel(channel: number): number {
+  const c = channel / 255; // normalize
+  if (c <= 0.03928) {
+    return c / 12.92; // linear portion for dark colors
+  }
+  return Math.pow((c + 0.055) / 1.055, 2.4); // gamma correction for brighter colors
 }
 
-export function getContrastRatio(color1: Color, color2: Color): number {
+function getRelativeLuminance(rgb: ColorRGBA): number {
+  const r = linearizeRGBChannel(rgb.r);
+  const g = linearizeRGBChannel(rgb.g);
+  const b = linearizeRGBChannel(rgb.b);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b; // standard luminance formula
+}
+
+export function getWCAGContrastRatio(color1: Color, color2: Color): number {
   const c1 = color1.toRGBA();
   const c2 = color2.toRGBA();
-  if ((c1.a ?? 1) === 0 && (c2.a ?? 1) === 0) {
+  if (c1.a === 0 && c2.a === 0) {
     return 1;
   }
-  const c1Over2 = c1.a !== undefined && c1.a < 1 ? compositeRGBA(c1, c2) : c1;
-  const c2Over1 = c2.a !== undefined && c2.a < 1 ? compositeRGBA(c2, c1) : c2;
-  const l1 = relativeLuminance(c1Over2);
-  const l2 = relativeLuminance(c2Over1);
+
+  const c1Over2 = c1.a < 1 ? getCompositeRGBA(c1, c2) : c1;
+  const c2Over1 = c2.a < 1 ? getCompositeRGBA(c2, c1) : c2;
+  const l1 = getRelativeLuminance(c1Over2);
+  const l2 = getRelativeLuminance(c2Over1);
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
   const ratio = (lighter + 0.05) / (darker + 0.05);
@@ -45,7 +52,7 @@ const SA98G = {
   mainTRC: 2.4,
   sRco: 0.2126729,
   sGco: 0.7151522,
-  sBco: 0.0721750,
+  sBco: 0.072175,
   normBG: 0.56,
   normTXT: 0.57,
   revTXT: 0.62,
@@ -102,11 +109,11 @@ export function getAPCAReadabilityScore(foreground: Color, background: Color): n
   const fg = foreground.toRGBA();
   const bg = background.toRGBA();
 
-  const bgOpaque = bg.a !== undefined && bg.a < 1 ? compositeRGBA(bg, { r: 255, g: 255, b: 255, a: 1 }) : bg;
-  const fgOpaque = fg.a !== undefined && fg.a < 1 ? compositeRGBA(fg, bgOpaque) : fg;
+  const bgOpaque =
+    bg.a !== undefined && bg.a < 1 ? getCompositeRGBA(bg, { r: 255, g: 255, b: 255, a: 1 }) : bg;
+  const fgOpaque = fg.a !== undefined && fg.a < 1 ? getCompositeRGBA(fg, bgOpaque) : fg;
 
   const txtY = sRGBtoY(fgOpaque);
   const bgY = sRGBtoY(bgOpaque);
   return APCAcontrast(txtY, bgY);
 }
-

@@ -65,6 +65,7 @@ import {
 } from './manipulations';
 import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
 import { getRandomColorRGBA, RandomColorOptions } from './random';
+import { getWCAGContrastRatio } from './readability';
 import { ColorSwatch, getColorSwatch } from './swatch';
 import { getColorRGBAFromInput, isColorDark } from './utils';
 
@@ -368,7 +369,7 @@ export class Color {
   /**
    * Mix this color with one or more other colors.
    *
-   * @param others - Array of one or more other colors to mix with.
+   * @param others - Array of one or more other {@link Color}s to mix with.
    * @param options - Optional {@link MixColorsOptions} mixing options and weights.
    * @returns A new color that is the result of the mix.
    */
@@ -382,7 +383,7 @@ export class Color {
   /**
    * Blend this color with another color.
    *
-   * @param other - The color to blend with.
+   * @param other - The {@link Color} to blend with.
    * @param options - Optional {@link BlendColorsOptions} for blend mode, space, and ratio.
    * @returns A new color that is the result of the blend.
    */
@@ -393,7 +394,7 @@ export class Color {
   /**
    * Average this color with one or more other colors by averaging their channels in the selected color space.
    *
-   * @param others - Array of one or more other colors to average with.
+   * @param others - Array of one or more other {@link Color}s to average with.
    * @param options - Optional {@link AverageColorsOptions} mix space and weights.
    * @returns A new color that is the result of the averaging.
    */
@@ -582,6 +583,16 @@ export class Color {
    */
   isDark(): boolean {
     return isColorDark(this);
+  }
+
+  /**
+   * Get the contrast ratio between this color and another color.
+   *
+   * @param other The other {@link Color} to compare against.
+   * @returns The WCAG contrast ratio between the two colors.
+   */
+  getContrastRatio(other: Color): number {
+    return getWCAGContrastRatio(this, other);
   }
 
   /**
