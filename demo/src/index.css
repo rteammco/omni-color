@@ -19,6 +19,16 @@
   width: 100%;
 }
 
+a {
+  color: #646cff;
+}
+a:hover {
+  color: #858dff;
+}
+a:active {
+  color: #a4acff;
+}
+
 button {
   background-color: transparent;
   background: transparent;
@@ -82,6 +92,12 @@ h6 {
   :root {
     color: #213547;
     background-color: #ffffff;
+  }
+  a:hover {
+    color: #434bf2;
+  }
+  a:active {
+    color: #242ccf;
   }
   button:hover {
     color: #434bf2;

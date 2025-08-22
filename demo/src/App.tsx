@@ -1,3 +1,4 @@
+import { AppFooter } from './AppFooter';
 import { AppHeader } from './AppHeader';
 import { VSpace } from './components/VSpace';
 import { Playground } from './playground/Playground';
@@ -8,6 +9,8 @@ export default function App() {
       <AppHeader />
       <VSpace height={40} />
       <Playground />
+      <VSpace height={40} />
+      <AppFooter />
     </div>
   );
 }
