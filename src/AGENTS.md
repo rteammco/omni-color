@@ -15,7 +15,7 @@ Your output must:
 
 ## Test Guidelines
 
-Where possible, cross-reference test cases with real-world or authoritative examples. Never assume the outputs you're testing are already correct.
+Your priority is to write and maintain extensive test coverage. Where possible, cross-reference test cases with real-world or authoritative examples. Never assume the outputs you're testing are already correct.
 
 Tests should be structured as follows:
 
@@ -49,3 +49,4 @@ In general:
 - The tests should catch even the most obscure of bugs if they're present.
 - It's preferable for test coverage to be overkill than to leave any case or combination of inputs untested.
 - Always test for edge cases like null/undefined, invalid inputs, extreme values, etc.
+- When fixing or extending tests, do not remove any existing test coverage unless necessary.
