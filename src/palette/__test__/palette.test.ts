@@ -1,4 +1,5 @@
 import { Color } from '../../color/color';
+import { ColorHarmony } from '../../color/harmonies';
 import { generateColorPaletteFromBaseColor } from '../palette';
 
 describe('generateColorPaletteFromBaseColor()', () => {
@@ -118,6 +119,99 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
   });
 
+  describe('neutral harmonization across the full swatch', () => {
+    it('produces a complete range for red', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
+      expect(palette.neutrals[100].toHex()).toBe('#ededed');
+      expect(palette.neutrals[300].toHex()).toBe('#bababa');
+      expect(palette.neutrals[700].toHex()).toBe('#545454');
+      expect(palette.neutrals[900].toHex()).toBe('#212121');
+      expect(palette.tintedNeutrals[100].toHex()).toBe('#f6efee');
+      expect(palette.tintedNeutrals[300].toHex()).toBe('#ccb5b3');
+      expect(palette.tintedNeutrals[700].toHex()).toBe('#595959');
+      expect(palette.tintedNeutrals[900].toHex()).toBe('#262626');
+    });
+
+    it('produces a complete range for blue', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#0000ff'));
+      expect(palette.neutrals[100].toHex()).toBe('#bdbdbd');
+      expect(palette.neutrals[300].toHex()).toBe('#8a8a8a');
+      expect(palette.neutrals[700].toHex()).toBe('#242424');
+      expect(palette.neutrals[900].toHex()).toBe('#000000');
+      expect(palette.tintedNeutrals[100].toHex()).toBe('#a9b8d6');
+      expect(palette.tintedNeutrals[300].toHex()).toBe('#7083a9');
+      expect(palette.tintedNeutrals[700].toHex()).toBe('#242628');
+      expect(palette.tintedNeutrals[900].toHex()).toBe('#000000');
+    });
+
+    it('produces a complete range for green', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#00ff00'));
+      expect(palette.neutrals[100].toHex()).toBe('#ffffff');
+      expect(palette.neutrals[300].toHex()).toBe('#ffffff');
+      expect(palette.neutrals[700].toHex()).toBe('#a1a1a1');
+      expect(palette.neutrals[900].toHex()).toBe('#6e6e6e');
+      expect(palette.tintedNeutrals[100].toHex()).toBe('#ffffff');
+      expect(palette.tintedNeutrals[300].toHex()).toBe('#ffffff');
+      expect(palette.tintedNeutrals[700].toHex()).toBe('#95a494');
+      expect(palette.tintedNeutrals[900].toHex()).toBe('#696969');
+    });
+
+    it('keeps tinted neutrals identical for achromatic bases', () => {
+      const white = generateColorPaletteFromBaseColor(new Color('#ffffff'));
+      expect(white.neutrals[100].toHex()).toBe('#ffffff');
+      expect(white.tintedNeutrals[100].toHex()).toBe('#ffffff');
+      expect(white.neutrals[900].toHex()).toBe('#999999');
+      expect(white.tintedNeutrals[900].toHex()).toBe('#999999');
+
+      const black = generateColorPaletteFromBaseColor(new Color('#000000'));
+      expect(black.neutrals[100].toHex()).toBe('#666666');
+      expect(black.tintedNeutrals[100].toHex()).toBe('#666666');
+      expect(black.neutrals[900].toHex()).toBe('#000000');
+      expect(black.tintedNeutrals[900].toHex()).toBe('#000000');
+    });
+  });
+
+  describe('neutral harmonization edge cases', () => {
+    it('clamps excessive tint chroma factor and honors maxTintChroma', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff00ff'), undefined, {
+        neutralHarmonization: {
+          tintChromaFactor: 2,
+          maxTintChroma: 0.5,
+        },
+      });
+      expect(palette.tintedNeutrals[100].toHex()).toBe('#ffccff');
+      expect(palette.tintedNeutrals[500].toHex()).toBe('#ff00ff');
+      expect(palette.tintedNeutrals[900].toHex()).toBe('#2e052e');
+    });
+
+    it('falls back to neutral swatches when maxTintChroma is zero', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#123456'), undefined, {
+        neutralHarmonization: {
+          tintChromaFactor: 0.5,
+          maxTintChroma: 0,
+        },
+      });
+      expect(palette.neutrals[100].toHex()).toBe('#999999');
+      expect(palette.tintedNeutrals[100].toHex()).toBe('#999999');
+      expect(palette.neutrals[500].toHex()).toBe('#333333');
+      expect(palette.tintedNeutrals[500].toHex()).toBe('#333333');
+      expect(palette.neutrals[900].toHex()).toBe('#000000');
+      expect(palette.tintedNeutrals[900].toHex()).toBe('#000000');
+    });
+
+    it('throws for NaN neutral harmonization options', () => {
+      const base = new Color('#00ff00');
+      expect(() =>
+        generateColorPaletteFromBaseColor(base, undefined, {
+          neutralHarmonization: {
+            tintChromaFactor: NaN,
+            maxTintChroma: NaN,
+          },
+        })
+      ).toThrow();
+    });
+  });
+
   describe('semantic harmonization options', () => {
     it('produces semantic swatches with stable hex values for a red base', () => {
       const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
@@ -219,6 +313,101 @@ describe('generateColorPaletteFromBaseColor()', () => {
       const black = new Color('#000000');
       const blackPalette = generateColorPaletteFromBaseColor(black);
       expect(blackPalette.info[500].toHex()).not.toBe('#000000');
+    });
+
+    it('handles reversed chroma ranges by clamping to the higher bound', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), undefined, {
+        semanticHarmonization: {
+          huePull: 0.5,
+          chromaRange: [0.3, 0.1],
+        },
+      });
+      const c = palette.info[500].toOKLCH().c;
+      expect(c).toBeGreaterThan(0.29);
+      expect(c).toBeLessThan(0.3);
+      expect(palette.info[500].toHex()).toBe('#dd00e3');
+    });
+
+    it('clamps negative chroma ranges to the minimum allowable', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), undefined, {
+        semanticHarmonization: {
+          chromaRange: [-0.5, -0.1],
+        },
+      });
+      const c = palette.info[500].toOKLCH().c;
+      expect(c).toBeCloseTo(0.0395, 3);
+      expect(palette.info[500].toHex()).toBe('#8287a1');
+    });
+
+    it('throws for NaN semantic harmonization options', () => {
+      const base = new Color('#ff0000');
+      expect(() =>
+        generateColorPaletteFromBaseColor(base, undefined, {
+          semanticHarmonization: { huePull: NaN, chromaRange: [NaN, NaN] },
+        })
+      ).toThrow();
+    });
+
+    it('creates positive and negative swatches across the spectrum', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
+      expect(palette.positive[100].toHex()).toBe('#7eff75');
+      expect(palette.positive[500].toHex()).toBe('#0ba700');
+      expect(palette.positive[700].toHex()).toBe('#073f03');
+      expect(palette.negative[100].toHex()).toBe('#ffd1dc');
+      expect(palette.negative[500].toHex()).toBe('#fc0940');
+      expect(palette.negative[700].toHex()).toBe('#95092a');
+    });
+
+    it('provides full semantic colors for grayscale bases', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#808080'));
+      expect(palette.info[500].toHex()).toBe('#758099');
+      expect(palette.positive[500].toHex()).toBe('#6b8971');
+      expect(palette.negative[500].toHex()).toBe('#a17271');
+      expect(palette.warning[500].toHex()).toBe('#8e7f56');
+      expect(palette.special[500].toHex()).toBe('#85799a');
+    });
+  });
+
+  describe('color harmony generation', () => {
+    it('creates complementary swatches with proper secondary colors', () => {
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        ColorHarmony.COMPLEMENTARY
+      );
+      expect(palette.secondaryColors.length).toBe(1);
+      expect(palette.primary[100].toHex()).toBe('#ffcccc');
+      expect(palette.primary[900].toHex()).toBe('#2e0505');
+      expect(palette.secondaryColors[0][100].toHex()).toBe('#ccffff');
+      expect(palette.secondaryColors[0][500].toHex()).toBe('#00ffff');
+      expect(palette.secondaryColors[0][900].toHex()).toBe('#052e2e');
+    });
+
+    it('creates a full triadic harmony', () => {
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), ColorHarmony.TRIADIC);
+      expect(palette.secondaryColors.length).toBe(2);
+      expect(palette.primary[500].toHex()).toBe('#ff0000');
+      expect(palette.secondaryColors[0][500].toHex()).toBe('#0000ff');
+      expect(palette.secondaryColors[1][500].toHex()).toBe('#00ff00');
+      expect(palette.secondaryColors[0][100].toHex()).toBe('#ccccff');
+      expect(palette.secondaryColors[1][900].toHex()).toBe('#052e05');
+    });
+
+    it('produces the expected number of secondary colors for other harmonies', () => {
+      const analogous = generateColorPaletteFromBaseColor(
+        new Color('#336699'),
+        ColorHarmony.ANALOGOUS
+      );
+      expect(analogous.secondaryColors.length).toBe(4);
+      expect(analogous.secondaryColors[0][500].toHex()).toBe('#339999');
+      expect(analogous.secondaryColors[3][500].toHex()).toBe('#663399');
+
+      const monochromatic = generateColorPaletteFromBaseColor(
+        new Color('#336699'),
+        ColorHarmony.MONOCHROMATIC
+      );
+      expect(monochromatic.secondaryColors.length).toBe(4);
+      expect(monochromatic.secondaryColors[0][500].toHex()).toBe('#6699cc');
+      expect(monochromatic.secondaryColors[3][500].toHex()).toBe('#476685');
     });
   });
 });
