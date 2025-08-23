@@ -5,7 +5,6 @@ import { ColorInfo } from './ColorInfo';
 import { ColorManipulationDemo } from './ColorManipulationDemo';
 import { VSpace } from '../components/VSpace';
 import { ColorHarmonyDemo } from './ColorHarmonyDemo';
-import { ColorSwatch } from './ColorSwatch';
 import { ColorPaletteDemo } from './palette/ColorPaletteDemo';
 import { ColorCombinationDemo } from './combinations/ColorCombinationDemo';
 import { ReadabilityDemo } from './ReadabilityDemo';
@@ -52,8 +51,6 @@ export function Playground() {
       <VSpace height={24} />
       <h5 className="mb-3">Color info</h5>
       <ColorInfo color={color} />
-      <VSpace height={8} />
-      <ColorSwatch color={color} />
       <VSpace height={24} />
       <h5 className="mb-3">Readability</h5>
       <ReadabilityDemo color={color} />
