@@ -71,7 +71,13 @@ export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
     const chromaY = y / sum;
     // McCamy's approximation formula to calculate correlated color temperature (CCT):
     const n = (chromaX - 0.332) / (0.1858 - chromaY); // 0.332, 0.1858 are reference points on the chromaticity diagram
-    temperature = Math.round(449 * n * n * n + 3525 * n * n + 6823.3 * n + 5520.33);
+    const cct = 449 * n * n * n + 3525 * n * n + 6823.3 * n + 5520.33;
+    // McCamy's polynomial can yield negative or invalid values for colours far from the
+    // Planckian locus. Clamp the result to `0` in those cases to avoid returning
+    // nonsensical negative temperatures.
+    if (Number.isFinite(cct)) {
+      temperature = Math.max(0, Math.round(cct));
+    }
   }
 
   return { temperature, label: getLabelForTemperature(temperature) };
