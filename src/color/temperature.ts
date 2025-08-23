@@ -108,3 +108,18 @@ export function getColorFromTemperature(temperature: number): Color {
 export function getColorFromTemperatureLabel(label: ColorTemperatureLabel): Color {
   return new Color(LABEL_TO_COLOR_HSL_MAP[label]);
 }
+
+export function matchPartialColorTemperatureLabel(
+  partialLabel: string
+): ColorTemperatureLabel | null {
+  const cleanedPartialLabel = partialLabel.trim().toLowerCase();
+  const matchedLabel = Object.values(ColorTemperatureLabel).find((label) => {
+    const lowercaseLabel = label.toLowerCase();
+    if (lowercaseLabel === cleanedPartialLabel) {
+      return true;
+    }
+    const [firstWord] = lowercaseLabel.split(' ');
+    return cleanedPartialLabel === firstWord;
+  });
+  return matchedLabel ?? null;
+}

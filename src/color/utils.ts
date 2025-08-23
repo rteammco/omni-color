@@ -5,6 +5,7 @@ import { toRGBA } from './conversions';
 import type { ColorFormat, ColorHex, ColorRGBA } from './formats';
 import { parseCSSColorFormatString } from './parse';
 import { getRandomColorRGBA } from './random';
+import { getColorFromTemperatureLabel, matchPartialColorTemperatureLabel } from './temperature';
 
 export function getColorRGBAFromInput(color?: ColorFormat | Color | string | null): ColorRGBA {
   if (color instanceof Color) {
@@ -23,6 +24,11 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string | nul
     const namedColorHex = CSS_COLOR_NAME_TO_HEX_MAP[colorString.replace(/ /g, '')];
     if (namedColorHex) {
       return toRGBA(namedColorHex);
+    }
+
+    const matchedColorTemperatureLabel = matchPartialColorTemperatureLabel(colorString);
+    if (matchedColorTemperatureLabel) {
+      return getColorFromTemperatureLabel(matchedColorTemperatureLabel).toRGBA();
     }
 
     // Other CSS color format string (e.g. "rgb(255, 0, 0)"):
