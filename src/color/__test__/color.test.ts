@@ -13,10 +13,16 @@ import type {
 } from '../formats';
 import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
-import {
-  ColorTemperatureLabel,
-  getColorFromTemperatureLabel,
-} from '../temperature';
+import { getRandomColorRGBA } from '../random';
+import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
+
+jest.mock('../random', () => {
+  const actual = jest.requireActual('../random');
+  return {
+    ...actual,
+    getRandomColorRGBA: jest.fn(actual.getRandomColorRGBA),
+  };
+});
 
 const BASE_HEX: ColorHex = '#ff0000';
 const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
@@ -144,22 +150,20 @@ describe('Color constructor and conversion tests', () => {
   it('accepts color temperature label strings', () => {
     let color = new Color('fluorescent');
     expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT).toHex(),
+      getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT).toHex()
     );
 
     color = new Color('Daylight');
     expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT).toHex(),
+      getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT).toHex()
     );
 
     color = new Color('  shade ');
-    expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE).toHex(),
-    );
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE).toHex());
 
     color = new Color('blue sky');
     expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY).toHex(),
+      getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY).toHex()
     );
   });
 });
@@ -189,6 +193,47 @@ describe('Color.random', () => {
     expect(randomizedAlpha.getAlpha()).toBe(0.5);
 
     spy.mockRestore();
+  });
+});
+
+describe('Random color pathways', () => {
+  const mockColor = { r: 10, g: 20, b: 30, a: 0.4 };
+  const randomSpy = getRandomColorRGBA as jest.Mock;
+  const actualRandom = (jest.requireActual('../random') as typeof import('../random'))
+    .getRandomColorRGBA;
+
+  beforeEach(() => {
+    randomSpy.mockImplementation(actualRandom);
+    randomSpy.mockClear();
+  });
+
+  afterEach(() => {
+    randomSpy.mockImplementation(actualRandom);
+    randomSpy.mockClear();
+  });
+
+  it('uses getRandomColorRGBA when constructed without arguments', () => {
+    randomSpy.mockReturnValue(mockColor);
+    const color = new Color();
+    expect(randomSpy).toHaveBeenCalledTimes(1);
+    expect(color.toRGB()).toEqual({ r: 10, g: 20, b: 30 });
+    expect(color.getAlpha()).toBe(0.4);
+  });
+
+  it('uses getRandomColorRGBA when constructed with null', () => {
+    randomSpy.mockReturnValue(mockColor);
+    const color = new Color(null);
+    expect(randomSpy).toHaveBeenCalledTimes(1);
+    expect(color.toRGB()).toEqual({ r: 10, g: 20, b: 30 });
+    expect(color.getAlpha()).toBe(0.4);
+  });
+
+  it('Color.random uses getRandomColorRGBA', () => {
+    randomSpy.mockReturnValue(mockColor);
+    const color = Color.random();
+    expect(randomSpy).toHaveBeenCalledTimes(1);
+    expect(color.toRGB()).toEqual({ r: 10, g: 20, b: 30 });
+    expect(color.getAlpha()).toBe(0.4);
   });
 });
 
