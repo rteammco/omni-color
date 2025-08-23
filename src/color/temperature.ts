@@ -1,5 +1,6 @@
 import { Color } from './color';
 import { ColorHSL } from './formats';
+import { srgbChannelToLinear, SrgbGammaPivot } from './utils';
 
 export enum ColorTemperatureLabel {
   // Warm:
@@ -49,21 +50,9 @@ function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
 
 export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
   const { r, g, b } = color.toRGB();
-  // Does a gamma correction by converting sRGB to linear RGB values. To calculate proper
-  // luminance, we need the actual linear light intensities, not the gamma-encoded ones.
-  const linearizeRGBChannel = (channel: number): number => {
-    // TODO: we have this same function with slight variations in several parts of the code,
-    // move to a common util?
-    const c = channel / 255; // normalize
-    if (c <= 0.04045) {
-      return c / 12.92; // linear portion for dark colors
-    }
-    return Math.pow((c + 0.055) / 1.055, 2.4); // gamma correction for brighter colors
-  };
-
-  const rLin = linearizeRGBChannel(r);
-  const gLin = linearizeRGBChannel(g);
-  const bLin = linearizeRGBChannel(b);
+  const rLin = srgbChannelToLinear(r, SrgbGammaPivot.SRGB);
+  const gLin = srgbChannelToLinear(g, SrgbGammaPivot.SRGB);
+  const bLin = srgbChannelToLinear(b, SrgbGammaPivot.SRGB);
 
   // XYZ color space conversion:
   const x = rLin * 0.4124 + gLin * 0.3576 + bLin * 0.1805;

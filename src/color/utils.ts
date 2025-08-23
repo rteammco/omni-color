@@ -1,3 +1,4 @@
+import { clampValue } from '../utils';
 import { Color } from './color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.constants';
 import { toRGBA } from './conversions';
@@ -34,6 +35,44 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string | nul
   }
 
   return color ? toRGBA(color) : getRandomColorRGBA();
+}
+
+const RGB_CHANNEL_MAX_VALUE = 255; // 8‑bit channel ceiling
+const SRGB_LINEAR_SEGMENT_DIVISOR = 12.92; // slope for low‑intensity segment
+const SRGB_GAMMA_OFFSET = 0.055; // additive term in sRGB gamma curve
+const SRGB_GAMMA_SCALE = 1.055; // multiplicative term in sRGB gamma curve
+const SRGB_GAMMA_EXPONENT = 2.4; // exponent in sRGB transfer function
+
+export enum SrgbGammaPivot {
+  SRGB = 0.04045,
+  WCAG = 0.03928,
+}
+
+// Does a gamma correction by converting the given sRGB channel value (0 to 255)
+// to a linear RGB channel value (0 to 1).
+export function srgbChannelToLinear(srgbChannelVal: number, pivot: SrgbGammaPivot): number {
+  const c = clampValue(srgbChannelVal, 0, RGB_CHANNEL_MAX_VALUE) / RGB_CHANNEL_MAX_VALUE; // normalize
+  let result: number;
+  if (c <= pivot) {
+    result = c / SRGB_LINEAR_SEGMENT_DIVISOR; // linear portion for dark colors
+  } else {
+    result = Math.pow((c + SRGB_GAMMA_OFFSET) / SRGB_GAMMA_SCALE, SRGB_GAMMA_EXPONENT); // gamma correction for brighter colors
+  }
+  return clampValue(result, 0, 1);
+}
+
+// Inverts `srgbChannelToLinear()`. Takes a linearized channel value (0 to 1) and returns
+// the original sRGB channel value (0 to 255).
+export function linearChannelToSrgb(linearChannelVal: number, pivot: SrgbGammaPivot): number {
+  const c = clampValue(linearChannelVal, 0, 1);
+  const threshold = pivot / SRGB_LINEAR_SEGMENT_DIVISOR;
+  let result: number;
+  if (c > threshold) {
+    result = SRGB_GAMMA_SCALE * Math.pow(c, 1 / SRGB_GAMMA_EXPONENT) - SRGB_GAMMA_OFFSET;
+  } else {
+    result = c * SRGB_LINEAR_SEGMENT_DIVISOR;
+  }
+  return clampValue(result * RGB_CHANNEL_MAX_VALUE, 0, RGB_CHANNEL_MAX_VALUE);
 }
 
 export function isColorDark(color: Color): boolean {

@@ -1,5 +1,6 @@
 import { Color } from './color';
 import type { ColorRGBA } from './formats';
+import { srgbChannelToLinear, SrgbGammaPivot } from './utils';
 
 // Does alpha blending between the two RGBA colors. Calculates what the a
 // semi-transparent foreground color would look like on the background color.
@@ -15,19 +16,9 @@ function getCompositeRGBA(fg: ColorRGBA, bg: ColorRGBA): ColorRGBA {
 }
 
 function getRelativeLuminance(rgb: ColorRGBA): number {
-  // Does a gamma correction by converting sRGB to linear RGB values. To calculate proper
-  // luminance, we need the actual linear light intensities, not the gamma-encoded ones.
-  const linearizeRGBChannel = (channel: number): number => {
-    const c = channel / 255; // normalize
-    if (c <= 0.03928) {
-      return c / 12.92; // linear portion for dark colors
-    }
-    return Math.pow((c + 0.055) / 1.055, 2.4); // gamma correction for brighter colors
-  };
-
-  const r = linearizeRGBChannel(rgb.r);
-  const g = linearizeRGBChannel(rgb.g);
-  const b = linearizeRGBChannel(rgb.b);
+  const r = srgbChannelToLinear(rgb.r, SrgbGammaPivot.WCAG);
+  const g = srgbChannelToLinear(rgb.g, SrgbGammaPivot.WCAG);
+  const b = srgbChannelToLinear(rgb.b, SrgbGammaPivot.WCAG);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b; // standard luminance formula
 }
 
