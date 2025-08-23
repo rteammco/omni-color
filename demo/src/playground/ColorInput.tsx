@@ -114,17 +114,25 @@ export function ColorInput({ color, onColorChanged }: Props) {
         <button onClick={() => handlePresetColorSelected('oklch(0.35 0 89.5)')}>
           oklch(0.35 0 89.5)
         </button>
+        &middot;
+        <button onClick={() => handlePresetColorSelected('candlelight')}>candlelight</button>
+        &middot;
+        <button onClick={() => handlePresetColorSelected('fluorescent lamp')}>
+          fluorescent lamp
+        </button>
+        &middot;
+        <button onClick={() => handlePresetColorSelected('blue sky')}>blue sky</button>
       </div>
       <div>or randomize:</div>
       <div className="flex flex-row justify-center gap-2 flex-wrap">
-        <button onClick={() => handleRandomColorSelected({})}>random</button>
+        <button onClick={() => handleRandomColorSelected({})}>Random</button>
         &middot;
         <button onClick={() => handleRandomColorSelected({ anchorColor: color.getName().name })}>
-          random (same hue)
+          Random (same hue)
         </button>
         &middot;
         <button onClick={() => handleRandomColorSelected({ paletteSuitable: true })}>
-          random (suitable for palette)
+          Random (suitable for palette)
         </button>
       </div>
     </div>
