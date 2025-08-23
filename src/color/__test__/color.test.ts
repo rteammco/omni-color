@@ -13,7 +13,10 @@ import type {
 } from '../formats';
 import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
-import { ColorTemperatureLabel } from '../temperature';
+import {
+  ColorTemperatureLabel,
+  getColorFromTemperatureLabel,
+} from '../temperature';
 
 const BASE_HEX: ColorHex = '#ff0000';
 const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
@@ -136,6 +139,28 @@ describe('Color constructor and conversion tests', () => {
     const color2 = new Color(color1);
     expect(color2.toRGB()).toEqual(color1.toRGB());
     expect(color1).not.toBe(color2);
+  });
+
+  it('accepts color temperature label strings', () => {
+    let color = new Color('fluorescent');
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT).toHex(),
+    );
+
+    color = new Color('Daylight');
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT).toHex(),
+    );
+
+    color = new Color('  shade ');
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE).toHex(),
+    );
+
+    color = new Color('blue sky');
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY).toHex(),
+    );
   });
 });
 

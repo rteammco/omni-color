@@ -5,6 +5,7 @@ import {
   getColorFromTemperatureLabel,
   getColorTemperature,
   getColorTemperatureString,
+  matchPartialColorTemperatureLabel,
 } from '../temperature';
 
 describe('getColorTemperature', () => {
@@ -267,5 +268,44 @@ describe('getColorFromTemperatureLabel', () => {
     hsl = color.toHSL();
     expect(hsl.s).toBeLessThan(25);
     expect(hsl.l).toBeGreaterThan(70);
+  });
+});
+
+describe('matchPartialColorTemperatureLabel', () => {
+  it('matches full labels and first words case-insensitively', () => {
+    expect(matchPartialColorTemperatureLabel('candlelight')).toBe(
+      ColorTemperatureLabel.CANDLELIGHT,
+    );
+    expect(matchPartialColorTemperatureLabel('incandescent')).toBe(
+      ColorTemperatureLabel.INCANDESCENT,
+    );
+    expect(matchPartialColorTemperatureLabel(' Incandescent lamp ')).toBe(
+      ColorTemperatureLabel.INCANDESCENT,
+    );
+    expect(matchPartialColorTemperatureLabel('halogen')).toBe(
+      ColorTemperatureLabel.HALOGEN,
+    );
+    expect(matchPartialColorTemperatureLabel('fluorescent')).toBe(
+      ColorTemperatureLabel.FLUORESCENT,
+    );
+    expect(matchPartialColorTemperatureLabel('daylight')).toBe(
+      ColorTemperatureLabel.DAYLIGHT,
+    );
+    expect(matchPartialColorTemperatureLabel('cloudy')).toBe(
+      ColorTemperatureLabel.CLOUDY,
+    );
+    expect(matchPartialColorTemperatureLabel('cloudy sky')).toBe(
+      ColorTemperatureLabel.CLOUDY,
+    );
+    expect(matchPartialColorTemperatureLabel('shade')).toBe(ColorTemperatureLabel.SHADE);
+    expect(matchPartialColorTemperatureLabel('blue')).toBe(ColorTemperatureLabel.BLUE_SKY);
+    expect(matchPartialColorTemperatureLabel('Blue Sky')).toBe(
+      ColorTemperatureLabel.BLUE_SKY,
+    );
+  });
+
+  it('returns null when no label matches', () => {
+    expect(matchPartialColorTemperatureLabel('nope')).toBeNull();
+    expect(matchPartialColorTemperatureLabel('lamp')).toBeNull();
   });
 });

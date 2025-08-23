@@ -1,4 +1,8 @@
 import { Color } from '../color';
+import {
+  ColorTemperatureLabel,
+  getColorFromTemperatureLabel,
+} from '../temperature';
 import { getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
 
 describe('isColorDark', () => {
@@ -200,6 +204,28 @@ describe('getColorRGBAFromInput', () => {
   it('parses named colors with or without spaces', () => {
     expect(new Color(getColorRGBAFromInput('lightblue')).toHex()).toBe('#add8e6');
     expect(new Color(getColorRGBAFromInput('light blue')).toHex()).toBe('#add8e6');
+  });
+
+  it('parses full and partial color temperature strings', () => {
+    let color = new Color(getColorRGBAFromInput('candlelight'));
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.CANDLELIGHT).toHex(),
+    );
+
+    color = new Color(getColorRGBAFromInput('incandescent'));
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.INCANDESCENT).toHex(),
+    );
+
+    color = new Color(getColorRGBAFromInput('  shade  '));
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE).toHex(),
+    );
+
+    color = new Color(getColorRGBAFromInput('cloudy sky'));
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.CLOUDY).toHex(),
+    );
   });
 
   it('throws on unknown color names', () => {
