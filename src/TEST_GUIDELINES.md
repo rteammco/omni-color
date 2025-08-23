@@ -20,7 +20,7 @@ describe('function or util being tested', () => {
 ```
 
 - `describe('the function or util being tested', () => {...});` contains the test for whatever util / function / logical piece is being tested. It would likely contain multiple cases under it.
-- `it('tests a specific case or combination of inputs', () => {...});` contains MULTIPLE checks (usually) to verify a specific combination of inputs, edge cases, happy path cases, etc.
+- `it('tests a specific case or combination of inputs', () => {...});` contains multiple checks (usually) to verify a specific combination of inputs, edge cases, happy path cases, etc.
 - `Color` inputs and outputs should almost always be hex strings ('#rrggbb') so it's readable at a glance in the IDE - unless it doesn't make sense since we're checking a specific value like alpha or a specific conversion.
 - Prefer to explicitly define colors and objects in each test case, or each row you're testing. E.g. `expect(myColor.toHex()).toBe('#ff0000');` is preferable to defining a const `RED` and using it like so: `expect(myColor.toHex()).toBe(RED);`.
 - `src/color/__test__/utils.test.ts` is a good example of nice test structure.
@@ -31,3 +31,8 @@ In general:
 - Avoid loops on input/expected output, try to explicitly test each line within the test case.
 - The tests should catch even the most obscure of bugs if they're present. Don't assume the code already works perfectly.
 - It's preferable for test coverage to be overkill than to leave any case or combination of inputs untested.
+
+Also, some additional rules:
+
+- Do not install external dependencies for tests (e.g. don't test this library against an existing library's output).
+- DO look online for specific examples that stress-test the algorithms. Most importantly, the test shouldn't be made to fit the output of whatever we're testing, but rather they should always try to break the outputs that are assumed to be correct but may not be by cross-checking it against external examples.
