@@ -49,30 +49,36 @@ function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
 
 export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
   const { r, g, b } = color.toRGB();
-  const toLinear = (v: number): number => {
-    const normalized = v / 255;
-    return normalized <= 0.04045
-      ? normalized / 12.92
-      : Math.pow((normalized + 0.055) / 1.055, 2.4);
+  // Does a gamma correction by converting sRGB to linear RGB values. To calculate proper
+  // luminance, we need the actual linear light intensities, not the gamma-encoded ones.
+  const linearizeRGBChannel = (channel: number): number => {
+    // TODO: we have this same function with slight variations in several parts of the code,
+    // move to a common util?
+    const c = channel / 255; // normalize
+    if (c <= 0.04045) {
+      return c / 12.92; // linear portion for dark colors
+    }
+    return Math.pow((c + 0.055) / 1.055, 2.4); // gamma correction for brighter colors
   };
 
-  const rLin = toLinear(r);
-  const gLin = toLinear(g);
-  const bLin = toLinear(b);
+  const rLin = linearizeRGBChannel(r);
+  const gLin = linearizeRGBChannel(g);
+  const bLin = linearizeRGBChannel(b);
 
+  // XYZ color space conversion:
   const x = rLin * 0.4124 + gLin * 0.3576 + bLin * 0.1805;
   const y = rLin * 0.2126 + gLin * 0.7152 + bLin * 0.0722;
   const z = rLin * 0.0193 + gLin * 0.1192 + bLin * 0.9505;
-  const sum = x + y + z;
 
   let temperature = 0;
+  const sum = x + y + z;
   if (sum !== 0) {
+    // Chromaticity calculation:
     const chromaX = x / sum;
     const chromaY = y / sum;
-    const n = (chromaX - 0.3320) / (0.1858 - chromaY);
-    temperature = Math.round(
-      449 * n * n * n + 3525 * n * n + 6823.3 * n + 5520.33
-    );
+    // McCamy's approximation formula to calculate correlated color temperature (CCT):
+    const n = (chromaX - 0.332) / (0.1858 - chromaY); // 0.332, 0.1858 are reference points on the chromaticity diagram
+    temperature = Math.round(449 * n * n * n + 3525 * n * n + 6823.3 * n + 5520.33);
   }
 
   return { temperature, label: getLabelForTemperature(temperature) };
