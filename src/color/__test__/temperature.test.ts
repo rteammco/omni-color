@@ -141,30 +141,30 @@ describe('getColorTemperatureString', () => {
   it('includes label for off-white colors', () => {
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.CANDLELIGHT))
-    ).toBe('6011K (Daylight)');
+    ).toBe('6011K (daylight)');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.INCANDESCENT))
-    ).toBe('6240K (Daylight)');
+    ).toBe('6240K (daylight)');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.HALOGEN))
-    ).toBe('6314K (Daylight)');
+    ).toBe('6314K (daylight)');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT))
-    ).toBe('6388K (Daylight)');
+    ).toBe('6388K (daylight)');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT))
-    ).toBe('6426K (Daylight)');
+    ).toBe('6426K (daylight)');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.CLOUDY))
-    ).toBe('6622K (Cloudy sky)');
+    ).toBe('6622K (cloudy sky)');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE))
-    ).toBe('6668K (Cloudy sky)');
+    ).toBe('6668K (cloudy sky)');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY))
-    ).toBe('6761K (Cloudy sky)');
-    expect(getColorTemperatureString(new Color('#ffffff'))).toBe('6504K (Cloudy sky)');
-    expect(getColorTemperatureString(new Color('#c0c0c0'))).toBe('6504K (Cloudy sky)');
+    ).toBe('6761K (cloudy sky)');
+    expect(getColorTemperatureString(new Color('#ffffff'))).toBe('6504K (cloudy sky)');
+    expect(getColorTemperatureString(new Color('#c0c0c0'))).toBe('6504K (cloudy sky)');
   });
 
   it('omits label for saturated or non-off-white colors', () => {

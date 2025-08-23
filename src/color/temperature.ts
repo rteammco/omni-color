@@ -78,7 +78,7 @@ export function getColorTemperatureString(color: Color): string {
   const { s, l } = color.toHSL();
   // TODO: migrate this to a util and add direct as a `Color` method
   const isOffWhite = s < 25 && l > 70;
-  return isOffWhite ? `${temperature}K (${label})` : `${temperature}K`;
+  return isOffWhite ? `${temperature}K (${label.toLowerCase()})` : `${temperature}K`;
 }
 
 export function getColorFromTemperature(temperature: number): Color {

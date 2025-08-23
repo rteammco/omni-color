@@ -13,6 +13,7 @@ import type {
 } from '../formats';
 import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
+import { ColorTemperatureLabel } from '../temperature';
 
 const BASE_HEX: ColorHex = '#ff0000';
 const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
@@ -505,6 +506,22 @@ describe('Color.isOffWhite sanity check', () => {
     expect(new Color('#ffffff').isOffWhite()).toBe(true);
     expect(new Color('#f0f0f0').isOffWhite()).toBe(true);
     expect(new Color('#dddddd').isOffWhite()).toBe(false);
+  });
+});
+
+describe('Color temperature methods', () => {
+  it('estimates temperature and label', () => {
+    const color = new Color('#ffa757');
+    expect(color.getTemperature().label).toBe(ColorTemperatureLabel.INCANDESCENT);
+  });
+
+  it('returns a temperature string for off-white colors', () => {
+    expect(new Color('#ffffff').getTemperatureString()).toBe('6504K (cloudy sky)');
+  });
+
+  it('creates colors from temperature values or labels', () => {
+    expect(Color.fromTemperature(1500).toHex()).toBe('#e7e0da');
+    expect(Color.fromTemperature(ColorTemperatureLabel.SHADE).toHex()).toBe('#ebecef');
   });
 });
 
