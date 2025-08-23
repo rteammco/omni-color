@@ -187,7 +187,12 @@ describe('conversions', () => {
       expect(toHSLA({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
       expect(toHSLA({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
       expect(toHSLA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
-      expect(toHSLA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({
+        h: 0,
+        s: 100,
+        l: 50,
+        a: 1,
+      });
     });
 
     it('preserves alpha where available', () => {
@@ -254,7 +259,12 @@ describe('conversions', () => {
       expect(toHSVA({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
       expect(toHSVA({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
       expect(toHSVA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
-      expect(toHSVA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({
+        h: 0,
+        s: 100,
+        v: 100,
+        a: 1,
+      });
     });
 
     it('preserves alpha where available', () => {
@@ -300,7 +310,12 @@ describe('conversions', () => {
       expect(toCMYK({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
       expect(toCMYK({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
       expect(toCMYK({ l: 53.233, c: 104.576, h: 40 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
-      expect(toCMYK({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({
+        c: 0,
+        m: 100,
+        y: 100,
+        k: 0,
+      });
     });
 
     it('converts black correctly', () => {
