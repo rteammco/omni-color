@@ -99,12 +99,8 @@ describe('rgbaToString', () => {
   });
 
   it('rounds alpha to three decimals', () => {
-    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.123456 })).toBe(
-      'rgba(1, 2, 3, 0.123)'
-    );
-    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.98765 })).toBe(
-      'rgba(1, 2, 3, 0.988)'
-    );
+    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.123456 })).toBe('rgba(1, 2, 3, 0.123)');
+    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.98765 })).toBe('rgba(1, 2, 3, 0.988)');
   });
 });
 
@@ -202,9 +198,9 @@ describe('hslaToString', () => {
   });
 
   it('rounds hsla components to three decimals', () => {
-    expect(
-      hslaToString({ h: 123.4567, s: 50.5555, l: 10.1234, a: 0.98765 })
-    ).toBe('hsla(123.457, 50.556%, 10.123%, 0.988)');
+    expect(hslaToString({ h: 123.4567, s: 50.5555, l: 10.1234, a: 0.98765 })).toBe(
+      'hsla(123.457, 50.556%, 10.123%, 0.988)'
+    );
   });
 });
 
@@ -352,9 +348,9 @@ describe('oklchToString', () => {
   });
 
   it('rounds oklch components to six decimals', () => {
-    expect(
-      oklchToString({ l: 0.123456789, c: 0.987654321, h: 123.456789 })
-    ).toBe('oklch(0.123457 0.987654 123.457)');
+    expect(oklchToString({ l: 0.123456789, c: 0.987654321, h: 123.456789 })).toBe(
+      'oklch(0.123457 0.987654 123.457)'
+    );
   });
 });
 
@@ -438,4 +434,3 @@ describe('getColorFormatType', () => {
     );
   });
 });
-
