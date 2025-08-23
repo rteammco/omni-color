@@ -65,8 +65,16 @@ describe('conversions', () => {
       expect(toRGB({ h: 360, s: 100, l: 50 })).toEqual(expected);
     });
 
+    it('rejects negative hue values in HSL', () => {
+      expect(() => toRGB({ h: -720, s: 100, l: 50 } as ColorHSL)).toThrow();
+    });
+
     it('handles grayscale HSV', () => {
       expect(toRGB({ h: 200, s: 0, v: 50 })).toEqual({ r: 128, g: 128, b: 128 });
+    });
+
+    it('handles zero value HSV as black', () => {
+      expect(toRGB({ h: 120, s: 100, v: 0 })).toEqual({ r: 0, g: 0, b: 0 });
     });
 
     it('throws on invalid input', () => {
@@ -108,6 +116,10 @@ describe('conversions', () => {
     it('throws on invalid RGBA', () => {
       expect(() => toRGBA({ r: 256, g: 0, b: 0, a: 1 } as ColorRGBA)).toThrow();
     });
+
+    it('throws on invalid alpha value', () => {
+      expect(() => toRGBA({ r: 0, g: 0, b: 0, a: 1.1 } as ColorRGBA)).toThrow();
+    });
   });
 
   describe('toHex', () => {
@@ -129,6 +141,14 @@ describe('conversions', () => {
     ];
     it.each(cases)('from %s', (_, input) => {
       expect(toHex(input)).toBe(expected);
+    });
+
+    it('normalizes uppercase hex input', () => {
+      expect(toHex('#FF0000')).toBe(expected);
+    });
+
+    it('drops alpha when converting from RGBA', () => {
+      expect(toHex({ r: 255, g: 0, b: 0, a: 0.3 })).toBe(expected);
     });
   });
 
@@ -163,6 +183,10 @@ describe('conversions', () => {
     it('handles fully transparent alpha', () => {
       expect(toHex8({ r: 255, g: 0, b: 0, a: 0 })).toBe('#ff000000');
     });
+
+    it('normalizes uppercase hex8 input', () => {
+      expect(toHex8('#FF0000CC' as ColorHex)).toBe('#ff0000cc');
+    });
   });
 
   describe('toHSL', () => {
@@ -186,6 +210,10 @@ describe('conversions', () => {
 
     it('converts grayscale correctly', () => {
       expect(toHSL('#808080')).toEqual({ h: 0, s: 0, l: 50 });
+    });
+
+    it('converts arbitrary colors', () => {
+      expect(toHSL('#123456')).toEqual({ h: 210, s: 65, l: 20 });
     });
   });
 
@@ -223,6 +251,10 @@ describe('conversions', () => {
         expect(a).toBeCloseTo(alpha, 3);
       });
     }
+
+    it('throws on invalid alpha', () => {
+      expect(() => toHSLA({ h: 0, s: 100, l: 50, a: 2 })).toThrow();
+    });
   });
 
   describe('toHSV', () => {
@@ -242,6 +274,14 @@ describe('conversions', () => {
     ];
     it.each(cases)('from %s', (_, input) => {
       expect(toHSV(input)).toEqual(expected);
+    });
+
+    it('converts arbitrary colors', () => {
+      expect(toHSV('#123456')).toEqual({ h: 210, s: 79, v: 34 });
+    });
+
+    it('converts black correctly', () => {
+      expect(toHSV('#000000')).toEqual({ h: 0, s: 0, v: 0 });
     });
   });
 
@@ -279,6 +319,10 @@ describe('conversions', () => {
         expect(a).toBeCloseTo(alpha, 3);
       });
     }
+
+    it('throws on invalid alpha', () => {
+      expect(() => toHSVA({ h: 0, s: 100, v: 100, a: 2 })).toThrow();
+    });
   });
 
   describe('toCMYK', () => {
@@ -302,6 +346,14 @@ describe('conversions', () => {
 
     it('converts black correctly', () => {
       expect(toCMYK('#000000')).toEqual({ c: 0, m: 0, y: 0, k: 100 });
+    });
+
+    it('converts white correctly', () => {
+      expect(toCMYK('#ffffff')).toEqual({ c: 0, m: 0, y: 0, k: 0 });
+    });
+
+    it('converts arbitrary colors', () => {
+      expect(toCMYK('#123456')).toEqual({ c: 79, m: 40, y: 0, k: 66 });
     });
   });
 
@@ -331,6 +383,12 @@ describe('conversions', () => {
       const lch = toLCH('#808080');
       expect(lch.c).toBeCloseTo(0, 1);
     });
+
+    it('handles black correctly', () => {
+      const lch = toLCH('#000000');
+      expect(lch.l).toBeCloseTo(0, 3);
+      expect(lch.c).toBeCloseTo(0, 3);
+    });
   });
 
   describe('toOKLCH', () => {
@@ -359,6 +417,102 @@ describe('conversions', () => {
       const white = toOKLCH('#ffffff');
       expect(white.l).toBeCloseTo(1, 6);
       expect(white.c).toBeCloseTo(0, 6);
+    });
+
+    it('handles black correctly', () => {
+      const black = toOKLCH('#000000');
+      expect(black.l).toBeCloseTo(0, 6);
+      expect(black.c).toBeCloseTo(0, 6);
+    });
+  });
+
+  describe('roundtrip stability', () => {
+    it('keeps colors within 2 RGB units after hex \u2194 HSL conversions', () => {
+      const start1: ColorHex = '#123456';
+      let color1: ColorHex = start1;
+      for (let i = 0; i < 10; i++) {
+        color1 = toHex(toHSL(color1));
+      }
+      const rgb1 = toRGB(color1);
+      const rgbStart1 = toRGB(start1);
+      expect(Math.abs(rgb1.r - rgbStart1.r)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb1.g - rgbStart1.g)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb1.b - rgbStart1.b)).toBeLessThanOrEqual(2);
+
+      const start2: ColorHex = '#abcdef';
+      let color2: ColorHex = start2;
+      for (let i = 0; i < 10; i++) {
+        color2 = toHex(toHSL(color2));
+      }
+      const rgb2 = toRGB(color2);
+      const rgbStart2 = toRGB(start2);
+      expect(Math.abs(rgb2.r - rgbStart2.r)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb2.g - rgbStart2.g)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb2.b - rgbStart2.b)).toBeLessThanOrEqual(2);
+    });
+
+    it('keeps colors within 2 RGB units after hex \u2192 HSV \u2192 RGB conversions', () => {
+      const start1: ColorHex = '#123456';
+      let color1: ColorHex = start1;
+      for (let i = 0; i < 10; i++) {
+        color1 = toHex(toRGB(toHSV(color1)));
+      }
+      const rgb1 = toRGB(color1);
+      const rgbStart1 = toRGB(start1);
+      expect(Math.abs(rgb1.r - rgbStart1.r)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb1.g - rgbStart1.g)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb1.b - rgbStart1.b)).toBeLessThanOrEqual(2);
+
+      const start2: ColorHex = '#abcdef';
+      let color2: ColorHex = start2;
+      for (let i = 0; i < 10; i++) {
+        color2 = toHex(toRGB(toHSV(color2)));
+      }
+      const rgb2 = toRGB(color2);
+      const rgbStart2 = toRGB(start2);
+      expect(Math.abs(rgb2.r - rgbStart2.r)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb2.g - rgbStart2.g)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb2.b - rgbStart2.b)).toBeLessThanOrEqual(2);
+    });
+
+    it('maintains hex through hex \u2194 OKLCH conversions', () => {
+      const start1: ColorHex = '#123456';
+      let color1: ColorHex = start1;
+      for (let i = 0; i < 10; i++) {
+        color1 = toHex(toOKLCH(color1));
+      }
+      expect(color1).toBe(start1);
+
+      const start2: ColorHex = '#abcdef';
+      let color2: ColorHex = start2;
+      for (let i = 0; i < 10; i++) {
+        color2 = toHex(toOKLCH(color2));
+      }
+      expect(color2).toBe(start2);
+    });
+
+    it('keeps colors within 3 RGB units through a circular chain', () => {
+      const start1: ColorHex = '#123456';
+      let color1: ColorHex = start1;
+      for (let i = 0; i < 10; i++) {
+        color1 = toHex(toRGB(toHSV(toRGB(toHSL(color1)))));
+      }
+      const rgb1 = toRGB(color1);
+      const rgbStart1 = toRGB(start1);
+      expect(Math.abs(rgb1.r - rgbStart1.r)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb1.g - rgbStart1.g)).toBeLessThanOrEqual(2);
+      expect(Math.abs(rgb1.b - rgbStart1.b)).toBeLessThanOrEqual(2);
+
+      const start2: ColorHex = '#abcdef';
+      let color2: ColorHex = start2;
+      for (let i = 0; i < 10; i++) {
+        color2 = toHex(toRGB(toHSV(toRGB(toHSL(color2)))));
+      }
+      const rgb2 = toRGB(color2);
+      const rgbStart2 = toRGB(start2);
+      expect(Math.abs(rgb2.r - rgbStart2.r)).toBeLessThanOrEqual(3);
+      expect(Math.abs(rgb2.g - rgbStart2.g)).toBeLessThanOrEqual(3);
+      expect(Math.abs(rgb2.b - rgbStart2.b)).toBeLessThanOrEqual(3);
     });
   });
 });
