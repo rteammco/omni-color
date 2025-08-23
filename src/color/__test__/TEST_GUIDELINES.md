@@ -1,13 +1,14 @@
 # TEST GUIDELINES
 
 Tests should be structured as follows:
+
 ```
 describe('function or util being tested', () => {
   it('works for the happy path', () => {
     expect(new Color('red').toHex()).toBe('#ff0000');
     expect(new Color('green').toHex()).toBe('#00ff00');
     expect(new Color('blue').toHex()).toBe('#0000ff');
-    // and many more rows to test every possible calse
+    // and many more rows to test every possible case
   });
   it('works for some weirder cases', () => {
     // test cases line by line like above
@@ -25,6 +26,7 @@ describe('function or util being tested', () => {
 - `src/color/__test__/utils.test.ts` is a good example of nice test structure.
 
 In general:
+
 - Readability is more important than succinctness or "clean code" in tests.
 - Avoid loops on input/expected output, try to explicitly test each line within the test case.
 - The tests should catch even the most obscure of bugs if they're present. Don't assume the code already works perfectly.
