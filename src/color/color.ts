@@ -151,8 +151,7 @@ export class Color {
    */
   static fromTemperature(temperature: number | ColorTemperatureLabel): Color {
     if (typeof temperature === 'number') {
-      const t = clampValue(temperature, 0, 10000);
-      return getColorFromTemperature(t);
+      return getColorFromTemperature(clampValue(temperature, 0, 10000));
     }
     return getColorFromTemperatureLabel(temperature);
   }
