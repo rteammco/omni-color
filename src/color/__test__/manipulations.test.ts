@@ -134,4 +134,3 @@ describe('colorToGrayscale', () => {
     expect(black.toHex()).toBe('#000000');
   });
 });
-
