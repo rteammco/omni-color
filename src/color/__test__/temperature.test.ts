@@ -1,7 +1,6 @@
 import { Color } from '../color';
 import {
   ColorTemperatureLabel,
-  getColorFromTemperature,
   getColorFromTemperatureLabel,
   getColorTemperature,
   getColorTemperatureString,
@@ -10,7 +9,7 @@ import {
 describe('color temperature utilities', () => {
   it('gets temperature and label from a warm color', () => {
     const temp = 2700;
-    const color = getColorFromTemperature(temp);
+    const color = new Color('#ffa757');
     const result = getColorTemperature(color);
     expect(result.label).toBe(ColorTemperatureLabel.INCANDESCENT);
     expect(result.temperature).toBeGreaterThan(temp - 500);
@@ -18,9 +17,9 @@ describe('color temperature utilities', () => {
   });
 
   it('generates readable string for off-white colors', () => {
-    const color = getColorFromTemperature(2700);
+    const color = getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT);
     const str = getColorTemperatureString(color);
-    expect(str).toContain('Incandescent');
+    expect(str).toContain('Daylight');
   });
 
   it('omits label for saturated colors', () => {

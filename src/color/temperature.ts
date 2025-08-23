@@ -31,17 +31,6 @@ const SORTED_TEMPERATURE_LABELS: { label: ColorTemperatureLabel; temperatureLimi
   { label: ColorTemperatureLabel.BLUE_SKY, temperatureLimit: Infinity },
 ] as const;
 
-const LABEL_TO_TEMPERATURE_MAP: { [key in ColorTemperatureLabel]: number } = {
-  [ColorTemperatureLabel.CANDLELIGHT]: 1900,
-  [ColorTemperatureLabel.INCANDESCENT]: 2700,
-  [ColorTemperatureLabel.HALOGEN]: 3200,
-  [ColorTemperatureLabel.FLUORESCENT]: 4200,
-  [ColorTemperatureLabel.DAYLIGHT]: 5500,
-  [ColorTemperatureLabel.CLOUDY]: 7000,
-  [ColorTemperatureLabel.SHADE]: 8000,
-  [ColorTemperatureLabel.BLUE_SKY]: 10000,
-} as const;
-
 const LABEL_TO_COLOR_HSL_MAP: { [key in ColorTemperatureLabel]: ColorHSL } = {
   [ColorTemperatureLabel.CANDLELIGHT]: { h: 30, s: 20, l: 88 },
   [ColorTemperatureLabel.INCANDESCENT]: { h: 35, s: 18, l: 92 },
@@ -59,20 +48,40 @@ function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
 }
 
 export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
-  // TODO: wtf is this?
-  const rgb = color.toRGB();
-  let closest: ColorTemperatureLabel = ColorTemperatureLabel.DAYLIGHT;
-  let minDist = Number.MAX_VALUE;
-  for (const label of Object.values(ColorTemperatureLabel)) {
-    const refRGB = new Color(LABEL_TO_COLOR_HSL_MAP[label]).toRGB();
-    const dist =
-      Math.pow(rgb.r - refRGB.r, 2) + Math.pow(rgb.g - refRGB.g, 2) + Math.pow(rgb.b - refRGB.b, 2);
-    if (dist < minDist) {
-      minDist = dist;
-      closest = label as ColorTemperatureLabel;
+  const { r, g, b } = color.toRGB();
+  // Does a gamma correction by converting sRGB to linear RGB values. To calculate proper
+  // luminance, we need the actual linear light intensities, not the gamma-encoded ones.
+  const linearizeRGBChannel = (channel: number): number => {
+    // TODO: we have this same function with slight variations in several parts of the code,
+    // move to a common util?
+    const c = channel / 255; // normalize
+    if (c <= 0.04045) {
+      return c / 12.92; // linear portion for dark colors
     }
+    return Math.pow((c + 0.055) / 1.055, 2.4); // gamma correction for brighter colors
+  };
+
+  const rLin = linearizeRGBChannel(r);
+  const gLin = linearizeRGBChannel(g);
+  const bLin = linearizeRGBChannel(b);
+
+  // XYZ color space conversion:
+  const x = rLin * 0.4124 + gLin * 0.3576 + bLin * 0.1805;
+  const y = rLin * 0.2126 + gLin * 0.7152 + bLin * 0.0722;
+  const z = rLin * 0.0193 + gLin * 0.1192 + bLin * 0.9505;
+
+  let temperature = 0;
+  const sum = x + y + z;
+  if (sum !== 0) {
+    // Chromaticity calculation:
+    const chromaX = x / sum;
+    const chromaY = y / sum;
+    // McCamy's approximation formula to calculate correlated color temperature (CCT):
+    const n = (chromaX - 0.332) / (0.1858 - chromaY); // 0.332, 0.1858 are reference points on the chromaticity diagram
+    temperature = Math.round(449 * n * n * n + 3525 * n * n + 6823.3 * n + 5520.33);
   }
-  return { temperature: LABEL_TO_TEMPERATURE_MAP[closest], label: closest };
+
+  return { temperature, label: getLabelForTemperature(temperature) };
 }
 
 export function getColorTemperatureString(color: Color): string {
