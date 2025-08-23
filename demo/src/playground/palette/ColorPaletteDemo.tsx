@@ -29,7 +29,7 @@ export function ColorPaletteDemo({ color }: Props) {
   const palette = color.getColorPalette(selectedHarmony, options);
 
   return (
-    <div className="w-full overflow-scroll">
+    <div className="w-full">
       <PaletteHarmonyOptions
         selectedHarmony={selectedHarmony}
         onHarmonySelectionChanged={setSelectedHarmony}
@@ -41,8 +41,8 @@ export function ColorPaletteDemo({ color }: Props) {
         onReset={() => setOptions(DEFAULT_GENERATE_COLOR_PALETTE_OPTIONS)}
       />
       <VSpace height={12} />
-      <div className="w-full flex flex-row justify-center">
-        <table className="table-auto">
+      <div className="w-full overflow-x-auto">
+        <table className="table-auto mx-auto">
           <tbody>
             <tr>
               <td className="pb-2 pr-4 text-right">Primary</td>

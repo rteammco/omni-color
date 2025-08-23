@@ -9,7 +9,7 @@ interface Props {
 
 export function PaletteHarmonyOptions({ selectedHarmony, onHarmonySelectionChanged }: Props) {
   return (
-    <div className="w-full flex flex-row justify-center items-center gap-4">
+    <div className="w-full flex flex-row justify-center items-center gap-4 flex-wrap">
       <label className="flex flex-row items-center gap-1">
         <input
           checked={selectedHarmony === ColorHarmony.COMPLEMENTARY}

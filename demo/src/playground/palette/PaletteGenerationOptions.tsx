@@ -8,7 +8,7 @@ interface Props {
 
 export function PaletteGenerationOptions({ options, onOptionsChanged, onReset }: Props) {
   return (
-    <div className="w-full flex flex-row justify-center items-center gap-2">
+    <div className="w-full flex flex-row justify-center items-center gap-2 flex-wrap">
       <label>
         <u>Tinted neutrals</u> chroma factor:
         <input
