@@ -34,7 +34,7 @@ describe('mixColors', () => {
       space: MixSpace.HSL,
       weights: [1, 3],
     });
-    expect(result.toHex()).toBe('#00ffff');
+    expect(result.toHex()).toBe('#5100ff');
   });
 
   it('defaults to additive RGB mixing', () => {
@@ -57,6 +57,49 @@ describe('mixColors', () => {
     const result = mixColors([red, blue], { weights: [1, -1] });
     expect(result.toHex()).toBe('#ff00ff');
   });
+
+  it('mixes colors with alpha channel in RGB space', () => {
+    const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
+    const blue = new Color({ r: 0, g: 0, b: 255, a: 1 });
+    const result = mixColors([semiRed, blue], { type: MixType.ADDITIVE, space: MixSpace.RGB });
+    expect(result.toHex()).toBe('#ff00ff');
+    expect(result.toRGBA().a).toBe(0.75);
+  });
+
+  it('mixes colors in LCH space', () => {
+    const black = new Color('#000000');
+    const white = new Color('#ffffff');
+    const result = mixColors([black, white], { space: MixSpace.LCH });
+    expect(result.toHex()).toBe('#777777');
+  });
+
+  it('mixes colors in OKLCH space', () => {
+    const black = new Color('#000000');
+    const white = new Color('#ffffff');
+    const result = mixColors([black, white], { space: MixSpace.OKLCH });
+    expect(result.toHex()).toBe('#636363');
+  });
+
+  it('handles hue wrap-around in HSL space', () => {
+    const h1 = new Color({ h: 350, s: 100, l: 50 });
+    const h2 = new Color({ h: 10, s: 100, l: 50 });
+    const result = mixColors([h1, h2], { space: MixSpace.HSL });
+    expect(result.toHex()).toBe('#ff0000');
+  });
+
+  it('defaults to equal weights when weights length mismatches', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = mixColors([red, blue], { weights: [2] });
+    expect(result.toHex()).toBe('#ff00ff');
+  });
+
+  it('ignores colors with zero weight', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = mixColors([red, blue], { weights: [0, 1] });
+    expect(result.toHex()).toBe('#0000ff');
+  });
 });
 
 describe('averageColors', () => {
@@ -74,7 +117,7 @@ describe('averageColors', () => {
       space: MixSpace.HSL,
       weights: [1, 2],
     });
-    expect(result.toHex()).toBe('#aaff00');
+    expect(result.toHex()).toBe('#80ff00');
   });
 
   it('defaults to RGB averaging', () => {
@@ -89,6 +132,49 @@ describe('averageColors', () => {
     expect(() => averageColors([red])).toThrow(
       '[averageColors] at least two colors are required for averaging'
     );
+  });
+
+  it('averages colors with alpha channel', () => {
+    const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
+    const blue = new Color({ r: 0, g: 0, b: 255, a: 1 });
+    const result = averageColors([semiRed, blue], { space: MixSpace.RGB });
+    expect(result.toHex()).toBe('#800080');
+    expect(result.toRGBA().a).toBe(0.75);
+  });
+
+  it('averages black and white in LCH space', () => {
+    const black = new Color('#000000');
+    const white = new Color('#ffffff');
+    const result = averageColors([black, white], { space: MixSpace.LCH });
+    expect(result.toHex()).toBe('#777777');
+  });
+
+  it('averages black and white in OKLCH space', () => {
+    const black = new Color('#000000');
+    const white = new Color('#ffffff');
+    const result = averageColors([black, white], { space: MixSpace.OKLCH });
+    expect(result.toHex()).toBe('#636363');
+  });
+
+  it('averages hues correctly across the 360° boundary', () => {
+    const h1 = new Color({ h: 350, s: 100, l: 50 });
+    const h2 = new Color({ h: 10, s: 100, l: 50 });
+    const result = averageColors([h1, h2], { space: MixSpace.HSL });
+    expect(result.toHex()).toBe('#ff0000');
+  });
+
+  it('defaults to equal weights when weights length mismatches', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = averageColors([red, blue], { weights: [2] });
+    expect(result.toHex()).toBe('#800080');
+  });
+
+  it('defaults weights to equal when provided weights sum to 0', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = averageColors([red, blue], { weights: [1, -1] });
+    expect(result.toHex()).toBe('#800080');
   });
 });
 
@@ -135,6 +221,35 @@ describe('blendColors', () => {
       space: BlendSpace.HSL,
       ratio: 0.5,
     });
-    expect(result.toHex()).toBe('#00ff00');
+    expect(result.toHex()).toBe('#ff00ff');
+  });
+
+  it('clamps ratio outside of range 0-1', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    expect(blendColors(red, blue, { ratio: -1 }).toHex()).toBe('#ff0000');
+    expect(blendColors(red, blue, { ratio: 2 }).toHex()).toBe('#0000ff');
+  });
+
+  it('blends colors with alpha channel in RGB space', () => {
+    const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
+    const blue = new Color({ r: 0, g: 0, b: 255, a: 0.2 });
+    const result = blendColors(semiRed, blue, { ratio: 0.5 });
+    expect(result.toHex()).toBe('#800080');
+    expect(result.toRGBA().a).toBe(0.35);
+  });
+
+  it('handles hue wrap-around when blending in HSL space', () => {
+    const h1 = new Color({ h: 350, s: 100, l: 50 });
+    const h2 = new Color({ h: 10, s: 100, l: 50 });
+    const result = blendColors(h1, h2, { space: BlendSpace.HSL, ratio: 0.5 });
+    expect(result.toHex()).toBe('#ff0000');
+  });
+
+  it('blends using overlay mode with dark base color', () => {
+    const darkGray = new Color('#404040');
+    const red = new Color('#ff0000');
+    const result = blendColors(darkGray, red, { mode: BlendMode.OVERLAY, ratio: 1 });
+    expect(result.toHex()).toBe('#800000');
   });
 });
