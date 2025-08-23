@@ -45,6 +45,19 @@ function getWeights(
   return { weights, sumOfWeights, normalizedWeights: weights.map((w) => w / sumOfWeights) };
 }
 
+function weightedAverageAngle(angles: number[], weights: number[]): number {
+  let x = 0;
+  let y = 0;
+  angles.forEach((angle, i) => {
+    const rad = (angle * Math.PI) / 180;
+    const weight = weights[i];
+    x += Math.cos(rad) * weight;
+    y += Math.sin(rad) * weight;
+  });
+  const avg = (Math.atan2(y, x) * 180) / Math.PI;
+  return (avg + 360) % 360;
+}
+
 function mixColorsSubtractive(colors: Color[], normalizedWeights: number[]): Color {
   let c = 1;
   let m = 1;
@@ -98,18 +111,19 @@ function mixColorsAdditive(
       return new Color(result);
     }
     case MixSpace.HSL: {
-      let h = 0;
       let s = 0;
       let l = 0;
+      const angles: number[] = [];
       colors.forEach((color, i) => {
         const val: ColorHSL = color.toHSL();
         const weight = normalizedWeights[i];
-        h += val.h * weight;
+        angles.push(val.h);
         s += val.s * weight;
         l += val.l * weight;
       });
+      const h = weightedAverageAngle(angles, normalizedWeights);
       const result: ColorHSL = {
-        h: Math.round(h) % 360,
+        h: Math.round(h),
         s: Math.round(s),
         l: Math.round(l),
       };
@@ -118,28 +132,30 @@ function mixColorsAdditive(
     case MixSpace.LCH: {
       let l = 0;
       let c = 0;
-      let h = 0;
+      const angles: number[] = [];
       colors.forEach((color, i) => {
         const val: ColorLCH = color.toLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        angles.push(val.h);
       });
+      const h = weightedAverageAngle(angles, normalizedWeights);
       const result: ColorLCH = { l, c, h };
       return new Color(result);
     }
     case MixSpace.OKLCH: {
       let l = 0;
       let c = 0;
-      let h = 0;
+      const angles: number[] = [];
       colors.forEach((color, i) => {
         const val: ColorOKLCH = color.toOKLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        angles.push(val.h);
       });
+      const h = weightedAverageAngle(angles, normalizedWeights);
       const result: ColorOKLCH = { l, c, h };
       return new Color(result);
     }
@@ -211,8 +227,9 @@ function blendColorsInRGBSpace(base: Color, blend: Color, mode: BlendMode, ratio
 function blendColorsInHSLSpace(base: Color, blend: Color, ratio: number): Color {
   const b = base.toHSL();
   const a = blend.toHSL();
+  const h = weightedAverageAngle([b.h, a.h], [1 - ratio, ratio]);
   const result: ColorHSL = {
-    h: (1 - ratio) * b.h + ratio * a.h,
+    h,
     s: (1 - ratio) * b.s + ratio * a.s,
     l: (1 - ratio) * b.l + ratio * a.l,
   };
@@ -274,18 +291,19 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
       });
     }
     case MixSpace.HSL: {
-      let h = 0;
       let s = 0;
       let l = 0;
+      const angles: number[] = [];
       colors.forEach((color, i) => {
         const val: ColorHSL = color.toHSL();
         const weight = normalizedWeights[i];
-        h += val.h * weight;
+        angles.push(val.h);
         s += val.s * weight;
         l += val.l * weight;
       });
+      const h = weightedAverageAngle(angles, normalizedWeights);
       return new Color({
-        h: Math.round(h) % 360,
+        h: Math.round(h),
         s: Math.round(s),
         l: Math.round(l),
       });
@@ -293,27 +311,29 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
     case MixSpace.LCH: {
       let l = 0;
       let c = 0;
-      let h = 0;
+      const angles: number[] = [];
       colors.forEach((color, i) => {
         const val: ColorLCH = color.toLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        angles.push(val.h);
       });
+      const h = weightedAverageAngle(angles, normalizedWeights);
       return new Color({ l, c, h });
     }
     case MixSpace.OKLCH: {
       let l = 0;
       let c = 0;
-      let h = 0;
+      const angles: number[] = [];
       colors.forEach((color, i) => {
         const val: ColorOKLCH = color.toOKLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        angles.push(val.h);
       });
+      const h = weightedAverageAngle(angles, normalizedWeights);
       return new Color({ l, c, h });
     }
   }
