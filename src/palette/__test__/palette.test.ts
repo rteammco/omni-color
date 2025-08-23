@@ -370,7 +370,10 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
   describe('color harmony generation', () => {
     it('creates complementary swatches with proper secondary colors', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), ColorHarmony.COMPLEMENTARY);
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        ColorHarmony.COMPLEMENTARY
+      );
       expect(palette.secondaryColors.length).toBe(1);
       expect(palette.primary[100].toHex()).toBe('#ffcccc');
       expect(palette.primary[900].toHex()).toBe('#2e0505');
@@ -390,12 +393,18 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('produces the expected number of secondary colors for other harmonies', () => {
-      const analogous = generateColorPaletteFromBaseColor(new Color('#336699'), ColorHarmony.ANALOGOUS);
+      const analogous = generateColorPaletteFromBaseColor(
+        new Color('#336699'),
+        ColorHarmony.ANALOGOUS
+      );
       expect(analogous.secondaryColors.length).toBe(4);
       expect(analogous.secondaryColors[0][500].toHex()).toBe('#339999');
       expect(analogous.secondaryColors[3][500].toHex()).toBe('#663399');
 
-      const monochromatic = generateColorPaletteFromBaseColor(new Color('#336699'), ColorHarmony.MONOCHROMATIC);
+      const monochromatic = generateColorPaletteFromBaseColor(
+        new Color('#336699'),
+        ColorHarmony.MONOCHROMATIC
+      );
       expect(monochromatic.secondaryColors.length).toBe(4);
       expect(monochromatic.secondaryColors[0][500].toHex()).toBe('#6699cc');
       expect(monochromatic.secondaryColors[3][500].toHex()).toBe('#476685');
