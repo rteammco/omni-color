@@ -11,58 +11,28 @@ import {
   toRGB,
   toRGBA,
 } from '../conversions';
-import type {
-  ColorCMYK,
-  ColorHex,
-  ColorHSL,
-  ColorHSLA,
-  ColorHSV,
-  ColorHSVA,
-  ColorLCH,
-  ColorOKLCH,
-  ColorRGB,
-  ColorRGBA,
-} from '../formats';
+import type { ColorHex, ColorHSL, ColorRGBA } from '../formats';
 
 describe('conversions', () => {
-  const BASE_HEX: ColorHex = '#ff0000';
-  const SHORT_HEX: ColorHex = '#f00';
-  const BASE_HEX8: ColorHex = '#ff0000ff';
-  const SEMI_HEX8: ColorHex = '#ff000080';
-  const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
-  const BASE_RGBA: ColorRGBA = { r: 255, g: 0, b: 0, a: 1 };
-  const SEMI_RGBA: ColorRGBA = { r: 255, g: 0, b: 0, a: 0.5 };
-  const BASE_HSL: ColorHSL = { h: 0, s: 100, l: 50 };
-  const SEMI_HSLA: ColorHSLA = { h: 0, s: 100, l: 50, a: 0.5 };
-  const BASE_HSV: ColorHSV = { h: 0, s: 100, v: 100 };
-  const SEMI_HSVA: ColorHSVA = { h: 0, s: 100, v: 100, a: 0.5 };
-  const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
-  const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
-  const BASE_OKLCH: ColorOKLCH = { l: 0.627955, c: 0.257683, h: 29.234 };
-
   describe('toRGB', () => {
-    const expected = BASE_RGB;
-    const cases: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['short hex', SHORT_HEX],
-      ['hex8', BASE_HEX8],
-      ['hex8 with alpha', SEMI_HEX8],
-      ['rgb', BASE_RGB],
-      ['rgba', SEMI_RGBA],
-      ['hsl', BASE_HSL],
-      ['hsla', SEMI_HSLA],
-      ['hsv', BASE_HSV],
-      ['hsva', SEMI_HSVA],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(cases)('from %s', (_, input) => {
-      expect(toRGB(input)).toEqual(expected);
+    it('converts all types to RGB', () => {
+      expect(toRGB('#ff0000')).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB('#f00')).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB('#ff0000ff')).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB('#ff000080')).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ r: 255, g: 0, b: 0 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ h: 0, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ h: 0, s: 100, v: 100 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0 });
     });
 
     it('wraps hue values >=360 in HSL', () => {
-      expect(toRGB({ h: 360, s: 100, l: 50 })).toEqual(expected);
+      expect(toRGB({ h: 360, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0 });
     });
 
     it('rejects negative hue values in HSL', () => {
@@ -84,33 +54,40 @@ describe('conversions', () => {
 
   describe('toRGBA', () => {
     it('converts formats without alpha to opaque RGBA', () => {
-      const inputs = [
-        BASE_HEX,
-        SHORT_HEX,
-        BASE_RGB,
-        BASE_HSL,
-        BASE_HSV,
-        BASE_CMYK,
-        BASE_LCH,
-        BASE_OKLCH,
-      ];
-      for (const input of inputs) {
-        expect(toRGBA(input)).toEqual(BASE_RGBA);
-      }
+      expect(toRGBA('#ff0000')).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA('#f00')).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ r: 255, g: 0, b: 0 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ h: 0, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ h: 0, s: 100, v: 100 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
     });
 
     it('preserves alpha where available', () => {
-      const cases: Array<[string, any, number]> = [
-        ['hex8', SEMI_HEX8, 0.502],
-        ['rgba', SEMI_RGBA, 0.5],
-        ['hsla', SEMI_HSLA, 0.5],
-        ['hsva', SEMI_HSVA, 0.5],
-      ];
-      for (const [, input, alpha] of cases) {
-        const { a, ...rgb } = toRGBA(input);
-        expect(rgb).toEqual(BASE_RGB);
-        expect(a).toBeCloseTo(alpha, 3);
-      }
+      const fromHex8 = toRGBA('#ff000080');
+      expect(fromHex8.r).toBe(255);
+      expect(fromHex8.g).toBe(0);
+      expect(fromHex8.b).toBe(0);
+      expect(fromHex8.a).toBeCloseTo(0.502, 3);
+
+      const fromRGBA = toRGBA({ r: 255, g: 0, b: 0, a: 0.5 });
+      expect(fromRGBA.r).toBe(255);
+      expect(fromRGBA.g).toBe(0);
+      expect(fromRGBA.b).toBe(0);
+      expect(fromRGBA.a).toBeCloseTo(0.5, 3);
+
+      const fromHSLA = toRGBA({ h: 0, s: 100, l: 50, a: 0.5 });
+      expect(fromHSLA.r).toBe(255);
+      expect(fromHSLA.g).toBe(0);
+      expect(fromHSLA.b).toBe(0);
+      expect(fromHSLA.a).toBeCloseTo(0.5, 3);
+
+      const fromHSVA = toRGBA({ h: 0, s: 100, v: 100, a: 0.5 });
+      expect(fromHSVA.r).toBe(255);
+      expect(fromHSVA.g).toBe(0);
+      expect(fromHSVA.b).toBe(0);
+      expect(fromHSVA.a).toBeCloseTo(0.5, 3);
     });
 
     it('throws on invalid RGBA', () => {
@@ -123,61 +100,49 @@ describe('conversions', () => {
   });
 
   describe('toHex', () => {
-    const expected = BASE_HEX;
-    const cases: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['short hex', SHORT_HEX],
-      ['hex8', BASE_HEX8],
-      ['hex8 with alpha', SEMI_HEX8],
-      ['rgb', BASE_RGB],
-      ['rgba', SEMI_RGBA],
-      ['hsl', BASE_HSL],
-      ['hsla', SEMI_HSLA],
-      ['hsv', BASE_HSV],
-      ['hsva', SEMI_HSVA],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(cases)('from %s', (_, input) => {
-      expect(toHex(input)).toBe(expected);
+    it('converts all inputs to hex', () => {
+      expect(toHex('#ff0000')).toBe('#ff0000');
+      expect(toHex('#f00')).toBe('#ff0000');
+      expect(toHex('#ff0000ff')).toBe('#ff0000');
+      expect(toHex('#ff000080')).toBe('#ff0000');
+      expect(toHex({ r: 255, g: 0, b: 0 })).toBe('#ff0000');
+      expect(toHex({ r: 255, g: 0, b: 0, a: 0.5 })).toBe('#ff0000');
+      expect(toHex({ h: 0, s: 100, l: 50 })).toBe('#ff0000');
+      expect(toHex({ h: 0, s: 100, l: 50, a: 0.5 })).toBe('#ff0000');
+      expect(toHex({ h: 0, s: 100, v: 100 })).toBe('#ff0000');
+      expect(toHex({ h: 0, s: 100, v: 100, a: 0.5 })).toBe('#ff0000');
+      expect(toHex({ c: 0, m: 100, y: 100, k: 0 })).toBe('#ff0000');
+      expect(toHex({ l: 53.233, c: 104.576, h: 40 })).toBe('#ff0000');
+      expect(toHex({ l: 0.627955, c: 0.257683, h: 29.234 })).toBe('#ff0000');
     });
 
     it('normalizes uppercase hex input', () => {
-      expect(toHex('#FF0000')).toBe(expected);
+      expect(toHex('#FF0000')).toBe('#ff0000');
     });
 
     it('drops alpha when converting from RGBA', () => {
-      expect(toHex({ r: 255, g: 0, b: 0, a: 0.3 })).toBe(expected);
+      expect(toHex({ r: 255, g: 0, b: 0, a: 0.3 })).toBe('#ff0000');
     });
   });
 
   describe('toHex8', () => {
-    const opaque = BASE_HEX8;
-    const semi = SEMI_HEX8;
-    const casesOpaque: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['short hex', SHORT_HEX],
-      ['hex8 opaque', BASE_HEX8],
-      ['rgb', BASE_RGB],
-      ['hsl', BASE_HSL],
-      ['hsv', BASE_HSV],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(casesOpaque)('to opaque hex8 from %s', (_, input) => {
-      expect(toHex8(input)).toBe(opaque);
+    it('converts formats without alpha to opaque hex8', () => {
+      expect(toHex8('#ff0000')).toBe('#ff0000ff');
+      expect(toHex8('#f00')).toBe('#ff0000ff');
+      expect(toHex8('#ff0000ff')).toBe('#ff0000ff');
+      expect(toHex8({ r: 255, g: 0, b: 0 })).toBe('#ff0000ff');
+      expect(toHex8({ h: 0, s: 100, l: 50 })).toBe('#ff0000ff');
+      expect(toHex8({ h: 0, s: 100, v: 100 })).toBe('#ff0000ff');
+      expect(toHex8({ c: 0, m: 100, y: 100, k: 0 })).toBe('#ff0000ff');
+      expect(toHex8({ l: 53.233, c: 104.576, h: 40 })).toBe('#ff0000ff');
+      expect(toHex8({ l: 0.627955, c: 0.257683, h: 29.234 })).toBe('#ff0000ff');
     });
 
-    const casesSemi: Array<[string, any]> = [
-      ['hex8', SEMI_HEX8],
-      ['rgba', SEMI_RGBA],
-      ['hsla', SEMI_HSLA],
-      ['hsva', SEMI_HSVA],
-    ];
-    it.each(casesSemi)('preserves alpha when converting %s', (_, input) => {
-      expect(toHex8(input)).toBe(semi);
+    it('preserves alpha when converting', () => {
+      expect(toHex8('#ff000080')).toBe('#ff000080');
+      expect(toHex8({ r: 255, g: 0, b: 0, a: 0.5 })).toBe('#ff000080');
+      expect(toHex8({ h: 0, s: 100, l: 50, a: 0.5 })).toBe('#ff000080');
+      expect(toHex8({ h: 0, s: 100, v: 100, a: 0.5 })).toBe('#ff000080');
     });
 
     it('handles fully transparent alpha', () => {
@@ -190,22 +155,18 @@ describe('conversions', () => {
   });
 
   describe('toHSL', () => {
-    const expected = BASE_HSL;
-    const cases: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['hex8', BASE_HEX8],
-      ['rgb', BASE_RGB],
-      ['rgba', SEMI_RGBA],
-      ['hsl', BASE_HSL],
-      ['hsla', SEMI_HSLA],
-      ['hsv', BASE_HSV],
-      ['hsva', SEMI_HSVA],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(cases)('from %s', (_, input) => {
-      expect(toHSL(input)).toEqual(expected);
+    it('converts all inputs to HSL', () => {
+      expect(toHSL('#ff0000')).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL('#ff0000ff')).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ r: 255, g: 0, b: 0 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ h: 0, s: 100, l: 50 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, l: 50 });
+      expect(toHSL({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, l: 50 });
     });
 
     it('converts grayscale correctly', () => {
@@ -218,39 +179,42 @@ describe('conversions', () => {
   });
 
   describe('toHSLA', () => {
-    const expectedOpaque = { ...BASE_HSL, a: 1 };
-    const opaqueInputs = [
-      BASE_HEX,
-      BASE_HEX8,
-      BASE_RGB,
-      BASE_HSL,
-      BASE_HSV,
-      BASE_CMYK,
-      BASE_LCH,
-      BASE_OKLCH,
-    ];
-    for (const input of opaqueInputs) {
-      it(`from ${
-        typeof input === 'string' ? input : JSON.stringify(input)
-      } produces opaque HSLA`, () => {
-        expect(toHSLA(input)).toEqual(expectedOpaque);
-      });
-    }
-    const semiInputs: Array<[any, number]> = [
-      [SEMI_HEX8, 0.502],
-      [SEMI_RGBA, 0.5],
-      [SEMI_HSLA, 0.5],
-      [SEMI_HSVA, 0.5],
-    ];
-    for (const [input, alpha] of semiInputs) {
-      it(`from ${
-        typeof input === 'string' ? input : JSON.stringify(input)
-      } preserves alpha`, () => {
-        const { a, h, s, l } = toHSLA(input);
-        expect({ h, s, l }).toEqual(BASE_HSL);
-        expect(a).toBeCloseTo(alpha, 3);
-      });
-    }
+    it('converts formats without alpha to opaque HSLA', () => {
+      expect(toHSLA('#ff0000')).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA('#ff0000ff')).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA({ r: 255, g: 0, b: 0 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA({ h: 0, s: 100, l: 50 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+      expect(toHSLA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+    });
+
+    it('preserves alpha where available', () => {
+      const fromHex8 = toHSLA('#ff000080');
+      expect(fromHex8.h).toBe(0);
+      expect(fromHex8.s).toBe(100);
+      expect(fromHex8.l).toBe(50);
+      expect(fromHex8.a).toBeCloseTo(0.502, 3);
+
+      const fromRGBA = toHSLA({ r: 255, g: 0, b: 0, a: 0.5 });
+      expect(fromRGBA.h).toBe(0);
+      expect(fromRGBA.s).toBe(100);
+      expect(fromRGBA.l).toBe(50);
+      expect(fromRGBA.a).toBeCloseTo(0.5, 3);
+
+      const fromHSLA = toHSLA({ h: 0, s: 100, l: 50, a: 0.5 });
+      expect(fromHSLA.h).toBe(0);
+      expect(fromHSLA.s).toBe(100);
+      expect(fromHSLA.l).toBe(50);
+      expect(fromHSLA.a).toBeCloseTo(0.5, 3);
+
+      const fromHSVA = toHSLA({ h: 0, s: 100, v: 100, a: 0.5 });
+      expect(fromHSVA.h).toBe(0);
+      expect(fromHSVA.s).toBe(100);
+      expect(fromHSVA.l).toBe(50);
+      expect(fromHSVA.a).toBeCloseTo(0.5, 3);
+    });
 
     it('throws on invalid alpha', () => {
       expect(() => toHSLA({ h: 0, s: 100, l: 50, a: 2 })).toThrow();
@@ -258,22 +222,18 @@ describe('conversions', () => {
   });
 
   describe('toHSV', () => {
-    const expected = BASE_HSV;
-    const cases: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['hex8', BASE_HEX8],
-      ['rgb', BASE_RGB],
-      ['rgba', SEMI_RGBA],
-      ['hsl', BASE_HSL],
-      ['hsla', SEMI_HSLA],
-      ['hsv', BASE_HSV],
-      ['hsva', SEMI_HSVA],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(cases)('from %s', (_, input) => {
-      expect(toHSV(input)).toEqual(expected);
+    it('converts all inputs to HSV', () => {
+      expect(toHSV('#ff0000')).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV('#ff0000ff')).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ r: 255, g: 0, b: 0 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ h: 0, s: 100, l: 50 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, v: 100 });
+      expect(toHSV({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, v: 100 });
     });
 
     it('converts arbitrary colors', () => {
@@ -286,39 +246,42 @@ describe('conversions', () => {
   });
 
   describe('toHSVA', () => {
-    const expectedOpaque = { ...BASE_HSV, a: 1 };
-    const opaqueInputs = [
-      BASE_HEX,
-      BASE_HEX8,
-      BASE_RGB,
-      BASE_HSL,
-      BASE_HSV,
-      BASE_CMYK,
-      BASE_LCH,
-      BASE_OKLCH,
-    ];
-    for (const input of opaqueInputs) {
-      it(`from ${
-        typeof input === 'string' ? input : JSON.stringify(input)
-      } produces opaque HSVA`, () => {
-        expect(toHSVA(input)).toEqual(expectedOpaque);
-      });
-    }
-    const semiInputs: Array<[any, number]> = [
-      [SEMI_HEX8, 0.502],
-      [SEMI_RGBA, 0.5],
-      [SEMI_HSLA, 0.5],
-      [SEMI_HSVA, 0.5],
-    ];
-    for (const [input, alpha] of semiInputs) {
-      it(`from ${
-        typeof input === 'string' ? input : JSON.stringify(input)
-      } preserves alpha`, () => {
-        const { a, h, s, v } = toHSVA(input);
-        expect({ h, s, v }).toEqual(BASE_HSV);
-        expect(a).toBeCloseTo(alpha, 3);
-      });
-    }
+    it('converts formats without alpha to opaque HSVA', () => {
+      expect(toHSVA('#ff0000')).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA('#ff0000ff')).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA({ r: 255, g: 0, b: 0 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA({ h: 0, s: 100, l: 50 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+      expect(toHSVA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, v: 100, a: 1 });
+    });
+
+    it('preserves alpha where available', () => {
+      const fromHex8 = toHSVA('#ff000080');
+      expect(fromHex8.h).toBe(0);
+      expect(fromHex8.s).toBe(100);
+      expect(fromHex8.v).toBe(100);
+      expect(fromHex8.a).toBeCloseTo(0.502, 3);
+
+      const fromRGBA = toHSVA({ r: 255, g: 0, b: 0, a: 0.5 });
+      expect(fromRGBA.h).toBe(0);
+      expect(fromRGBA.s).toBe(100);
+      expect(fromRGBA.v).toBe(100);
+      expect(fromRGBA.a).toBeCloseTo(0.5, 3);
+
+      const fromHSLA = toHSVA({ h: 0, s: 100, l: 50, a: 0.5 });
+      expect(fromHSLA.h).toBe(0);
+      expect(fromHSLA.s).toBe(100);
+      expect(fromHSLA.v).toBe(100);
+      expect(fromHSLA.a).toBeCloseTo(0.5, 3);
+
+      const fromHSVA = toHSVA({ h: 0, s: 100, v: 100, a: 0.5 });
+      expect(fromHSVA.h).toBe(0);
+      expect(fromHSVA.s).toBe(100);
+      expect(fromHSVA.v).toBe(100);
+      expect(fromHSVA.a).toBeCloseTo(0.5, 3);
+    });
 
     it('throws on invalid alpha', () => {
       expect(() => toHSVA({ h: 0, s: 100, v: 100, a: 2 })).toThrow();
@@ -326,22 +289,18 @@ describe('conversions', () => {
   });
 
   describe('toCMYK', () => {
-    const expected = BASE_CMYK;
-    const cases: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['hex8', BASE_HEX8],
-      ['rgb', BASE_RGB],
-      ['rgba', SEMI_RGBA],
-      ['hsl', BASE_HSL],
-      ['hsla', SEMI_HSLA],
-      ['hsv', BASE_HSV],
-      ['hsva', SEMI_HSVA],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(cases)('from %s', (_, input) => {
-      expect(toCMYK(input)).toEqual(expected);
+    it('converts all inputs to CMYK', () => {
+      expect(toCMYK('#ff0000')).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK('#ff0000ff')).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ r: 255, g: 0, b: 0 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ h: 0, s: 100, l: 50 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ h: 0, s: 100, v: 100 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ l: 53.233, c: 104.576, h: 40 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
+      expect(toCMYK({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ c: 0, m: 100, y: 100, k: 0 });
     });
 
     it('converts black correctly', () => {
@@ -358,25 +317,61 @@ describe('conversions', () => {
   });
 
   describe('toLCH', () => {
-    const expected = BASE_LCH;
-    const cases: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['hex8', BASE_HEX8],
-      ['rgb', BASE_RGB],
-      ['rgba', SEMI_RGBA],
-      ['hsl', BASE_HSL],
-      ['hsla', SEMI_HSLA],
-      ['hsv', BASE_HSV],
-      ['hsva', SEMI_HSVA],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(cases)('from %s', (_, input) => {
-      const lch = toLCH(input);
-      expect(lch.l).toBeCloseTo(expected.l, 3);
-      expect(lch.c).toBeCloseTo(expected.c, 3);
-      expect(lch.h).toBeCloseTo(expected.h, 3);
+    it('converts all inputs to LCH', () => {
+      const fromHex = toLCH('#ff0000');
+      expect(fromHex.l).toBeCloseTo(53.233, 3);
+      expect(fromHex.c).toBeCloseTo(104.576, 3);
+      expect(fromHex.h).toBeCloseTo(40, 3);
+
+      const fromHex8 = toLCH('#ff0000ff');
+      expect(fromHex8.l).toBeCloseTo(53.233, 3);
+      expect(fromHex8.c).toBeCloseTo(104.576, 3);
+      expect(fromHex8.h).toBeCloseTo(40, 3);
+
+      const fromRGB = toLCH({ r: 255, g: 0, b: 0 });
+      expect(fromRGB.l).toBeCloseTo(53.233, 3);
+      expect(fromRGB.c).toBeCloseTo(104.576, 3);
+      expect(fromRGB.h).toBeCloseTo(40, 3);
+
+      const fromRGBA = toLCH({ r: 255, g: 0, b: 0, a: 0.5 });
+      expect(fromRGBA.l).toBeCloseTo(53.233, 3);
+      expect(fromRGBA.c).toBeCloseTo(104.576, 3);
+      expect(fromRGBA.h).toBeCloseTo(40, 3);
+
+      const fromHSL = toLCH({ h: 0, s: 100, l: 50 });
+      expect(fromHSL.l).toBeCloseTo(53.233, 3);
+      expect(fromHSL.c).toBeCloseTo(104.576, 3);
+      expect(fromHSL.h).toBeCloseTo(40, 3);
+
+      const fromHSLA = toLCH({ h: 0, s: 100, l: 50, a: 0.5 });
+      expect(fromHSLA.l).toBeCloseTo(53.233, 3);
+      expect(fromHSLA.c).toBeCloseTo(104.576, 3);
+      expect(fromHSLA.h).toBeCloseTo(40, 3);
+
+      const fromHSV = toLCH({ h: 0, s: 100, v: 100 });
+      expect(fromHSV.l).toBeCloseTo(53.233, 3);
+      expect(fromHSV.c).toBeCloseTo(104.576, 3);
+      expect(fromHSV.h).toBeCloseTo(40, 3);
+
+      const fromHSVA = toLCH({ h: 0, s: 100, v: 100, a: 0.5 });
+      expect(fromHSVA.l).toBeCloseTo(53.233, 3);
+      expect(fromHSVA.c).toBeCloseTo(104.576, 3);
+      expect(fromHSVA.h).toBeCloseTo(40, 3);
+
+      const fromCMYK = toLCH({ c: 0, m: 100, y: 100, k: 0 });
+      expect(fromCMYK.l).toBeCloseTo(53.233, 3);
+      expect(fromCMYK.c).toBeCloseTo(104.576, 3);
+      expect(fromCMYK.h).toBeCloseTo(40, 3);
+
+      const fromLCH = toLCH({ l: 53.233, c: 104.576, h: 40 });
+      expect(fromLCH.l).toBeCloseTo(53.233, 3);
+      expect(fromLCH.c).toBeCloseTo(104.576, 3);
+      expect(fromLCH.h).toBeCloseTo(40, 3);
+
+      const fromOKLCH = toLCH({ l: 0.627955, c: 0.257683, h: 29.234 });
+      expect(fromOKLCH.l).toBeCloseTo(53.233, 3);
+      expect(fromOKLCH.c).toBeCloseTo(104.576, 3);
+      expect(fromOKLCH.h).toBeCloseTo(40, 3);
     });
 
     it('handles zero chroma to produce grayscale', () => {
@@ -392,25 +387,61 @@ describe('conversions', () => {
   });
 
   describe('toOKLCH', () => {
-    const expected = BASE_OKLCH;
-    const cases: Array<[string, any]> = [
-      ['hex', BASE_HEX],
-      ['hex8', BASE_HEX8],
-      ['rgb', BASE_RGB],
-      ['rgba', SEMI_RGBA],
-      ['hsl', BASE_HSL],
-      ['hsla', SEMI_HSLA],
-      ['hsv', BASE_HSV],
-      ['hsva', SEMI_HSVA],
-      ['cmyk', BASE_CMYK],
-      ['lch', BASE_LCH],
-      ['oklch', BASE_OKLCH],
-    ];
-    it.each(cases)('from %s', (_, input) => {
-      const oklch = toOKLCH(input);
-      expect(oklch.l).toBeCloseTo(expected.l, 6);
-      expect(oklch.c).toBeCloseTo(expected.c, 6);
-      expect(oklch.h).toBeCloseTo(expected.h, 3);
+    it('converts all inputs to OKLCH', () => {
+      const fromHex = toOKLCH('#ff0000');
+      expect(fromHex.l).toBeCloseTo(0.627955, 6);
+      expect(fromHex.c).toBeCloseTo(0.257683, 6);
+      expect(fromHex.h).toBeCloseTo(29.234, 3);
+
+      const fromHex8 = toOKLCH('#ff0000ff');
+      expect(fromHex8.l).toBeCloseTo(0.627955, 6);
+      expect(fromHex8.c).toBeCloseTo(0.257683, 6);
+      expect(fromHex8.h).toBeCloseTo(29.234, 3);
+
+      const fromRGB = toOKLCH({ r: 255, g: 0, b: 0 });
+      expect(fromRGB.l).toBeCloseTo(0.627955, 6);
+      expect(fromRGB.c).toBeCloseTo(0.257683, 6);
+      expect(fromRGB.h).toBeCloseTo(29.234, 3);
+
+      const fromRGBA = toOKLCH({ r: 255, g: 0, b: 0, a: 0.5 });
+      expect(fromRGBA.l).toBeCloseTo(0.627955, 6);
+      expect(fromRGBA.c).toBeCloseTo(0.257683, 6);
+      expect(fromRGBA.h).toBeCloseTo(29.234, 3);
+
+      const fromHSL = toOKLCH({ h: 0, s: 100, l: 50 });
+      expect(fromHSL.l).toBeCloseTo(0.627955, 6);
+      expect(fromHSL.c).toBeCloseTo(0.257683, 6);
+      expect(fromHSL.h).toBeCloseTo(29.234, 3);
+
+      const fromHSLA = toOKLCH({ h: 0, s: 100, l: 50, a: 0.5 });
+      expect(fromHSLA.l).toBeCloseTo(0.627955, 6);
+      expect(fromHSLA.c).toBeCloseTo(0.257683, 6);
+      expect(fromHSLA.h).toBeCloseTo(29.234, 3);
+
+      const fromHSV = toOKLCH({ h: 0, s: 100, v: 100 });
+      expect(fromHSV.l).toBeCloseTo(0.627955, 6);
+      expect(fromHSV.c).toBeCloseTo(0.257683, 6);
+      expect(fromHSV.h).toBeCloseTo(29.234, 3);
+
+      const fromHSVA = toOKLCH({ h: 0, s: 100, v: 100, a: 0.5 });
+      expect(fromHSVA.l).toBeCloseTo(0.627955, 6);
+      expect(fromHSVA.c).toBeCloseTo(0.257683, 6);
+      expect(fromHSVA.h).toBeCloseTo(29.234, 3);
+
+      const fromCMYK = toOKLCH({ c: 0, m: 100, y: 100, k: 0 });
+      expect(fromCMYK.l).toBeCloseTo(0.627955, 6);
+      expect(fromCMYK.c).toBeCloseTo(0.257683, 6);
+      expect(fromCMYK.h).toBeCloseTo(29.234, 3);
+
+      const fromLCH = toOKLCH({ l: 53.233, c: 104.576, h: 40 });
+      expect(fromLCH.l).toBeCloseTo(0.627955, 6);
+      expect(fromLCH.c).toBeCloseTo(0.257683, 6);
+      expect(fromLCH.h).toBeCloseTo(29.234, 3);
+
+      const fromOKLCH = toOKLCH({ l: 0.627955, c: 0.257683, h: 29.234 });
+      expect(fromOKLCH.l).toBeCloseTo(0.627955, 6);
+      expect(fromOKLCH.c).toBeCloseTo(0.257683, 6);
+      expect(fromOKLCH.h).toBeCloseTo(29.234, 3);
     });
 
     it('handles white correctly', () => {
