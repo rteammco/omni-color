@@ -67,6 +67,14 @@ import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from 
 import { getRandomColorRGBA, RandomColorOptions } from './random';
 import { getAPCAReadabilityScore, getWCAGContrastRatio } from './readability';
 import { ColorSwatch, getColorSwatch } from './swatch';
+import {
+  ColorTemperatureAndLabel,
+  ColorTemperatureLabel,
+  getColorFromTemperature,
+  getColorFromTemperatureLabel,
+  getColorTemperature,
+  getColorTemperatureString,
+} from './temperature';
 import { getColorRGBAFromInput, isColorDark, isColorOffWhite } from './utils';
 
 /**
@@ -128,6 +136,25 @@ export class Color {
    */
   static random(options?: RandomColorOptions): Color {
     return new Color(getRandomColorRGBA(options));
+  }
+
+  /**
+   * Create an off-white {@link Color} representing the given color temperature.
+   *
+   * @param temperature - Temperature in Kelvin or a {@link ColorTemperatureLabel}.
+   *
+   * @example
+   * ```ts
+   * const daylight = Color.fromTemperature(6500);
+   * const cloudy = Color.fromTemperature(ColorTemperatureLabel.CLOUDY);
+   * ```
+   */
+  static fromTemperature(temperature: number | ColorTemperatureLabel): Color {
+    if (typeof temperature === 'number') {
+      const t = clampValue(temperature, 0, 10000);
+      return getColorFromTemperature(t);
+    }
+    return getColorFromTemperatureLabel(temperature);
   }
 
   /**
@@ -619,6 +646,22 @@ export class Color {
    */
   getReadabilityScore(backgroundColor: Color): number {
     return getAPCAReadabilityScore(this, backgroundColor);
+  }
+
+  /**
+   * Estimate the color's correlated color temperature and descriptive label.
+   *
+   * @returns A {@link ColorTemperatureAndLabel} object with the temperature in Kelvin and a {@link ColorTemperatureLabel}.
+   */
+  getTemperature(): ColorTemperatureAndLabel {
+    return getColorTemperature(this);
+  }
+
+  /**
+   * Get the color's temperature as a string in Kelvin, optionally including a label for off-white colors.
+   */
+  getTemperatureString(): string {
+    return getColorTemperatureString(this);
   }
 
   /**
