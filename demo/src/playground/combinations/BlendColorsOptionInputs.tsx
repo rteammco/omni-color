@@ -7,7 +7,7 @@ interface Props {
 
 export function BlendColorsOptionInputs({ blendOptions, onOptionsChanged }: Props) {
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 items-center">
       <label>
         Blend mode:
         <select
@@ -35,6 +35,7 @@ export function BlendColorsOptionInputs({ blendOptions, onOptionsChanged }: Prop
           <option value={BlendSpace.HSL}>HSL</option>
         </select>
       </label>
+      &middot;
       <label>
         Blend ratio:
         <input

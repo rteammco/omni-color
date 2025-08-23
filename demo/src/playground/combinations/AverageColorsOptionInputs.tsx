@@ -7,7 +7,7 @@ interface Props {
 
 export function AverageColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 items-center">
       <label>
         Mix space:
         <select
