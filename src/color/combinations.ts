@@ -99,18 +99,22 @@ function mixColorsAdditive(
       return new Color(result);
     }
     case MixSpace.HSL: {
-      let h = 0;
+      let x = 0;
+      let y = 0;
       let s = 0;
       let l = 0;
       colors.forEach((color, i) => {
         const val: ColorHSL = color.toHSL();
         const weight = normalizedWeights[i];
-        h += val.h * weight;
+        const rad = (val.h * Math.PI) / 180;
+        x += Math.cos(rad) * weight;
+        y += Math.sin(rad) * weight;
         s += val.s * weight;
         l += val.l * weight;
       });
+      const hue = (Math.atan2(y, x) * 180) / Math.PI;
       const result: ColorHSL = {
-        h: Math.round(h) % 360,
+        h: Math.round((hue + 360) % 360),
         s: Math.round(s),
         l: Math.round(l),
       };
@@ -212,8 +216,10 @@ function blendColorsInRGBSpace(base: Color, blend: Color, mode: BlendMode, ratio
 function blendColorsInHSLSpace(base: Color, blend: Color, ratio: number): Color {
   const b = base.toHSL();
   const a = blend.toHSL();
+  const delta = ((a.h - b.h + 540) % 360) - 180;
+  const h = (b.h + delta * ratio + 360) % 360;
   const result: ColorHSL = {
-    h: (1 - ratio) * b.h + ratio * a.h,
+    h,
     s: (1 - ratio) * b.s + ratio * a.s,
     l: (1 - ratio) * b.l + ratio * a.l,
   };
@@ -275,18 +281,22 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
       });
     }
     case MixSpace.HSL: {
-      let h = 0;
+      let x = 0;
+      let y = 0;
       let s = 0;
       let l = 0;
       colors.forEach((color, i) => {
         const val: ColorHSL = color.toHSL();
         const weight = normalizedWeights[i];
-        h += val.h * weight;
+        const rad = (val.h * Math.PI) / 180;
+        x += Math.cos(rad) * weight;
+        y += Math.sin(rad) * weight;
         s += val.s * weight;
         l += val.l * weight;
       });
+      const hue = (Math.atan2(y, x) * 180) / Math.PI;
       return new Color({
-        h: Math.round(h) % 360,
+        h: Math.round((hue + 360) % 360),
         s: Math.round(s),
         l: Math.round(l),
       });
