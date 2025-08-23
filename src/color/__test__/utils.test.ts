@@ -196,4 +196,13 @@ describe('getColorRGBAFromInput', () => {
       a: 1,
     });
   });
+
+  it('parses named colors with or without spaces', () => {
+    expect(new Color(getColorRGBAFromInput('lightblue')).toHex()).toBe('#add8e6');
+    expect(new Color(getColorRGBAFromInput('light blue')).toHex()).toBe('#add8e6');
+  });
+
+  it('throws on unknown color names', () => {
+    expect(() => getColorRGBAFromInput('notacolor')).toThrow();
+  });
 });

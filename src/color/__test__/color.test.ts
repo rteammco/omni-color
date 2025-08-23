@@ -52,6 +52,11 @@ describe('Color constructor and conversion tests', () => {
     checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 
+  it('correctly initializes from color name input', () => {
+    const color = new Color('red');
+    checkAllConversions(color, 1, HEX8_OPAQUE);
+  });
+
   it('correctly initializes from and converts short hex input', () => {
     const shortHex: ColorHex = '#fff';
     const color = new Color(shortHex);
