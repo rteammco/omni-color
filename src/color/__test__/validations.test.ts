@@ -359,4 +359,3 @@ describe('validateColorOrThrow unknown format', () => {
     );
   });
 });
-
