@@ -14,7 +14,7 @@ import type {
 import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import { getRandomColorRGBA } from '../random';
-import { ColorTemperatureLabel } from '../temperature';
+import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
   const actual = jest.requireActual('../random');
@@ -146,6 +146,26 @@ describe('Color constructor and conversion tests', () => {
     expect(color2.toRGB()).toEqual(color1.toRGB());
     expect(color1).not.toBe(color2);
   });
+
+  it('accepts color temperature label strings', () => {
+    let color = new Color('fluorescent');
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT).toHex()
+    );
+
+    color = new Color('Daylight');
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT).toHex()
+    );
+
+    color = new Color('  shade ');
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE).toHex());
+
+    color = new Color('blue sky');
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY).toHex()
+    );
+  });
 });
 
 describe('Color.random', () => {
@@ -179,7 +199,8 @@ describe('Color.random', () => {
 describe('Random color pathways', () => {
   const mockColor = { r: 10, g: 20, b: 30, a: 0.4 };
   const randomSpy = getRandomColorRGBA as jest.Mock;
-  const actualRandom = (jest.requireActual('../random') as typeof import('../random')).getRandomColorRGBA;
+  const actualRandom = (jest.requireActual('../random') as typeof import('../random'))
+    .getRandomColorRGBA;
 
   beforeEach(() => {
     randomSpy.mockImplementation(actualRandom);
