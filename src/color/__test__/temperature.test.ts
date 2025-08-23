@@ -9,6 +9,8 @@ import {
 
 describe('getColorTemperature', () => {
   it('estimates temperature for a near-incandescent warm color', () => {
+    // Approximation based on incandescent lamp values (~2700–3000 K)
+    // from https://en.wikipedia.org/wiki/Color_temperature
     const color = new Color('#ffa757');
     const result = getColorTemperature(color);
     expect(result.label).toBe(ColorTemperatureLabel.INCANDESCENT);
@@ -125,7 +127,9 @@ describe('getColorTemperature', () => {
 
     result = getColorTemperature(new Color('#ff00bf'));
     expect(result.label).toBe(ColorTemperatureLabel.CANDLELIGHT);
-    expect(result.temperature).toBe(-5699);
+    // Previously this case produced a negative temperature due to an out-of-gamut
+    // chromaticity calculation. It should now be clamped to 0 K.
+    expect(result.temperature).toBe(0);
 
     result = getColorTemperature(new Color('#ff0080'));
     expect(result.label).toBe(ColorTemperatureLabel.HALOGEN);
@@ -177,9 +181,19 @@ describe('getColorTemperatureString', () => {
     expect(getColorTemperatureString(new Color('#808080'))).toBe('6504 K');
     expect(getColorTemperatureString(new Color('#404040'))).toBe('6504 K');
     expect(getColorTemperatureString(new Color('#000000'))).toBe('0 K');
-    expect(getColorTemperatureString(new Color('#ff00bf'))).toBe('-5699 K');
-    // TODO: wtf negatives? also this case fails, need to fix the algo: #9882fc
+    expect(getColorTemperatureString(new Color('#ff00bf'))).toBe('0 K');
     expect(getColorTemperatureString(new Color('#00bfff'))).toBe('44005 K');
+  });
+
+  it('formats numbers when requested', () => {
+    expect(
+      getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.CLOUDY), {
+        formatNumber: true,
+      }),
+    ).toBe('6,622 K (cloudy sky)');
+    expect(
+      getColorTemperatureString(new Color('#ff0000'), { formatNumber: true }),
+    ).toBe('2,655 K');
   });
 });
 
