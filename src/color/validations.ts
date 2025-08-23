@@ -19,8 +19,8 @@ function isValidHexColor(color: string): boolean {
   return HEX_COLOR_REGEX.test(color);
 }
 
-function isIntegerInRangeInclusive(value: number, min: number, max: number): boolean {
-  return Number.isInteger(value) && value >= min && value <= max;
+function isValueInRangeInclusive(value: number, min: number, max: number): boolean {
+  return typeof value === 'number' && value >= min && value <= max;
 }
 
 function isValidAlphaValue(value: number | undefined): boolean {
@@ -30,9 +30,9 @@ function isValidAlphaValue(value: number | undefined): boolean {
 function isValidRGBColor(color: ColorRGB): boolean {
   const { r, g, b } = color;
   return (
-    isIntegerInRangeInclusive(r, 0, 255) &&
-    isIntegerInRangeInclusive(g, 0, 255) &&
-    isIntegerInRangeInclusive(b, 0, 255)
+    isValueInRangeInclusive(r, 0, 255) &&
+    isValueInRangeInclusive(g, 0, 255) &&
+    isValueInRangeInclusive(b, 0, 255)
   );
 }
 
@@ -43,9 +43,9 @@ function isValidRGBAColor(color: ColorRGBA): boolean {
 function isValidHSLColor(color: ColorHSL): boolean {
   const { h, s, l } = color;
   return (
-    isIntegerInRangeInclusive(h, 0, 360) &&
-    isIntegerInRangeInclusive(s, 0, 100) &&
-    isIntegerInRangeInclusive(l, 0, 100)
+    isValueInRangeInclusive(h, 0, 360) &&
+    isValueInRangeInclusive(s, 0, 100) &&
+    isValueInRangeInclusive(l, 0, 100)
   );
 }
 
@@ -56,9 +56,9 @@ function isValidHSLAColor(color: ColorHSLA): boolean {
 function isValidHSVColor(color: ColorHSV): boolean {
   const { h, s, v } = color;
   return (
-    isIntegerInRangeInclusive(h, 0, 360) &&
-    isIntegerInRangeInclusive(s, 0, 100) &&
-    isIntegerInRangeInclusive(v, 0, 100)
+    isValueInRangeInclusive(h, 0, 360) &&
+    isValueInRangeInclusive(s, 0, 100) &&
+    isValueInRangeInclusive(v, 0, 100)
   );
 }
 
