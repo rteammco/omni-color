@@ -21,6 +21,10 @@ export interface ColorTemperatureAndLabel {
   label: ColorTemperatureLabel;
 }
 
+export interface ColorTemperatureStringFormatOptions {
+  formatNumber?: boolean; // if `true`, the temperature value will be formatted (e.g. '6,500 K' instead of '6500 K')
+}
+
 const SORTED_TEMPERATURE_LABELS: { label: ColorTemperatureLabel; temperatureLimit: number }[] = [
   { label: ColorTemperatureLabel.CANDLELIGHT, temperatureLimit: 2000 },
   { label: ColorTemperatureLabel.INCANDESCENT, temperatureLimit: 3000 },
@@ -73,12 +77,21 @@ export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
   return { temperature, label: getLabelForTemperature(temperature) };
 }
 
-export function getColorTemperatureString(color: Color): string {
+export function getColorTemperatureString(
+  color: Color,
+  options: ColorTemperatureStringFormatOptions = {}
+): string {
   const { temperature, label } = getColorTemperature(color);
-  const { s, l } = color.toHSL();
+  const formattedTemperature = options.formatNumber ? temperature.toLocaleString() : temperature;
+
   // TODO: migrate this to a util and add direct as a `Color` method
+  const { s, l } = color.toHSL();
   const isOffWhite = s < 25 && l > 70;
-  return isOffWhite ? `${temperature}K (${label.toLowerCase()})` : `${temperature}K`;
+  if (isOffWhite) {
+    return `${formattedTemperature} K (${label.toLowerCase()})`;
+  }
+
+  return `${formattedTemperature} K`;
 }
 
 export function getColorFromTemperature(temperature: number): Color {

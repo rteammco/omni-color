@@ -25,7 +25,11 @@ import { ColorHarmony } from './color/harmonies';
 import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
 import { ColorSwatch } from './color/swatch';
-import { ColorTemperatureAndLabel, ColorTemperatureLabel } from './color/temperature';
+import {
+  ColorTemperatureAndLabel,
+  ColorTemperatureLabel,
+  ColorTemperatureStringFormatOptions,
+} from './color/temperature';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
@@ -53,6 +57,7 @@ export {
   ColorSwatch,
   ColorTemperatureAndLabel,
   ColorTemperatureLabel,
+  ColorTemperatureStringFormatOptions,
   GenerateColorPaletteOptions,
   MixColorsOptions,
   MixSpace,

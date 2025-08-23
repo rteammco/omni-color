@@ -516,7 +516,7 @@ describe('Color temperature methods', () => {
   });
 
   it('returns a temperature string for off-white colors', () => {
-    expect(new Color('#ffffff').getTemperatureString()).toBe('6504K (cloudy sky)');
+    expect(new Color('#ffffff').getTemperatureAsString()).toBe('6504 K (cloudy sky)');
   });
 
   it('creates colors from temperature values or labels', () => {

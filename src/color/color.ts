@@ -70,6 +70,7 @@ import { ColorSwatch, getColorSwatch } from './swatch';
 import {
   ColorTemperatureAndLabel,
   ColorTemperatureLabel,
+  ColorTemperatureStringFormatOptions,
   getColorFromTemperature,
   getColorFromTemperatureLabel,
   getColorTemperature,
@@ -659,8 +660,8 @@ export class Color {
   /**
    * Get the color's temperature as a string in Kelvin, optionally including a label for off-white colors.
    */
-  getTemperatureString(): string {
-    return getColorTemperatureString(this);
+  getTemperatureAsString(options?: ColorTemperatureStringFormatOptions): string {
+    return getColorTemperatureString(this, options);
   }
 
   /**
