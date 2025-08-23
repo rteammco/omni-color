@@ -24,8 +24,8 @@ interface Props {
 
 export function ColorHarmonyDemo({ color }: Props) {
   return (
-    <div className="w-full flex flex-row justify-center overflow-scroll">
-      <table className="table-auto">
+    <div className="w-full overflow-x-auto">
+      <table className="table-auto mx-auto">
         <tbody>
           <tr>
             <td className="pb-2 pr-4 text-right">Complementary</td>
