@@ -20,11 +20,32 @@ describe('mixColors', () => {
     expect(result.toHex()).toBe('#ffff00');
   });
 
+  it('mixes red, green, and blue additively to white', () => {
+    const red = new Color('#ff0000');
+    const green = new Color('#00ff00');
+    const blue = new Color('#0000ff');
+    const result = mixColors([red, green, blue], {
+      type: MixType.ADDITIVE,
+      space: MixSpace.RGB,
+    });
+    expect(result.toHex()).toBe('#ffffff');
+  });
+
   it('mixes colors subtractively in CMYK space', () => {
     const cyan = new Color('#00ffff');
     const yellow = new Color('#ffff00');
     const result = mixColors([cyan, yellow], { type: MixType.SUBTRACTIVE });
     expect(result.toHex()).toBe('#00ff00');
+  });
+
+  it('mixes cyan, magenta, and yellow subtractively to black', () => {
+    const cyan = new Color('#00ffff');
+    const magenta = new Color('#ff00ff');
+    const yellow = new Color('#ffff00');
+    const result = mixColors([cyan, magenta, yellow], {
+      type: MixType.SUBTRACTIVE,
+    });
+    expect(result.toHex()).toBe('#000000');
   });
 
   it('mixes colors in HSL space with weights', () => {
@@ -110,6 +131,14 @@ describe('averageColors', () => {
     expect(result.toHex()).toBe('#800080');
   });
 
+  it('averages red, green, and blue to gray in RGB space', () => {
+    const red = new Color('#ff0000');
+    const green = new Color('#00ff00');
+    const blue = new Color('#0000ff');
+    const result = averageColors([red, green, blue], { space: MixSpace.RGB });
+    expect(result.toHex()).toBe('#555555');
+  });
+
   it('averages colors in HSL space with weights', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
@@ -186,11 +215,31 @@ describe('blendColors', () => {
     expect(result.toHex()).toBe('#000000');
   });
 
+  it('partially blends using multiply mode', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = blendColors(red, blue, {
+      mode: BlendMode.MULTIPLY,
+      ratio: 0.5,
+    });
+    expect(result.toHex()).toBe('#800000');
+  });
+
   it('blends using screen mode', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = blendColors(red, blue, { mode: BlendMode.SCREEN, ratio: 1 });
     expect(result.toHex()).toBe('#ff00ff');
+  });
+
+  it('partially blends using screen mode', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = blendColors(red, blue, {
+      mode: BlendMode.SCREEN,
+      ratio: 0.5,
+    });
+    expect(result.toHex()).toBe('#ff0080');
   });
 
   it('blends using overlay mode', () => {
