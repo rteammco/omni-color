@@ -45,6 +45,9 @@ export function ColorInfo({ color }: Props) {
       <ColorSwatch color={color} />
       <VSpace height={8} />
       <div>Color temperature: {color.getTemperatureAsString({ formatNumber: true })}</div>
+      <span className="text-xs">
+        *Note: color temperature is only well-defined for near-white illuminants
+      </span>
     </div>
   );
 }
