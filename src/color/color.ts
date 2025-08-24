@@ -152,7 +152,7 @@ export class Color {
    */
   static fromTemperature(temperature: number | ColorTemperatureLabel): Color {
     if (typeof temperature === 'number') {
-      return getColorFromTemperature(clampValue(temperature, 0, 10000));
+      return getColorFromTemperature(clampValue(temperature, 1000, 40000));
     }
     return getColorFromTemperatureLabel(temperature);
   }

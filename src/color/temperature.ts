@@ -1,5 +1,5 @@
+import { clampValue } from '../utils';
 import { Color } from './color';
-import { ColorHex } from './formats';
 import { srgbChannelToLinear, SrgbGammaPivot } from './utils';
 
 export enum ColorTemperatureLabel {
@@ -36,15 +36,15 @@ const SORTED_TEMPERATURE_LABELS: { label: ColorTemperatureLabel; temperatureLimi
   { label: ColorTemperatureLabel.BLUE_SKY, temperatureLimit: Infinity },
 ] as const;
 
-const LABEL_TO_COLOR_HEX_MAP: { [key in ColorTemperatureLabel]: ColorHex } = {
-  [ColorTemperatureLabel.CANDLELIGHT]: '#ff8400',
-  [ColorTemperatureLabel.INCANDESCENT]: '#ffa757',
-  [ColorTemperatureLabel.HALOGEN]: '#ffc18d',
-  [ColorTemperatureLabel.FLUORESCENT]: '#ffdabb',
-  [ColorTemperatureLabel.DAYLIGHT]: '#fff6ed',
-  [ColorTemperatureLabel.CLOUDY]: '#e9f0ff',
-  [ColorTemperatureLabel.SHADE]: '#dde6ff',
-  [ColorTemperatureLabel.BLUE_SKY]: '#b5ceff',
+const LABEL_TO_TEMPERATURE_MAP: { [key in ColorTemperatureLabel]: number } = {
+  [ColorTemperatureLabel.CANDLELIGHT]: 1900,
+  [ColorTemperatureLabel.INCANDESCENT]: 2700,
+  [ColorTemperatureLabel.HALOGEN]: 3300,
+  [ColorTemperatureLabel.FLUORESCENT]: 4200,
+  [ColorTemperatureLabel.DAYLIGHT]: 6000,
+  [ColorTemperatureLabel.CLOUDY]: 7000,
+  [ColorTemperatureLabel.SHADE]: 8000,
+  [ColorTemperatureLabel.BLUE_SKY]: 10000,
 } as const;
 
 function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
@@ -101,14 +101,43 @@ export function getColorTemperatureString(
 }
 
 export function getColorFromTemperature(temperature: number): Color {
-  // TODO: This needs to be more algorithmic: temperature value => generated color, not just mapping it to the label
-  const label = getLabelForTemperature(temperature);
-  return new Color(LABEL_TO_COLOR_HEX_MAP[label]);
+  // Clamp to the range supported by the conversion algorithm.
+  const temp = clampValue(temperature, 1000, 40000) / 100;
+
+  // Algorithm adapted from:
+  // https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
+  let r: number;
+  let g: number;
+  let b: number;
+
+  if (temp <= 66) {
+    r = 255;
+  } else {
+    r = 329.698727446 * Math.pow(temp - 60, -0.1332047592);
+    r = clampValue(r, 0, 255);
+  }
+
+  if (temp <= 66) {
+    g = 99.4708025861 * Math.log(temp) - 161.1195681661;
+  } else {
+    g = 288.1221695283 * Math.pow(temp - 60, -0.0755148492);
+  }
+  g = clampValue(g, 0, 255);
+
+  if (temp >= 66) {
+    b = 255;
+  } else if (temp <= 19) {
+    b = 0;
+  } else {
+    b = 138.5177312231 * Math.log(temp - 10) - 305.0447927307;
+  }
+  b = clampValue(b, 0, 255);
+
+  return new Color({ r: Math.round(r), g: Math.round(g), b: Math.round(b) });
 }
 
 export function getColorFromTemperatureLabel(label: ColorTemperatureLabel): Color {
-  // TODO: `LABEL_TO_COLOR_HEX_MAP` should map to a temperature number, and then call `getColorFromTemperature()`
-  return new Color(LABEL_TO_COLOR_HEX_MAP[label]);
+  return getColorFromTemperature(LABEL_TO_TEMPERATURE_MAP[label]);
 }
 
 export function matchPartialColorTemperatureLabel(
