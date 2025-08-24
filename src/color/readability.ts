@@ -139,3 +139,43 @@ export function getAPCAReadabilityScore(foreground: Color, background: Color): n
   const bgY = sRGBtoY(bgOpaque);
   return getAPCAContrast(txtY, bgY);
 }
+
+export enum TextReadabilityConformanceLevel {
+  AA = 'AA',
+  AAA = 'AAA',
+}
+
+export enum TextReadabilityTextSizeOptions {
+  SMALL = 'small', // normal body text (< 18pt or < 14pt if bold)
+  LARGE = 'large', // large-scale text (>= 18pt or >= 14pt if bold)
+}
+
+const WCAG_CONTRAST_READABILITY_THRESHOLDS = {
+  [TextReadabilityConformanceLevel.AA]: {
+    [TextReadabilityTextSizeOptions.SMALL]: 4.5,
+    [TextReadabilityTextSizeOptions.LARGE]: 3.0,
+  },
+  [TextReadabilityConformanceLevel.AAA]: {
+    [TextReadabilityTextSizeOptions.SMALL]: 7.0,
+    [TextReadabilityTextSizeOptions.LARGE]: 4.5,
+  },
+} as const;
+
+export interface TextReadabilityOptions {
+  level?: TextReadabilityConformanceLevel;
+  size?: TextReadabilityTextSizeOptions;
+}
+
+export function isTextReadable(
+  foreground: Color,
+  background: Color,
+  options: TextReadabilityOptions = {}
+): boolean {
+  const {
+    level = TextReadabilityConformanceLevel.AA,
+    size = TextReadabilityTextSizeOptions.SMALL,
+  } = options;
+
+  const contrastRatio = getWCAGContrastRatio(foreground, background);
+  return contrastRatio >= WCAG_CONTRAST_READABILITY_THRESHOLDS[level][size];
+}
