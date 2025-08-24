@@ -1,19 +1,12 @@
 import { Color } from '../color';
 import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
-import {
-  areColorsEqual,
-  getColorRGBAFromInput,
-  isColorDark,
-  isColorOffWhite,
-} from '../utils';
+import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
 
 describe('areColorsEqual', () => {
   it('identifies identical colors across formats', () => {
     expect(areColorsEqual(new Color('#ff0000'), new Color('#ff0000'))).toBe(true);
     expect(areColorsEqual(new Color('#ffffff'), new Color('white'))).toBe(true);
-    expect(
-      areColorsEqual(new Color('rgb(0, 0, 255)'), new Color('#0000ff'))
-    ).toBe(true);
+    expect(areColorsEqual(new Color('rgb(0, 0, 255)'), new Color('#0000ff'))).toBe(true);
   });
 
   it('allows small rounding differences', () => {

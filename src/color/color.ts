@@ -81,12 +81,7 @@ import {
   getColorTemperature,
   getColorTemperatureString,
 } from './temperature';
-import {
-  areColorsEqual,
-  getColorRGBAFromInput,
-  isColorDark,
-  isColorOffWhite,
-} from './utils';
+import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from './utils';
 
 /**
  * The base omni-color object.
@@ -609,9 +604,7 @@ export class Color {
   }
 
   /**
-   * Determine if this color is equal to another color.
-   *
-   * Uses {@link areColorsEqual} to allow for minor rounding differences.
+   * Determine if this color is equal to another color. Allows for minor rounding differences.
    *
    * @param other The other {@link Color} to compare against.
    * @returns `true` if the colors are equal within rounding tolerance.
