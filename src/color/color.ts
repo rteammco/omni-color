@@ -666,10 +666,7 @@ export class Color {
    * new Color('#777777').isReadable(new Color('#888888')); // false
    * ```
    */
-  isReadable(
-    backgroundColor: Color,
-    options?: TextReadabilityOptions
-  ): boolean {
+  isReadable(backgroundColor: Color, options?: TextReadabilityOptions): boolean {
     return isTextReadable(this, backgroundColor, options);
   }
 
