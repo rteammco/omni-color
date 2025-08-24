@@ -10,21 +10,29 @@ function getOverlayColorLetters(color: Color): string {
 
 interface Props {
   color: Color;
+  extraWide?: boolean;
   hideBorder?: boolean;
   label?: string;
   noBorderRadius?: boolean;
   overlayColor?: Color;
 }
 
-export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColor }: Props) {
+export function ColorBox({
+  color,
+  extraWide,
+  hideBorder,
+  label,
+  noBorderRadius,
+  overlayColor,
+}: Props) {
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
 
   return (
     <div
       style={{ backgroundColor, borderColor }}
-      className={`w-16 h-16 flex flex-col justify-end ${hideBorder ? 'border-0' : 'border-1'} ${
-        noBorderRadius ? 'rounded-0' : 'rounded-md'
-      }`}
+      className={`w-${extraWide ? 32 : 16} h-16 flex flex-col justify-end ${
+        hideBorder ? 'border-0' : 'border-1'
+      } ${noBorderRadius ? 'rounded-0' : 'rounded-md'}`}
     >
       {overlayColor && (
         <h4 className="font-bold" style={{ color: overlayColor.toHex() }}>
