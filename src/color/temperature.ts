@@ -101,11 +101,13 @@ export function getColorTemperatureString(
 }
 
 export function getColorFromTemperature(temperature: number): Color {
+  // TODO: This needs to be more algorithmic: temperature value => generated color, not just mapping it to the label
   const label = getLabelForTemperature(temperature);
   return new Color(LABEL_TO_COLOR_HEX_MAP[label]);
 }
 
 export function getColorFromTemperatureLabel(label: ColorTemperatureLabel): Color {
+  // TODO: `LABEL_TO_COLOR_HEX_MAP` should map to a temperature number, and then call `getColorFromTemperature()`
   return new Color(LABEL_TO_COLOR_HEX_MAP[label]);
 }
 
