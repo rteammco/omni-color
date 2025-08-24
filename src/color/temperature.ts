@@ -1,5 +1,5 @@
 import { Color } from './color';
-import { ColorHSL } from './formats';
+import { ColorHex } from './formats';
 import { srgbChannelToLinear, SrgbGammaPivot } from './utils';
 
 export enum ColorTemperatureLabel {
@@ -36,15 +36,15 @@ const SORTED_TEMPERATURE_LABELS: { label: ColorTemperatureLabel; temperatureLimi
   { label: ColorTemperatureLabel.BLUE_SKY, temperatureLimit: Infinity },
 ] as const;
 
-const LABEL_TO_COLOR_HSL_MAP: { [key in ColorTemperatureLabel]: ColorHSL } = {
-  [ColorTemperatureLabel.CANDLELIGHT]: { h: 30, s: 20, l: 88 },
-  [ColorTemperatureLabel.INCANDESCENT]: { h: 35, s: 18, l: 92 },
-  [ColorTemperatureLabel.HALOGEN]: { h: 40, s: 16, l: 94 },
-  [ColorTemperatureLabel.FLUORESCENT]: { h: 55, s: 12, l: 95 },
-  [ColorTemperatureLabel.DAYLIGHT]: { h: 60, s: 8, l: 96 },
-  [ColorTemperatureLabel.CLOUDY]: { h: 210, s: 12, l: 95 },
-  [ColorTemperatureLabel.SHADE]: { h: 220, s: 12, l: 93 },
-  [ColorTemperatureLabel.BLUE_SKY]: { h: 230, s: 15, l: 92 },
+const LABEL_TO_COLOR_HEX_MAP: { [key in ColorTemperatureLabel]: ColorHex } = {
+  [ColorTemperatureLabel.CANDLELIGHT]: '#ff8400',
+  [ColorTemperatureLabel.INCANDESCENT]: '#ffa757',
+  [ColorTemperatureLabel.HALOGEN]: '#ffc18d',
+  [ColorTemperatureLabel.FLUORESCENT]: '#ffdabb',
+  [ColorTemperatureLabel.DAYLIGHT]: '#fff6ed',
+  [ColorTemperatureLabel.CLOUDY]: '#e9f0ff',
+  [ColorTemperatureLabel.SHADE]: '#dde6ff',
+  [ColorTemperatureLabel.BLUE_SKY]: '#b5ceff',
 } as const;
 
 function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
@@ -101,12 +101,14 @@ export function getColorTemperatureString(
 }
 
 export function getColorFromTemperature(temperature: number): Color {
+  // TODO: This needs to be more algorithmic: temperature value => generated color, not just mapping it to the label
   const label = getLabelForTemperature(temperature);
-  return new Color(LABEL_TO_COLOR_HSL_MAP[label]);
+  return new Color(LABEL_TO_COLOR_HEX_MAP[label]);
 }
 
 export function getColorFromTemperatureLabel(label: ColorTemperatureLabel): Color {
-  return new Color(LABEL_TO_COLOR_HSL_MAP[label]);
+  // TODO: `LABEL_TO_COLOR_HEX_MAP` should map to a temperature number, and then call `getColorFromTemperature()`
+  return new Color(LABEL_TO_COLOR_HEX_MAP[label]);
 }
 
 export function matchPartialColorTemperatureLabel(

@@ -595,8 +595,8 @@ describe('Color temperature methods', () => {
   });
 
   it('creates colors from temperature values or labels', () => {
-    expect(Color.fromTemperature(1500).toHex()).toBe('#e7e0da');
-    expect(Color.fromTemperature(ColorTemperatureLabel.SHADE).toHex()).toBe('#ebecef');
+    expect(Color.fromTemperature(1500).toHex()).toBe('#ff8400');
+    expect(Color.fromTemperature(ColorTemperatureLabel.SHADE).toHex()).toBe('#dde6ff');
   });
 });
 
