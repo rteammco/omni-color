@@ -13,12 +13,14 @@ export function Playground() {
 
   const executeCode = useCallback((newCode: string) => {
     tryToRunCode(newCode).then((res) => {
-      setCodeConsoleOutputs(res.consoleOutputs ?? null);
       if (res.status === CodeExecutionStatus.SUCCESS) {
         setCodeErrorMessage(null);
         setReturnedColor(res.color ?? null);
       } else {
         setCodeErrorMessage(res.errorMessage ?? `Something went wrong: ${res.status}`);
+      }
+      if (res.status !== CodeExecutionStatus.CODE_ERROR) {
+        setCodeConsoleOutputs(res.consoleOutputs ?? null);
       }
     });
   }, []);
