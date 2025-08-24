@@ -157,22 +157,22 @@ describe('getColorTemperatureString', () => {
     ).toBe('2583 K');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.HALOGEN))
-    ).toBe('3415 K');
+    ).toBe('3198 K');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT))
-    ).toBe('4443 K');
+    ).toBe('4142 K');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT))
     ).toBe('5889 K');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.CLOUDY))
-    ).toBe('7498 K');
+    ).toBe('7049 K');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE))
     ).toBe('8309 K');
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY))
-    ).toBe('13045 K');
+    ).toBe('10026 K');
     expect(getColorTemperatureString(new Color('#ff0000'))).toBe('2655 K');
     expect(getColorTemperatureString(new Color('#0000ff'))).toBe('1667 K');
     expect(getColorTemperatureString(new Color('#00ff00'))).toBe('6069 K');
@@ -191,29 +191,29 @@ describe('getColorTemperatureString', () => {
       getColorTemperatureString(getColorFromTemperatureLabel(ColorTemperatureLabel.CLOUDY), {
         formatNumber: true,
       })
-    ).toBe('7,498 K');
+    ).toBe('7,049 K');
     expect(getColorTemperatureString(new Color('#ff0000'), { formatNumber: true })).toBe('2,655 K');
   });
 });
 
 describe('getColorFromTemperature', () => {
   it('returns the expected color for temperatures across all ranges', () => {
-    expect(getColorFromTemperature(1500).toHex()).toBe('#ff8400');
-    expect(getColorFromTemperature(1999).toHex()).toBe('#ff8400');
-    expect(getColorFromTemperature(2000).toHex()).toBe('#ffa757');
-    expect(getColorFromTemperature(2500).toHex()).toBe('#ffa757');
-    expect(getColorFromTemperature(3000).toHex()).toBe('#ffc18d');
+    expect(getColorFromTemperature(1500).toHex()).toBe('#ff6c00');
+    expect(getColorFromTemperature(1999).toHex()).toBe('#ff890e');
+    expect(getColorFromTemperature(2000).toHex()).toBe('#ff890e');
+    expect(getColorFromTemperature(2500).toHex()).toBe('#ff9f46');
+    expect(getColorFromTemperature(3000).toHex()).toBe('#ffb16e');
     expect(getColorFromTemperature(3500).toHex()).toBe('#ffc18d');
-    expect(getColorFromTemperature(4000).toHex()).toBe('#ffdabb');
+    expect(getColorFromTemperature(4000).toHex()).toBe('#ffcea6');
     expect(getColorFromTemperature(4500).toHex()).toBe('#ffdabb');
-    expect(getColorFromTemperature(5000).toHex()).toBe('#fff6ed');
-    expect(getColorFromTemperature(6499).toHex()).toBe('#fff6ed');
-    expect(getColorFromTemperature(6500).toHex()).toBe('#e9f0ff');
-    expect(getColorFromTemperature(7499).toHex()).toBe('#e9f0ff');
-    expect(getColorFromTemperature(7500).toHex()).toBe('#dde6ff');
-    expect(getColorFromTemperature(8999).toHex()).toBe('#dde6ff');
-    expect(getColorFromTemperature(9000).toHex()).toBe('#b5ceff');
-    expect(getColorFromTemperature(20000).toHex()).toBe('#b5ceff');
+    expect(getColorFromTemperature(5000).toHex()).toBe('#ffe4ce');
+    expect(getColorFromTemperature(6499).toHex()).toBe('#fffefa');
+    expect(getColorFromTemperature(6500).toHex()).toBe('#fffefa');
+    expect(getColorFromTemperature(7499).toHex()).toBe('#e6ebff');
+    expect(getColorFromTemperature(7500).toHex()).toBe('#e6ebff');
+    expect(getColorFromTemperature(8999).toHex()).toBe('#d2dfff');
+    expect(getColorFromTemperature(9000).toHex()).toBe('#d2dfff');
+    expect(getColorFromTemperature(20000).toHex()).toBe('#abc6ff');
   });
 });
 
@@ -226,22 +226,22 @@ describe('getColorFromTemperatureLabel', () => {
     expect(color.toHex()).toBe('#ffa757');
 
     color = getColorFromTemperatureLabel(ColorTemperatureLabel.HALOGEN);
-    expect(color.toHex()).toBe('#ffc18d');
+    expect(color.toHex()).toBe('#ffbb81');
 
     color = getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT);
-    expect(color.toHex()).toBe('#ffdabb');
+    expect(color.toHex()).toBe('#ffd3af');
 
     color = getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT);
     expect(color.toHex()).toBe('#fff6ed');
 
     color = getColorFromTemperatureLabel(ColorTemperatureLabel.CLOUDY);
-    expect(color.toHex()).toBe('#e9f0ff');
+    expect(color.toHex()).toBe('#f3f2ff');
 
     color = getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE);
     expect(color.toHex()).toBe('#dde6ff');
 
     color = getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY);
-    expect(color.toHex()).toBe('#b5ceff');
+    expect(color.toHex()).toBe('#cadaff');
   });
 
   it('round-trips through getColorTemperature', () => {
