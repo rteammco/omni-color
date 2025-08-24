@@ -1,6 +1,7 @@
 import { Color } from '../color';
 import {
   getAPCAReadabilityScore,
+  getTextReadabilityReport,
   getWCAGContrastRatio,
   isTextReadable,
   TextReadabilityConformanceLevel,
@@ -1385,6 +1386,30 @@ describe('getWCAGContrastRatio', () => {
     const c2 = new Color('#888888');
     expect(getWCAGContrastRatio(c1, c2)).toBeCloseTo(1.26, 2);
     expect(getWCAGContrastRatio(c2, c1)).toBeCloseTo(1.26, 2);
+  });
+});
+
+describe('getTextReadabilityReport', () => {
+  it('returns contrast ratio and shortfall information', () => {
+    const fg = new Color('#555555');
+    const bg = new Color('#aaaaaa');
+    const report = getTextReadabilityReport(fg, bg);
+    expect(report.contrastRatio).toBeCloseTo(3.21, 2);
+    expect(report.requiredContrast).toBe(4.5);
+    expect(report.isReadable).toBe(false);
+    expect(report.shortfall).toBeCloseTo(1.29, 2);
+  });
+
+  it('respects text size options', () => {
+    const fg = new Color('#555555');
+    const bg = new Color('#aaaaaa');
+    const report = getTextReadabilityReport(fg, bg, {
+      size: TextReadabilityTextSizeOptions.LARGE,
+    });
+    expect(report.contrastRatio).toBeCloseTo(3.21, 2);
+    expect(report.requiredContrast).toBe(3);
+    expect(report.isReadable).toBe(true);
+    expect(report.shortfall).toBeCloseTo(0, 2);
   });
 });
 
