@@ -37,7 +37,7 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string | nul
       return parsedColor.toRGBA();
     }
 
-    throw new Error(`[getColorRGBAFromInput] unknown color name or format: "${color}"`);
+    throw new Error(`unknown color name or format: "${color}"`);
   }
 
   return color ? toRGBA(color) : getRandomColorRGBA();

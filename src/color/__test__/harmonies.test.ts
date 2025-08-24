@@ -865,7 +865,7 @@ describe('getHarmonyColors', () => {
 
   it('throws for unknown harmony type', () => {
     expect(() => getHarmonyColors(new Color('#ff0000'), 'unknown' as ColorHarmony)).toThrow(
-      '[getHarmonyColors] unknown color harmony: unknown'
+      'unknown color harmony: unknown'
     );
   });
 });

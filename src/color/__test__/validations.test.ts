@@ -3,9 +3,9 @@ import { validateColorOrThrow } from '../validations';
 describe('validateColorOrThrow nullish cases', () => {
   it('throws on undefined or null', () => {
     expect(() => validateColorOrThrow(undefined)).toThrow(
-      '[validateColorOrThrow] color is undefined'
+      'color is undefined'
     );
-    expect(() => validateColorOrThrow(null)).toThrow('[validateColorOrThrow] color is null');
+    expect(() => validateColorOrThrow(null)).toThrow('color is null');
   });
 });
 
@@ -18,25 +18,25 @@ describe('validateColorOrThrow HEX format', () => {
 
   it('rejects invalid hex strings', () => {
     expect(() => validateColorOrThrow('#ggg' as any)).toThrow(
-      /\[validateColorOrThrow\] invalid hex color/
+      /invalid hex color/
     );
     expect(() => validateColorOrThrow('#gggggg' as any)).toThrow(
-      /\[validateColorOrThrow\] invalid hex color/
+      /invalid hex color/
     );
   });
 
   it('throws on hex strings with invalid length', () => {
     expect(() => validateColorOrThrow('#' as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => validateColorOrThrow('#12345' as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => validateColorOrThrow('#1234567' as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => validateColorOrThrow('#123456789' as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
   });
 });
@@ -49,13 +49,13 @@ describe('validateColorOrThrow HEX8 format', () => {
 
   it('rejects invalid hex8 strings', () => {
     expect(() => validateColorOrThrow('#gggggggg' as any)).toThrow(
-      /\[validateColorOrThrow\] invalid hex color/
+      /invalid hex color/
     );
     expect(() => validateColorOrThrow('#1234567g' as any)).toThrow(
-      /\[validateColorOrThrow\] invalid hex color/
+      /invalid hex color/
     );
     expect(() => validateColorOrThrow('#1234567' as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
   });
 });
@@ -69,31 +69,31 @@ describe('validateColorOrThrow RGB format', () => {
 
   it('rejects out of range or non-number values', () => {
     expect(() => validateColorOrThrow({ r: -1, g: 0, b: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: -1, b: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: -1 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: 256, g: 0, b: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: 256, b: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 256 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: NaN, g: 0, b: 0 } as any)).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: Infinity, b: 0 } as any)).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
     expect(() => validateColorOrThrow({ r: '255' as any, g: 0, b: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGB color/
+      /invalid RGB color/
     );
   });
 });
@@ -107,19 +107,19 @@ describe('validateColorOrThrow RGBA format', () => {
 
   it('rejects invalid RGBA objects', () => {
     expect(() => validateColorOrThrow({ r: 256, g: 0, b: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGBA color/
+      /invalid RGBA color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 0, a: -0.1 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGBA color/
+      /invalid RGBA color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 0, a: 1.1 })).toThrow(
-      /\[validateColorOrThrow\] invalid RGBA color/
+      /invalid RGBA color/
     );
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 0, a: '0.5' as any })).toThrow(
-      /\[validateColorOrThrow\] invalid RGBA color/
+      /invalid RGBA color/
     );
     expect(() => validateColorOrThrow({ r: NaN, g: 0, b: 0, a: 0.5 } as any)).toThrow(
-      /\[validateColorOrThrow\] invalid RGBA color/
+      /invalid RGBA color/
     );
   });
 });
@@ -133,25 +133,25 @@ describe('validateColorOrThrow HSL format', () => {
 
   it('rejects invalid HSL objects', () => {
     expect(() => validateColorOrThrow({ h: -1, s: 0, l: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSL color/
+      /invalid HSL color/
     );
     expect(() => validateColorOrThrow({ h: 361, s: 0, l: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSL color/
+      /invalid HSL color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: -1, l: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSL color/
+      /invalid HSL color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 101, l: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSL color/
+      /invalid HSL color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: -1 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSL color/
+      /invalid HSL color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 101 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSL color/
+      /invalid HSL color/
     );
     expect(() => validateColorOrThrow({ h: '0' as any, s: 0, l: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSL color/
+      /invalid HSL color/
     );
   });
 });
@@ -164,31 +164,31 @@ describe('validateColorOrThrow HSLA format', () => {
 
   it('rejects invalid HSLA objects', () => {
     expect(() => validateColorOrThrow({ h: -1, s: 0, l: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 361, s: 0, l: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: -1, l: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 101, l: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: -1, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 101, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 0, a: -0.1 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 0, a: 1.1 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 0, a: '0.5' as any })).toThrow(
-      /\[validateColorOrThrow\] invalid HSLA color/
+      /invalid HSLA color/
     );
   });
 });
@@ -202,25 +202,25 @@ describe('validateColorOrThrow HSV format', () => {
 
   it('rejects invalid HSV objects', () => {
     expect(() => validateColorOrThrow({ h: -1, s: 0, v: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSV color/
+      /invalid HSV color/
     );
     expect(() => validateColorOrThrow({ h: 361, s: 0, v: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSV color/
+      /invalid HSV color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: -1, v: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSV color/
+      /invalid HSV color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 101, v: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSV color/
+      /invalid HSV color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: -1 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSV color/
+      /invalid HSV color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 101 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSV color/
+      /invalid HSV color/
     );
     expect(() => validateColorOrThrow({ h: '0' as any, s: 0, v: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSV color/
+      /invalid HSV color/
     );
   });
 });
@@ -233,31 +233,31 @@ describe('validateColorOrThrow HSVA format', () => {
 
   it('rejects invalid HSVA objects', () => {
     expect(() => validateColorOrThrow({ h: -1, s: 0, v: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 361, s: 0, v: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: -1, v: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 101, v: 0, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: -1, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 101, a: 0.5 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 0, a: -0.1 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 0, a: 1.1 })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 0, a: '0.5' as any })).toThrow(
-      /\[validateColorOrThrow\] invalid HSVA color/
+      /invalid HSVA color/
     );
   });
 });
@@ -271,19 +271,19 @@ describe('validateColorOrThrow CMYK format', () => {
 
   it('rejects invalid CMYK objects', () => {
     expect(() => validateColorOrThrow({ c: -1, m: 0, y: 0, k: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid CMYK color/
+      /invalid CMYK color/
     );
     expect(() => validateColorOrThrow({ c: 0, m: 101, y: 0, k: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid CMYK color/
+      /invalid CMYK color/
     );
     expect(() => validateColorOrThrow({ c: 0, m: 0, y: -1, k: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid CMYK color/
+      /invalid CMYK color/
     );
     expect(() => validateColorOrThrow({ c: 0, m: 0, y: 0, k: 101 })).toThrow(
-      /\[validateColorOrThrow\] invalid CMYK color/
+      /invalid CMYK color/
     );
     expect(() => validateColorOrThrow({ c: '0' as any, m: 0, y: 0, k: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid CMYK color/
+      /invalid CMYK color/
     );
   });
 });
@@ -297,19 +297,19 @@ describe('validateColorOrThrow LCH format', () => {
 
   it('rejects invalid LCH objects', () => {
     expect(() => validateColorOrThrow({ l: 101, c: 0, h: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid LCH color/
+      /invalid LCH color/
     );
     expect(() => validateColorOrThrow({ l: 50, c: -1, h: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid LCH color/
+      /invalid LCH color/
     );
     expect(() => validateColorOrThrow({ l: 50, c: 0, h: -1 })).toThrow(
-      /\[validateColorOrThrow\] invalid LCH color/
+      /invalid LCH color/
     );
     expect(() => validateColorOrThrow({ l: 50, c: 0, h: 361 })).toThrow(
-      /\[validateColorOrThrow\] invalid LCH color/
+      /invalid LCH color/
     );
     expect(() => validateColorOrThrow({ l: '50' as any, c: 0, h: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid LCH color/
+      /invalid LCH color/
     );
   });
 });
@@ -323,19 +323,19 @@ describe('validateColorOrThrow OKLCH format', () => {
 
   it('rejects invalid OKLCH objects', () => {
     expect(() => validateColorOrThrow({ l: -0.1, c: 0, h: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid OKLCH color/
+      /invalid OKLCH color/
     );
     expect(() => validateColorOrThrow({ l: 0, c: -0.1, h: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid OKLCH color/
+      /invalid OKLCH color/
     );
     expect(() => validateColorOrThrow({ l: 0, c: '0' as any, h: 0 })).toThrow(
-      /\[validateColorOrThrow\] invalid OKLCH color/
+      /invalid OKLCH color/
     );
     expect(() => validateColorOrThrow({ l: 0, c: 0, h: -1 })).toThrow(
-      /\[validateColorOrThrow\] invalid OKLCH color/
+      /invalid OKLCH color/
     );
     expect(() => validateColorOrThrow({ l: 0, c: 0, h: 361 })).toThrow(
-      /\[validateColorOrThrow\] invalid OKLCH color/
+      /invalid OKLCH color/
     );
   });
 });
@@ -343,19 +343,19 @@ describe('validateColorOrThrow OKLCH format', () => {
 describe('validateColorOrThrow unknown format', () => {
   it('throws on unknown input', () => {
     expect(() => validateColorOrThrow({} as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => validateColorOrThrow({ foo: 'bar' } as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => validateColorOrThrow({ r: 0 } as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => validateColorOrThrow([] as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => validateColorOrThrow('not-a-color' as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
   });
 });

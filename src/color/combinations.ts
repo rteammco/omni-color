@@ -153,7 +153,7 @@ function mixColorsAdditive(
 
 export function mixColors(colors: Color[], options: MixColorsOptions = {}): Color {
   if (colors.length < 2) {
-    throw new Error('[mixColors] at least two colors are required for mixing');
+    throw new Error('at least two colors are required for mixing');
   }
   const { type = MixType.ADDITIVE, space = MixSpace.RGB } = options;
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
@@ -253,7 +253,7 @@ export interface AverageColorsOptions {
 
 export function averageColors(colors: Color[], options: AverageColorsOptions = {}): Color {
   if (colors.length < 2) {
-    throw new Error('[averageColors] at least two colors are required for averaging');
+    throw new Error('at least two colors are required for averaging');
   }
   const { space = MixSpace.RGB } = options;
   const { normalizedWeights } = getWeights(colors.length, options.weights);

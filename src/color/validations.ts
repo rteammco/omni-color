@@ -102,10 +102,10 @@ function isValidOKLCHColor(color: ColorOKLCH): boolean {
 
 export function validateColorOrThrow(color?: ColorFormat | null): void {
   if (color === undefined) {
-    throw new Error('[validateColorOrThrow] color is undefined');
+    throw new Error('color is undefined');
   }
   if (color === null) {
-    throw new Error('[validateColorOrThrow] color is null');
+    throw new Error('color is null');
   }
 
   const { formatType, value } = getColorFormatType(color);
@@ -113,55 +113,55 @@ export function validateColorOrThrow(color?: ColorFormat | null): void {
     case ColorFormatType.HEX:
     case ColorFormatType.HEX8:
       if (!isValidHexColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid hex color: "${value}"`);
+        throw new Error(`invalid hex color: "${value}"`);
       }
       break;
     case ColorFormatType.RGB:
       if (!isValidRGBColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid RGB color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid RGB color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.RGBA:
       if (!isValidRGBAColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid RGBA color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid RGBA color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.HSL:
       if (!isValidHSLColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid HSL color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid HSL color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.HSLA:
       if (!isValidHSLAColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid HSLA color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid HSLA color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.HSV:
       if (!isValidHSVColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid HSV color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid HSV color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.HSVA:
       if (!isValidHSVAColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid HSVA color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid HSVA color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.CMYK:
       if (!isValidCMYKColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid CMYK color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid CMYK color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.LCH:
       if (!isValidLCHColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid LCH color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid LCH color: "${JSON.stringify(value)}"`);
       }
       break;
     case ColorFormatType.OKLCH:
       if (!isValidOKLCHColor(value)) {
-        throw new Error(`[validateColorOrThrow] invalid OKLCH color: "${JSON.stringify(value)}"`);
+        throw new Error(`invalid OKLCH color: "${JSON.stringify(value)}"`);
       }
       break;
     default:
-      throw new Error(`[validateColorOrThrow] unknown color format: "${formatType}"`);
+      throw new Error(`unknown color format: "${formatType}"`);
   }
 }
