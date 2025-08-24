@@ -14,6 +14,7 @@ import type {
 import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import { getRandomColorRGBA } from '../random';
+import { TextReadabilityConformanceLevel } from '../readability';
 import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
@@ -581,6 +582,21 @@ describe('Color.isOffWhite sanity check', () => {
     expect(new Color('#ffffff').isOffWhite()).toBe(true);
     expect(new Color('#f0f0f0').isOffWhite()).toBe(true);
     expect(new Color('#dddddd').isOffWhite()).toBe(false);
+  });
+});
+
+describe('Color.isReadableAsTextColor', () => {
+  it('checks readability for colors', () => {
+    const c1 = new Color('#444444');
+    const c2 = new Color('#bbbbbb');
+    expect(c1.isReadableAsTextColor(c2)).toBe(true);
+    expect(c2.isReadableAsTextColor(c1)).toBe(true);
+    expect(c1.isReadableAsTextColor(c2, { level: TextReadabilityConformanceLevel.AAA })).toBe(
+      false
+    );
+    expect(c2.isReadableAsTextColor(c1, { level: TextReadabilityConformanceLevel.AAA })).toBe(
+      false
+    );
   });
 });
 

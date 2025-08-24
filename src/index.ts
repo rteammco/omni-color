@@ -27,6 +27,7 @@ import { RandomColorOptions } from './color/random';
 import {
   TextReadabilityConformanceLevel,
   TextReadabilityOptions,
+  TextReadabilityReport,
   TextReadabilityTextSizeOptions,
 } from './color/readability';
 import { ColorSwatch } from './color/swatch';
@@ -70,5 +71,6 @@ export {
   RandomColorOptions,
   TextReadabilityConformanceLevel,
   TextReadabilityOptions,
+  TextReadabilityReport,
   TextReadabilityTextSizeOptions,
 };

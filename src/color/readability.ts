@@ -166,16 +166,37 @@ export interface TextReadabilityOptions {
   size?: TextReadabilityTextSizeOptions;
 }
 
-export function isTextReadable(
+export interface TextReadabilityReport {
+  contrastRatio: number;
+  isReadable: boolean;
+  requiredContrast: number;
+  shortfall: number;
+}
+
+export function getTextReadabilityReport(
   foreground: Color,
   background: Color,
   options: TextReadabilityOptions = {}
-): boolean {
+): TextReadabilityReport {
   const {
     level = TextReadabilityConformanceLevel.AA,
     size = TextReadabilityTextSizeOptions.SMALL,
   } = options;
 
   const contrastRatio = getWCAGContrastRatio(foreground, background);
-  return contrastRatio >= WCAG_CONTRAST_READABILITY_THRESHOLDS[level][size];
+  const requiredContrast = WCAG_CONTRAST_READABILITY_THRESHOLDS[level][size];
+  return {
+    contrastRatio,
+    requiredContrast,
+    isReadable: contrastRatio >= requiredContrast,
+    shortfall: Math.max(0, requiredContrast - contrastRatio),
+  };
+}
+
+export function isTextReadable(
+  foreground: Color,
+  background: Color,
+  options: TextReadabilityOptions = {}
+): boolean {
+  return getTextReadabilityReport(foreground, background, options).isReadable;
 }

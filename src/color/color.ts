@@ -67,9 +67,11 @@ import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from 
 import { getRandomColorRGBA, RandomColorOptions } from './random';
 import {
   getAPCAReadabilityScore,
+  getTextReadabilityReport,
   getWCAGContrastRatio,
   isTextReadable,
   TextReadabilityOptions,
+  TextReadabilityReport,
 } from './readability';
 import { ColorSwatch, getColorSwatch } from './swatch';
 import {
@@ -653,6 +655,13 @@ export class Color {
     return getAPCAReadabilityScore(this, backgroundColor);
   }
 
+  getTextReadabilityReport(
+    backgroundColor: Color,
+    options?: TextReadabilityOptions
+  ): TextReadabilityReport {
+    return getTextReadabilityReport(this, backgroundColor, options);
+  }
+
   /**
    * Determine if this color meets WCAG contrast guidelines against a background color.
    *
@@ -666,7 +675,7 @@ export class Color {
    * new Color('#777777').isReadable(new Color('#888888')); // false
    * ```
    */
-  isReadable(backgroundColor: Color, options?: TextReadabilityOptions): boolean {
+  isReadableAsTextColor(backgroundColor: Color, options?: TextReadabilityOptions): boolean {
     return isTextReadable(this, backgroundColor, options);
   }
 

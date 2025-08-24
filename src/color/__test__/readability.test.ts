@@ -1473,17 +1473,6 @@ describe('isTextReadable', () => {
   });
 });
 
-describe('Color.isReadable', () => {
-  it('checks readability for colors', () => {
-    const c1 = new Color('#444444');
-    const c2 = new Color('#bbbbbb');
-    expect(c1.isReadable(c2)).toBe(true);
-    expect(c2.isReadable(c1)).toBe(true);
-    expect(c1.isReadable(c2, { level: TextReadabilityConformanceLevel.AAA })).toBe(false);
-    expect(c2.isReadable(c1, { level: TextReadabilityConformanceLevel.AAA })).toBe(false);
-  });
-});
-
 describe('getAPCAReadabilityScore', () => {
   it('red dark on #000000 alpha 1', () => {
     const fg = new Color('#990000');
