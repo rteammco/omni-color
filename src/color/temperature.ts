@@ -47,6 +47,12 @@ const LABEL_TO_TEMPERATURE_MAP: { [key in ColorTemperatureLabel]: number } = {
   [ColorTemperatureLabel.BLUE_SKY]: 10000,
 } as const;
 
+// Maximum squared distance in RGB space for a color to be considered close
+// enough to the Planckian locus in order to attach a temperature label. A
+// threshold of ~120 units (roughly half of the 0-255 channel range) was chosen
+// based on manual testing of canonical temperature colors and nearby hues.
+const MAX_COLOR_DISTANCE_FOR_LABEL = 120 * 120;
+
 function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
   const found = SORTED_TEMPERATURE_LABELS.find((t) => temperature < t.temperatureLimit);
   return found ? found.label : ColorTemperatureLabel.DAYLIGHT;
@@ -90,14 +96,18 @@ export function getColorTemperatureString(
   const { temperature, label } = getColorTemperature(color);
   const formattedTemperature = options.formatNumber ? temperature.toLocaleString() : temperature;
 
-  const { s, l } = color.toHSL();
-  const isOffWhite = s < 25 && l > 70;
-  // TODO: This needs to be fixed, since it doesn't really work anymore due to the colors not really
-  // being off-white at all...
-  if (isOffWhite) {
+  // Compare the given color to the reference color generated for the estimated
+  // temperature. If the color is close to the Planckian locus, attach the label
+  // to the formatted temperature string.
+  const reference = getColorFromTemperature(temperature).toRGB();
+  const { r, g, b } = color.toRGB();
+  const dr = r - reference.r;
+  const dg = g - reference.g;
+  const db = b - reference.b;
+  const distanceSquared = dr * dr + dg * dg + db * db;
+  if (distanceSquared <= MAX_COLOR_DISTANCE_FOR_LABEL) {
     return `${formattedTemperature} K (${label.toLowerCase()})`;
   }
-
   return `${formattedTemperature} K`;
 }
 
