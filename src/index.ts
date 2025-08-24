@@ -24,6 +24,11 @@ import {
 import { ColorHarmony } from './color/harmonies';
 import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
+import {
+  TextReadabilityConformanceLevel,
+  TextReadabilityOptions,
+  TextReadabilityTextSizeOptions,
+} from './color/readability';
 import { ColorSwatch } from './color/swatch';
 import {
   ColorTemperatureAndLabel,
@@ -63,4 +68,7 @@ export {
   MixSpace,
   MixType,
   RandomColorOptions,
+  TextReadabilityConformanceLevel,
+  TextReadabilityOptions,
+  TextReadabilityTextSizeOptions,
 };
