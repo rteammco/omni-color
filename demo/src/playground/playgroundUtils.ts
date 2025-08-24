@@ -119,14 +119,49 @@ function formatMockedJSConsoleValue(value: unknown): string {
   }
 }
 
+const ANON_FUNCTION_TRACE_LOCATION_PREFIX = '<anonymous>:' as const;
+const ANON_FUNCTION_LINE_NUMBER_OFFSET = 4; // this is because when we define `codeRunnerFn`, the `${code}` part is on line 5
+
+function tryToGetLineNumberFromError(error: object) {
+  if (!('stack' in error) || typeof error.stack !== 'string') {
+    return null;
+  }
+  const { stack } = error;
+
+  const anonFunctionTraceIndex = stack.indexOf(ANON_FUNCTION_TRACE_LOCATION_PREFIX);
+  if (anonFunctionTraceIndex < 0) {
+    return null;
+  }
+
+  const lineNumberPartAndRest = stack.substring(
+    anonFunctionTraceIndex + ANON_FUNCTION_TRACE_LOCATION_PREFIX.length
+  );
+  const restIndex = lineNumberPartAndRest.indexOf(':');
+  if (restIndex < 0) {
+    return null;
+  }
+
+  const lineNumberPart = lineNumberPartAndRest.substring(0, restIndex);
+  if (!lineNumberPart) {
+    return null;
+  }
+
+  const lineNumber = parseInt(lineNumberPart);
+  if (isNaN(lineNumber)) {
+    return null;
+  }
+
+  return lineNumber - ANON_FUNCTION_LINE_NUMBER_OFFSET;
+}
+
 function getErrorMessage(error: unknown, fallbackMessage: string): string {
-  if (
-    error &&
-    typeof error === 'object' &&
-    'message' in error &&
-    typeof error.message === 'string'
-  ) {
-    return error.message;
+  if (error && typeof error === 'object') {
+    const maybeLineNumber = tryToGetLineNumberFromError(error);
+    if ('message' in error && typeof error.message === 'string') {
+      return `Error${maybeLineNumber !== null ? ` (line ${maybeLineNumber})` : ''}: ${
+        error.message
+      }`;
+    }
   }
   return fallbackMessage;
 }
@@ -170,14 +205,14 @@ export async function tryToRunCode(code: string): Promise<RunCodeResults> {
   } catch (err) {
     return {
       consoleOutputs: capturedJSConsoleOutputs,
-      errorMessage: getErrorMessage(err, 'Invalid code'),
+      errorMessage: getErrorMessage(err, 'Error: invalid code'),
       status: CodeExecutionStatus.CODE_ERROR,
     };
   }
   if (!maybeColorValue) {
     return {
       consoleOutputs: capturedJSConsoleOutputs,
-      errorMessage: 'No color returned',
+      errorMessage: 'Error: no color returned',
       status: CodeExecutionStatus.NO_RETURNED_VALUE,
     };
   }
@@ -188,7 +223,7 @@ export async function tryToRunCode(code: string): Promise<RunCodeResults> {
   } catch (err) {
     return {
       consoleOutputs: capturedJSConsoleOutputs,
-      errorMessage: getErrorMessage(err, 'Invalid returned color value'),
+      errorMessage: getErrorMessage(err, 'Error: invalid returned color value'),
       status: CodeExecutionStatus.INVALID_RETURNED_VALUE,
     };
   }
