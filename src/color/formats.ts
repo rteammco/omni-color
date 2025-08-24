@@ -105,7 +105,7 @@ function getHexColorFormatType(color: ColorHex): ColorFormatTypeAndValue {
       return { formatType: ColorFormatType.HEX8, value: colorLowerCase as ColorHex };
     }
   }
-  throw new Error(`[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`);
+  throw new Error(`unknown color format: "${JSON.stringify(color)}"`);
 }
 
 export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue {
@@ -145,7 +145,7 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
       : { formatType: ColorFormatType.RGB, value: color };
   }
 
-  throw new Error(`[getColorFormatType] unknown color format: "${JSON.stringify(color)}"`);
+  throw new Error(`unknown color format: "${JSON.stringify(color)}"`);
 }
 
 function getDecimalString(value: number, digits = 3): number {

@@ -427,10 +427,10 @@ describe('getColorFormatType', () => {
 
   it('throws on unknown formats', () => {
     expect(() => getColorFormatType('abc' as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
     expect(() => getColorFormatType({} as any)).toThrow(
-      /\[getColorFormatType\] unknown color format/
+      /unknown color format/
     );
   });
 });

@@ -425,7 +425,7 @@ export function toRGB(color: ColorFormat): ColorRGB {
     case ColorFormatType.OKLCH:
       return oklchToRGB(value);
     default:
-      throw new Error(`[toRGB] unknown color format: ${formatType}`);
+      throw new Error(`unknown color format: ${formatType}`);
   }
 }
 
@@ -455,7 +455,7 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
     case ColorFormatType.OKLCH:
       return oklchToRGBA(value);
     default:
-      throw new Error(`[toRGBA] unknown color format: ${formatType}`);
+      throw new Error(`unknown color format: ${formatType}`);
   }
 }
 
@@ -486,7 +486,7 @@ export function toHex(color: ColorFormat): ColorHex {
     case ColorFormatType.OKLCH:
       return rgbToHex(oklchToRGB(value));
     default:
-      throw new Error(`[toHex] unknown color format: ${formatType}`);
+      throw new Error(`unknown color format: ${formatType}`);
   }
 }
 
@@ -517,7 +517,7 @@ export function toHex8(color: ColorFormat): ColorHex {
     case ColorFormatType.OKLCH:
       return rgbToHex8(oklchToRGB(value));
     default:
-      throw new Error(`[toHex8] unknown color format: ${formatType}`);
+      throw new Error(`unknown color format: ${formatType}`);
   }
 }
 

@@ -147,6 +147,6 @@ export function getHarmonyColors(
     case ColorHarmony.MONOCHROMATIC:
       return getMonochromaticHarmonyColors(color);
     default:
-      throw new Error(`[getHarmonyColors] unknown color harmony: ${harmony}`);
+      throw new Error(`unknown color harmony: ${harmony}`);
   }
 }
