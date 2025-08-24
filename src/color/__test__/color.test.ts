@@ -14,7 +14,10 @@ import type {
 import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import { getRandomColorRGBA } from '../random';
-import { TextReadabilityConformanceLevel } from '../readability';
+import {
+  TextReadabilityConformanceLevel,
+  TextReadabilityTextSizeOptions,
+} from '../readability';
 import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
@@ -582,6 +585,54 @@ describe('Color.isOffWhite sanity check', () => {
     expect(new Color('#ffffff').isOffWhite()).toBe(true);
     expect(new Color('#f0f0f0').isOffWhite()).toBe(true);
     expect(new Color('#dddddd').isOffWhite()).toBe(false);
+  });
+});
+
+describe('Color.getContrastRatio', () => {
+  it('calculates the WCAG contrast ratio between colors', () => {
+    const c1 = new Color('#444444');
+    const c2 = new Color('#bbbbbb');
+    expect(c1.getContrastRatio(c2)).toBeCloseTo(5.07, 2);
+    expect(c2.getContrastRatio(c1)).toBeCloseTo(5.07, 2);
+  });
+});
+
+describe('Color.getReadabilityScore', () => {
+  it('returns the APCA readability score against a background color', () => {
+    const fg = new Color('#ff0000');
+    const bg = new Color('#ffffff');
+    expect(fg.getReadabilityScore(bg)).toBeCloseTo(64.13, 2);
+    expect(bg.getReadabilityScore(fg)).toBeCloseTo(-69.62, 2);
+  });
+});
+
+describe('Color.getTextReadabilityReport', () => {
+  it('provides readability details for color pairs', () => {
+    const c1 = new Color('#444444');
+    const c2 = new Color('#bbbbbb');
+    const report = c1.getTextReadabilityReport(c2);
+    expect(report.contrastRatio).toBeCloseTo(5.07, 2);
+    expect(report.requiredContrast).toBe(4.5);
+    expect(report.isReadable).toBe(true);
+    expect(report.shortfall).toBeCloseTo(0, 2);
+
+    const stricter = c1.getTextReadabilityReport(c2, {
+      level: TextReadabilityConformanceLevel.AAA,
+    });
+    expect(stricter.isReadable).toBe(false);
+    expect(stricter.requiredContrast).toBe(7);
+  });
+
+  it('respects text size options', () => {
+    const c1 = new Color('#555555');
+    const c2 = new Color('#aaaaaa');
+    const report = c1.getTextReadabilityReport(c2, {
+      size: TextReadabilityTextSizeOptions.LARGE,
+    });
+    expect(report.contrastRatio).toBeCloseTo(3.21, 2);
+    expect(report.requiredContrast).toBe(3);
+    expect(report.isReadable).toBe(true);
+    expect(report.shortfall).toBeCloseTo(0, 2);
   });
 });
 

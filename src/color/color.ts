@@ -655,6 +655,22 @@ export class Color {
     return getAPCAReadabilityScore(this, backgroundColor);
   }
 
+  /**
+   * Get detailed readability metrics against a background color.
+   *
+   * Calculates the WCAG contrast ratio and determines whether this color meets
+   * the specified conformance level and text size requirements.
+   *
+   * @param backgroundColor The background {@link Color} to compare against.
+   * @param options Optional {@link TextReadabilityOptions} for conformance level and text size.
+   * @returns A {@link TextReadabilityReport} with the contrast ratio, required contrast, readability flag, and shortfall.
+   *
+   * @example
+   * ```ts
+   * new Color('#444444').getTextReadabilityReport(new Color('#bbbbbb'));
+   * // { contrastRatio: 5.07, requiredContrast: 4.5, isReadable: true, shortfall: 0 }
+   * ```
+   */
   getTextReadabilityReport(
     backgroundColor: Color,
     options?: TextReadabilityOptions
