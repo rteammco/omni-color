@@ -640,3 +640,21 @@ describe('Color.clone', () => {
     expect(cloned).not.toBe(color);
   });
 });
+
+describe('Color.equals', () => {
+  it('compares colors for equality', () => {
+    const color = new Color('#123456');
+    const same = new Color('rgb(18, 52, 86)');
+    const different = new Color('#654321');
+    expect(color.equals(same)).toBe(true);
+    expect(color.equals(different)).toBe(false);
+  });
+
+  it('accounts for small rounding differences', () => {
+    const base = new Color('rgba(10, 20, 30, 0.333)');
+    const rounded = new Color('rgba(11, 20, 30, 0.333)');
+    const tooFar = new Color('rgba(12, 20, 30, 0.333)');
+    expect(base.equals(rounded)).toBe(true);
+    expect(base.equals(tooFar)).toBe(false);
+  });
+});
