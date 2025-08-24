@@ -1,6 +1,41 @@
 import { Color } from '../color';
 import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
-import { getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
+import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
+
+describe('areColorsEqual', () => {
+  it('identifies identical colors across formats', () => {
+    expect(areColorsEqual(new Color('#ff0000'), new Color('#ff0000'))).toBe(true);
+    expect(areColorsEqual(new Color('#ffffff'), new Color('white'))).toBe(true);
+    expect(areColorsEqual(new Color('rgb(0, 0, 255)'), new Color('#0000ff'))).toBe(true);
+  });
+
+  it('allows small rounding differences', () => {
+    expect(
+      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(1, 0, 0, 0.333)'))
+    ).toBe(true);
+    expect(
+      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 1, 0, 0.333)'))
+    ).toBe(true);
+    expect(
+      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 0, 1, 0.333)'))
+    ).toBe(true);
+    expect(
+      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 0, 0, 0.334)'))
+    ).toBe(true);
+
+    expect(
+      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(2, 0, 0, 0.333)'))
+    ).toBe(false);
+    expect(
+      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 0, 0, 0.335)'))
+    ).toBe(false);
+  });
+
+  it('returns false for different colors', () => {
+    expect(areColorsEqual(new Color('#ff0000'), new Color('#00ff00'))).toBe(false);
+    expect(areColorsEqual(new Color('#000000'), new Color('#0000ff'))).toBe(false);
+  });
+});
 
 describe('isColorDark', () => {
   it('classifies colors correctly', () => {

@@ -83,7 +83,7 @@ import {
   getColorTemperature,
   getColorTemperatureString,
 } from './temperature';
-import { getColorRGBAFromInput, isColorDark, isColorOffWhite } from './utils';
+import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from './utils';
 
 /**
  * The base omni-color object.
@@ -603,6 +603,22 @@ export class Color {
     options?: GenerateColorPaletteOptions
   ): ColorPalette {
     return generateColorPaletteFromBaseColor(this, harmony, options);
+  }
+
+  /**
+   * Determine if this color is equal to another color. Allows for minor rounding differences.
+   *
+   * @param other The other {@link Color} to compare against.
+   * @returns `true` if the colors are equal within rounding tolerance.
+   *
+   * @example
+   * ```ts
+   * new Color('#ff0000').equals(new Color('rgb(255, 0, 0)')); // true
+   * new Color('#ff0000').equals(new Color('#00ff00')); // false
+   * ```
+   */
+  equals(other: Color): boolean {
+    return areColorsEqual(this, other);
   }
 
   /**

@@ -103,3 +103,18 @@ export function isColorOffWhite(color: Color): boolean {
   const minChannel = Math.min(r, g, b);
   return brightness >= 240 && maxChannel - minChannel <= 30;
 }
+
+const RGB_CHANNEL_EPSILON = 1; // allow off‑by‑one rounding differences
+const ALPHA_EPSILON = 0.0015; // alpha values are rounded to three decimals and may have floating‑point error
+
+export function areColorsEqual(color1: Color, color2: Color): boolean {
+  const c1 = color1.toRGBA();
+  const c2 = color2.toRGBA();
+
+  return (
+    Math.abs(c1.r - c2.r) <= RGB_CHANNEL_EPSILON &&
+    Math.abs(c1.g - c2.g) <= RGB_CHANNEL_EPSILON &&
+    Math.abs(c1.b - c2.b) <= RGB_CHANNEL_EPSILON &&
+    Math.abs((c1.a ?? 1) - (c2.a ?? 1)) <= ALPHA_EPSILON
+  );
+}
