@@ -72,7 +72,7 @@ export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
     // McCamy's approximation formula to calculate correlated color temperature (CCT):
     const n = (chromaX - 0.332) / (0.1858 - chromaY); // 0.332, 0.1858 are reference points on the chromaticity diagram
     const cct = 449 * n * n * n + 3525 * n * n + 6823.3 * n + 5520.33;
-    // McCamy's polynomial can yield negative or invalid values for colours far from the
+    // McCamy's polynomial can yield negative or invalid values for colors far from the
     // Planckian locus. Clamp the result to `0` in those cases to avoid returning
     // nonsensical negative temperatures.
     if (Number.isFinite(cct)) {
@@ -90,9 +90,10 @@ export function getColorTemperatureString(
   const { temperature, label } = getColorTemperature(color);
   const formattedTemperature = options.formatNumber ? temperature.toLocaleString() : temperature;
 
-  // TODO: migrate this to a util and add direct as a `Color` method
   const { s, l } = color.toHSL();
   const isOffWhite = s < 25 && l > 70;
+  // TODO: This needs to be fixed, since it doesn't really work anymore due to the colors not really
+  // being off-white at all...
   if (isOffWhite) {
     return `${formattedTemperature} K (${label.toLowerCase()})`;
   }
