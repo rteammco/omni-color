@@ -11,13 +11,9 @@ import type {
   ColorOKLCH,
   ColorRGB,
 } from '../formats';
-import { ColorHarmony } from '../harmonies';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import { getRandomColorRGBA } from '../random';
-import {
-  TextReadabilityConformanceLevel,
-  TextReadabilityTextSizeOptions,
-} from '../readability';
+import { TextReadabilityConformanceLevel, TextReadabilityTextSizeOptions } from '../readability';
 import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
@@ -511,7 +507,7 @@ describe('Color.getColorPalette', () => {
     expect(defaultPalette.secondaryColors[0][500].toHex()).toBe(complement.toHex());
 
     // Triadic palette
-    const triadicPalette = baseColor.getColorPalette(ColorHarmony.TRIADIC);
+    const triadicPalette = baseColor.getColorPalette('TRIADIC');
     expect(triadicPalette.secondaryColors).toHaveLength(2);
     const triadic1 = baseColor.spin(-120);
     const triadic2 = baseColor.spin(120);
@@ -519,13 +515,13 @@ describe('Color.getColorPalette', () => {
     expect(triadicPalette.secondaryColors[1][500].toHex()).toBe(triadic2.toHex());
 
     // Semantic color harmonization options
-    const noPullPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+    const noPullPalette = baseColor.getColorPalette('COMPLEMENTARY', {
       semanticHarmonization: {
         huePull: 0,
         chromaRange: [0.02, 0.25],
       },
     });
-    const fullPullPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+    const fullPullPalette = baseColor.getColorPalette('COMPLEMENTARY', {
       semanticHarmonization: {
         huePull: 1,
         chromaRange: [0.02, 0.25],
@@ -538,7 +534,7 @@ describe('Color.getColorPalette', () => {
     expect(infoHuePulled).toBeCloseTo(baseHue, 0);
 
     // Neutral color harmonization options
-    const neutralMatchPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+    const neutralMatchPalette = baseColor.getColorPalette('COMPLEMENTARY', {
       neutralHarmonization: {
         tintChromaFactor: 0,
         maxTintChroma: 0.04,
@@ -548,7 +544,7 @@ describe('Color.getColorPalette', () => {
       neutralMatchPalette.neutrals[500].toHex()
     );
 
-    const cappedTintPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+    const cappedTintPalette = baseColor.getColorPalette('COMPLEMENTARY', {
       neutralHarmonization: {
         tintChromaFactor: 1,
         maxTintChroma: 0.02,
@@ -560,7 +556,7 @@ describe('Color.getColorPalette', () => {
 
     // Semantic chroma range option
     const defaultInfoChroma = defaultPalette.info[500].toOKLCH().c;
-    const limitedChromaPalette = baseColor.getColorPalette(ColorHarmony.COMPLEMENTARY, {
+    const limitedChromaPalette = baseColor.getColorPalette('COMPLEMENTARY', {
       semanticHarmonization: {
         huePull: 0,
         chromaRange: [0.02, 0.05],

@@ -589,7 +589,7 @@ export class Color {
    * harmony as secondary colors, neutral colors, and color-matched semantic
    * swatches for statuses like info or warning.
    *
-   * @param harmony - {@link ColorHarmony} used to generate secondary colors (default `ColorHarmony.COMPLEMENTARY`).
+   * @param harmony - {@link ColorHarmony} used to generate secondary colors (default `'COMPLEMENTARY'`).
    * @param options - Optional {@link GenerateColorPaletteOptions} options for harmonizing neutral and semantic colors.
    *
    * @example
@@ -599,7 +599,7 @@ export class Color {
    * ```
    */
   getColorPalette(
-    harmony: ColorHarmony = ColorHarmony.COMPLEMENTARY,
+    harmony: ColorHarmony = 'COMPLEMENTARY',
     options?: GenerateColorPaletteOptions
   ): ColorPalette {
     return generateColorPaletteFromBaseColor(this, harmony, options);

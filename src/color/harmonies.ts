@@ -4,20 +4,16 @@ import { ColorHSL } from './formats';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 
-export enum ColorHarmony {
-  COMPLEMENTARY = 'Complementary',
-  SPLIT_COMPLEMENTARY = 'Split Complementary',
-  TRIADIC = 'Triadic',
-  SQUARE = 'Square',
-  TETRADIC = 'Tetradic',
-  ANALOGOUS = 'Analogous',
-  MONOCHROMATIC = 'Monochromatic',
-}
+export type ColorHarmony =
+  | 'COMPLEMENTARY'
+  | 'SPLIT_COMPLEMENTARY'
+  | 'TRIADIC'
+  | 'SQUARE'
+  | 'TETRADIC'
+  | 'ANALOGOUS'
+  | 'MONOCHROMATIC';
 
-export enum GrayscaleHandlingMode {
-  SPIN_LIGHTNESS = 'SPIN_LIGHTNESS',
-  IGNORE = 'IGNORE',
-}
+export type GrayscaleHandlingMode = 'SPIN_LIGHTNESS' | 'IGNORE';
 
 // "spins" lightness around grayscale degrees, where 0 is black and 180 is white, and
 // everything in between is grayish. 180-360 loop back in the opposite direction.
@@ -39,7 +35,7 @@ function spinColorOnHueOrLightness(
   const hsl = color.toHSL();
   if (hsl.s === 0) {
     // If the color is grayscale (saturation 0), handle it based on the mode
-    if (grayscaleHandlingMode === GrayscaleHandlingMode.SPIN_LIGHTNESS) {
+    if (grayscaleHandlingMode === 'SPIN_LIGHTNESS') {
       return spinLightness(hsl, degrees);
     }
     return color.clone(); // No change for grayscale in IGNORE mode (treating the operation as undefined)
@@ -49,14 +45,14 @@ function spinColorOnHueOrLightness(
 
 export function getComplementaryColors(
   color: Color,
-  grayscaleHandlingMode = GrayscaleHandlingMode.SPIN_LIGHTNESS
+  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
 ): [Color, Color] {
   return [color.clone(), spinColorOnHueOrLightness(color, 180, grayscaleHandlingMode)];
 }
 
 export function getSplitComplementaryColors(
   color: Color,
-  grayscaleHandlingMode = GrayscaleHandlingMode.SPIN_LIGHTNESS
+  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
 ): [Color, Color, Color] {
   return [
     color.clone(),
@@ -67,7 +63,7 @@ export function getSplitComplementaryColors(
 
 export function getTriadicHarmonyColors(
   color: Color,
-  grayscaleHandlingMode = GrayscaleHandlingMode.SPIN_LIGHTNESS
+  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
 ): [Color, Color, Color] {
   return [
     color.clone(),
@@ -78,7 +74,7 @@ export function getTriadicHarmonyColors(
 
 export function getSquareHarmonyColors(
   color: Color,
-  grayscaleHandlingMode = GrayscaleHandlingMode.SPIN_LIGHTNESS
+  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
 ): [Color, Color, Color, Color] {
   return [
     color.clone(),
@@ -90,7 +86,7 @@ export function getSquareHarmonyColors(
 
 export function getTetradicHarmonyColors(
   color: Color,
-  grayscaleHandlingMode = GrayscaleHandlingMode.SPIN_LIGHTNESS
+  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
 ): [Color, Color, Color, Color] {
   // TODO: tetradic harmonies can also be "wide" (120, 180, 300) or go in the other direction, or potentially any rectangle
   // e.g. #0000ff => #0000ff, #ff00ff, #ffff00, #00ff00
@@ -105,7 +101,7 @@ export function getTetradicHarmonyColors(
 
 export function getAnalogousHarmonyColors(
   color: Color,
-  grayscaleHandlingMode = GrayscaleHandlingMode.SPIN_LIGHTNESS
+  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
 ): [Color, Color, Color, Color, Color] {
   // TODO: verify, because other libraries seem to have a slightly narrower angle
   return [
@@ -129,22 +125,22 @@ export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Colo
 export function getHarmonyColors(
   color: Color,
   harmony: ColorHarmony,
-  grayscaleHandlingMode = GrayscaleHandlingMode.SPIN_LIGHTNESS
+  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
 ): Color[] {
   switch (harmony) {
-    case ColorHarmony.COMPLEMENTARY:
+    case 'COMPLEMENTARY':
       return getComplementaryColors(color, grayscaleHandlingMode);
-    case ColorHarmony.SPLIT_COMPLEMENTARY:
+    case 'SPLIT_COMPLEMENTARY':
       return getSplitComplementaryColors(color, grayscaleHandlingMode);
-    case ColorHarmony.TRIADIC:
+    case 'TRIADIC':
       return getTriadicHarmonyColors(color, grayscaleHandlingMode);
-    case ColorHarmony.SQUARE:
+    case 'SQUARE':
       return getSquareHarmonyColors(color, grayscaleHandlingMode);
-    case ColorHarmony.TETRADIC:
+    case 'TETRADIC':
       return getTetradicHarmonyColors(color, grayscaleHandlingMode);
-    case ColorHarmony.ANALOGOUS:
+    case 'ANALOGOUS':
       return getAnalogousHarmonyColors(color, grayscaleHandlingMode);
-    case ColorHarmony.MONOCHROMATIC:
+    case 'MONOCHROMATIC':
       return getMonochromaticHarmonyColors(color);
     default:
       throw new Error(`unknown color harmony: ${harmony}`);

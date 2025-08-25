@@ -21,7 +21,7 @@ import {
   ColorRGB,
   ColorRGBA,
 } from './color/formats';
-import { ColorHarmony } from './color/harmonies';
+import { type ColorHarmony } from './color/harmonies';
 import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
 import {
@@ -47,7 +47,7 @@ export {
   Color,
   ColorCMYK,
   ColorFormat,
-  ColorHarmony,
+  type ColorHarmony,
   ColorHex,
   ColorHSL,
   ColorHSLA,

@@ -1,4 +1,4 @@
-import { ColorHarmony } from '../../../../dist';
+import type { ColorHarmony } from '../../../../dist';
 
 const PALETTE_HARMONY_RADIO_GROUP_NAME = 'palette-color-harmony';
 
@@ -12,71 +12,71 @@ export function PaletteHarmonyOptions({ selectedHarmony, onHarmonySelectionChang
     <div className="w-full flex flex-row justify-center items-center gap-4 flex-wrap">
       <label className="flex flex-row items-center gap-1">
         <input
-          checked={selectedHarmony === ColorHarmony.COMPLEMENTARY}
+          checked={selectedHarmony === 'COMPLEMENTARY'}
           name={PALETTE_HARMONY_RADIO_GROUP_NAME}
           type="radio"
-          value={ColorHarmony.COMPLEMENTARY}
-          onChange={() => onHarmonySelectionChanged(ColorHarmony.COMPLEMENTARY)}
+          value="COMPLEMENTARY"
+          onChange={() => onHarmonySelectionChanged('COMPLEMENTARY')}
         />
         Complementary
       </label>
       <label className="flex flex-row items-center gap-1">
         <input
-          checked={selectedHarmony === ColorHarmony.SPLIT_COMPLEMENTARY}
+          checked={selectedHarmony === 'SPLIT_COMPLEMENTARY'}
           name={PALETTE_HARMONY_RADIO_GROUP_NAME}
           type="radio"
-          value={ColorHarmony.SPLIT_COMPLEMENTARY}
-          onChange={() => onHarmonySelectionChanged(ColorHarmony.SPLIT_COMPLEMENTARY)}
+          value="SPLIT_COMPLEMENTARY"
+          onChange={() => onHarmonySelectionChanged('SPLIT_COMPLEMENTARY')}
         />
         Split complementary
       </label>
       <label className="flex flex-row items-center gap-1">
         <input
-          checked={selectedHarmony === ColorHarmony.TRIADIC}
+          checked={selectedHarmony === 'TRIADIC'}
           name={PALETTE_HARMONY_RADIO_GROUP_NAME}
           type="radio"
-          value={ColorHarmony.TRIADIC}
-          onChange={() => onHarmonySelectionChanged(ColorHarmony.TRIADIC)}
+          value="TRIADIC"
+          onChange={() => onHarmonySelectionChanged('TRIADIC')}
         />
         Triadic
       </label>
       <label className="flex flex-row items-center gap-1">
         <input
-          checked={selectedHarmony === ColorHarmony.SQUARE}
+          checked={selectedHarmony === 'SQUARE'}
           name={PALETTE_HARMONY_RADIO_GROUP_NAME}
           type="radio"
-          value={ColorHarmony.SQUARE}
-          onChange={() => onHarmonySelectionChanged(ColorHarmony.SQUARE)}
+          value="SQUARE"
+          onChange={() => onHarmonySelectionChanged('SQUARE')}
         />
         Square
       </label>
       <label className="flex flex-row items-center gap-1">
         <input
-          checked={selectedHarmony === ColorHarmony.TETRADIC}
+          checked={selectedHarmony === 'TETRADIC'}
           name={PALETTE_HARMONY_RADIO_GROUP_NAME}
           type="radio"
-          value={ColorHarmony.TETRADIC}
-          onChange={() => onHarmonySelectionChanged(ColorHarmony.TETRADIC)}
+          value="TETRADIC"
+          onChange={() => onHarmonySelectionChanged('TETRADIC')}
         />
         Tetradic
       </label>
       <label className="flex flex-row items-center gap-1">
         <input
-          checked={selectedHarmony === ColorHarmony.ANALOGOUS}
+          checked={selectedHarmony === 'ANALOGOUS'}
           name={PALETTE_HARMONY_RADIO_GROUP_NAME}
           type="radio"
-          value={ColorHarmony.ANALOGOUS}
-          onChange={() => onHarmonySelectionChanged(ColorHarmony.ANALOGOUS)}
+          value="ANALOGOUS"
+          onChange={() => onHarmonySelectionChanged('ANALOGOUS')}
         />
         Analogous
       </label>
       <label className="flex flex-row items-center gap-1">
         <input
-          checked={selectedHarmony === ColorHarmony.MONOCHROMATIC}
+          checked={selectedHarmony === 'MONOCHROMATIC'}
           name={PALETTE_HARMONY_RADIO_GROUP_NAME}
           type="radio"
-          value={ColorHarmony.MONOCHROMATIC}
-          onChange={() => onHarmonySelectionChanged(ColorHarmony.MONOCHROMATIC)}
+          value="MONOCHROMATIC"
+          onChange={() => onHarmonySelectionChanged('MONOCHROMATIC')}
         />
         Monochromatic
       </label>

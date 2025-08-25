@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Color, ColorHarmony, type GenerateColorPaletteOptions } from '../../../../dist';
+import { Color, type ColorHarmony, type GenerateColorPaletteOptions } from '../../../../dist';
 import { ColorSwatch } from '../ColorSwatch';
 import { PaletteHarmonyOptions } from './PaletteHarmonyOptions';
 import { PaletteGenerationOptions } from './PaletteGenerationOptions';
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export function ColorPaletteDemo({ color }: Props) {
-  const [selectedHarmony, setSelectedHarmony] = useState(ColorHarmony.COMPLEMENTARY);
+  const [selectedHarmony, setSelectedHarmony] = useState<ColorHarmony>('COMPLEMENTARY');
   const [options, setOptions] = useState<GenerateColorPaletteOptions>(
     DEFAULT_GENERATE_COLOR_PALETTE_OPTIONS
   );

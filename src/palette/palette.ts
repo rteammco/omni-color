@@ -1,6 +1,6 @@
 import { Color } from '../color/color';
 import { BLACK_HEX, WHITE_HEX } from '../color/color.constants';
-import { ColorHarmony } from '../color/harmonies';
+import { type ColorHarmony } from '../color/harmonies';
 import { ColorSwatch } from '../color/swatch';
 import { clampValue } from '../utils';
 
@@ -145,7 +145,7 @@ function harmonizeSemanticColor(
 
 export function generateColorPaletteFromBaseColor(
   baseColor: Color,
-  harmony: ColorHarmony = ColorHarmony.COMPLEMENTARY,
+  harmony: ColorHarmony = 'COMPLEMENTARY',
   options?: GenerateColorPaletteOptions
 ): ColorPalette {
   // TODO: helpers or warnings if the palette is suboptimal
