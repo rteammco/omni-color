@@ -33,7 +33,7 @@ import {
 import { ColorSwatch } from './color/swatch';
 import {
   ColorTemperatureAndLabel,
-  ColorTemperatureLabel,
+  type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
 } from './color/temperature';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
@@ -62,7 +62,7 @@ export {
   ColorRGBA,
   ColorSwatch,
   ColorTemperatureAndLabel,
-  ColorTemperatureLabel,
+  type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
   GenerateColorPaletteOptions,
   MixColorsOptions,

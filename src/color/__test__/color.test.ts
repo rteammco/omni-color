@@ -14,7 +14,7 @@ import type {
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import { getRandomColorRGBA } from '../random';
 import { TextReadabilityConformanceLevel, TextReadabilityTextSizeOptions } from '../readability';
-import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
+import { getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
   const actual = jest.requireActual('../random');
@@ -149,22 +149,16 @@ describe('Color constructor and conversion tests', () => {
 
   it('accepts color temperature label strings', () => {
     let color = new Color('fluorescent');
-    expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.FLUORESCENT).toHex()
-    );
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Fluorescent lamp').toHex());
 
     color = new Color('Daylight');
-    expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.DAYLIGHT).toHex()
-    );
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Daylight').toHex());
 
     color = new Color('  shade ');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE).toHex());
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Shade').toHex());
 
     color = new Color('blue sky');
-    expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.BLUE_SKY).toHex()
-    );
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Blue sky').toHex());
   });
 });
 
@@ -650,7 +644,7 @@ describe('Color.isReadableAsTextColor', () => {
 describe('Color temperature methods', () => {
   it('estimates temperature and label', () => {
     const color = new Color('#ffa757');
-    expect(color.getTemperature().label).toBe(ColorTemperatureLabel.INCANDESCENT);
+    expect(color.getTemperature().label).toBe('Incandescent lamp');
   });
 
   it('returns a temperature string for off-white colors', () => {
@@ -659,7 +653,7 @@ describe('Color temperature methods', () => {
 
   it('creates colors from temperature values or labels', () => {
     expect(Color.fromTemperature(1500).toHex()).toBe('#ff6c00');
-    expect(Color.fromTemperature(ColorTemperatureLabel.SHADE).toHex()).toBe('#dde6ff');
+    expect(Color.fromTemperature('Shade').toHex()).toBe('#dde6ff');
   });
 });
 

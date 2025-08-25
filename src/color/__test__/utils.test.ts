@@ -1,5 +1,5 @@
 import { Color } from '../color';
-import { ColorTemperatureLabel, getColorFromTemperatureLabel } from '../temperature';
+import { getColorFromTemperatureLabel } from '../temperature';
 import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
 
 describe('areColorsEqual', () => {
@@ -240,19 +240,19 @@ describe('getColorRGBAFromInput', () => {
 
   it('parses full and partial color temperature strings', () => {
     expect(new Color(getColorRGBAFromInput('candlelight')).toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.CANDLELIGHT).toHex()
+      getColorFromTemperatureLabel('Candlelight').toHex()
     );
 
     expect(new Color(getColorRGBAFromInput('incandescent')).toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.INCANDESCENT).toHex()
+      getColorFromTemperatureLabel('Incandescent lamp').toHex()
     );
 
     expect(new Color(getColorRGBAFromInput('  shade  ')).toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.SHADE).toHex()
+      getColorFromTemperatureLabel('Shade').toHex()
     );
 
     expect(new Color(getColorRGBAFromInput('cloudy sky')).toHex()).toBe(
-      getColorFromTemperatureLabel(ColorTemperatureLabel.CLOUDY).toHex()
+      getColorFromTemperatureLabel('Cloudy sky').toHex()
     );
   });
 

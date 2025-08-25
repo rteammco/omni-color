@@ -76,7 +76,7 @@ import {
 import { ColorSwatch, getColorSwatch } from './swatch';
 import {
   ColorTemperatureAndLabel,
-  ColorTemperatureLabel,
+  type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
   getColorFromTemperature,
   getColorFromTemperatureLabel,
@@ -154,7 +154,7 @@ export class Color {
    * @example
    * ```ts
    * const daylight = Color.fromTemperature(6500);
-   * const cloudy = Color.fromTemperature(ColorTemperatureLabel.CLOUDY);
+   * const cloudy = Color.fromTemperature('Cloudy sky');
    * ```
    */
   static fromTemperature(temperature: number | ColorTemperatureLabel): Color {

@@ -2,19 +2,22 @@ import { clampValue } from '../utils';
 import { Color } from './color';
 import { srgbChannelToLinear } from './utils';
 
-export enum ColorTemperatureLabel {
+export const COLOR_TEMPERATURE_LABELS = {
   // Warm:
-  CANDLELIGHT = 'Candlelight',
-  INCANDESCENT = 'Incandescent lamp',
+  CANDLELIGHT: 'Candlelight',
+  INCANDESCENT: 'Incandescent lamp',
   // Neutral:
-  HALOGEN = 'Halogen lamp',
-  FLUORESCENT = 'Fluorescent lamp',
-  DAYLIGHT = 'Daylight',
+  HALOGEN: 'Halogen lamp',
+  FLUORESCENT: 'Fluorescent lamp',
+  DAYLIGHT: 'Daylight',
   // Cool:
-  CLOUDY = 'Cloudy sky',
-  SHADE = 'Shade',
-  BLUE_SKY = 'Blue sky',
-}
+  CLOUDY: 'Cloudy sky',
+  SHADE: 'Shade',
+  BLUE_SKY: 'Blue sky',
+} as const;
+
+export type ColorTemperatureLabel =
+  (typeof COLOR_TEMPERATURE_LABELS)[keyof typeof COLOR_TEMPERATURE_LABELS];
 
 export interface ColorTemperatureAndLabel {
   temperature: number; // in Kelvin
@@ -26,25 +29,25 @@ export interface ColorTemperatureStringFormatOptions {
 }
 
 const SORTED_TEMPERATURE_LABELS: { label: ColorTemperatureLabel; temperatureLimit: number }[] = [
-  { label: ColorTemperatureLabel.CANDLELIGHT, temperatureLimit: 2000 },
-  { label: ColorTemperatureLabel.INCANDESCENT, temperatureLimit: 3000 },
-  { label: ColorTemperatureLabel.HALOGEN, temperatureLimit: 4000 },
-  { label: ColorTemperatureLabel.FLUORESCENT, temperatureLimit: 5000 },
-  { label: ColorTemperatureLabel.DAYLIGHT, temperatureLimit: 6500 },
-  { label: ColorTemperatureLabel.CLOUDY, temperatureLimit: 7500 },
-  { label: ColorTemperatureLabel.SHADE, temperatureLimit: 9000 },
-  { label: ColorTemperatureLabel.BLUE_SKY, temperatureLimit: Infinity },
+  { label: COLOR_TEMPERATURE_LABELS.CANDLELIGHT, temperatureLimit: 2000 },
+  { label: COLOR_TEMPERATURE_LABELS.INCANDESCENT, temperatureLimit: 3000 },
+  { label: COLOR_TEMPERATURE_LABELS.HALOGEN, temperatureLimit: 4000 },
+  { label: COLOR_TEMPERATURE_LABELS.FLUORESCENT, temperatureLimit: 5000 },
+  { label: COLOR_TEMPERATURE_LABELS.DAYLIGHT, temperatureLimit: 6500 },
+  { label: COLOR_TEMPERATURE_LABELS.CLOUDY, temperatureLimit: 7500 },
+  { label: COLOR_TEMPERATURE_LABELS.SHADE, temperatureLimit: 9000 },
+  { label: COLOR_TEMPERATURE_LABELS.BLUE_SKY, temperatureLimit: Infinity },
 ] as const;
 
 const LABEL_TO_TEMPERATURE_MAP: { [key in ColorTemperatureLabel]: number } = {
-  [ColorTemperatureLabel.CANDLELIGHT]: 1900,
-  [ColorTemperatureLabel.INCANDESCENT]: 2700,
-  [ColorTemperatureLabel.HALOGEN]: 3300,
-  [ColorTemperatureLabel.FLUORESCENT]: 4200,
-  [ColorTemperatureLabel.DAYLIGHT]: 6000,
-  [ColorTemperatureLabel.CLOUDY]: 7000,
-  [ColorTemperatureLabel.SHADE]: 8000,
-  [ColorTemperatureLabel.BLUE_SKY]: 10000,
+  [COLOR_TEMPERATURE_LABELS.CANDLELIGHT]: 1900,
+  [COLOR_TEMPERATURE_LABELS.INCANDESCENT]: 2700,
+  [COLOR_TEMPERATURE_LABELS.HALOGEN]: 3300,
+  [COLOR_TEMPERATURE_LABELS.FLUORESCENT]: 4200,
+  [COLOR_TEMPERATURE_LABELS.DAYLIGHT]: 6000,
+  [COLOR_TEMPERATURE_LABELS.CLOUDY]: 7000,
+  [COLOR_TEMPERATURE_LABELS.SHADE]: 8000,
+  [COLOR_TEMPERATURE_LABELS.BLUE_SKY]: 10000,
 } as const;
 
 // Maximum squared distance in RGB space for a color to be considered close
@@ -55,7 +58,7 @@ const MAX_COLOR_DISTANCE_FOR_LABEL = 120 * 120;
 
 function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
   const found = SORTED_TEMPERATURE_LABELS.find((t) => temperature < t.temperatureLimit);
-  return found ? found.label : ColorTemperatureLabel.DAYLIGHT;
+  return found ? found.label : COLOR_TEMPERATURE_LABELS.DAYLIGHT;
 }
 
 export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
@@ -155,7 +158,7 @@ export function matchPartialColorTemperatureLabel(
   partialLabel: string
 ): ColorTemperatureLabel | null {
   const cleanedPartialLabel = partialLabel.trim().toLowerCase();
-  const matchedLabel = Object.values(ColorTemperatureLabel).find((label) => {
+  const matchedLabel = Object.values(COLOR_TEMPERATURE_LABELS).find((label) => {
     const lowercaseLabel = label.toLowerCase();
     if (lowercaseLabel === cleanedPartialLabel) {
       return true;
