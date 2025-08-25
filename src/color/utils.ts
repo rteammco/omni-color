@@ -49,17 +49,19 @@ const SRGB_GAMMA_OFFSET = 0.055; // additive term in sRGB gamma curve
 const SRGB_GAMMA_SCALE = 1.055; // multiplicative term in sRGB gamma curve
 const SRGB_GAMMA_EXPONENT = 2.4; // exponent in sRGB transfer function
 
-export enum SrgbGammaPivot {
-  SRGB = 0.04045,
-  WCAG = 0.03928,
-}
+const SRGB_GAMMA_PIVOT_OPTIONS = {
+  SRGB: 0.04045,
+  WCAG: 0.03928,
+} as const;
+
+type SrgbGammaPivot = keyof typeof SRGB_GAMMA_PIVOT_OPTIONS;
 
 // Does a gamma correction by converting the given sRGB channel value (0 to 255)
 // to a linear RGB channel value (0 to 1).
 export function srgbChannelToLinear(srgbChannelVal: number, pivot: SrgbGammaPivot): number {
   const c = clampValue(srgbChannelVal, 0, RGB_CHANNEL_MAX_VALUE) / RGB_CHANNEL_MAX_VALUE; // normalize
   let result: number;
-  if (c <= pivot) {
+  if (c <= SRGB_GAMMA_PIVOT_OPTIONS[pivot]) {
     result = c / SRGB_LINEAR_SEGMENT_DIVISOR; // linear portion for dark colors
   } else {
     result = Math.pow((c + SRGB_GAMMA_OFFSET) / SRGB_GAMMA_SCALE, SRGB_GAMMA_EXPONENT); // gamma correction for brighter colors
@@ -71,7 +73,7 @@ export function srgbChannelToLinear(srgbChannelVal: number, pivot: SrgbGammaPivo
 // the original sRGB channel value (0 to 255).
 export function linearChannelToSrgb(linearChannelVal: number, pivot: SrgbGammaPivot): number {
   const c = clampValue(linearChannelVal, 0, 1);
-  const threshold = pivot / SRGB_LINEAR_SEGMENT_DIVISOR;
+  const threshold = SRGB_GAMMA_PIVOT_OPTIONS[pivot] / SRGB_LINEAR_SEGMENT_DIVISOR;
   let result: number;
   if (c > threshold) {
     result = SRGB_GAMMA_SCALE * Math.pow(c, 1 / SRGB_GAMMA_EXPONENT) - SRGB_GAMMA_OFFSET;

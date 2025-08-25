@@ -1,6 +1,6 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
-import { srgbChannelToLinear, SrgbGammaPivot } from './utils';
+import { srgbChannelToLinear } from './utils';
 
 export enum ColorTemperatureLabel {
   // Warm:
@@ -60,9 +60,9 @@ function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
 
 export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
   const { r, g, b } = color.toRGB();
-  const rLin = srgbChannelToLinear(r, SrgbGammaPivot.SRGB);
-  const gLin = srgbChannelToLinear(g, SrgbGammaPivot.SRGB);
-  const bLin = srgbChannelToLinear(b, SrgbGammaPivot.SRGB);
+  const rLin = srgbChannelToLinear(r, 'SRGB');
+  const gLin = srgbChannelToLinear(g, 'SRGB');
+  const bLin = srgbChannelToLinear(b, 'SRGB');
 
   // XYZ color space conversion:
   const x = rLin * 0.4124 + gLin * 0.3576 + bLin * 0.1805;

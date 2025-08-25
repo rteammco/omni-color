@@ -12,7 +12,7 @@ import {
   ColorRGBA,
   getColorFormatType,
 } from './formats';
-import { linearChannelToSrgb, srgbChannelToLinear, SrgbGammaPivot } from './utils';
+import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 import { validateColorOrThrow } from './validations';
 
 function rgbToRGBA(color: ColorRGB, alpha?: number): ColorRGBA {
@@ -288,9 +288,9 @@ function cmykToRGBA(color: ColorCMYK, alpha?: number): ColorRGBA {
 
 //  srgbChannelToLinear(
 function rgbToLCH(color: ColorRGB): ColorLCH {
-  const r = srgbChannelToLinear(color.r, SrgbGammaPivot.SRGB);
-  const g = srgbChannelToLinear(color.g, SrgbGammaPivot.SRGB);
-  const b = srgbChannelToLinear(color.b, SrgbGammaPivot.SRGB);
+  const r = srgbChannelToLinear(color.r, 'SRGB');
+  const g = srgbChannelToLinear(color.g, 'SRGB');
+  const b = srgbChannelToLinear(color.b, 'SRGB');
   // sRGB to XYZ (D65)
   let x = r * 0.4124 + g * 0.3576 + b * 0.1805;
   let y = r * 0.2126 + g * 0.7152 + b * 0.0722;
@@ -333,9 +333,9 @@ function lchToRGB(color: ColorLCH): ColorRGB {
   const rLin = x * 3.2406 + y * -1.5372 + z * -0.4986;
   const gLin = x * -0.9689 + y * 1.8758 + z * 0.0415;
   const bLin = x * 0.0557 + y * -0.204 + z * 1.057;
-  const r = linearChannelToSrgb(rLin, SrgbGammaPivot.SRGB);
-  const g = linearChannelToSrgb(gLin, SrgbGammaPivot.SRGB);
-  const b3 = linearChannelToSrgb(bLin, SrgbGammaPivot.SRGB);
+  const r = linearChannelToSrgb(rLin, 'SRGB');
+  const g = linearChannelToSrgb(gLin, 'SRGB');
+  const b3 = linearChannelToSrgb(bLin, 'SRGB');
   return {
     r: Math.round(r),
     g: Math.round(g),
@@ -349,9 +349,9 @@ function lchToRGBA(color: ColorLCH, alpha?: number): ColorRGBA {
 }
 
 function rgbToOKLCH(color: ColorRGB): ColorOKLCH {
-  const r = srgbChannelToLinear(color.r, SrgbGammaPivot.SRGB);
-  const g = srgbChannelToLinear(color.g, SrgbGammaPivot.SRGB);
-  const b = srgbChannelToLinear(color.b, SrgbGammaPivot.SRGB);
+  const r = srgbChannelToLinear(color.r, 'SRGB');
+  const g = srgbChannelToLinear(color.g, 'SRGB');
+  const b = srgbChannelToLinear(color.b, 'SRGB');
   const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
   const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
   const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
@@ -383,9 +383,9 @@ function oklchToRGB(color: ColorOKLCH): ColorRGB {
   const rLin = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
   const gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
   const bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
-  const r = linearChannelToSrgb(rLin, SrgbGammaPivot.SRGB);
-  const g = linearChannelToSrgb(gLin, SrgbGammaPivot.SRGB);
-  const b3 = linearChannelToSrgb(bLin, SrgbGammaPivot.SRGB);
+  const r = linearChannelToSrgb(rLin, 'SRGB');
+  const g = linearChannelToSrgb(gLin, 'SRGB');
+  const b3 = linearChannelToSrgb(bLin, 'SRGB');
   return {
     r: Math.round(r),
     g: Math.round(g),
