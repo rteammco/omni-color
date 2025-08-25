@@ -4,8 +4,6 @@ import {
   getTextReadabilityReport,
   getWCAGContrastRatio,
   isTextReadable,
-  TextReadabilityConformanceLevel,
-  TextReadabilityTextSizeOptions,
 } from '../readability';
 
 describe('getWCAGContrastRatio', () => {
@@ -1403,9 +1401,7 @@ describe('getTextReadabilityReport', () => {
   it('respects text size options', () => {
     const fg = new Color('#555555');
     const bg = new Color('#aaaaaa');
-    const report = getTextReadabilityReport(fg, bg, {
-      size: TextReadabilityTextSizeOptions.LARGE,
-    });
+    const report = getTextReadabilityReport(fg, bg, { size: 'LARGE' });
     expect(report.contrastRatio).toBeCloseTo(3.21, 2);
     expect(report.requiredContrast).toBe(3);
     expect(report.isReadable).toBe(true);
@@ -1431,70 +1427,50 @@ describe('isTextReadable', () => {
   it('#555555 vs #aaaaaa AA large', () => {
     const c1 = new Color('#555555');
     const c2 = new Color('#aaaaaa');
-    expect(isTextReadable(c1, c2, { size: TextReadabilityTextSizeOptions.LARGE })).toBe(true);
-    expect(isTextReadable(c2, c1, { size: TextReadabilityTextSizeOptions.LARGE })).toBe(true);
+    expect(isTextReadable(c1, c2, { size: 'LARGE' })).toBe(true);
+    expect(isTextReadable(c2, c1, { size: 'LARGE' })).toBe(true);
   });
 
   it('#666666 vs #999999 AA large', () => {
     const c1 = new Color('#666666');
     const c2 = new Color('#999999');
-    expect(isTextReadable(c1, c2, { size: TextReadabilityTextSizeOptions.LARGE })).toBe(false);
-    expect(isTextReadable(c2, c1, { size: TextReadabilityTextSizeOptions.LARGE })).toBe(false);
+    expect(isTextReadable(c1, c2, { size: 'LARGE' })).toBe(false);
+    expect(isTextReadable(c2, c1, { size: 'LARGE' })).toBe(false);
   });
 
   it('#333333 vs #cccccc AAA small', () => {
     const c1 = new Color('#333333');
     const c2 = new Color('#cccccc');
-    expect(isTextReadable(c1, c2, { level: TextReadabilityConformanceLevel.AAA })).toBe(true);
-    expect(isTextReadable(c2, c1, { level: TextReadabilityConformanceLevel.AAA })).toBe(true);
+    expect(isTextReadable(c1, c2, { level: 'AAA' })).toBe(true);
+    expect(isTextReadable(c2, c1, { level: 'AAA' })).toBe(true);
   });
 
   it('#444444 vs #bbbbbb AAA small', () => {
     const c1 = new Color('#444444');
     const c2 = new Color('#bbbbbb');
-    expect(isTextReadable(c1, c2, { level: TextReadabilityConformanceLevel.AAA })).toBe(false);
-    expect(isTextReadable(c2, c1, { level: TextReadabilityConformanceLevel.AAA })).toBe(false);
+    expect(isTextReadable(c1, c2, { level: 'AAA' })).toBe(false);
+    expect(isTextReadable(c2, c1, { level: 'AAA' })).toBe(false);
   });
 
   it('#444444 vs #bbbbbb AAA large', () => {
     const c1 = new Color('#444444');
     const c2 = new Color('#bbbbbb');
-    expect(
-      isTextReadable(c1, c2, {
-        level: TextReadabilityConformanceLevel.AAA,
-        size: TextReadabilityTextSizeOptions.LARGE,
-      })
-    ).toBe(true);
-    expect(
-      isTextReadable(c2, c1, {
-        level: TextReadabilityConformanceLevel.AAA,
-        size: TextReadabilityTextSizeOptions.LARGE,
-      })
-    ).toBe(true);
+    expect(isTextReadable(c1, c2, { level: 'AAA', size: 'LARGE' })).toBe(true);
+    expect(isTextReadable(c2, c1, { level: 'AAA', size: 'LARGE' })).toBe(true);
   });
 
   it('#555555 vs #aaaaaa AAA large', () => {
     const c1 = new Color('#555555');
     const c2 = new Color('#aaaaaa');
-    expect(
-      isTextReadable(c1, c2, {
-        level: TextReadabilityConformanceLevel.AAA,
-        size: TextReadabilityTextSizeOptions.LARGE,
-      })
-    ).toBe(false);
-    expect(
-      isTextReadable(c2, c1, {
-        level: TextReadabilityConformanceLevel.AAA,
-        size: TextReadabilityTextSizeOptions.LARGE,
-      })
-    ).toBe(false);
+    expect(isTextReadable(c1, c2, { level: 'AAA', size: 'LARGE' })).toBe(false);
+    expect(isTextReadable(c2, c1, { level: 'AAA', size: 'LARGE' })).toBe(false);
   });
 
   it('red dark 0.5 alpha on #ffffff', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0.5 });
     const bg = new Color('#ffffff');
     expect(isTextReadable(fg, bg)).toBe(false);
-    expect(isTextReadable(fg, bg, { size: TextReadabilityTextSizeOptions.LARGE })).toBe(true);
+    expect(isTextReadable(fg, bg, { size: 'LARGE' })).toBe(true);
   });
 });
 

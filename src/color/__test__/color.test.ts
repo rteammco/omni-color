@@ -13,7 +13,6 @@ import type {
 } from '../formats';
 import { BaseColorName, ColorLightnessModifier } from '../names';
 import { getRandomColorRGBA } from '../random';
-import { TextReadabilityConformanceLevel, TextReadabilityTextSizeOptions } from '../readability';
 import { getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
@@ -607,9 +606,7 @@ describe('Color.getTextReadabilityReport', () => {
     expect(report.isReadable).toBe(true);
     expect(report.shortfall).toBeCloseTo(0, 2);
 
-    const stricter = c1.getTextReadabilityReport(c2, {
-      level: TextReadabilityConformanceLevel.AAA,
-    });
+    const stricter = c1.getTextReadabilityReport(c2, { level: 'AAA' });
     expect(stricter.isReadable).toBe(false);
     expect(stricter.requiredContrast).toBe(7);
   });
@@ -617,9 +614,7 @@ describe('Color.getTextReadabilityReport', () => {
   it('respects text size options', () => {
     const c1 = new Color('#555555');
     const c2 = new Color('#aaaaaa');
-    const report = c1.getTextReadabilityReport(c2, {
-      size: TextReadabilityTextSizeOptions.LARGE,
-    });
+    const report = c1.getTextReadabilityReport(c2, { size: 'LARGE' });
     expect(report.contrastRatio).toBeCloseTo(3.21, 2);
     expect(report.requiredContrast).toBe(3);
     expect(report.isReadable).toBe(true);
@@ -633,12 +628,8 @@ describe('Color.isReadableAsTextColor', () => {
     const c2 = new Color('#bbbbbb');
     expect(c1.isReadableAsTextColor(c2)).toBe(true);
     expect(c2.isReadableAsTextColor(c1)).toBe(true);
-    expect(c1.isReadableAsTextColor(c2, { level: TextReadabilityConformanceLevel.AAA })).toBe(
-      false
-    );
-    expect(c2.isReadableAsTextColor(c1, { level: TextReadabilityConformanceLevel.AAA })).toBe(
-      false
-    );
+    expect(c1.isReadableAsTextColor(c2, { level: 'AAA' })).toBe(false);
+    expect(c2.isReadableAsTextColor(c1, { level: 'AAA' })).toBe(false);
   });
 });
 

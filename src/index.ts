@@ -17,12 +17,11 @@ import {
 import type { ColorHarmony } from './color/harmonies';
 import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
-import {
+import type {
   TextReadabilityConformanceLevel,
-  TextReadabilityOptions,
-  TextReadabilityReport,
   TextReadabilityTextSizeOptions,
 } from './color/readability';
+import { TextReadabilityOptions, TextReadabilityReport } from './color/readability';
 import { ColorSwatch } from './color/swatch';
 import {
   ColorTemperatureAndLabel,
@@ -62,8 +61,8 @@ export {
   type MixSpace,
   type MixType,
   RandomColorOptions,
-  TextReadabilityConformanceLevel, // TODO (remove enum)
+  type TextReadabilityConformanceLevel,
   TextReadabilityOptions,
   TextReadabilityReport,
-  TextReadabilityTextSizeOptions, // TODO (remove enum)
+  type TextReadabilityTextSizeOptions,
 };

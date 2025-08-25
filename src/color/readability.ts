@@ -140,24 +140,21 @@ export function getAPCAReadabilityScore(foreground: Color, background: Color): n
   return getAPCAContrast(txtY, bgY);
 }
 
-export enum TextReadabilityConformanceLevel {
-  AA = 'AA',
-  AAA = 'AAA',
-}
+export type TextReadabilityConformanceLevel = 'AA' | 'AAA';
+export type TextReadabilityTextSizeOptions =
+  | 'SMALL' // normal body text (< 18pt or < 14pt if bold)
+  | 'LARGE'; // large-scale text (>= 18pt or >= 14pt if bold)
 
-export enum TextReadabilityTextSizeOptions {
-  SMALL = 'small', // normal body text (< 18pt or < 14pt if bold)
-  LARGE = 'large', // large-scale text (>= 18pt or >= 14pt if bold)
-}
-
-const WCAG_CONTRAST_READABILITY_THRESHOLDS = {
-  [TextReadabilityConformanceLevel.AA]: {
-    [TextReadabilityTextSizeOptions.SMALL]: 4.5,
-    [TextReadabilityTextSizeOptions.LARGE]: 3.0,
+const WCAG_CONTRAST_READABILITY_THRESHOLDS: {
+  [key in TextReadabilityConformanceLevel]: { [key in TextReadabilityTextSizeOptions]: number };
+} = {
+  AA: {
+    SMALL: 4.5,
+    LARGE: 3.0,
   },
-  [TextReadabilityConformanceLevel.AAA]: {
-    [TextReadabilityTextSizeOptions.SMALL]: 7.0,
-    [TextReadabilityTextSizeOptions.LARGE]: 4.5,
+  AAA: {
+    SMALL: 7.0,
+    LARGE: 4.5,
   },
 } as const;
 
@@ -178,10 +175,7 @@ export function getTextReadabilityReport(
   background: Color,
   options: TextReadabilityOptions = {}
 ): TextReadabilityReport {
-  const {
-    level = TextReadabilityConformanceLevel.AA,
-    size = TextReadabilityTextSizeOptions.SMALL,
-  } = options;
+  const { level = 'AA', size = 'SMALL' } = options;
 
   const contrastRatio = getWCAGContrastRatio(foreground, background);
   const requiredContrast = WCAG_CONTRAST_READABILITY_THRESHOLDS[level][size];
