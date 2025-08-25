@@ -304,28 +304,28 @@ describe('Color.getAlpha', () => {
 describe('Color.setAlpha', () => {
   it('updates the alpha channel', () => {
     const color = new Color(BASE_RGB);
-    color.setAlpha(0.5);
-    expect(color.getAlpha()).toBe(0.5);
-    expect(color.toHex8()).toBe(HEX8_SEMI_TRANSPARENT);
+    const updated = color.setAlpha(0.5);
+    expect(updated.getAlpha()).toBe(0.5);
+    expect(updated.toHex8()).toBe(HEX8_SEMI_TRANSPARENT);
   });
 
   it('clamps correctly when alpha is out of range', () => {
     const color = new Color({ ...BASE_RGB, a: 0.5 });
     expect(color.getAlpha()).toBe(0.5);
-    color.setAlpha(1.5);
-    expect(color.getAlpha()).toBe(1);
-    expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: 1 });
-    color.setAlpha(-0.1);
-    expect(color.getAlpha()).toBe(0);
-    expect(color.toRGBA()).toEqual({ ...BASE_RGB, a: 0 });
+    const updated1 = color.setAlpha(1.5);
+    expect(updated1.getAlpha()).toBe(1);
+    expect(updated1.toRGBA()).toEqual({ ...BASE_RGB, a: 1 });
+    const updated2 = updated1.setAlpha(-0.1);
+    expect(updated2.getAlpha()).toBe(0);
+    expect(updated2.toRGBA()).toEqual({ ...BASE_RGB, a: 0 });
   });
 
   it('defaults to full opacity for non-finite alpha values', () => {
     const invalidValues = [undefined, NaN, 'foo'];
     for (const value of invalidValues) {
       const color = new Color({ ...BASE_RGB, a: 0 });
-      color.setAlpha(value as unknown as number);
-      expect(color.getAlpha()).toBe(1);
+      const updated = color.setAlpha(value as unknown as number);
+      expect(updated.getAlpha()).toBe(1);
     }
   });
 

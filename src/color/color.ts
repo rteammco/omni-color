@@ -89,8 +89,7 @@ import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } f
  * converting between formats, performing manipulations like darkening or desaturating,
  * and generating harmonies and color palettes.
  *
- * {@link Color} instances are immutable - all operations except `setAlpha()` will return
- * a new {@link Color} instance representing the modified color.
+ * {@link Color} instances are immutable - all operations will return a new {@link Color} instance representing the modified color.
  *
  * @example
  * ```ts
@@ -133,6 +132,7 @@ export class Color {
    * Create a {@link Color} with a random RGB value.
    *
    * @param options - Optional {@link RandomColorOptions} for extra controls on alpha, hue, and palette suitability.
+   * @returns A new randomly-generated {@link Color}.
    *
    * @example
    * ```ts
@@ -147,6 +147,7 @@ export class Color {
    * Create an off-white {@link Color} representing the given color temperature.
    *
    * @param temperature - Temperature in Kelvin or a {@link ColorTemperatureLabel}.
+   * @returns A new {@link Color} representing the off-white color at the given temperature.
    *
    * @example
    * ```ts
@@ -308,19 +309,26 @@ export class Color {
   }
 
   /**
-   * Set the alpha channel of the color.
+   * Changes the alpha channel of any color, including fully-opaque colors.
+   *
+   * @returns A new {@link Color} with the modified alpha channel.
    *
    * @param alpha - New alpha value between `0` and `1`; defaults to `1` when the input is not a finite number.
+   * Values out of range will be clamped to the nearest valid value.
    */
   setAlpha(alpha: number): Color {
-    this.color.a = Number.isFinite(alpha) ? +clampValue(alpha, 0, 1).toFixed(3) : 1;
-    return this;
+    return new Color({
+      ...this.color,
+      a: Number.isFinite(alpha) ? +clampValue(alpha, 0, 1).toFixed(3) : 1,
+    });
   }
 
   /**
-   * Rotate the hue of the color by a number of degrees. Hue values range
+   * Rotate the hue of the color by the given number of degrees in HSL space. Hue values range
    * from 0–360 where 0 is red, 120 is green and 240 is blue. Values wrap
    * around the circle when they exceed that range.
+   *
+   * @returns A new {@link Color} with the modified hue.
    *
    * @example
    * ```ts
@@ -335,6 +343,7 @@ export class Color {
    * Increase the lightness of the color.
    *
    * @param percentage - Amount to increase in HSL lightness (default `10`).
+   * @returns A new {@link Color} with the modified lightness.
    *
    * @example
    * ```ts
@@ -349,6 +358,7 @@ export class Color {
    * Decrease the lightness of the color.
    *
    * @param percentage - Amount to decrease in HSL lightness (default `10`).
+   * @returns A new {@link Color} with the modified lightness.
    *
    * @example
    * ```ts
@@ -363,6 +373,7 @@ export class Color {
    * Increase the saturation of the color.
    *
    * @param percentage - Amount to increase in HSL saturation (default `10`).
+   * @returns A new {@link Color} with the modified saturation.
    *
    * @example
    * ```ts
@@ -378,6 +389,7 @@ export class Color {
    * Decrease the saturation of the color.
    *
    * @param percentage - Amount to decrease in HSL saturation (default `10`).
+   * @returns A new {@link Color} with the modified saturation.
    *
    * @example
    * ```ts
@@ -392,6 +404,8 @@ export class Color {
   /**
    * Convert the color to a grayscale equivalent. The color's lightness is preserved,
    * but saturation is reduced to 0.
+   *
+   * @returns A new {@link Color} with the modified saturation.
    */
   grayscale(): Color {
     return colorToGrayscale(this);
@@ -402,7 +416,7 @@ export class Color {
    *
    * @param others - Array of one or more other {@link Color}s to mix with.
    * @param options - Optional {@link MixColorsOptions} mixing options and weights.
-   * @returns A new color that is the result of the mix.
+   * @returns A new {@link Color} that is the result of the mixing.
    */
   mix(others: Color[], options?: MixColorsOptions): Color {
     if (others.length === 0) {
@@ -416,7 +430,7 @@ export class Color {
    *
    * @param other - The {@link Color} to blend with.
    * @param options - Optional {@link BlendColorsOptions} for blend mode, space, and ratio.
-   * @returns A new color that is the result of the blend.
+   * @returns A new {@link Color} that is the result of the blending.
    */
   blend(other: Color, options?: BlendColorsOptions): Color {
     return blendColors(this, other, options);
@@ -427,7 +441,7 @@ export class Color {
    *
    * @param others - Array of one or more other {@link Color}s to average with.
    * @param options - Optional {@link AverageColorsOptions} mix space and weights.
-   * @returns A new color that is the result of the averaging.
+   * @returns A new {@link Color} that is the result of the averaging.
    */
   average(others: Color[], options?: AverageColorsOptions): Color {
     if (others.length === 0) {
@@ -439,6 +453,8 @@ export class Color {
   /**
    * Get the base color and its complementary color (hues 180° apart).
    * The first element is the original color; the second is its complement.
+   *
+   * @returns Two new {@link Color}s representing the original color and its complement.
    *
    * @example
    * ```ts
@@ -455,6 +471,8 @@ export class Color {
    * Get the split-complementary harmony for the color. Returns the base
    * color and the two colors adjacent to its complement on the color wheel
    * (hues rotated by 150° and 210°).
+   *
+   * @returns Three new {@link Color}s representing the original color and its split-complementary colors.
    *
    * @example
    * ```ts
@@ -473,6 +491,8 @@ export class Color {
    * 120° apart on the color wheel and provide strong contrast while
    * retaining balance.
    *
+   * @returns Three new {@link Color}s representing the original color and its triadic harmony colors.
+   *
    * @example
    * ```ts
    * const [a, b, c] = new Color('#ff0000').getTriadicHarmonyColors();
@@ -488,6 +508,8 @@ export class Color {
   /**
    * Get the square harmony for the color. Square harmonies use four colors
    * 90° apart, forming a square on the color wheel.
+   *
+   * @returns Four new {@link Color}s representing the original color and its square harmony colors.
    *
    * @example
    * ```ts
@@ -506,6 +528,8 @@ export class Color {
    * Get the tetradic harmony for the color, consisting of two complementary
    * color pairs forming a rectangle on the color wheel.
    *
+   * @returns Four new {@link Color}s representing the original color and its tetradic harmony colors.
+   *
    * @example
    * ```ts
    * const [a, b, c, d] = new Color('#ff0000').getTetradicHarmonyColors();
@@ -522,6 +546,8 @@ export class Color {
   /**
    * Get the analogous harmony for the color. These are colors adjacent to
    * the base hue, offering subtle contrast.
+   *
+   * @returns Five new {@link Color}s representing the original color and its analogous harmony colors.
    *
    * @example
    * ```ts
@@ -541,6 +567,8 @@ export class Color {
    * Get a monochromatic harmony based on variations in lightness and
    * saturation of the base hue.
    *
+   * @returns Five new {@link Color}s representing the original color and its monochromatic harmony colors.
+   *
    * @example
    * ```ts
    * const [a, b, c, d, e] = new Color('#ff0000').getMonochromaticHarmonyColors();
@@ -559,6 +587,7 @@ export class Color {
    * Get harmony colors based on the given {@link ColorHarmony} type.
    *
    * @param harmony - Harmony algorithm to use.
+   * @returns A list of new {@link Color}s representing the original color and its harmony colors for the specified `harmony` option.
    */
   getHarmonyColors(harmony: ColorHarmony): Color[] {
     return getHarmonyColors(this, harmony);
@@ -568,6 +597,8 @@ export class Color {
    * Returns a {@link ColorSwatch} of lighter and darker variants of the color. The
    * returned object has keys `100`–`900` where `500` is the base color, lower
    * numbers are lighter and higher numbers are darker.
+   *
+   * @returns A {@link ColorSwatch} containing nine new {@link Color}s ranging from lightest (`100`) to darkest (`900`).
    *
    * @example
    * ```ts
@@ -588,6 +619,7 @@ export class Color {
    *
    * @param harmony - {@link ColorHarmony} used to generate secondary colors (default `'COMPLEMENTARY'`).
    * @param options - Optional {@link GenerateColorPaletteOptions} options for harmonizing neutral and semantic colors.
+   * @returns A {@link ColorPalette} containing {@link ColorSwatch}s and different palette values, each with new {@link Color}s.
    *
    * @example
    * ```ts
@@ -759,6 +791,8 @@ export class Color {
 
   /**
    * Create a copy of the color.
+   *
+   * @returns A new {@link Color} instance with the same color value.
    */
   clone(): Color {
     return new Color(this.color);
