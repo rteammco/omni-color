@@ -1,4 +1,4 @@
-import { BlendMode, BlendSpace, type BlendColorsOptions } from '../../../../dist';
+import type { BlendMode, BlendSpace, BlendColorsOptions } from '../../../../dist';
 
 interface Props {
   blendOptions: BlendColorsOptions;
@@ -15,10 +15,10 @@ export function BlendColorsOptionInputs({ blendOptions, onOptionsChanged }: Prop
           value={blendOptions.mode}
           onChange={(e) => onOptionsChanged({ ...blendOptions, mode: e.target.value as BlendMode })}
         >
-          <option value={BlendMode.NORMAL}>Normal</option>
-          <option value={BlendMode.MULTIPLY}>Multiply</option>
-          <option value={BlendMode.SCREEN}>Screen</option>
-          <option value={BlendMode.OVERLAY}>Overlay</option>
+          <option value="NORMAL">Normal</option>
+          <option value="MULTIPLY">Multiply</option>
+          <option value="SCREEN">Screen</option>
+          <option value="OVERLAY">Overlay</option>
         </select>
       </label>
       &middot;
@@ -31,8 +31,8 @@ export function BlendColorsOptionInputs({ blendOptions, onOptionsChanged }: Prop
             onOptionsChanged({ ...blendOptions, space: e.target.value as BlendSpace })
           }
         >
-          <option value={BlendSpace.RGB}>RGB</option>
-          <option value={BlendSpace.HSL}>HSL</option>
+          <option value="RGB">RGB</option>
+          <option value="HSL">HSL</option>
         </select>
       </label>
       &middot;

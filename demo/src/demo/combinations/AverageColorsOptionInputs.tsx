@@ -1,4 +1,4 @@
-import { MixSpace, type AverageColorsOptions } from '../../../../dist';
+import type { MixSpace, AverageColorsOptions } from '../../../../dist';
 
 interface Props {
   mixOptions: AverageColorsOptions;
@@ -15,10 +15,10 @@ export function AverageColorsOptionInputs({ mixOptions, onOptionsChanged }: Prop
           value={mixOptions.space}
           onChange={(e) => onOptionsChanged({ ...mixOptions, space: e.target.value as MixSpace })}
         >
-          <option value={MixSpace.RGB}>RGB</option>
-          <option value={MixSpace.HSL}>HSL</option>
-          <option value={MixSpace.LCH}>LCH</option>
-          <option value={MixSpace.OKLCH}>OKLCH</option>
+          <option value="RGB">RGB</option>
+          <option value="HSL">HSL</option>
+          <option value="LCH">LCH</option>
+          <option value="OKLCH">OKLCH</option>
         </select>
       </label>
     </div>

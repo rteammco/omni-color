@@ -1,10 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
-  BlendMode,
-  BlendSpace,
   Color,
-  MixSpace,
-  MixType,
   type AverageColorsOptions,
   type BlendColorsOptions,
   type MixColorsOptions,
@@ -20,18 +16,18 @@ interface Props {
 
 export function ColorCombinationDemo({ color }: Props) {
   const [mixOptions, setMixOptions] = useState<MixColorsOptions>({
-    space: MixSpace.RGB,
-    type: MixType.ADDITIVE,
+    space: 'RGB',
+    type: 'ADDITIVE',
   });
 
   const [blendOptions, setBlendOptions] = useState<BlendColorsOptions>({
-    mode: BlendMode.NORMAL,
-    space: BlendSpace.RGB,
+    mode: 'NORMAL',
+    space: 'RGB',
     ratio: 0.5,
   });
 
   const [averageOptions, setAverageOptions] = useState<AverageColorsOptions>({
-    space: MixSpace.RGB,
+    space: 'RGB',
   });
 
   const { red, green, blue } = useMemo(() => {

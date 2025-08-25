@@ -3,17 +3,8 @@ import { Color } from './color';
 import { toCMYK } from './conversions';
 import { ColorCMYK, ColorHSL, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
 
-export enum MixType {
-  ADDITIVE = 'ADDITIVE',
-  SUBTRACTIVE = 'SUBTRACTIVE',
-}
-
-export enum MixSpace {
-  RGB = 'RGB',
-  HSL = 'HSL',
-  LCH = 'LCH',
-  OKLCH = 'OKLCH',
-}
+export type MixType = 'ADDITIVE' | 'SUBTRACTIVE';
+export type MixSpace = 'RGB' | 'HSL' | 'LCH' | 'OKLCH';
 
 export interface MixColorsOptions {
   space?: MixSpace;
@@ -76,29 +67,7 @@ function mixColorsAdditive(
   normalizedWeights: number[]
 ) {
   switch (space) {
-    case MixSpace.RGB:
-    default: {
-      let r = 0;
-      let g = 0;
-      let b = 0;
-      let a = 0;
-      colors.forEach((color, i) => {
-        const val: ColorRGBA = color.toRGBA();
-        const weight = weights[i];
-        r += val.r * weight;
-        g += val.g * weight;
-        b += val.b * weight;
-        a += (val.a ?? 1) * weight;
-      });
-      const result: ColorRGBA = {
-        r: Math.round(clampValue(r, 0, 255)),
-        g: Math.round(clampValue(g, 0, 255)),
-        b: Math.round(clampValue(b, 0, 255)),
-        a: +clampValue(a / sumOfWeights, 0, 1).toFixed(3),
-      };
-      return new Color(result);
-    }
-    case MixSpace.HSL: {
+    case 'HSL': {
       let x = 0;
       let y = 0;
       let s = 0;
@@ -120,7 +89,7 @@ function mixColorsAdditive(
       };
       return new Color(result);
     }
-    case MixSpace.LCH: {
+    case 'LCH': {
       let l = 0;
       let c = 0;
       let h = 0;
@@ -134,7 +103,7 @@ function mixColorsAdditive(
       const result: ColorLCH = { l, c, h };
       return new Color(result);
     }
-    case MixSpace.OKLCH: {
+    case 'OKLCH': {
       let l = 0;
       let c = 0;
       let h = 0;
@@ -148,6 +117,28 @@ function mixColorsAdditive(
       const result: ColorOKLCH = { l, c, h };
       return new Color(result);
     }
+    case 'RGB':
+    default: {
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let a = 0;
+      colors.forEach((color, i) => {
+        const val: ColorRGBA = color.toRGBA();
+        const weight = weights[i];
+        r += val.r * weight;
+        g += val.g * weight;
+        b += val.b * weight;
+        a += (val.a ?? 1) * weight;
+      });
+      const result: ColorRGBA = {
+        r: Math.round(clampValue(r, 0, 255)),
+        g: Math.round(clampValue(g, 0, 255)),
+        b: Math.round(clampValue(b, 0, 255)),
+        a: +clampValue(a / sumOfWeights, 0, 1).toFixed(3),
+      };
+      return new Color(result);
+    }
   }
 }
 
@@ -155,27 +146,18 @@ export function mixColors(colors: Color[], options: MixColorsOptions = {}): Colo
   if (colors.length < 2) {
     throw new Error('at least two colors are required for mixing');
   }
-  const { type = MixType.ADDITIVE, space = MixSpace.RGB } = options;
+  const { type = 'ADDITIVE', space = 'RGB' } = options;
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
 
-  if (type === MixType.SUBTRACTIVE) {
+  if (type === 'SUBTRACTIVE') {
     return mixColorsSubtractive(colors, normalizedWeights);
   }
 
   return mixColorsAdditive(colors, space, weights, sumOfWeights, normalizedWeights);
 }
 
-export enum BlendMode {
-  NORMAL = 'NORMAL',
-  MULTIPLY = 'MULTIPLY',
-  SCREEN = 'SCREEN',
-  OVERLAY = 'OVERLAY',
-}
-
-export enum BlendSpace {
-  RGB = 'RGB',
-  HSL = 'HSL',
-}
+export type BlendMode = 'NORMAL' | 'MULTIPLY' | 'SCREEN' | 'OVERLAY';
+export type BlendSpace = 'RGB' | 'HSL';
 
 export interface BlendColorsOptions {
   mode?: BlendMode;
@@ -185,13 +167,13 @@ export interface BlendColorsOptions {
 
 function blendChannel(mode: BlendMode, base: number, blend: number): number {
   switch (mode) {
-    case BlendMode.MULTIPLY:
+    case 'MULTIPLY':
       return (base * blend) / 255;
-    case BlendMode.SCREEN:
+    case 'SCREEN':
       return 255 - ((255 - base) * (255 - blend)) / 255;
-    case BlendMode.OVERLAY:
+    case 'OVERLAY':
       return base < 128 ? (2 * base * blend) / 255 : 255 - (2 * (255 - base) * (255 - blend)) / 255;
-    case BlendMode.NORMAL:
+    case 'NORMAL':
     default:
       return blend;
   }
@@ -227,10 +209,10 @@ function blendColorsInHSLSpace(base: Color, blend: Color, ratio: number): Color 
 }
 
 export function blendColors(base: Color, blend: Color, options: BlendColorsOptions = {}): Color {
-  const { mode = BlendMode.NORMAL, space = BlendSpace.RGB, ratio: inputRatio = 0.5 } = options;
+  const { mode = 'NORMAL', space = 'RGB', ratio: inputRatio = 0.5 } = options;
   const ratio = clampValue(inputRatio, 0, 1);
 
-  if (space === BlendSpace.RGB) {
+  if (space === 'RGB') {
     return blendColorsInRGBSpace(base, blend, mode, ratio);
   }
 
@@ -255,32 +237,11 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
   if (colors.length < 2) {
     throw new Error('at least two colors are required for averaging');
   }
-  const { space = MixSpace.RGB } = options;
+  const { space = 'RGB' } = options;
   const { normalizedWeights } = getWeights(colors.length, options.weights);
 
   switch (space) {
-    case MixSpace.RGB:
-    default: {
-      let r = 0;
-      let g = 0;
-      let b = 0;
-      let a = 0;
-      colors.forEach((color, i) => {
-        const val: ColorRGBA = color.toRGBA();
-        const weight = normalizedWeights[i];
-        r += val.r * weight;
-        g += val.g * weight;
-        b += val.b * weight;
-        a += (val.a ?? 1) * weight;
-      });
-      return new Color({
-        r: Math.round(r),
-        g: Math.round(g),
-        b: Math.round(b),
-        a: +a.toFixed(3),
-      });
-    }
-    case MixSpace.HSL: {
+    case 'HSL': {
       let x = 0;
       let y = 0;
       let s = 0;
@@ -301,7 +262,7 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
         l: Math.round(l),
       });
     }
-    case MixSpace.LCH: {
+    case 'LCH': {
       let l = 0;
       let c = 0;
       let h = 0;
@@ -314,7 +275,7 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
       });
       return new Color({ l, c, h });
     }
-    case MixSpace.OKLCH: {
+    case 'OKLCH': {
       let l = 0;
       let c = 0;
       let h = 0;
@@ -326,6 +287,27 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
         h += val.h * weight;
       });
       return new Color({ l, c, h });
+    }
+    case 'RGB':
+    default: {
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let a = 0;
+      colors.forEach((color, i) => {
+        const val: ColorRGBA = color.toRGBA();
+        const weight = normalizedWeights[i];
+        r += val.r * weight;
+        g += val.g * weight;
+        b += val.b * weight;
+        a += (val.a ?? 1) * weight;
+      });
+      return new Color({
+        r: Math.round(r),
+        g: Math.round(g),
+        b: Math.round(b),
+        a: +a.toFixed(3),
+      });
     }
   }
 }

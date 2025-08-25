@@ -1,4 +1,4 @@
-import { MixSpace, MixType, type MixColorsOptions } from '../../../../dist';
+import type { MixSpace, MixType, MixColorsOptions } from '../../../../dist';
 
 interface Props {
   mixOptions: MixColorsOptions;
@@ -15,8 +15,8 @@ export function MixColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
           value={mixOptions.type}
           onChange={(e) => onOptionsChanged({ ...mixOptions, type: e.target.value as MixType })}
         >
-          <option value={MixType.ADDITIVE}>Additive</option>
-          <option value={MixType.SUBTRACTIVE}>Subtractive</option>
+          <option value="ADDITIVE">Additive</option>
+          <option value="SUBTRACTIVE">Subtractive</option>
         </select>
       </label>
       &middot;
@@ -27,10 +27,10 @@ export function MixColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
           value={mixOptions.space}
           onChange={(e) => onOptionsChanged({ ...mixOptions, space: e.target.value as MixSpace })}
         >
-          <option value={MixSpace.RGB}>RGB</option>
-          <option value={MixSpace.HSL}>HSL</option>
-          <option value={MixSpace.LCH}>LCH</option>
-          <option value={MixSpace.OKLCH}>OKLCH</option>
+          <option value="RGB">RGB</option>
+          <option value="HSL">HSL</option>
+          <option value="LCH">LCH</option>
+          <option value="OKLCH">OKLCH</option>
         </select>
       </label>
     </div>
