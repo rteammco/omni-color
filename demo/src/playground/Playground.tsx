@@ -55,6 +55,7 @@ export function Playground() {
         className={`px-4 py-2 w-full sm:w-xl md:w-2xl lg:w-4xl h-60 border-1 ${
           codeErrorMessage ? 'border-red-500' : 'border-gray-200'
         } rounded-md shadow-md font-mono text-sm`}
+        spellCheck={false}
         value={code}
         onChange={handleCodeChanged}
       />
