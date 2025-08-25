@@ -125,6 +125,7 @@ export class Color {
    * ```
    */
   constructor(color?: ColorFormat | Color | string | null) {
+    // getColorRGBAFromInput always returns a fresh object
     this.color = getColorRGBAFromInput(color);
   }
 
@@ -204,7 +205,7 @@ export class Color {
    * Get the color as a {@link ColorRGBA} `{ r, g, b, a }` object.
    */
   toRGBA(): ColorRGBA {
-    return this.color;
+    return { ...this.color };
   }
 
   /**
@@ -795,6 +796,6 @@ export class Color {
    * @returns A new {@link Color} instance with the same color value.
    */
   clone(): Color {
-    return new Color(this.color);
+    return new Color({ ...this.color });
   }
 }

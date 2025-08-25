@@ -438,7 +438,7 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
     case 'RGB':
       return rgbToRGBA(value);
     case 'RGBA':
-      return value;
+      return { ...value };
     case 'HSL':
       return rgbToRGBA(hslToRGB(value));
     case 'HSLA':
