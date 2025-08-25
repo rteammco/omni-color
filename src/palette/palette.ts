@@ -4,13 +4,7 @@ import { type ColorHarmony } from '../color/harmonies';
 import { ColorSwatch } from '../color/swatch';
 import { clampValue } from '../utils';
 
-enum SemanticColor {
-  INFO = 'info',
-  POSITIVE = 'positive',
-  NEGATIVE = 'negative',
-  WARNING = 'warning',
-  SPECIAL = 'special',
-}
+type SemanticColor = 'info' | 'positive' | 'negative' | 'warning' | 'special';
 
 export interface ColorPalette {
   // Main colors:
@@ -24,31 +18,31 @@ export interface ColorPalette {
   white: Color;
 
   // Semantic colors:
-  [SemanticColor.INFO]: ColorSwatch;
-  [SemanticColor.NEGATIVE]: ColorSwatch;
-  [SemanticColor.POSITIVE]: ColorSwatch;
-  [SemanticColor.SPECIAL]: ColorSwatch;
-  [SemanticColor.WARNING]: ColorSwatch;
+  info: ColorSwatch;
+  negative: ColorSwatch;
+  positive: ColorSwatch;
+  special: ColorSwatch;
+  warning: ColorSwatch;
 }
 
 // TODO: derive from actual color values
 const SEMANTIC_COLOR_TO_BASE_OKLCH_HUE_MAP: { [key in SemanticColor]: number } = {
-  [SemanticColor.INFO]: 265, // blue
-  [SemanticColor.POSITIVE]: 150, // green
-  [SemanticColor.NEGATIVE]: 20, // orange/red
-  [SemanticColor.WARNING]: 90, // amber/yellow
-  [SemanticColor.SPECIAL]: 302, // magenta
+  info: 265, // blue
+  positive: 150, // green
+  negative: 20, // orange/red
+  warning: 90, // amber/yellow
+  special: 302, // magenta
   // TODO: consider SPECIAL_ALT which ranges ~282 and is purple
 } as const;
 
 const SEMANTIC_COLOR_TO_CHROMA_FACTOR_MAP: {
   [key in SemanticColor]: { chromaFactor: number; minAllowableChroma: number };
 } = {
-  [SemanticColor.INFO]: { chromaFactor: 0.9, minAllowableChroma: 0.04 },
-  [SemanticColor.POSITIVE]: { chromaFactor: 1.0, minAllowableChroma: 0.05 },
-  [SemanticColor.NEGATIVE]: { chromaFactor: 1.1, minAllowableChroma: 0.06 },
-  [SemanticColor.WARNING]: { chromaFactor: 1.1, minAllowableChroma: 0.06 },
-  [SemanticColor.SPECIAL]: { chromaFactor: 1.0, minAllowableChroma: 0.05 },
+  info: { chromaFactor: 0.9, minAllowableChroma: 0.04 },
+  positive: { chromaFactor: 1.0, minAllowableChroma: 0.05 },
+  negative: { chromaFactor: 1.1, minAllowableChroma: 0.06 },
+  warning: { chromaFactor: 1.1, minAllowableChroma: 0.06 },
+  special: { chromaFactor: 1.0, minAllowableChroma: 0.05 },
 } as const;
 
 interface SemanticColorHarmonizationOptions {
@@ -181,29 +175,25 @@ export function generateColorPaletteFromBaseColor(
     ).getColorSwatch(),
     back: new Color(BLACK_HEX),
     white: new Color(WHITE_HEX),
-    [SemanticColor.INFO]: harmonizeSemanticColor(
+    info: harmonizeSemanticColor(baseColor, 'info', semanticHarmonizationOptions).getColorSwatch(),
+    positive: harmonizeSemanticColor(
       baseColor,
-      SemanticColor.INFO,
+      'positive',
       semanticHarmonizationOptions
     ).getColorSwatch(),
-    [SemanticColor.POSITIVE]: harmonizeSemanticColor(
+    negative: harmonizeSemanticColor(
       baseColor,
-      SemanticColor.POSITIVE,
+      'negative',
       semanticHarmonizationOptions
     ).getColorSwatch(),
-    [SemanticColor.NEGATIVE]: harmonizeSemanticColor(
+    warning: harmonizeSemanticColor(
       baseColor,
-      SemanticColor.NEGATIVE,
+      'warning',
       semanticHarmonizationOptions
     ).getColorSwatch(),
-    [SemanticColor.WARNING]: harmonizeSemanticColor(
+    special: harmonizeSemanticColor(
       baseColor,
-      SemanticColor.WARNING,
-      semanticHarmonizationOptions
-    ).getColorSwatch(),
-    [SemanticColor.SPECIAL]: harmonizeSemanticColor(
-      baseColor,
-      SemanticColor.SPECIAL,
+      'special',
       semanticHarmonizationOptions
     ).getColorSwatch(),
   };
