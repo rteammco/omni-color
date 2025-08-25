@@ -16,6 +16,11 @@ export function AppFooter() {
         <a href="https://github.com/Myndex/apca-w3">APCA W3C</a>
         <a href="https://git.apcacontrast.com/documentation/">APCA documentation</a>
       </div>
+      <div className="flex flex-col gap-1">
+        <span className="mb-1 font-semibold text-neutral-500">Demo libraries</span>
+        <a href="https://tailwindcss.com/">tailwindcss.com</a>
+        <a href="https://heroicons.com/">heroicons.com</a>
+      </div>
     </div>
   );
 }
