@@ -1,7 +1,6 @@
 import {
   ColorCMYK,
   ColorFormat,
-  ColorFormatType,
   ColorHSL,
   ColorHSLA,
   ColorHSV,
@@ -110,53 +109,53 @@ export function validateColorOrThrow(color?: ColorFormat | null): void {
 
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
-    case ColorFormatType.HEX:
-    case ColorFormatType.HEX8:
+    case 'HEX':
+    case 'HEX8':
       if (!isValidHexColor(value)) {
         throw new Error(`invalid hex color: "${value}"`);
       }
       break;
-    case ColorFormatType.RGB:
+    case 'RGB':
       if (!isValidRGBColor(value)) {
         throw new Error(`invalid RGB color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.RGBA:
+    case 'RGBA':
       if (!isValidRGBAColor(value)) {
         throw new Error(`invalid RGBA color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.HSL:
+    case 'HSL':
       if (!isValidHSLColor(value)) {
         throw new Error(`invalid HSL color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.HSLA:
+    case 'HSLA':
       if (!isValidHSLAColor(value)) {
         throw new Error(`invalid HSLA color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.HSV:
+    case 'HSV':
       if (!isValidHSVColor(value)) {
         throw new Error(`invalid HSV color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.HSVA:
+    case 'HSVA':
       if (!isValidHSVAColor(value)) {
         throw new Error(`invalid HSVA color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.CMYK:
+    case 'CMYK':
       if (!isValidCMYKColor(value)) {
         throw new Error(`invalid CMYK color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.LCH:
+    case 'LCH':
       if (!isValidLCHColor(value)) {
         throw new Error(`invalid LCH color: "${JSON.stringify(value)}"`);
       }
       break;
-    case ColorFormatType.OKLCH:
+    case 'OKLCH':
       if (!isValidOKLCHColor(value)) {
         throw new Error(`invalid OKLCH color: "${JSON.stringify(value)}"`);
       }

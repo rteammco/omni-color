@@ -1,7 +1,6 @@
 import { Color } from '../color';
 import {
   cmykToString,
-  ColorFormatType,
   getColorFormatType,
   hslaToString,
   hslToString,
@@ -356,81 +355,77 @@ describe('oklchToString', () => {
 
 describe('getColorFormatType', () => {
   it('detects hex values', () => {
-    expect(getColorFormatType('#000').formatType).toBe(ColorFormatType.HEX);
+    expect(getColorFormatType('#000').formatType).toBe('HEX');
     expect(getColorFormatType('#000')).toEqual({
-      formatType: ColorFormatType.HEX,
+      formatType: 'HEX',
       value: '#000000',
     });
 
     expect(getColorFormatType('#abcdef')).toEqual({
-      formatType: ColorFormatType.HEX,
+      formatType: 'HEX',
       value: '#abcdef',
     });
 
     expect(getColorFormatType('#ABCDEF')).toEqual({
-      formatType: ColorFormatType.HEX,
+      formatType: 'HEX',
       value: '#abcdef',
     });
 
     expect(getColorFormatType('#11223344')).toEqual({
-      formatType: ColorFormatType.HEX8,
+      formatType: 'HEX8',
       value: '#11223344',
     });
   });
 
   it('detects object formats', () => {
     expect(getColorFormatType({ r: 1, g: 2, b: 3 })).toEqual({
-      formatType: ColorFormatType.RGB,
+      formatType: 'RGB',
       value: { r: 1, g: 2, b: 3 },
     });
 
     expect(getColorFormatType({ r: 1, g: 2, b: 3, a: 0.4 })).toEqual({
-      formatType: ColorFormatType.RGBA,
+      formatType: 'RGBA',
       value: { r: 1, g: 2, b: 3, a: 0.4 },
     });
 
     expect(getColorFormatType({ h: 10, s: 20, l: 30 })).toEqual({
-      formatType: ColorFormatType.HSL,
+      formatType: 'HSL',
       value: { h: 10, s: 20, l: 30 },
     });
 
     expect(getColorFormatType({ h: 10, s: 20, l: 30, a: 0.5 })).toEqual({
-      formatType: ColorFormatType.HSLA,
+      formatType: 'HSLA',
       value: { h: 10, s: 20, l: 30, a: 0.5 },
     });
 
     expect(getColorFormatType({ h: 10, s: 20, v: 30 })).toEqual({
-      formatType: ColorFormatType.HSV,
+      formatType: 'HSV',
       value: { h: 10, s: 20, v: 30 },
     });
 
     expect(getColorFormatType({ h: 10, s: 20, v: 30, a: 0.5 })).toEqual({
-      formatType: ColorFormatType.HSVA,
+      formatType: 'HSVA',
       value: { h: 10, s: 20, v: 30, a: 0.5 },
     });
 
     expect(getColorFormatType({ c: 1, m: 2, y: 3, k: 4 })).toEqual({
-      formatType: ColorFormatType.CMYK,
+      formatType: 'CMYK',
       value: { c: 1, m: 2, y: 3, k: 4 },
     });
 
     expect(getColorFormatType({ l: 50, c: 20, h: 100 })).toEqual({
-      formatType: ColorFormatType.LCH,
+      formatType: 'LCH',
       value: { l: 50, c: 20, h: 100 },
     });
 
     expect(getColorFormatType({ l: 0.5, c: 0.2, h: 100 })).toEqual({
-      formatType: ColorFormatType.OKLCH,
+      formatType: 'OKLCH',
       value: { l: 0.5, c: 0.2, h: 100 },
     });
   });
 
   it('throws on unknown formats', () => {
-    expect(() => getColorFormatType('abc' as any)).toThrow(
-      /unknown color format/
-    );
-    expect(() => getColorFormatType({} as any)).toThrow(
-      /unknown color format/
-    );
+    expect(() => getColorFormatType('abc' as any)).toThrow(/unknown color format/);
+    expect(() => getColorFormatType({} as any)).toThrow(/unknown color format/);
   });
 });

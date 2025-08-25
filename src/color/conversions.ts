@@ -1,7 +1,6 @@
 import {
   ColorCMYK,
   ColorFormat,
-  ColorFormatType,
   ColorHex,
   ColorHSL,
   ColorHSLA,
@@ -403,26 +402,26 @@ export function toRGB(color: ColorFormat): ColorRGB {
   validateColorOrThrow(color);
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
-    case ColorFormatType.HEX:
-    case ColorFormatType.HEX8:
+    case 'HEX':
+    case 'HEX8':
       return hexOrHex8ToRGB(value);
-    case ColorFormatType.RGB:
+    case 'RGB':
       return value;
-    case ColorFormatType.RGBA:
+    case 'RGBA':
       return rgbaToRGB(value);
-    case ColorFormatType.HSL:
+    case 'HSL':
       return hslToRGB(value);
-    case ColorFormatType.HSLA:
+    case 'HSLA':
       return rgbaToRGB(hslaToRGBA(value));
-    case ColorFormatType.HSV:
+    case 'HSV':
       return hsvToRGB(value);
-    case ColorFormatType.HSVA:
+    case 'HSVA':
       return rgbaToRGB(hsvaToRGBA(value));
-    case ColorFormatType.CMYK:
+    case 'CMYK':
       return cmykToRGB(value);
-    case ColorFormatType.LCH:
+    case 'LCH':
       return lchToRGB(value);
-    case ColorFormatType.OKLCH:
+    case 'OKLCH':
       return oklchToRGB(value);
     default:
       throw new Error(`unknown color format: ${formatType}`);
@@ -433,26 +432,26 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
   validateColorOrThrow(color);
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
-    case ColorFormatType.HEX:
-    case ColorFormatType.HEX8:
+    case 'HEX':
+    case 'HEX8':
       return hexOrHex8ToRGBA(value);
-    case ColorFormatType.RGB:
+    case 'RGB':
       return rgbToRGBA(value);
-    case ColorFormatType.RGBA:
+    case 'RGBA':
       return value;
-    case ColorFormatType.HSL:
+    case 'HSL':
       return rgbToRGBA(hslToRGB(value));
-    case ColorFormatType.HSLA:
+    case 'HSLA':
       return hslaToRGBA(value);
-    case ColorFormatType.HSV:
+    case 'HSV':
       return hsvToRGBA(value);
-    case ColorFormatType.HSVA:
+    case 'HSVA':
       return hsvaToRGBA(value);
-    case ColorFormatType.CMYK:
+    case 'CMYK':
       return cmykToRGBA(value);
-    case ColorFormatType.LCH:
+    case 'LCH':
       return lchToRGBA(value);
-    case ColorFormatType.OKLCH:
+    case 'OKLCH':
       return oklchToRGBA(value);
     default:
       throw new Error(`unknown color format: ${formatType}`);
@@ -463,27 +462,27 @@ export function toHex(color: ColorFormat): ColorHex {
   validateColorOrThrow(color);
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
-    case ColorFormatType.HEX:
+    case 'HEX':
       return value;
-    case ColorFormatType.HEX8:
+    case 'HEX8':
       return value.substring(0, 7) as ColorHex;
-    case ColorFormatType.RGB:
+    case 'RGB':
       return rgbToHex(value);
-    case ColorFormatType.RGBA:
+    case 'RGBA':
       return rgbaToHex(value);
-    case ColorFormatType.HSL:
+    case 'HSL':
       return rgbToHex(hslToRGB(value));
-    case ColorFormatType.HSLA:
+    case 'HSLA':
       return rgbaToHex(hslaToRGBA(value));
-    case ColorFormatType.HSV:
+    case 'HSV':
       return rgbToHex(hsvToRGB(value));
-    case ColorFormatType.HSVA:
+    case 'HSVA':
       return rgbaToHex(hsvaToRGBA(value));
-    case ColorFormatType.CMYK:
+    case 'CMYK':
       return rgbToHex(cmykToRGB(value));
-    case ColorFormatType.LCH:
+    case 'LCH':
       return rgbToHex(lchToRGB(value));
-    case ColorFormatType.OKLCH:
+    case 'OKLCH':
       return rgbToHex(oklchToRGB(value));
     default:
       throw new Error(`unknown color format: ${formatType}`);
@@ -494,27 +493,27 @@ export function toHex8(color: ColorFormat): ColorHex {
   validateColorOrThrow(color);
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
-    case ColorFormatType.HEX:
+    case 'HEX':
       return `${value}ff` as ColorHex;
-    case ColorFormatType.HEX8:
+    case 'HEX8':
       return value;
-    case ColorFormatType.RGB:
+    case 'RGB':
       return rgbToHex8(value);
-    case ColorFormatType.RGBA:
+    case 'RGBA':
       return rgbaToHex8(value);
-    case ColorFormatType.HSL:
+    case 'HSL':
       return rgbToHex8(hslToRGB(value));
-    case ColorFormatType.HSLA:
+    case 'HSLA':
       return rgbaToHex8(hslaToRGBA(value));
-    case ColorFormatType.HSV:
+    case 'HSV':
       return rgbToHex8(hsvToRGB(value));
-    case ColorFormatType.HSVA:
+    case 'HSVA':
       return rgbaToHex8(hsvaToRGBA(value));
-    case ColorFormatType.CMYK:
+    case 'CMYK':
       return rgbToHex8(cmykToRGB(value));
-    case ColorFormatType.LCH:
+    case 'LCH':
       return rgbToHex8(lchToRGB(value));
-    case ColorFormatType.OKLCH:
+    case 'OKLCH':
       return rgbToHex8(oklchToRGB(value));
     default:
       throw new Error(`unknown color format: ${formatType}`);

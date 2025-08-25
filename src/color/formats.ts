@@ -61,48 +61,34 @@ export type ColorFormat =
   | ColorLCH
   | ColorOKLCH;
 
-export enum ColorFormatType {
-  HEX = 'hex',
-  HEX8 = 'hex8',
-  RGB = 'rgb',
-  RGBA = 'rgba',
-  HSL = 'hsl',
-  HSLA = 'hsla',
-  HSV = 'hsv',
-  HSVA = 'hsva',
-  CMYK = 'cmyk',
-  LCH = 'lch',
-  OKLCH = 'oklch',
-}
-
 type ColorFormatTypeAndValue =
-  | { formatType: ColorFormatType.HEX; value: ColorHex }
-  | { formatType: ColorFormatType.HEX8; value: ColorHex }
-  | { formatType: ColorFormatType.RGB; value: ColorRGB }
-  | { formatType: ColorFormatType.RGBA; value: ColorRGBA }
-  | { formatType: ColorFormatType.HSL; value: ColorHSL }
-  | { formatType: ColorFormatType.HSLA; value: ColorHSLA }
-  | { formatType: ColorFormatType.HSV; value: ColorHSV }
-  | { formatType: ColorFormatType.HSVA; value: ColorHSVA }
-  | { formatType: ColorFormatType.CMYK; value: ColorCMYK }
-  | { formatType: ColorFormatType.LCH; value: ColorLCH }
-  | { formatType: ColorFormatType.OKLCH; value: ColorOKLCH };
+  | { formatType: 'HEX'; value: ColorHex }
+  | { formatType: 'HEX8'; value: ColorHex }
+  | { formatType: 'RGB'; value: ColorRGB }
+  | { formatType: 'RGBA'; value: ColorRGBA }
+  | { formatType: 'HSL'; value: ColorHSL }
+  | { formatType: 'HSLA'; value: ColorHSLA }
+  | { formatType: 'HSV'; value: ColorHSV }
+  | { formatType: 'HSVA'; value: ColorHSVA }
+  | { formatType: 'CMYK'; value: ColorCMYK }
+  | { formatType: 'LCH'; value: ColorLCH }
+  | { formatType: 'OKLCH'; value: ColorOKLCH };
 
 function getHexColorFormatType(color: ColorHex): ColorFormatTypeAndValue {
   const colorLowerCase = color.toLowerCase();
   if (colorLowerCase.startsWith('#')) {
     if (colorLowerCase.length === 4) {
       return {
-        formatType: ColorFormatType.HEX,
+        formatType: 'HEX',
         value:
           `#${colorLowerCase[1]}${colorLowerCase[1]}${colorLowerCase[2]}${colorLowerCase[2]}${colorLowerCase[3]}${colorLowerCase[3]}` as ColorHex,
       };
     }
     if (colorLowerCase.length === 7) {
-      return { formatType: ColorFormatType.HEX, value: colorLowerCase as ColorHex };
+      return { formatType: 'HEX', value: colorLowerCase as ColorHex };
     }
     if (colorLowerCase.length === 9) {
-      return { formatType: ColorFormatType.HEX8, value: colorLowerCase as ColorHex };
+      return { formatType: 'HEX8', value: colorLowerCase as ColorHex };
     }
   }
   throw new Error(`unknown color format: "${JSON.stringify(color)}"`);
@@ -114,35 +100,35 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
   }
 
   if ('c' in color && 'm' in color && 'y' in color && 'k' in color) {
-    return { formatType: ColorFormatType.CMYK, value: color };
+    return { formatType: 'CMYK', value: color };
   }
 
   if ('h' in color && 's' in color && 'v' in color) {
     return 'a' in color
-      ? { formatType: ColorFormatType.HSVA, value: color }
-      : { formatType: ColorFormatType.HSV, value: color };
+      ? { formatType: 'HSVA', value: color }
+      : { formatType: 'HSV', value: color };
   }
 
   if ('h' in color && 's' in color && 'l' in color) {
     return 'a' in color
-      ? { formatType: ColorFormatType.HSLA, value: color }
-      : { formatType: ColorFormatType.HSL, value: color };
+      ? { formatType: 'HSLA', value: color }
+      : { formatType: 'HSL', value: color };
   }
 
   if ('h' in color && 'l' in color && 'c' in color) {
     const { l, c, h } = color;
     if (l <= 1) {
       const oklch: ColorOKLCH = { l, c, h };
-      return { formatType: ColorFormatType.OKLCH, value: oklch };
+      return { formatType: 'OKLCH', value: oklch };
     }
     const lch: ColorLCH = { l, c, h };
-    return { formatType: ColorFormatType.LCH, value: lch };
+    return { formatType: 'LCH', value: lch };
   }
 
   if ('r' in color && 'g' in color && 'b' in color) {
     return 'a' in color
-      ? { formatType: ColorFormatType.RGBA, value: color }
-      : { formatType: ColorFormatType.RGB, value: color };
+      ? { formatType: 'RGBA', value: color }
+      : { formatType: 'RGB', value: color };
   }
 
   throw new Error(`unknown color format: "${JSON.stringify(color)}"`);
