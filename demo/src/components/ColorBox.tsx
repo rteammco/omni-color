@@ -30,9 +30,9 @@ export function ColorBox({
   return (
     <div
       style={{ backgroundColor, borderColor }}
-      className={`w-${extraWide ? 32 : 16} h-16 flex flex-col justify-end ${
-        hideBorder ? 'border-0' : 'border-1'
-      } ${noBorderRadius ? 'rounded-0' : 'rounded-md'}`}
+      className={`${extraWide ? 'w-32' : 'w-16'} h-16 flex flex-col justify-end ${
+        hideBorder ? 'border-0' : 'border'
+      } ${noBorderRadius ? 'rounded-none' : 'rounded-md'}`}
     >
       {overlayColor && (
         <h4 className="font-bold" style={{ color: overlayColor.toHex() }}>
