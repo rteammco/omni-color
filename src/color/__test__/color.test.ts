@@ -11,7 +11,6 @@ import type {
   ColorOKLCH,
   ColorRGB,
 } from '../formats';
-import { BaseColorName, ColorLightnessModifier } from '../names';
 import { getRandomColorRGBA } from '../random';
 import { getColorFromTemperatureLabel } from '../temperature';
 
@@ -170,8 +169,8 @@ describe('Color.random', () => {
   it('respects provided options', () => {
     const spy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
 
-    const anchoredColor = Color.random({ anchorColor: BaseColorName.BLUE });
-    expect(anchoredColor.getName().name).toBe(BaseColorName.BLUE);
+    const anchoredColor = Color.random({ anchorColor: 'Blue' });
+    expect(anchoredColor.getName().name).toBe('Blue');
 
     const paletteSuitableColor = Color.random({ paletteSuitable: true });
     const paletteSuitableHSL = paletteSuitableColor.toHSL();
@@ -652,17 +651,11 @@ describe('Color temperature methods', () => {
 describe('Color.getName', () => {
   it('returns the base color name and lightness modifier', () => {
     const red = new Color(BASE_HEX);
-    expect(red.getName()).toEqual({
-      name: BaseColorName.RED,
-      lightness: ColorLightnessModifier.NORMAL,
-    });
+    expect(red.getName()).toEqual({ name: 'Red', lightness: 'Normal' });
 
     const lightGray: ColorHSL = { h: 0, s: 0, l: 80 };
     const gray = new Color(lightGray);
-    expect(gray.getName()).toEqual({
-      name: BaseColorName.GRAY,
-      lightness: ColorLightnessModifier.LIGHT,
-    });
+    expect(gray.getName()).toEqual({ name: 'Gray', lightness: 'Light' });
   });
 });
 

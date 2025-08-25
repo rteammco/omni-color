@@ -1,9 +1,10 @@
 import { clampValue } from '../utils';
 import { toRGBA } from './conversions';
 import type { ColorRGBA } from './formats';
+import type { BaseColorName } from './names';
 import {
   BASE_COLOR_HUE_RANGES,
-  BaseColorName,
+  BASE_COLOR_NAME_OPTIONS,
   BLACK_MIN_LIGHTNESS_THRESHOLD,
   BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
   GRAYSCALE_MIN_SATURATION_THRESHOLD,
@@ -60,14 +61,15 @@ export function getRandomColorRGBA(options: RandomColorOptions = {}): ColorRGBA 
   let l: number;
 
   if (
-    anchorColor &&
-    [BaseColorName.BLACK, BaseColorName.WHITE, BaseColorName.GRAY].includes(anchorColor)
+    anchorColor === BASE_COLOR_NAME_OPTIONS.BLACK ||
+    anchorColor === BASE_COLOR_NAME_OPTIONS.WHITE ||
+    anchorColor === BASE_COLOR_NAME_OPTIONS.GRAY
   ) {
     h = getRandomIntInclusive(0, 359);
     s = getRandomIntInclusive(0, GRAYSCALE_MIN_SATURATION_THRESHOLD - 1);
-    if (anchorColor === BaseColorName.BLACK) {
+    if (anchorColor === BASE_COLOR_NAME_OPTIONS.BLACK) {
       l = getRandomIntInclusive(0, BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1);
-    } else if (anchorColor === BaseColorName.WHITE) {
+    } else if (anchorColor === BASE_COLOR_NAME_OPTIONS.WHITE) {
       l = getRandomIntInclusive(WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1, 100);
     } else {
       l = getRandomIntInclusive(

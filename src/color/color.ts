@@ -57,7 +57,7 @@ import {
   spinColorHue,
 } from './manipulations';
 import type { ColorNameAndLightness } from './names';
-import { ColorLightnessModifier, getBaseColorName } from './names';
+import { getBaseColorName } from './names';
 import type { RandomColorOptions } from './random';
 import { getRandomColorRGBA } from './random';
 import type { TextReadabilityOptions, TextReadabilityReport } from './readability';
@@ -731,8 +731,8 @@ export class Color {
    *
    * @example
    * ```ts
-   * new Color('#ff0000').getName(); // { name: 'Red', lightness: ColorLightnessModifier.NORMAL }
-   * new Color('#006400').getName(); // { name: 'Green', lightness: ColorLightnessModifier.DARK }
+   * new Color('#ff0000').getName(); // { name: 'Red', lightness: 'Normal' }
+   * new Color('#006400').getName(); // { name: 'Green', lightness: 'Dark' }
    * ```
    */
   getName(): ColorNameAndLightness {
@@ -751,7 +751,7 @@ export class Color {
    */
   getNameAsString(): string {
     const { name, lightness } = this.getName();
-    if (lightness === ColorLightnessModifier.NORMAL) {
+    if (lightness === 'Normal') {
       return name.toLowerCase();
     }
     return `${lightness} ${name}`.toLowerCase();

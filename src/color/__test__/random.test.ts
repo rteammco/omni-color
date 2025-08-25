@@ -1,8 +1,8 @@
 import { Color } from '../color';
 import { toHSLA, toRGBA } from '../conversions';
+import type { BaseColorName } from '../names';
 import {
   BASE_COLOR_HUE_RANGES,
-  BaseColorName,
   BLACK_MIN_LIGHTNESS_THRESHOLD,
   BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
   GRAYSCALE_MIN_SATURATION_THRESHOLD,
@@ -146,39 +146,39 @@ describe('getRandomColorRGBA', () => {
     it('when Math.random returns 0.1', () => {
       const randomValue = 0.1;
       const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
-      expectAnchoredColor(randomValue, BaseColorName.RED);
-      expectAnchoredColor(randomValue, BaseColorName.ORANGE);
-      expectAnchoredColor(randomValue, BaseColorName.YELLOW);
-      expectAnchoredColor(randomValue, BaseColorName.GREEN);
-      expectAnchoredColor(randomValue, BaseColorName.BLUE);
-      expectAnchoredColor(randomValue, BaseColorName.PURPLE);
-      expectAnchoredColor(randomValue, BaseColorName.PINK);
+      expectAnchoredColor(randomValue, 'Red');
+      expectAnchoredColor(randomValue, 'Orange');
+      expectAnchoredColor(randomValue, 'Yellow');
+      expectAnchoredColor(randomValue, 'Green');
+      expectAnchoredColor(randomValue, 'Blue');
+      expectAnchoredColor(randomValue, 'Purple');
+      expectAnchoredColor(randomValue, 'Pink');
       spy.mockRestore();
     });
 
     it('when Math.random returns 0.5', () => {
       const randomValue = 0.5;
       const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
-      expectAnchoredColor(randomValue, BaseColorName.RED);
-      expectAnchoredColor(randomValue, BaseColorName.ORANGE);
-      expectAnchoredColor(randomValue, BaseColorName.YELLOW);
-      expectAnchoredColor(randomValue, BaseColorName.GREEN);
-      expectAnchoredColor(randomValue, BaseColorName.BLUE);
-      expectAnchoredColor(randomValue, BaseColorName.PURPLE);
-      expectAnchoredColor(randomValue, BaseColorName.PINK);
+      expectAnchoredColor(randomValue, 'Red');
+      expectAnchoredColor(randomValue, 'Orange');
+      expectAnchoredColor(randomValue, 'Yellow');
+      expectAnchoredColor(randomValue, 'Green');
+      expectAnchoredColor(randomValue, 'Blue');
+      expectAnchoredColor(randomValue, 'Purple');
+      expectAnchoredColor(randomValue, 'Pink');
       spy.mockRestore();
     });
 
     it('when Math.random returns 0.9', () => {
       const randomValue = 0.9;
       const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
-      expectAnchoredColor(randomValue, BaseColorName.RED);
-      expectAnchoredColor(randomValue, BaseColorName.ORANGE);
-      expectAnchoredColor(randomValue, BaseColorName.YELLOW);
-      expectAnchoredColor(randomValue, BaseColorName.GREEN);
-      expectAnchoredColor(randomValue, BaseColorName.BLUE);
-      expectAnchoredColor(randomValue, BaseColorName.PURPLE);
-      expectAnchoredColor(randomValue, BaseColorName.PINK);
+      expectAnchoredColor(randomValue, 'Red');
+      expectAnchoredColor(randomValue, 'Orange');
+      expectAnchoredColor(randomValue, 'Yellow');
+      expectAnchoredColor(randomValue, 'Green');
+      expectAnchoredColor(randomValue, 'Blue');
+      expectAnchoredColor(randomValue, 'Purple');
+      expectAnchoredColor(randomValue, 'Pink');
       spy.mockRestore();
     });
   });
@@ -207,19 +207,19 @@ describe('getRandomColorRGBA', () => {
       const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.BLACK,
+        'Black',
         0,
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1
       );
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.WHITE,
+        'White',
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1,
         100
       );
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.GRAY,
+        'Gray',
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
       );
@@ -231,19 +231,19 @@ describe('getRandomColorRGBA', () => {
       const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.BLACK,
+        'Black',
         0,
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1
       );
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.WHITE,
+        'White',
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1,
         100
       );
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.GRAY,
+        'Gray',
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
       );
@@ -255,19 +255,19 @@ describe('getRandomColorRGBA', () => {
       const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.BLACK,
+        'Black',
         0,
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1
       );
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.WHITE,
+        'White',
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1,
         100
       );
       expectGrayscaleAnchor(
         randomValue,
-        BaseColorName.GRAY,
+        'Gray',
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
       );
@@ -297,12 +297,9 @@ describe('getRandomColorRGBA', () => {
 
   function expectBluePalette(randomValue: number): void {
     const spy = jest.spyOn(Math, 'random').mockReturnValue(randomValue);
-    const colorRGBA = getRandomColorRGBA({
-      anchorColor: BaseColorName.BLUE,
-      paletteSuitable: true,
-    });
+    const colorRGBA = getRandomColorRGBA({ anchorColor: 'Blue', paletteSuitable: true });
     const { name } = new Color(colorRGBA).getName();
-    expect(name).toBe(BaseColorName.BLUE);
+    expect(name).toBe('Blue');
     const colorHSLA = toHSLA(colorRGBA);
     expect(colorHSLA.s).toBeGreaterThanOrEqual(40);
     expect(colorHSLA.l).toBeGreaterThanOrEqual(25);

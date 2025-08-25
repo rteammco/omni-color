@@ -15,7 +15,8 @@ import {
   ColorRGBA,
 } from './color/formats';
 import type { ColorHarmony } from './color/harmonies';
-import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
+import type { BaseColorName, ColorLightnessModifier } from './color/names';
+import { ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
 import type {
   TextReadabilityConformanceLevel,
@@ -32,7 +33,7 @@ import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
   AverageColorsOptions,
-  BaseColorName, // TODO (remove enum)
+  type BaseColorName,
   BlendColorsOptions,
   type BlendMode,
   type BlendSpace,
@@ -46,7 +47,7 @@ export {
   ColorHSV,
   ColorHSVA,
   ColorLCH,
-  ColorLightnessModifier, // TODO (remove enum)
+  type ColorLightnessModifier,
   ColorNameAndLightness,
   ColorOKLCH,
   ColorPalette,
