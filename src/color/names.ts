@@ -1,4 +1,4 @@
-import { Color } from './color';
+import type { Color } from './color';
 
 export enum BaseColorName {
   RED = 'Red',

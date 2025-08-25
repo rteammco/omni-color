@@ -1,4 +1,4 @@
-import { Color } from './color';
+import type { Color } from './color';
 import type { ColorRGBA } from './formats';
 import { srgbChannelToLinear } from './utils';
 

@@ -1,4 +1,4 @@
-import {
+import type {
   ColorCMYK,
   ColorFormat,
   ColorHex,
@@ -10,8 +10,8 @@ import {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
-  getColorFormatType,
 } from './formats';
+import { getColorFormatType } from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 import { validateColorOrThrow } from './validations';
 

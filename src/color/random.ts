@@ -1,6 +1,6 @@
 import { clampValue } from '../utils';
 import { toRGBA } from './conversions';
-import { ColorRGBA } from './formats';
+import type { ColorRGBA } from './formats';
 import {
   BASE_COLOR_HUE_RANGES,
   BaseColorName,

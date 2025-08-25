@@ -1,7 +1,7 @@
 import { Color } from '../color/color';
 import { BLACK_HEX, WHITE_HEX } from '../color/color.constants';
 import { type ColorHarmony } from '../color/harmonies';
-import { ColorSwatch } from '../color/swatch';
+import type { ColorSwatch } from '../color/swatch';
 import { clampValue } from '../utils';
 
 type SemanticColor = 'info' | 'positive' | 'negative' | 'warning' | 'special';

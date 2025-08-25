@@ -1,17 +1,8 @@
-import {
-  ColorPalette,
-  generateColorPaletteFromBaseColor,
-  GenerateColorPaletteOptions,
-} from '../palette/palette';
+import type { ColorPalette, GenerateColorPaletteOptions } from '../palette/palette';
+import { generateColorPaletteFromBaseColor } from '../palette/palette';
 import { clampValue } from '../utils';
-import {
-  averageColors,
-  AverageColorsOptions,
-  blendColors,
-  BlendColorsOptions,
-  mixColors,
-  MixColorsOptions,
-} from './combinations';
+import type { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './combinations';
+import { averageColors, blendColors, mixColors } from './combinations';
 import {
   toCMYK,
   toHex,
@@ -24,8 +15,7 @@ import {
   toOKLCH,
   toRGB,
 } from './conversions';
-import {
-  cmykToString,
+import type {
   ColorCMYK,
   ColorFormat,
   ColorHex,
@@ -37,6 +27,9 @@ import {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
+} from './formats';
+import {
+  cmykToString,
   hslaToString,
   hslToString,
   lchToString,
@@ -44,8 +37,8 @@ import {
   rgbaToString,
   rgbToString,
 } from './formats';
+import type { ColorHarmony } from './harmonies';
 import {
-  ColorHarmony,
   getAnalogousHarmonyColors,
   getComplementaryColors,
   getHarmonyColors,
@@ -63,21 +56,25 @@ import {
   saturateColor,
   spinColorHue,
 } from './manipulations';
-import { ColorLightnessModifier, ColorNameAndLightness, getBaseColorName } from './names';
-import { getRandomColorRGBA, RandomColorOptions } from './random';
+import type { ColorNameAndLightness } from './names';
+import { ColorLightnessModifier, getBaseColorName } from './names';
+import type { RandomColorOptions } from './random';
+import { getRandomColorRGBA } from './random';
+import type { TextReadabilityOptions, TextReadabilityReport } from './readability';
 import {
   getAPCAReadabilityScore,
   getTextReadabilityReport,
   getWCAGContrastRatio,
   isTextReadable,
-  TextReadabilityOptions,
-  TextReadabilityReport,
 } from './readability';
-import { ColorSwatch, getColorSwatch } from './swatch';
-import {
+import type { ColorSwatch } from './swatch';
+import { getColorSwatch } from './swatch';
+import type {
   ColorTemperatureAndLabel,
-  type ColorTemperatureLabel,
+  ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
+} from './temperature';
+import {
   getColorFromTemperature,
   getColorFromTemperatureLabel,
   getColorTemperature,

@@ -1,6 +1,6 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
-import { ColorHSL } from './formats';
+import type { ColorHSL } from './formats';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 

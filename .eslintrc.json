@@ -27,7 +27,8 @@
     "simple-import-sort/exports": "warn",
     "prefer-const": "warn",
     "no-nested-ternary": "warn",
-    "no-console": "warn"
+    "no-console": "warn",
+    "@typescript-eslint/consistent-type-imports": "warn"
   },
   "overrides": [
     {

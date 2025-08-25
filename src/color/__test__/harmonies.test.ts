@@ -1,6 +1,6 @@
 import { Color } from '../color';
+import type { ColorHarmony } from '../harmonies';
 import {
-  ColorHarmony,
   getAnalogousHarmonyColors,
   getComplementaryColors,
   getHarmonyColors,

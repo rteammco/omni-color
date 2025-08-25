@@ -1,7 +1,7 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
 import { toCMYK } from './conversions';
-import { ColorCMYK, ColorHSL, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
+import type { ColorCMYK, ColorHSL, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
 
 export type MixType = 'ADDITIVE' | 'SUBTRACTIVE';
 export type MixSpace = 'RGB' | 'HSL' | 'LCH' | 'OKLCH';

@@ -193,6 +193,7 @@ describe('Color.random', () => {
 describe('Random color pathways', () => {
   const mockColor = { r: 10, g: 20, b: 30, a: 0.4 };
   const randomSpy = getRandomColorRGBA as jest.Mock;
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const actualRandom = (jest.requireActual('../random') as typeof import('../random'))
     .getRandomColorRGBA;
 

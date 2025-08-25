@@ -1,16 +1,9 @@
 import { Color } from './color/color';
-import {
-  AverageColorsOptions,
-  BlendColorsOptions,
-  type BlendMode,
-  type BlendSpace,
-  MixColorsOptions,
-  type MixSpace,
-  type MixType,
-} from './color/combinations';
+import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
+import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
+import type { ColorFormat } from './color/formats';
 import {
   ColorCMYK,
-  ColorFormat,
   ColorHex,
   ColorHSL,
   ColorHSLA,
@@ -21,7 +14,7 @@ import {
   ColorRGB,
   ColorRGBA,
 } from './color/formats';
-import { type ColorHarmony } from './color/harmonies';
+import type { ColorHarmony } from './color/harmonies';
 import { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
 import {
@@ -40,13 +33,13 @@ import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
   AverageColorsOptions,
-  BaseColorName,
+  BaseColorName, // TODO (remove enum)
   BlendColorsOptions,
   type BlendMode,
   type BlendSpace,
   Color,
   ColorCMYK,
-  ColorFormat,
+  type ColorFormat,
   type ColorHarmony,
   ColorHex,
   ColorHSL,
@@ -54,7 +47,7 @@ export {
   ColorHSV,
   ColorHSVA,
   ColorLCH,
-  ColorLightnessModifier,
+  ColorLightnessModifier, // TODO (remove enum)
   ColorNameAndLightness,
   ColorOKLCH,
   ColorPalette,
@@ -69,8 +62,8 @@ export {
   type MixSpace,
   type MixType,
   RandomColorOptions,
-  TextReadabilityConformanceLevel,
+  TextReadabilityConformanceLevel, // TODO (remove enum)
   TextReadabilityOptions,
   TextReadabilityReport,
-  TextReadabilityTextSizeOptions,
+  TextReadabilityTextSizeOptions, // TODO (remove enum)
 };
