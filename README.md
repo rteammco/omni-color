@@ -1,9 +1,11 @@
 # omni-color
 
-
 A modern color manipulation and color scheme generation library for TypeScript/JavaScript projects.
 
-[![License: ISC](https://img.shields.io/badge/license-ISC-blue.svg)](./LICENSE)
+[![License: ISC](https://img.shields.io/badge/license-ISC-blue.svg)](./LICENSE) [![CI](https://github.com/rteammco/omni-color/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rteammco/omni-color/actions/workflows/ci.yml) [![Demo Deployed](https://github.com/rteammco/omni-color/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/rteammco/omni-color/actions/workflows/pages.yml)
+ 
+
+
 
 > ⚠️ This is a work-in-progress library. API and structure may change before 1.0.0.
 
