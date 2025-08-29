@@ -88,6 +88,12 @@ describe('Color constructor and conversion tests', () => {
     expect(oklch.c).toBeCloseTo(0, 6);
   });
 
+  it('correctly initializes from and converts short hex with alpha input', () => {
+    const shortHex8: ColorHex = '#f008';
+    const color = new Color(shortHex8);
+    checkAllConversions(color, 0.533, '#ff000088');
+  });
+
   it('correctly initializes from and converts hex8 input', () => {
     const color = new Color(HEX8_SEMI_TRANSPARENT);
     checkAllConversions(color, 0.502, HEX8_SEMI_TRANSPARENT);

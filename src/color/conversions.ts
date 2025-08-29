@@ -36,6 +36,11 @@ function hexOrHex8ToRGBA(hex: ColorHex): ColorRGBA {
     r = parseInt(raw[0] + raw[0], 16);
     g = parseInt(raw[1] + raw[1], 16);
     b = parseInt(raw[2] + raw[2], 16);
+  } else if (raw.length === 4) {
+    r = parseInt(raw[0] + raw[0], 16);
+    g = parseInt(raw[1] + raw[1], 16);
+    b = parseInt(raw[2] + raw[2], 16);
+    a = parseInt(raw[3] + raw[3], 16) / 255;
   } else {
     r = parseInt(raw.slice(0, 2), 16);
     g = parseInt(raw.slice(2, 4), 16);
