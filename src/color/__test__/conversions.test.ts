@@ -20,6 +20,7 @@ describe('conversions', () => {
       expect(toRGB('#f00')).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB('#ff0000ff')).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB('#ff000080')).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB('#f008')).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ r: 255, g: 0, b: 0 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ h: 0, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0 });
@@ -71,6 +72,12 @@ describe('conversions', () => {
       expect(fromHex8.b).toBe(0);
       expect(fromHex8.a).toBeCloseTo(0.502, 3);
 
+      const fromShortHex8 = toRGBA('#f008');
+      expect(fromShortHex8.r).toBe(255);
+      expect(fromShortHex8.g).toBe(0);
+      expect(fromShortHex8.b).toBe(0);
+      expect(fromShortHex8.a).toBeCloseTo(0.533, 3);
+
       const fromRGBA = toRGBA({ r: 255, g: 0, b: 0, a: 0.5 });
       expect(fromRGBA.r).toBe(255);
       expect(fromRGBA.g).toBe(0);
@@ -90,6 +97,11 @@ describe('conversions', () => {
       expect(fromHSVA.a).toBeCloseTo(0.5, 3);
     });
 
+    it('#RGBA converts to hex8 and back', () => {
+      const roundTrip = toHex8(toRGBA('#f008'));
+      expect(roundTrip).toBe('#ff000088');
+    });
+
     it('throws on invalid RGBA', () => {
       expect(() => toRGBA({ r: 256, g: 0, b: 0, a: 1 } as ColorRGBA)).toThrow();
     });
@@ -105,6 +117,7 @@ describe('conversions', () => {
       expect(toHex('#f00')).toBe('#ff0000');
       expect(toHex('#ff0000ff')).toBe('#ff0000');
       expect(toHex('#ff000080')).toBe('#ff0000');
+      expect(toHex('#f008')).toBe('#ff0000');
       expect(toHex({ r: 255, g: 0, b: 0 })).toBe('#ff0000');
       expect(toHex({ r: 255, g: 0, b: 0, a: 0.5 })).toBe('#ff0000');
       expect(toHex({ h: 0, s: 100, l: 50 })).toBe('#ff0000');
@@ -140,6 +153,7 @@ describe('conversions', () => {
 
     it('preserves alpha when converting', () => {
       expect(toHex8('#ff000080')).toBe('#ff000080');
+      expect(toHex8('#f008')).toBe('#ff000088');
       expect(toHex8({ r: 255, g: 0, b: 0, a: 0.5 })).toBe('#ff000080');
       expect(toHex8({ h: 0, s: 100, l: 50, a: 0.5 })).toBe('#ff000080');
       expect(toHex8({ h: 0, s: 100, v: 100, a: 0.5 })).toBe('#ff000080');

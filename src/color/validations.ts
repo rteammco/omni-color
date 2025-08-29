@@ -12,7 +12,7 @@ import type {
 } from './formats';
 import { getColorFormatType } from './formats';
 
-const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
+const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
 function isValidHexColor(color: string): boolean {
   return HEX_COLOR_REGEX.test(color);
