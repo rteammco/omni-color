@@ -23,7 +23,7 @@ import type {
   TextReadabilityTextSizeOptions,
 } from './color/readability';
 import { TextReadabilityOptions, TextReadabilityReport } from './color/readability';
-import { ColorSwatch } from './color/swatch';
+import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
 import {
   ColorTemperatureAndLabel,
   type ColorTemperatureLabel,
@@ -54,9 +54,11 @@ export {
   ColorRGB,
   ColorRGBA,
   ColorSwatch,
+  ColorSwatchOptions,
   ColorTemperatureAndLabel,
   type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
+  ExtendedColorSwatch,
   GenerateColorPaletteOptions,
   MixColorsOptions,
   type MixSpace,

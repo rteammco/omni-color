@@ -493,6 +493,47 @@ describe('Color.getColorSwatch', () => {
     expect(swatch[800].toHex()).toBe('#2d2c3a');
     expect(swatch[900].toHex()).toBe('#18171c');
   });
+
+  it('returns the extended swatch when requested', () => {
+    const baseColor = new Color('#625aa5');
+    const swatch = baseColor.getColorSwatch({ extended: true });
+
+    expect(swatch[50].toHex()).toBe('#edecf9');
+    expect(swatch[100].toHex()).toBe('#dcd9f2');
+    expect(swatch[150].toHex()).toBe('#cbc7eb');
+    expect(swatch[200].toHex()).toBe('#bab6e2');
+    expect(swatch[250].toHex()).toBe('#aaa5da');
+    expect(swatch[300].toHex()).toBe('#9b95d0');
+    expect(swatch[350].toHex()).toBe('#8c85c6');
+    expect(swatch[400].toHex()).toBe('#7d76bc');
+    expect(swatch[450].toHex()).toBe('#6f68b0');
+    expect(swatch[500].toHex()).toBe('#625aa5');
+    expect(swatch[550].toHex()).toBe('#5a5491');
+    expect(swatch[600].toHex()).toBe('#524e7e');
+    expect(swatch[650].toHex()).toBe('#4a466c');
+    expect(swatch[700].toHex()).toBe('#413e5b');
+    expect(swatch[750].toHex()).toBe('#37354a');
+    expect(swatch[800].toHex()).toBe('#2d2c3a');
+    expect(swatch[850].toHex()).toBe('#23222b');
+    expect(swatch[900].toHex()).toBe('#18171c');
+    expect(swatch[950].toHex()).toBe('#0c0c0e');
+  });
+
+  it('keeps main anchor shades identical between base and extended swatches', () => {
+    const baseColor = new Color('#625aa5');
+    const baseSwatch = baseColor.getColorSwatch();
+    const extendedSwatch = baseColor.getColorSwatch({ extended: true });
+
+    expect(extendedSwatch[100].toHex()).toBe(baseSwatch[100].toHex());
+    expect(extendedSwatch[200].toHex()).toBe(baseSwatch[200].toHex());
+    expect(extendedSwatch[300].toHex()).toBe(baseSwatch[300].toHex());
+    expect(extendedSwatch[400].toHex()).toBe(baseSwatch[400].toHex());
+    expect(extendedSwatch[500].toHex()).toBe(baseSwatch[500].toHex());
+    expect(extendedSwatch[600].toHex()).toBe(baseSwatch[600].toHex());
+    expect(extendedSwatch[700].toHex()).toBe(baseSwatch[700].toHex());
+    expect(extendedSwatch[800].toHex()).toBe(baseSwatch[800].toHex());
+    expect(extendedSwatch[900].toHex()).toBe(baseSwatch[900].toHex());
+  });
 });
 
 describe('Color.getColorPalette', () => {
