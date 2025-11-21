@@ -33,6 +33,10 @@ export default [
       'simple-import-sort': simpleImportSort,
     },
     settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts'],
+      },
+      'import/extensions': ['.js', '.ts'],
       'import/resolver': {
         typescript: {
           project: ['./tsconfig.json', './tsconfig.test.json'],
