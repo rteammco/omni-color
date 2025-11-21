@@ -49,3 +49,4 @@ From the project's root directory:
 * `npm run test:watch` - run all tests in watch mode.
 * `npm run test -- src/color/__test__/validations.test.ts` - run a specific test file.
 * `npm run lint` - run linter.
+* `npm run typecheck` - run type checker.
