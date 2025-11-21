@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import globals from 'globals';
 import tsEslintPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import importPlugin from 'eslint-plugin-import';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 const tsconfigRootDir = path.dirname(fileURLToPath(import.meta.url));
@@ -28,7 +29,15 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tsEslintPlugin,
+      import: importPlugin,
       'simple-import-sort': simpleImportSort,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: ['./tsconfig.json', './tsconfig.test.json'],
+        },
+      },
     },
     rules: {
       '@typescript-eslint/no-unused-vars': [
@@ -43,6 +52,15 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/no-inferrable-types': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+      'import/no-unused-modules': [
+        'warn',
+        {
+          missingExports: true,
+          unusedExports: true,
+          src: ['src/**/*.{ts,js}'],
+          ignoreExports: ['**/*.test.ts', '**/__test__/**', 'src/index.ts'],
+        },
+      ],
       'simple-import-sort/imports': 'warn',
       'simple-import-sort/exports': 'warn',
       'prefer-const': 'warn',
