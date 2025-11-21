@@ -12,6 +12,17 @@ You are a senior frontend software engineer and you write high-quality, elegant,
 
 ---
 
+## Adding Or Extending Library Features
+
+These are the general steps to adding any new code changes to the core library:
+
+1. Cleanly update the appropriate helper or util file.
+2. Update or add tests to thoroughly validate the changes.
+3. Update the `Color` class as needed.
+4. Update `color.test.ts` with a basic test for any changes to the `Color` class as well.
+5. Update exports as needed to `index.ts`.
+6. Verify changes with the demo app (see below).
+
 ## Always Verify Changes With The Demo App
 
 The app runs locally via:
