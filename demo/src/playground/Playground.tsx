@@ -4,7 +4,11 @@ import { Color } from '../../../dist';
 import { ColorBox } from '../components/ColorBox';
 import { Icon } from '../components/Icon';
 
-export function Playground() {
+interface Props {
+  isFullPage?: boolean;
+}
+
+export function Playground({ isFullPage }: Props) {
   const [code, setCode] = useState(getRandomStarterCode());
   const [returnedColor, setReturnedColor] = useState<Color | null>(null);
   const [codeErrorMessage, setCodeErrorMessage] = useState<string | null>(null);
@@ -47,12 +51,14 @@ export function Playground() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <h5 className="mb-3 flex flex-row items-center gap-2">
-        <span>Code playground</span>
-        <a href="./playground" target="_blank">
-          <Icon size={20} type={Icon.TYPE.ARROW_TOP_RIGHT_ON_SQUARE} />
-        </a>
-      </h5>
+      {!isFullPage && (
+        <h5 className="mb-3 flex flex-row items-center gap-2">
+          <span>Code playground</span>
+          <a href="./playground" target="_blank">
+            <Icon size={20} type={Icon.TYPE.ARROW_TOP_RIGHT_ON_SQUARE} />
+          </a>
+        </h5>
+      )}
       <span className="mb-2">
         You can experiment the <code>Color</code> object here. Return a <code>Color</code> or any
         valid color format (e.g. a hex string) to see the color visualized.
