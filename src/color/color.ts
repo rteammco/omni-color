@@ -67,7 +67,7 @@ import {
   getWCAGContrastRatio,
   isTextReadable,
 } from './readability';
-import type { ColorSwatch } from './swatch';
+import type { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './swatch';
 import { getColorSwatch } from './swatch';
 import type {
   ColorTemperatureAndLabel,
@@ -595,21 +595,30 @@ export class Color {
   }
 
   /**
-   * Returns a {@link ColorSwatch} of lighter and darker variants of the color. The
-   * returned object has keys `100`–`900` where `500` is the base color, lower
-   * numbers are lighter and higher numbers are darker.
+   * Returns a {@link ColorSwatch} of lighter and darker variants of the color. By
+   * default the swatch has keys `100`–`900` where `500` is the base color, lower
+   * numbers are lighter and higher numbers are darker. Passing
+   * `{ extended: true }` adds midpoint stops (`50`, `150`, `250`, ... `950`) that
+   * are interpolated between the base swatch colors.
    *
-   * @returns A {@link ColorSwatch} containing nine new {@link Color}s ranging from lightest (`100`) to darkest (`900`).
+   * @param options - Optional {@link ColorSwatchOptions} for requesting the extended swatch.
+   * @returns A {@link ColorSwatch} containing lighter and darker {@link Color}s ranging from lightest to darkest.
    *
    * @example
    * ```ts
    * const swatch = new Color('#ff0000').getColorSwatch();
    * const light = swatch[100]; // lightest shade
    * const dark = swatch[900];  // darkest shade
+   *
+   * const extendedSwatch = new Color('#ff0000').getColorSwatch({ extended: true });
+   * const midLight = extendedSwatch[150]; // halfway between 100 and 200
+   * const darkest = extendedSwatch[950];  // darker than 900
    * ```
    */
-  getColorSwatch(): ColorSwatch {
-    return getColorSwatch(this);
+  getColorSwatch(): ColorSwatch;
+  getColorSwatch(options: ColorSwatchOptions & { extended: true }): ExtendedColorSwatch;
+  getColorSwatch(options?: ColorSwatchOptions): ColorSwatch {
+    return getColorSwatch(this, options);
   }
 
   /**

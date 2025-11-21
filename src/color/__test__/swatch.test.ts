@@ -161,4 +161,72 @@ describe('getPaletteColorVariations', () => {
       expect(swatch[900].toHex()).toBe('#112432');
     });
   });
+
+  describe('extended swatches', () => {
+    it('includes intermediate stops while preserving the base anchors', () => {
+      const baseColor = new Color('#ff0000');
+      const swatch = getColorSwatch(baseColor, { extended: true });
+
+      expect(swatch[50].toHex()).toBe('#ffe5e5');
+      expect(swatch[100].toHex()).toBe('#ffcccc');
+      expect(swatch[150].toHex()).toBe('#ffb3b3');
+      expect(swatch[200].toHex()).toBe('#ff9999');
+      expect(swatch[250].toHex()).toBe('#ff8080');
+      expect(swatch[300].toHex()).toBe('#ff6666');
+      expect(swatch[350].toHex()).toBe('#ff4d4d');
+      expect(swatch[400].toHex()).toBe('#ff3333');
+      expect(swatch[450].toHex()).toBe('#ff1a1a');
+      expect(swatch[500].toHex()).toBe('#ff0000');
+      expect(swatch[550].toHex()).toBe('#e30303');
+      expect(swatch[600].toHex()).toBe('#c70505');
+      expect(swatch[650].toHex()).toBe('#ac0707');
+      expect(swatch[700].toHex()).toBe('#910808');
+      expect(swatch[750].toHex()).toBe('#780808');
+      expect(swatch[800].toHex()).toBe('#5e0808');
+      expect(swatch[850].toHex()).toBe('#460707');
+      expect(swatch[900].toHex()).toBe('#2e0505');
+      expect(swatch[950].toHex()).toBe('#170303');
+    });
+
+    it('smoothly interpolates neutral colors', () => {
+      const baseColor = new Color('#808080');
+      const swatch = getColorSwatch(baseColor, { extended: true });
+
+      expect(swatch[50].toHex()).toBe('#f2f2f2');
+      expect(swatch[100].toHex()).toBe('#e6e6e6');
+      expect(swatch[150].toHex()).toBe('#d9d9d9');
+      expect(swatch[200].toHex()).toBe('#cccccc');
+      expect(swatch[250].toHex()).toBe('#bfbfbf');
+      expect(swatch[300].toHex()).toBe('#b3b3b3');
+      expect(swatch[350].toHex()).toBe('#a6a6a6');
+      expect(swatch[400].toHex()).toBe('#999999');
+      expect(swatch[450].toHex()).toBe('#8c8c8c');
+      expect(swatch[500].toHex()).toBe('#808080');
+      expect(swatch[550].toHex()).toBe('#737373');
+      expect(swatch[600].toHex()).toBe('#666666');
+      expect(swatch[650].toHex()).toBe('#595959');
+      expect(swatch[700].toHex()).toBe('#4d4d4d');
+      expect(swatch[750].toHex()).toBe('#404040');
+      expect(swatch[800].toHex()).toBe('#333333');
+      expect(swatch[850].toHex()).toBe('#262626');
+      expect(swatch[900].toHex()).toBe('#1a1a1a');
+      expect(swatch[950].toHex()).toBe('#0d0d0d');
+    });
+
+    it('matches anchor shades between base and extended swatches', () => {
+      const baseColor = new Color('#3498db');
+      const baseSwatch = getColorSwatch(baseColor);
+      const extendedSwatch = getColorSwatch(baseColor, { extended: true });
+
+      expect(extendedSwatch[100].toHex()).toBe(baseSwatch[100].toHex());
+      expect(extendedSwatch[200].toHex()).toBe(baseSwatch[200].toHex());
+      expect(extendedSwatch[300].toHex()).toBe(baseSwatch[300].toHex());
+      expect(extendedSwatch[400].toHex()).toBe(baseSwatch[400].toHex());
+      expect(extendedSwatch[500].toHex()).toBe(baseSwatch[500].toHex());
+      expect(extendedSwatch[600].toHex()).toBe(baseSwatch[600].toHex());
+      expect(extendedSwatch[700].toHex()).toBe(baseSwatch[700].toHex());
+      expect(extendedSwatch[800].toHex()).toBe(baseSwatch[800].toHex());
+      expect(extendedSwatch[900].toHex()).toBe(baseSwatch[900].toHex());
+    });
+  });
 });
