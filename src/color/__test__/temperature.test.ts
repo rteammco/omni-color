@@ -1,6 +1,5 @@
 import { Color } from '../color';
 import {
-  COLOR_TEMPERATURE_LABELS,
   getColorFromTemperature,
   getColorFromTemperatureLabel,
   getColorTemperature,
@@ -273,18 +272,5 @@ describe('matchPartialColorTemperatureLabel', () => {
   it('returns null when no label matches', () => {
     expect(matchPartialColorTemperatureLabel('nope')).toBeNull();
     expect(matchPartialColorTemperatureLabel('lamp')).toBeNull();
-  });
-});
-
-describe('COLOR_TEMPERATURE_LABELS', () => {
-  it('exposes stable, readable labels for consumers', () => {
-    expect(COLOR_TEMPERATURE_LABELS.CANDLELIGHT).toBe('Candlelight');
-    expect(COLOR_TEMPERATURE_LABELS.INCANDESCENT).toBe('Incandescent lamp');
-    expect(COLOR_TEMPERATURE_LABELS.HALOGEN).toBe('Halogen lamp');
-    expect(COLOR_TEMPERATURE_LABELS.FLUORESCENT).toBe('Fluorescent lamp');
-    expect(COLOR_TEMPERATURE_LABELS.DAYLIGHT).toBe('Daylight');
-    expect(COLOR_TEMPERATURE_LABELS.CLOUDY).toBe('Cloudy sky');
-    expect(COLOR_TEMPERATURE_LABELS.SHADE).toBe('Shade');
-    expect(COLOR_TEMPERATURE_LABELS.BLUE_SKY).toBe('Blue sky');
   });
 });

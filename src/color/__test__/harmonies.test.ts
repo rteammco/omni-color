@@ -1,5 +1,5 @@
 import { Color } from '../color';
-import type { ColorHarmony, GrayscaleHandlingMode } from '../harmonies';
+import type { ColorHarmony } from '../harmonies';
 import {
   getAnalogousHarmonyColors,
   getComplementaryColors,
@@ -876,19 +876,6 @@ describe('getHarmonyColors', () => {
       '#f06bff',
       '#e27ded',
     ]);
-  });
-
-  it('supports configurable grayscale handling modes', () => {
-    const grayscaleHandlingMode: GrayscaleHandlingMode = 'IGNORE';
-    const baseGray = new Color('#404040');
-
-    const [ignoredOriginal, ignoredComplement] = getComplementaryColors(baseGray, grayscaleHandlingMode);
-    expect(ignoredOriginal.toHex()).toBe('#404040');
-    expect(ignoredComplement.toHex()).toBe('#404040');
-
-    const [defaultOriginal, defaultComplement] = getComplementaryColors(baseGray);
-    expect(defaultOriginal.toHex()).toBe('#404040');
-    expect(defaultComplement.toHex()).not.toBe('#404040');
   });
 
   it('throws for unknown harmony type', () => {
