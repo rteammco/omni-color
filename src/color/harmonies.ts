@@ -13,7 +13,7 @@ export type ColorHarmony =
   | 'ANALOGOUS'
   | 'MONOCHROMATIC';
 
-export type GrayscaleHandlingMode = 'SPIN_LIGHTNESS' | 'IGNORE';
+type GrayscaleHandlingMode = 'SPIN_LIGHTNESS' | 'IGNORE';
 
 // "spins" lightness around grayscale degrees, where 0 is black and 180 is white, and
 // everything in between is grayish. 180-360 loop back in the opposite direction.
