@@ -1,7 +1,7 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
 
-type BaseColorSwatchStops = {
+interface BaseColorSwatchStops {
   100: Color; // light
   200: Color;
   300: Color;
@@ -11,13 +11,13 @@ type BaseColorSwatchStops = {
   700: Color;
   800: Color;
   900: Color; // dark
-};
+}
 
-export interface BaseColorSwatch extends BaseColorSwatchStops {
+interface BaseColorSwatch extends BaseColorSwatchStops {
   type: 'BASIC';
 }
 
-type ExtendedColorSwatchStops = BaseColorSwatchStops & {
+interface ExtendedColorSwatchStops extends BaseColorSwatchStops {
   50: Color;
   150: Color;
   250: Color;
@@ -28,7 +28,7 @@ type ExtendedColorSwatchStops = BaseColorSwatchStops & {
   750: Color;
   850: Color;
   950: Color;
-};
+}
 
 export interface ExtendedColorSwatch extends ExtendedColorSwatchStops {
   type: 'EXTENDED';
