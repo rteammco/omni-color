@@ -123,10 +123,24 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
 
   if ('h' in color && 'l' in color && 'c' in color) {
     const { l, c, h } = color;
-    if (l <= 1) {
+    const isValidHue = h >= 0 && h <= 360;
+    const isValidOklch = l >= 0 && l <= 1 && c >= 0 && c <= 0.5;
+    if (isValidOklch && isValidHue) {
       const oklch: ColorOKLCH = { l, c, h };
       return { formatType: 'OKLCH', value: oklch };
     }
+
+    const isValidLch = l >= 0 && l <= 100 && c >= 0;
+    if (isValidLch && isValidHue) {
+      const lch: ColorLCH = { l, c, h };
+      return { formatType: 'LCH', value: lch };
+    }
+
+    if (l <= 1 && c <= 1) {
+      const oklch: ColorOKLCH = { l, c, h };
+      return { formatType: 'OKLCH', value: oklch };
+    }
+
     const lch: ColorLCH = { l, c, h };
     return { formatType: 'LCH', value: lch };
   }
