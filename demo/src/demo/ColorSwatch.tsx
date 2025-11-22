@@ -17,64 +17,43 @@ export function ColorSwatch(props: Props) {
   const { withLabels } = props;
 
   const swatch = 'swatch' in props ? props.swatch : props.color.getColorSwatch();
+  const stopValues =
+    swatch.type === 'EXTENDED'
+      ? [
+          50,
+          100,
+          150,
+          200,
+          250,
+          300,
+          350,
+          400,
+          450,
+          500,
+          550,
+          600,
+          650,
+          700,
+          750,
+          800,
+          850,
+          900,
+          950,
+        ] as const
+      : [100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
 
   return (
     <div className="w-full flex flex-row justify-center gap-0">
       <div className="flex flex-row justify-center gap-0 border-1 border-neutral-500 rounded-md overflow-hidden">
-        <ColorBox
-          color={swatch[100]}
-          hideBorder
-          label={withLabels ? '100' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[200]}
-          hideBorder
-          label={withLabels ? '200' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[300]}
-          hideBorder
-          label={withLabels ? '300' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[400]}
-          hideBorder
-          label={withLabels ? '400' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[500]}
-          hideBorder
-          label={withLabels ? '500' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[600]}
-          hideBorder
-          label={withLabels ? '600' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[700]}
-          hideBorder
-          label={withLabels ? '700' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[800]}
-          hideBorder
-          label={withLabels ? '800' : undefined}
-          noBorderRadius
-        />
-        <ColorBox
-          color={swatch[900]}
-          hideBorder
-          label={withLabels ? '900' : undefined}
-          noBorderRadius
-        />
+        {stopValues.map((stop) => (
+          <ColorBox
+            key={stop}
+            color={swatch[stop]}
+            hideBorder
+            label={withLabels ? `${stop}` : undefined}
+            noBorderRadius
+          />
+        ))}
       </div>
     </div>
   );

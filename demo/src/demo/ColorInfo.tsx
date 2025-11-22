@@ -9,6 +9,7 @@ interface Props {
 
 export function ColorInfo({ color }: Props) {
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
+  const extendedSwatch = color.getColorSwatch({ extended: true });
 
   return (
     <div>
@@ -43,6 +44,8 @@ export function ColorInfo({ color }: Props) {
       </div>
       <VSpace height={8} />
       <ColorSwatch color={color} />
+      <VSpace height={8} />
+      <ColorSwatch swatch={extendedSwatch} />
       <VSpace height={8} />
       <div>Color temperature: {color.getTemperatureAsString({ formatNumber: true })}</div>
       <span className="text-xs">

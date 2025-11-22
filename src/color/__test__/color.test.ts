@@ -483,6 +483,7 @@ describe('Color.getColorSwatch', () => {
   it('returns the correct swatch for a color', () => {
     const baseColor = new Color('#625aa5');
     const swatch = baseColor.getColorSwatch();
+    expect(swatch.type).toBe('BASIC');
     expect(swatch[100].toHex()).toBe('#dcd9f2');
     expect(swatch[200].toHex()).toBe('#bab6e2');
     expect(swatch[300].toHex()).toBe('#9b95d0');
@@ -497,6 +498,7 @@ describe('Color.getColorSwatch', () => {
   it('returns the extended swatch when requested', () => {
     const baseColor = new Color('#625aa5');
     const swatch = baseColor.getColorSwatch({ extended: true });
+    expect(swatch.type).toBe('EXTENDED');
 
     expect(swatch[50].toHex()).toBe('#edecf9');
     expect(swatch[100].toHex()).toBe('#dcd9f2');
