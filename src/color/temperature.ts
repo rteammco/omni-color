@@ -2,7 +2,7 @@ import { clampValue } from '../utils';
 import { Color } from './color';
 import { srgbChannelToLinear } from './utils';
 
-export const COLOR_TEMPERATURE_LABELS = {
+const COLOR_TEMPERATURE_LABELS = {
   // Warm:
   CANDLELIGHT: 'Candlelight',
   INCANDESCENT: 'Incandescent lamp',
