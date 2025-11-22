@@ -92,29 +92,37 @@ function mixColorsAdditive(
     case 'LCH': {
       let l = 0;
       let c = 0;
-      let h = 0;
+      let x = 0;
+      let y = 0;
       colors.forEach((color, i) => {
         const val: ColorLCH = color.toLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        const rad = (val.h * Math.PI) / 180;
+        x += Math.cos(rad) * weight;
+        y += Math.sin(rad) * weight;
       });
-      const result: ColorLCH = { l, c, h };
+      const hue = (Math.atan2(y, x) * 180) / Math.PI;
+      const result: ColorLCH = { l, c, h: (hue + 360) % 360 };
       return new Color(result);
     }
     case 'OKLCH': {
       let l = 0;
       let c = 0;
-      let h = 0;
+      let x = 0;
+      let y = 0;
       colors.forEach((color, i) => {
         const val: ColorOKLCH = color.toOKLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        const rad = (val.h * Math.PI) / 180;
+        x += Math.cos(rad) * weight;
+        y += Math.sin(rad) * weight;
       });
-      const result: ColorOKLCH = { l, c, h };
+      const hue = (Math.atan2(y, x) * 180) / Math.PI;
+      const result: ColorOKLCH = { l, c, h: (hue + 360) % 360 };
       return new Color(result);
     }
     case 'RGB':
