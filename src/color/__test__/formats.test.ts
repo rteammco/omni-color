@@ -424,6 +424,33 @@ describe('getColorFormatType', () => {
     });
   });
 
+  it('disambiguates lch and oklch based on expected ranges', () => {
+    expect(getColorFormatType({ l: 0.5, c: 50, h: 120 })).toEqual({
+      formatType: 'LCH',
+      value: { l: 0.5, c: 50, h: 120 },
+    });
+
+    expect(getColorFormatType({ l: 0.5, c: 0.1, h: 120 })).toEqual({
+      formatType: 'OKLCH',
+      value: { l: 0.5, c: 0.1, h: 120 },
+    });
+
+    expect(getColorFormatType({ l: 1, c: 0.4, h: 90 })).toEqual({
+      formatType: 'OKLCH',
+      value: { l: 1, c: 0.4, h: 90 },
+    });
+
+    expect(getColorFormatType({ l: 1.0001, c: 0.4, h: 90 })).toEqual({
+      formatType: 'LCH',
+      value: { l: 1.0001, c: 0.4, h: 90 },
+    });
+
+    expect(getColorFormatType({ l: 99.999, c: 0.6, h: 270 })).toEqual({
+      formatType: 'LCH',
+      value: { l: 99.999, c: 0.6, h: 270 },
+    });
+  });
+
   it('throws on unknown formats', () => {
     expect(() => getColorFormatType('abc' as any)).toThrow(/unknown color format/);
     expect(() => getColorFormatType({} as any)).toThrow(/unknown color format/);
