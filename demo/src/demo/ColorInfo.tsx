@@ -43,9 +43,9 @@ export function ColorInfo({ color }: Props) {
         </div>
       </div>
       <VSpace height={8} />
-      <ColorSwatch color={color} />
+      <ColorSwatch color={color} title="Basic palette" />
       <VSpace height={8} />
-      <ColorSwatch swatch={extendedSwatch} />
+      <ColorSwatch swatch={extendedSwatch} title="Extended palette" />
       <VSpace height={8} />
       <div>Color temperature: {color.getTemperatureAsString({ formatNumber: true })}</div>
       <span className="text-xs">
