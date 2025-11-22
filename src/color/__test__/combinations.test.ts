@@ -98,6 +98,26 @@ describe('mixColors', () => {
     expect(result.toHex()).toBe('#ff0000');
   });
 
+  it('handles hue wrap-around in LCH space', () => {
+    const h1 = new Color({ h: 350, s: 100, l: 50 });
+    const h2 = new Color({ h: 10, s: 100, l: 50 });
+    const result = mixColors([h1, h2], { space: 'LCH' });
+    const hue = result.toLCH().h;
+    const distanceFromZero = Math.min(hue, 360 - hue);
+    expect(distanceFromZero).toBeLessThan(45);
+    expect(Math.abs(hue - 180)).toBeGreaterThan(90);
+  });
+
+  it('handles hue wrap-around in OKLCH space', () => {
+    const h1 = new Color({ h: 350, s: 100, l: 50 });
+    const h2 = new Color({ h: 10, s: 100, l: 50 });
+    const result = mixColors([h1, h2], { space: 'OKLCH' });
+    const hue = result.toOKLCH().h;
+    const distanceFromZero = Math.min(hue, 360 - hue);
+    expect(distanceFromZero).toBeLessThan(45);
+    expect(Math.abs(hue - 180)).toBeGreaterThan(90);
+  });
+
   it('defaults to equal weights when weights length mismatches', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
