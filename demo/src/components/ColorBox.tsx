@@ -10,27 +10,27 @@ function getOverlayColorLetters(color: Color): string {
 
 interface Props {
   color: Color;
-  extraWide?: boolean;
   hideBorder?: boolean;
   label?: string;
   noBorderRadius?: boolean;
   overlayColor?: Color;
+  width?: 'NORMAL' | 'DOUBLE' | 'HALF'; // 'NORMAL' is default
 }
 
-export function ColorBox({
-  color,
-  extraWide,
-  hideBorder,
-  label,
-  noBorderRadius,
-  overlayColor,
-}: Props) {
+export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColor, width }: Props) {
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
+
+  let widthClass = 'w-16';
+  if (width === 'DOUBLE') {
+    widthClass = 'w-32';
+  } else if (width === 'HALF') {
+    widthClass = 'w-8';
+  }
 
   return (
     <div
       style={{ backgroundColor, borderColor }}
-      className={`${extraWide ? 'w-32' : 'w-16'} h-16 flex flex-col justify-end ${
+      className={`${widthClass} h-16 flex flex-col justify-end ${
         hideBorder ? 'border-0' : 'border'
       } ${noBorderRadius ? 'rounded-none' : 'rounded-md'}`}
     >

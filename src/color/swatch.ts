@@ -1,7 +1,7 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
 
-export interface BaseColorSwatch {
+interface BaseColorSwatchStops {
   100: Color; // light
   200: Color;
   300: Color;
@@ -13,7 +13,11 @@ export interface BaseColorSwatch {
   900: Color; // dark
 }
 
-export interface ExtendedColorSwatch extends BaseColorSwatch {
+interface BaseColorSwatch extends BaseColorSwatchStops {
+  type: 'BASIC';
+}
+
+interface ExtendedColorSwatchStops extends BaseColorSwatchStops {
   50: Color;
   150: Color;
   250: Color;
@@ -24,6 +28,10 @@ export interface ExtendedColorSwatch extends BaseColorSwatch {
   750: Color;
   850: Color;
   950: Color;
+}
+
+export interface ExtendedColorSwatch extends ExtendedColorSwatchStops {
+  type: 'EXTENDED';
 }
 
 export type ColorSwatch = BaseColorSwatch | ExtendedColorSwatch;
@@ -46,6 +54,7 @@ function getBaseColorSwatch(baseColor: Color): BaseColorSwatch {
   const { h: baseH, s: baseS, l: baseL } = baseColor.toHSL();
 
   return {
+    type: 'BASIC',
     100: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, 20),
@@ -94,6 +103,7 @@ function getExtendedColorSwatch(baseColor: Color): ExtendedColorSwatch {
   const { h: baseH, s: baseS, l: baseL } = baseColor.toHSL();
 
   return {
+    type: 'EXTENDED',
     50: new Color({
       h: baseH,
       s: getAdjustedSaturation(baseS, 22.5),

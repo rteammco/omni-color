@@ -162,6 +162,14 @@ describe('getPaletteColorVariations', () => {
     });
   });
 
+  describe('swatch metadata', () => {
+    it('labels swatches by type', () => {
+      const baseColor = new Color('#3498db');
+      expect(getColorSwatch(baseColor).type).toBe('BASIC');
+      expect(getColorSwatch(baseColor, { extended: true }).type).toBe('EXTENDED');
+    });
+  });
+
   describe('extended swatches', () => {
     it('includes intermediate stops while preserving the base anchors', () => {
       const baseColor = new Color('#ff0000');

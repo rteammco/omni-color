@@ -74,7 +74,7 @@ export function Playground({ isFullPage }: Props) {
       <div className="flex flex-row items-center text-sm text-red-500 h-6">{codeErrorMessage}</div>
       <div className="flex flex-row items-center gap-3 mb-3">
         <span>Your result:</span>
-        <ColorBox color={returnedColor ?? placeholderColor} extraWide />
+        <ColorBox color={returnedColor ?? placeholderColor} width="DOUBLE" />
       </div>
       {codeConsoleOutputs && codeConsoleOutputs.length > 0 && (
         <div className="flex flex-row items-center gap-3 mb-3">
