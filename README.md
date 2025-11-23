@@ -209,6 +209,21 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 #### `isReadableAsTextColor(background, options?)`
 - Convenience boolean wrapper around the readability report.
 
+### Perceptual difference (Delta E)
+
+Use Delta E calculations to measure how visually different two colors appear. `Color.differenceFrom` compares against another
+`Color` or any accepted color input and defaults to the CIEDE2000 method. The optional `method` parameter accepts `'CIE76'`,
+`'CIE94'`, or `'CIEDE2000'`. For an overview of why Delta E is used to quantify perceptual difference, see [Bruce Lindbloom's
+Delta E reference](https://www.brucelindbloom.com/index.html?ColorDifferenceCalc.html).
+
+```ts
+const reference = new Color('#e63946');
+
+reference.differenceFrom('#e5383b'); // ~2.81 (CIEDE2000)
+reference.differenceFrom('#14a085', 'CIE76'); // ~110.91
+reference.differenceFrom({ l: 70, c: 40, h: 210 }, 'CIE94'); // ~71.40
+```
+
 ### Names, temperature, and metadata
 
 #### `getTemperature()` / `getTemperatureAsString(options?)`

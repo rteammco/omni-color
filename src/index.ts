@@ -1,6 +1,7 @@
 import { Color } from './color/color';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
 import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
+import type { DeltaEMethod } from './color/deltaE';
 import type { ColorFormat } from './color/formats';
 import {
   ColorCMYK,
@@ -58,6 +59,7 @@ export {
   ColorTemperatureAndLabel,
   type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
+  type DeltaEMethod,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
   MixColorsOptions,

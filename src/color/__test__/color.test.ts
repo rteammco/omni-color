@@ -749,3 +749,27 @@ describe('Color.equals', () => {
     expect(base.equals(tooFar)).toBe(false);
   });
 });
+
+describe('Color.differenceFrom', () => {
+  it('returns 0 for identical colors', () => {
+    const color = new Color('#abcdef');
+    expect(color.differenceFrom('#abcdef')).toBeCloseTo(0, 6);
+  });
+
+  it('calculates differences using different methods', () => {
+    const color = new Color('#ff0000');
+    const other = new Color('#00ff00');
+
+    expect(color.differenceFrom(other, 'CIE76')).toBeGreaterThan(0);
+    expect(color.differenceFrom(other, 'CIE94')).toBeCloseTo(73.432, 2);
+    expect(color.differenceFrom(other)).toBeCloseTo(86.615, 2);
+  });
+
+  it('rejects invalid inputs for difference calculations', () => {
+    const color = new Color('#123456');
+
+    expect(() => color.differenceFrom(null as unknown as Color)).toThrow(
+      'Color input for Delta E cannot be null or undefined'
+    );
+  });
+});
