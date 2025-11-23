@@ -2,7 +2,18 @@ import { Color } from './color/color';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
 import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
 import type { ColorFormat } from './color/formats';
-import { ColorCMYK, ColorHex, ColorHSL, ColorHSLA, ColorHSV, ColorHSVA, ColorLCH, ColorOKLCH, ColorRGB, ColorRGBA } from './color/formats';
+import {
+  ColorCMYK,
+  ColorHex,
+  ColorHSL,
+  ColorHSLA,
+  ColorHSV,
+  ColorHSVA,
+  ColorLCH,
+  ColorOKLCH,
+  ColorRGB,
+  ColorRGBA,
+} from './color/formats';
 import type { ColorHarmony } from './color/harmonies';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
@@ -13,7 +24,12 @@ import type {
   TextReadabilityConformanceLevel,
   TextReadabilityTextSizeOptions,
 } from './color/readability';
-import { getBestBackgroundColorForText, getMostReadableTextColorForBackground, TextReadabilityOptions, TextReadabilityReport } from './color/readability';
+import {
+  getBestBackgroundColorForText,
+  getMostReadableTextColorForBackground,
+  TextReadabilityOptions,
+  TextReadabilityReport,
+} from './color/readability';
 import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
 import {
   ColorTemperatureAndLabel,

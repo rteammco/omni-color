@@ -185,13 +185,17 @@ interface ReadabilityComparisonResult {
 
 function isBetterReadabilityCandidate(
   candidate: ReadabilityComparisonResult,
-  currentBest: ReadabilityComparisonResult,
+  currentBest: ReadabilityComparisonResult
 ): boolean {
   if (candidate.isReadable !== currentBest.isReadable) {
     return candidate.isReadable;
   }
 
-  if (!candidate.isReadable && !currentBest.isReadable && candidate.shortfall !== currentBest.shortfall) {
+  if (
+    !candidate.isReadable &&
+    !currentBest.isReadable &&
+    candidate.shortfall !== currentBest.shortfall
+  ) {
     return candidate.shortfall < currentBest.shortfall;
   }
 
@@ -223,11 +227,10 @@ export function isTextReadable(
   return getTextReadabilityReport(foreground, background, options).isReadable;
 }
 
-
 function getReadabilityComparisonResult(
   foreground: Color,
   background: Color,
-  options: ReadabilityComparisonOptions = {},
+  options: ReadabilityComparisonOptions = {}
 ): ReadabilityComparisonResult {
   const { algorithm = 'WCAG', textReadabilityOptions } = options;
 
@@ -253,7 +256,7 @@ function getReadabilityComparisonResult(
 export function getMostReadableTextColorForBackground(
   backgroundColor: Color,
   textColors: (Color | ColorFormat | string)[],
-  options: ReadabilityComparisonOptions = {},
+  options: ReadabilityComparisonOptions = {}
 ): Color {
   if (textColors.length === 0) {
     throw new Error('At least one text color must be provided.');
@@ -281,7 +284,7 @@ export function getMostReadableTextColorForBackground(
 export function getBestBackgroundColorForText(
   textColor: Color,
   backgroundColors: (Color | ColorFormat | string)[],
-  options: ReadabilityComparisonOptions = {},
+  options: ReadabilityComparisonOptions = {}
 ): Color {
   if (backgroundColors.length === 0) {
     throw new Error('At least one background color must be provided.');

@@ -748,7 +748,7 @@ export class Color {
    */
   getMostReadableTextColor(
     textColors: (Color | ColorFormat | string)[],
-    options: ReadabilityComparisonOptions = {},
+    options: ReadabilityComparisonOptions = {}
   ): Color {
     return getMostReadableTextColorForBackground(this, textColors, options);
   }
@@ -779,7 +779,7 @@ export class Color {
    */
   getBestBackgroundColor(
     backgroundColors: (Color | ColorFormat | string)[],
-    options: ReadabilityComparisonOptions = {},
+    options: ReadabilityComparisonOptions = {}
   ): Color {
     return getBestBackgroundColorForText(this, backgroundColors, options);
   }

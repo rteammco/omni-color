@@ -719,7 +719,9 @@ describe('Color.getBestBackgroundColor', () => {
     const textColor = new Color('#808080');
     const paleGray = new Color('#c0c0c0');
     const black = new Color('#000000');
-    const options: ReadabilityComparisonOptions = { textReadabilityOptions: { level: 'AAA', size: 'SMALL' } };
+    const options: ReadabilityComparisonOptions = {
+      textReadabilityOptions: { level: 'AAA', size: 'SMALL' },
+    };
 
     const result = textColor.getBestBackgroundColor([paleGray, black], options);
     expect(result.toHex()).toBe(black.toHex());
@@ -746,7 +748,9 @@ describe('Color.getBestBackgroundColor', () => {
   it('throws when no background colors are provided', () => {
     const textColor = new Color('#123456');
 
-    expect(() => textColor.getBestBackgroundColor([])).toThrow('At least one background color must be provided.');
+    expect(() => textColor.getBestBackgroundColor([])).toThrow(
+      'At least one background color must be provided.'
+    );
   });
 });
 
