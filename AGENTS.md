@@ -22,6 +22,7 @@ These are the general steps to adding any new code changes to the core library:
 4. Update `color.test.ts` with a basic test for any changes to the `Color` class as well.
 5. Update exports as needed to `index.ts`.
 6. Verify changes with the demo app (see below).
+7. Update the README.md "Documentation" section as needed.
 
 ## Always Verify Changes With The Demo App
 
