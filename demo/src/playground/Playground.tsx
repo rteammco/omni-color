@@ -9,7 +9,8 @@ interface Props {
 }
 
 export function Playground({ isFullPage }: Props) {
-  const [code, setCode] = useState(getRandomStarterCode());
+  const initialCode = useMemo(() => getRandomStarterCode(), []);
+  const [code, setCode] = useState(initialCode);
   const [returnedColor, setReturnedColor] = useState<Color | null>(null);
   const [codeErrorMessage, setCodeErrorMessage] = useState<string | null>(null);
   const [codeConsoleOutputs, setCodeConsoleOutputs] = useState<string[] | null>(null);
@@ -46,8 +47,8 @@ export function Playground({ isFullPage }: Props) {
   }, [executeCode]);
 
   useEffect(() => {
-    handleResetOrInitCode();
-  }, [handleResetOrInitCode]);
+    executeCode(initialCode);
+  }, [executeCode, initialCode]);
 
   return (
     <div className="w-full flex flex-col items-center">
