@@ -10,6 +10,7 @@ interface Props {
 
 export function Playground({ isFullPage }: Props) {
   const initialCode = useMemo(() => getRandomStarterCode(), []);
+
   const [code, setCode] = useState(initialCode);
   const [returnedColor, setReturnedColor] = useState<Color | null>(null);
   const [codeErrorMessage, setCodeErrorMessage] = useState<string | null>(null);
