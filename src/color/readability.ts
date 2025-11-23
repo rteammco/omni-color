@@ -247,10 +247,6 @@ function getReadabilityComparisonResult(
   };
 }
 
-function toColors(inputs: (Color | ColorFormat | string)[]): Color[] {
-  return inputs.map((input) => new Color(input));
-}
-
 /**
  * Pick the text color with the strongest readability against a background color.
  */
@@ -263,7 +259,7 @@ export function getMostReadableTextColorForBackground(
     throw new Error('At least one text color must be provided.');
   }
 
-  const candidates = toColors(textColors);
+  const candidates = textColors.map((input) => new Color(input));
   let mostReadableTextColor = candidates[0];
   let bestResult = getReadabilityComparisonResult(mostReadableTextColor, backgroundColor, options);
 
@@ -291,7 +287,7 @@ export function getBestBackgroundColorForText(
     throw new Error('At least one background color must be provided.');
   }
 
-  const candidates = toColors(backgroundColors);
+  const candidates = backgroundColors.map((input) => new Color(input));
   let bestBackgroundColor = candidates[0];
   let bestResult = getReadabilityComparisonResult(textColor, bestBackgroundColor, options);
 

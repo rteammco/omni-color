@@ -209,6 +209,12 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 #### `isReadableAsTextColor(background, options?)`
 - Convenience boolean wrapper around the readability report.
 
+#### `getMostReadableTextColor(candidateTextColors, options?)`
+- Returns the candidate text color with the strongest readability against the current color used as the background. Accepts `ReadabilityComparisonOptions` to choose between `WCAG` contrast or `APCA` scoring and pass optional WCAG text readability inputs.
+
+#### `getBestBackgroundColor(candidateBackgroundColors, options?)`
+- Returns the candidate background color that maximizes readability for the current color as text, using the same `ReadabilityComparisonOptions` as above.
+
 ### Names, temperature, and metadata
 
 #### `getTemperature()` / `getTemperatureAsString(options?)`
@@ -234,7 +240,7 @@ Import these TypeScript types from `omni-color` for safe typings:
 - Combination utilities: `MixColorsOptions`, `BlendColorsOptions`, `AverageColorsOptions`, `MixType`, `MixSpace`, `BlendMode`, `BlendSpace`.
 - Harmonies, swatches, and palettes: `ColorHarmony`, `ColorSwatch`, `ExtendedColorSwatch`, `ColorSwatchOptions`, `ColorPalette`, `GenerateColorPaletteOptions`.
 - Naming and temperature: `BaseColorName`, `ColorLightnessModifier`, `ColorNameAndLightness`, `ColorTemperatureAndLabel`, `ColorTemperatureLabel`, `ColorTemperatureStringFormatOptions`.
-- Randomness and readability: `RandomColorOptions`, `TextReadabilityConformanceLevel`, `TextReadabilityTextSizeOptions`, `TextReadabilityOptions`, `TextReadabilityReport`.
+- Randomness and readability: `RandomColorOptions`, `TextReadabilityConformanceLevel`, `TextReadabilityTextSizeOptions`, `TextReadabilityOptions`, `TextReadabilityReport`, `ReadabilityAlgorithm`, `ReadabilityComparisonOptions`.
 
 
 ---
