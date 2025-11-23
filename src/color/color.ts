@@ -15,6 +15,8 @@ import {
   toOKLCH,
   toRGB,
 } from './conversions';
+import type { DeltaEMethod } from './deltaE';
+import { getDeltaE } from './deltaE';
 import type {
   ColorCMYK,
   ColorFormat,
@@ -664,6 +666,24 @@ export class Color {
    */
   equals(other: Color): boolean {
     return areColorsEqual(this, other);
+  }
+
+  /**
+   * Get the Delta E (perceptual difference) between this color and another color.
+   * Uses CIEDE2000 by default but supports additional calculation methods.
+   *
+   * @param other The other {@link Color} or color input to compare against.
+   * @param method Optional {@link DeltaEMethod} calculation to use. Defaults to `'CIEDE2000'`.
+   * @returns The Delta E value where higher numbers represent more visible difference.
+   *
+   * @example
+   * ```ts
+   * new Color('#ff0000').differenceFrom(new Color('#ff0100')); // ~0.034 (CIEDE2000)
+   * new Color('#ff0000').differenceFrom('#00ff00', 'CIE76'); // ~170.585
+   * ```
+   */
+  differenceFrom(other: Color | ColorFormat, method: DeltaEMethod = 'CIEDE2000'): number {
+    return getDeltaE(this, other, method);
   }
 
   /**
