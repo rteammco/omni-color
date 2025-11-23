@@ -12,6 +12,7 @@ import type {
   ColorRGB,
 } from '../formats';
 import { getRandomColorRGBA } from '../random';
+import type { ReadabilityComparisonOptions } from '../readability';
 import { getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
@@ -644,6 +645,28 @@ describe('Color.getReadabilityScore', () => {
   });
 });
 
+describe('Color.getMostReadableTextColor', () => {
+  it('returns the text color with the strongest WCAG readability', () => {
+    const background = new Color('#ffffff');
+    const black = new Color('#000000');
+    const charcoal = new Color('#1a1a1a');
+    const gray = new Color('#777777');
+
+    const result = background.getMostReadableTextColor([gray, charcoal, black]);
+    expect(result.toHex()).toBe('#000000');
+  });
+
+  it('can evaluate candidates with APCA scoring', () => {
+    const background = new Color('#0a0a0a');
+    const cyan = new Color('#00ffff');
+    const orange = new Color('#ff9900');
+    const options = { algorithm: 'APCA' as const };
+
+    const result = background.getMostReadableTextColor([cyan, orange], options);
+    expect(result.toHex()).toBe('#00ffff');
+  });
+});
+
 describe('Color.getTextReadabilityReport', () => {
   it('provides readability details for color pairs', () => {
     const c1 = new Color('#444444');
@@ -678,6 +701,56 @@ describe('Color.isReadableAsTextColor', () => {
     expect(c2.isReadableAsTextColor(c1)).toBe(true);
     expect(c1.isReadableAsTextColor(c2, { level: 'AAA' })).toBe(false);
     expect(c2.isReadableAsTextColor(c1, { level: 'AAA' })).toBe(false);
+  });
+});
+
+describe('Color.getBestBackgroundColor', () => {
+  it('returns the most readable background color for a given text color', () => {
+    const textColor = new Color('#111111');
+    const white = new Color('#ffffff');
+    const darkGray = new Color('#222222');
+    const slate = new Color('#333333');
+
+    const result = textColor.getBestBackgroundColor([darkGray, slate, white]);
+    expect(result.toHex()).toBe(white.toHex());
+  });
+
+  it('respects WCAG options when picking the closest match', () => {
+    const textColor = new Color('#808080');
+    const paleGray = new Color('#c0c0c0');
+    const black = new Color('#000000');
+    const options: ReadabilityComparisonOptions = {
+      textReadabilityOptions: { level: 'AAA', size: 'SMALL' },
+    };
+
+    const result = textColor.getBestBackgroundColor([paleGray, black], options);
+    expect(result.toHex()).toBe(black.toHex());
+  });
+
+  it('handles a single background color', () => {
+    const textColor = new Color('#121212');
+    const onlyBackground = new Color('#fafafa');
+
+    const result = textColor.getBestBackgroundColor([onlyBackground]);
+    expect(result.toHex()).toBe('#fafafa');
+  });
+
+  it('picks the strongest APCA background from multiple candidates', () => {
+    const textColor = new Color('#ffeeaa');
+    const slate = new Color('#1c1f24');
+    const teal = new Color('#0f4c5c');
+    const wheat = new Color('#f5deb3');
+
+    const result = textColor.getBestBackgroundColor([slate, teal, wheat], { algorithm: 'APCA' });
+    expect(result.toHex()).toBe('#1c1f24');
+  });
+
+  it('throws when no background colors are provided', () => {
+    const textColor = new Color('#123456');
+
+    expect(() => textColor.getBestBackgroundColor([])).toThrow(
+      'At least one background color must be provided.'
+    );
   });
 });
 

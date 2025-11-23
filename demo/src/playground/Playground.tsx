@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CodeExecutionStatus, getRandomStarterCode, tryToRunCode } from './playgroundUtils';
 import { Color } from '../../../dist';
 import { ColorBox } from '../components/ColorBox';
@@ -11,6 +11,8 @@ interface Props {
 export function Playground({ isFullPage }: Props) {
   const initialCode = useMemo(() => getRandomStarterCode(), []);
 
+  const isMountedRef = useRef(true);
+
   const [code, setCode] = useState(initialCode);
   const [returnedColor, setReturnedColor] = useState<Color | null>(null);
   const [codeErrorMessage, setCodeErrorMessage] = useState<string | null>(null);
@@ -20,6 +22,10 @@ export function Playground({ isFullPage }: Props) {
 
   const executeCode = useCallback((newCode: string) => {
     tryToRunCode(newCode).then((res) => {
+      if (!isMountedRef.current) {
+        return;
+      }
+
       if (res.status === CodeExecutionStatus.SUCCESS) {
         setCodeErrorMessage(null);
         setReturnedColor(res.color ?? null);
@@ -49,6 +55,9 @@ export function Playground({ isFullPage }: Props) {
 
   useEffect(() => {
     executeCode(initialCode);
+    return () => {
+      isMountedRef.current = false;
+    };
   }, [executeCode, initialCode]);
 
   return (
