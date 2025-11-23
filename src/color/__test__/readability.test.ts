@@ -1,6 +1,8 @@
 import { Color } from '../color';
 import {
   getAPCAReadabilityScore,
+  getBestBackgroundColorForText,
+  getMostReadableTextColorForBackground,
   getTextReadabilityReport,
   getWCAGContrastRatio,
   isTextReadable,
@@ -2852,5 +2854,27 @@ describe('getAPCAReadabilityScore', () => {
     const c2 = new Color('#888888');
     expect(getAPCAReadabilityScore(c1, c2)).toBeCloseTo(0.0, 2);
     expect(getAPCAReadabilityScore(c2, c1)).toBeCloseTo(-7.32, 2);
+  });
+});
+
+describe('readability selection helpers', () => {
+  it('selects the most readable text color using WCAG inputs', () => {
+    const background = new Color('#fefefe');
+    const candidates = ['#000000', new Color('#1a1a1a'), { r: 120, g: 120, b: 120 }];
+
+    const result = getMostReadableTextColorForBackground(background, candidates, {
+      textReadabilityOptions: { level: 'AAA', size: 'LARGE' },
+    });
+
+    expect(result.toHex()).toBe('#000000');
+  });
+
+  it('selects the best background color for APCA scoring', () => {
+    const textColor = new Color('#f4e4c0');
+    const backgrounds = ['#101010', '#444444', '#ffffff'];
+
+    const result = getBestBackgroundColorForText(textColor, backgrounds, { algorithm: 'APCA' });
+
+    expect(result.toHex()).toBe('#101010');
   });
 });

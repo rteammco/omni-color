@@ -1,5 +1,5 @@
-import type { Color } from './color';
-import type { ColorRGBA } from './formats';
+import { Color } from './color';
+import type { ColorFormat, ColorRGBA } from './formats';
 import { srgbChannelToLinear } from './utils';
 
 // Does alpha blending between the two RGBA colors. Calculates what the a
@@ -170,6 +170,34 @@ export interface TextReadabilityReport {
   shortfall: number;
 }
 
+export type ReadabilityAlgorithm = 'WCAG' | 'APCA';
+
+export interface ReadabilityComparisonOptions {
+  algorithm?: ReadabilityAlgorithm;
+  textReadabilityOptions?: TextReadabilityOptions;
+}
+
+interface ReadabilityComparisonResult {
+  score: number;
+  isReadable: boolean;
+  shortfall: number;
+}
+
+function isBetterReadabilityCandidate(
+  candidate: ReadabilityComparisonResult,
+  currentBest: ReadabilityComparisonResult,
+): boolean {
+  if (candidate.isReadable !== currentBest.isReadable) {
+    return candidate.isReadable;
+  }
+
+  if (!candidate.isReadable && !currentBest.isReadable && candidate.shortfall !== currentBest.shortfall) {
+    return candidate.shortfall < currentBest.shortfall;
+  }
+
+  return candidate.score > currentBest.score;
+}
+
 export function getTextReadabilityReport(
   foreground: Color,
   background: Color,
@@ -193,4 +221,88 @@ export function isTextReadable(
   options: TextReadabilityOptions = {}
 ): boolean {
   return getTextReadabilityReport(foreground, background, options).isReadable;
+}
+
+
+function getReadabilityComparisonResult(
+  foreground: Color,
+  background: Color,
+  options: ReadabilityComparisonOptions = {},
+): ReadabilityComparisonResult {
+  const { algorithm = 'WCAG', textReadabilityOptions } = options;
+
+  if (algorithm === 'APCA') {
+    return {
+      score: Math.abs(getAPCAReadabilityScore(foreground, background)),
+      isReadable: true,
+      shortfall: 0,
+    };
+  }
+
+  const report = getTextReadabilityReport(foreground, background, textReadabilityOptions);
+  return {
+    score: report.contrastRatio,
+    isReadable: report.isReadable,
+    shortfall: report.shortfall,
+  };
+}
+
+function toColors(inputs: (Color | ColorFormat | string)[]): Color[] {
+  return inputs.map((input) => new Color(input));
+}
+
+/**
+ * Pick the text color with the strongest readability against a background color.
+ */
+export function getMostReadableTextColorForBackground(
+  backgroundColor: Color,
+  textColors: (Color | ColorFormat | string)[],
+  options: ReadabilityComparisonOptions = {},
+): Color {
+  if (textColors.length === 0) {
+    throw new Error('At least one text color must be provided.');
+  }
+
+  const candidates = toColors(textColors);
+  let mostReadableTextColor = candidates[0];
+  let bestResult = getReadabilityComparisonResult(mostReadableTextColor, backgroundColor, options);
+
+  for (let i = 1; i < candidates.length; i += 1) {
+    const candidate = candidates[i];
+    const candidateResult = getReadabilityComparisonResult(candidate, backgroundColor, options);
+    if (isBetterReadabilityCandidate(candidateResult, bestResult)) {
+      mostReadableTextColor = candidate;
+      bestResult = candidateResult;
+    }
+  }
+
+  return mostReadableTextColor;
+}
+
+/**
+ * Pick the background color that maximizes readability for a given text color.
+ */
+export function getBestBackgroundColorForText(
+  textColor: Color,
+  backgroundColors: (Color | ColorFormat | string)[],
+  options: ReadabilityComparisonOptions = {},
+): Color {
+  if (backgroundColors.length === 0) {
+    throw new Error('At least one background color must be provided.');
+  }
+
+  const candidates = toColors(backgroundColors);
+  let bestBackgroundColor = candidates[0];
+  let bestResult = getReadabilityComparisonResult(textColor, bestBackgroundColor, options);
+
+  for (let i = 1; i < candidates.length; i += 1) {
+    const candidate = candidates[i];
+    const candidateResult = getReadabilityComparisonResult(textColor, candidate, options);
+    if (isBetterReadabilityCandidate(candidateResult, bestResult)) {
+      bestBackgroundColor = candidate;
+      bestResult = candidateResult;
+    }
+  }
+
+  return bestBackgroundColor;
 }
