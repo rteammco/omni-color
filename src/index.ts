@@ -19,10 +19,17 @@ import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
 import type {
+  ReadabilityAlgorithm,
+  ReadabilityComparisonOptions,
   TextReadabilityConformanceLevel,
   TextReadabilityTextSizeOptions,
 } from './color/readability';
-import { TextReadabilityOptions, TextReadabilityReport } from './color/readability';
+import {
+  getBestBackgroundColorForText,
+  getMostReadableTextColorForBackground,
+  TextReadabilityOptions,
+  TextReadabilityReport,
+} from './color/readability';
 import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
 import {
   ColorTemperatureAndLabel,
@@ -60,10 +67,14 @@ export {
   ColorTemperatureStringFormatOptions,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
+  getBestBackgroundColorForText,
+  getMostReadableTextColorForBackground,
   MixColorsOptions,
   type MixSpace,
   type MixType,
   RandomColorOptions,
+  type ReadabilityAlgorithm,
+  ReadabilityComparisonOptions,
   type TextReadabilityConformanceLevel,
   TextReadabilityOptions,
   TextReadabilityReport,
