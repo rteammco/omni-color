@@ -17,7 +17,7 @@ export default [
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: ['./tsconfig.json'],
+        project: ['./tsconfig.eslint.json'],
         tsconfigRootDir,
       },
       ecmaVersion: 2022,
@@ -39,7 +39,7 @@ export default [
       'import/extensions': ['.js', '.ts'],
       'import/resolver': {
         typescript: {
-          project: ['./tsconfig.json', './tsconfig.test.json'],
+          project: ['./tsconfig.eslint.json'],
         },
       },
     },

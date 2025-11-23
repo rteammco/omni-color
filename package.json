@@ -16,7 +16,9 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "lint": "eslint .",
+    "lint": "npm run lint:lib && npm run lint:demo",
+    "lint:lib": "eslint .",
+    "lint:demo": "npm run lint --prefix demo",
     "typecheck": "tsc",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json --watch",
     "build": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json",
