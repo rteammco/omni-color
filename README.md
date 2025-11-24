@@ -208,7 +208,11 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 ### Swatches and palettes
 
 #### `getColorSwatch(options?)`
-- Generates lighter/darker stops keyed `100`–`900` (base at `500`). `{ extended: true }` adds half-steps `50`–`950`.
+- Generates lighter/darker stops keyed `100`–`900`. By default the original color is placed on the stop that best matches its
+  lightness and the rest of the stops are interpolated around it; pure black and white are always centered on `500`.
+  - Set `centerOn500: true` to force the original color onto the `500` stop (the previous behavior).
+  - `{ extended: true }` adds half-steps `50`–`950` without ever shifting the main color onto a half-stop.
+  - Each swatch exposes `mainStop` so you can see which stop the original color was anchored to.
   ```ts
   const swatch = new Color('#ff0000').getColorSwatch({ extended: true });
   swatch[150].toHex(); // midway between 100 and 200
@@ -219,10 +223,12 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 - `GenerateColorPaletteOptions` let you tune:
   - `neutralHarmonization`: `tintChromaFactor` (fraction of chroma applied to neutrals) and `maxTintChroma` cap.
   - `semanticHarmonization`: `huePull` (blend semantic hues toward the base hue) and `chromaRange` bounds for semantic swatches.
+  - `swatchOptions`: forwarded to swatch generation for every palette color. Palettes center the source color on the `500` stop by default; override `centerOn500` to opt into dynamic anchoring.
   ```ts
   const palette = new Color('#ff7f50').getColorPalette('ANALOGOUS', {
     neutralHarmonization: { tintChromaFactor: 0.12 },
     semanticHarmonization: { huePull: 0.35 },
+    swatchOptions: { centerOn500: false },
   });
   palette.info[500].toHex();
   ```
