@@ -20,7 +20,6 @@ import type {
   ColorGradientOptions,
   ColorGradientSpace,
 } from './color/gradients';
-import { createColorGradient } from './color/gradients';
 import type { ColorHarmony } from './color/harmonies';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
@@ -69,7 +68,6 @@ export {
   ColorTemperatureAndLabel,
   type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
-  createColorGradient,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
   MixColorsOptions,

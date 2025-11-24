@@ -1,14 +1,7 @@
 import { clampValue } from '../utils';
 import type { Color } from './color';
 import { toRGB } from './conversions';
-import type {
-  ColorHSL,
-  ColorHSV,
-  ColorLCH,
-  ColorOKLCH,
-  ColorRGB,
-  ColorRGBA,
-} from './formats';
+import type { ColorHSL, ColorHSV, ColorLCH, ColorOKLCH, ColorRGB, ColorRGBA } from './formats';
 
 export type ColorGradientSpace = 'RGB' | 'HSL' | 'HSV' | 'LCH' | 'OKLCH';
 export type ColorGradientInterpolation = 'LINEAR' | 'BEZIER';

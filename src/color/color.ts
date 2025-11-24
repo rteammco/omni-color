@@ -187,7 +187,9 @@ export class Color {
     colors: (Color | ColorFormat | string)[],
     options?: ColorGradientOptions
   ): Color[] {
-    const colorInstances = colors.map((color) => (color instanceof Color ? color : new Color(color)));
+    const colorInstances = colors.map((color) =>
+      color instanceof Color ? color : new Color(color)
+    );
     return createColorGradient(colorInstances, options);
   }
 
@@ -486,7 +488,10 @@ export class Color {
    * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, and stop count.
    * @returns An array of {@link Color}s representing the full gradient including this color and the provided stops.
    */
-  createGradientThrough(stops: (Color | ColorFormat | string)[], options?: ColorGradientOptions): Color[] {
+  createGradientThrough(
+    stops: (Color | ColorFormat | string)[],
+    options?: ColorGradientOptions
+  ): Color[] {
     return Color.createInterpolatedGradient([this, ...stops], options);
   }
 

@@ -26,7 +26,9 @@ describe('createColorGradient', () => {
   });
 
   it('rounds non-integer stop counts and enforces a minimum of two anchors', () => {
-    const twoStopGradient = Color.createInterpolatedGradient(['#000000', '#ffffff'], { stops: 1.7 });
+    const twoStopGradient = Color.createInterpolatedGradient(['#000000', '#ffffff'], {
+      stops: 1.7,
+    });
     expect(twoStopGradient).toHaveLength(2);
     expect(twoStopGradient[0].toHex()).toBe('#000000');
     expect(twoStopGradient[1].toHex()).toBe('#ffffff');
@@ -107,10 +109,10 @@ describe('createColorGradient', () => {
   });
 
   it('returns Color instances when using the standalone helper', () => {
-    const gradient = createColorGradient(
-      [new Color('#000000'), new Color('#ffffff')],
-      { stops: 3, space: 'RGB' }
-    );
+    const gradient = createColorGradient([new Color('#000000'), new Color('#ffffff')], {
+      stops: 3,
+      space: 'RGB',
+    });
 
     expect(gradient).toHaveLength(3);
     expect(gradient.every((stop) => stop instanceof Color)).toBe(true);
