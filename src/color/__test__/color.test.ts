@@ -840,8 +840,8 @@ describe('Color.differenceFrom', () => {
     const color = new Color('#ff0000');
     const other = new Color('#00ff00');
 
-    expect(color.differenceFrom(other, 'CIE76')).toBeGreaterThan(0);
-    expect(color.differenceFrom(other, 'CIE94')).toBeCloseTo(73.432, 2);
+    expect(color.differenceFrom(other, { method: 'CIE76' })).toBeGreaterThan(0);
+    expect(color.differenceFrom(other, { method: 'CIE94' })).toBeCloseTo(73.432, 2);
     expect(color.differenceFrom(other)).toBeCloseTo(86.615, 2);
   });
 });

@@ -6,7 +6,7 @@ import {
   MixColorsOptions,
 } from './color/combinations';
 import { toLAB } from './color/conversions';
-import type { DeltaEMethod } from './color/deltaE';
+import type { CIE94Options, DeltaEMethod, DeltaEOptions } from './color/deltaE';
 import type { ColorFormat } from './color/formats';
 import {
   ColorCMYK,
@@ -55,6 +55,7 @@ export {
   BlendColorsOptions,
   type BlendMode,
   type BlendSpace,
+  type CIE94Options,
   Color,
   ColorCMYK,
   type ColorFormat,
@@ -82,6 +83,7 @@ export {
   type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
   type DeltaEMethod,
+  type DeltaEOptions,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
   getBestBackgroundColorForText,
