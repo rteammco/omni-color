@@ -8,6 +8,7 @@ const MATCH_HSLA_STRING_REGEX = /^hsla\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s
 const MATCH_HSV_STRING_REGEX = /^hsv\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
 const MATCH_HSVA_STRING_REGEX = /^hsva\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
 const MATCH_CMYK_STRING_REGEX = /^cmyk\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
+const MATCH_LAB_STRING_REGEX = /^lab\(\s*([^ ]+)\s+([^ ]+)\s+([^\)]+)\)$/;
 const MATCH_LCH_STRING_REGEX = /^lch\(\s*([^ ]+)\s+([^ ]+)\s+([^\)]+)\)$/;
 const MATCH_OKLCH_STRING_REGEX = /^oklch\(\s*([^ ]+)\s+([^ ]+)\s+([^\)]+)\)$/;
 
@@ -118,6 +119,17 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
     return createColorOrNull({ c, m, y, k });
+  }
+
+  const labMatch = str.match(MATCH_LAB_STRING_REGEX);
+  if (labMatch) {
+    const l = parseNumberOrPercent(labMatch[1], 100);
+    const a = parseFloat(labMatch[2]);
+    const b = parseFloat(labMatch[3]);
+    if ([l, a, b].some((v) => isNaN(v))) {
+      return null;
+    }
+    return createColorOrNull({ l, a, b });
   }
 
   const lchMatch = str.match(MATCH_LCH_STRING_REGEX);

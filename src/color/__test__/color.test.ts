@@ -7,6 +7,7 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
@@ -28,6 +29,7 @@ const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
 const BASE_HSL: ColorHSL = { h: 0, s: 100, l: 50 };
 const BASE_HSV: ColorHSV = { h: 0, s: 100, v: 100 };
 const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
+const BASE_LAB: ColorLAB = { l: 53.233, a: 80.109, b: 67.22 };
 const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
 const BASE_OKLCH: ColorOKLCH = { l: 0.627955, c: 0.257683, h: 29.234 };
 
@@ -44,6 +46,10 @@ function checkAllConversions(color: Color, alpha: number, hex8: ColorHex) {
   expect(color.toHSV()).toEqual(BASE_HSV);
   expect(color.toHSVA()).toEqual({ ...BASE_HSV, a: alpha });
   expect(color.toCMYK()).toEqual(BASE_CMYK);
+  const lab = color.toLAB();
+  expect(lab.l).toBeCloseTo(BASE_LAB.l, 3);
+  expect(lab.a).toBeCloseTo(BASE_LAB.a, 3);
+  expect(lab.b).toBeCloseTo(BASE_LAB.b, 3);
   const lch = color.toLCH();
   expect(lch.l).toBeCloseTo(BASE_LCH.l, 3);
   expect(lch.c).toBeCloseTo(BASE_LCH.c, 3);
@@ -245,6 +251,7 @@ describe('Color.toXString methods', () => {
     expect(color.toHSLString()).toBe('hsl(0, 100%, 50%)');
     expect(color.toHSLAString()).toBe('hsla(0, 100%, 50%, 0.5)');
     expect(color.toCMYKString()).toBe('cmyk(0%, 100%, 100%, 0%)');
+    expect(color.toLABString()).toBe('lab(53.233% 80.109 67.22)');
     expect(color.toLCHString()).toBe('lch(53.233% 104.576 40)');
     expect(color.toOKLCHString()).toBe('oklch(0.627955 0.257683 29.234)');
   });
