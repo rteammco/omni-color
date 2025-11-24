@@ -2,7 +2,38 @@ import type { Color } from './color';
 
 export type DeltaEMethod = 'CIE76' | 'CIE94' | 'CIEDE2000';
 
-export function deltaECIE76(colorA: Color, colorB: Color): number {
+/**
+ * Optional weighting factors for the CIE94 Delta E calculation.
+ *
+ * These values tune the relative importance of lightness, chroma, and hue
+ * differences for a specific application domain (e.g., graphic arts vs.
+ * textiles). When omitted, the graphic arts defaults are used.
+ */
+export interface CIE94Options {
+  /** Lightness weighting factor (k_L). Defaults to 1. */
+  kL?: number;
+  /** Chroma weighting factor (k_C). Defaults to 1. */
+  kC?: number;
+  /** Hue weighting factor (k_H). Defaults to 1. */
+  kH?: number;
+  /** Application-specific chroma scaling constant (K_1). Defaults to 0.045. */
+  K1?: number;
+  /** Application-specific hue scaling constant (K_2). Defaults to 0.015. */
+  K2?: number;
+}
+
+/**
+ * Options for Delta E calculations.
+ *
+ * Specify the `method` to select the formula. If `method` is `'CIE94'`,
+ * pass `cie94Options` to customize weighting factors.
+ */
+export interface DeltaEOptions {
+  method?: DeltaEMethod;
+  cie94Options?: CIE94Options;
+}
+
+function deltaECIE76(colorA: Color, colorB: Color): number {
   const lab1 = colorA.toLAB();
   const lab2 = colorB.toLAB();
   const deltaL = lab1.l - lab2.l;
@@ -11,11 +42,7 @@ export function deltaECIE76(colorA: Color, colorB: Color): number {
   return Math.sqrt(deltaL ** 2 + deltaA ** 2 + deltaB ** 2);
 }
 
-export function deltaECIE94(
-  colorA: Color,
-  colorB: Color,
-  options: { kL?: number; kC?: number; kH?: number; K1?: number; K2?: number } = {}
-): number {
+function deltaECIE94(colorA: Color, colorB: Color, options: CIE94Options = {}): number {
   const { kL = 1, kC = 1, kH = 1, K1 = 0.045, K2 = 0.015 } = options;
   const lab1 = colorA.toLAB();
   const lab2 = colorB.toLAB();
@@ -40,7 +67,7 @@ export function deltaECIE94(
   return Math.sqrt(lTerm ** 2 + cTerm ** 2 + hTerm ** 2);
 }
 
-export function deltaECIEDE2000(colorA: Color, colorB: Color): number {
+function deltaECIEDE2000(colorA: Color, colorB: Color): number {
   const lab1 = colorA.toLAB();
   const lab2 = colorB.toLAB();
 
@@ -114,16 +141,14 @@ export function deltaECIEDE2000(colorA: Color, colorB: Color): number {
   return Math.sqrt(lTerm ** 2 + cTerm ** 2 + hTerm ** 2 + rT * cTerm * hTerm);
 }
 
-export function getDeltaE(
-  colorA: Color,
-  colorB: Color,
-  method: DeltaEMethod = 'CIEDE2000'
-): number {
+export function getDeltaE(colorA: Color, colorB: Color, options: DeltaEOptions = {}): number {
+  const { method = 'CIEDE2000', cie94Options } = options;
+
   if (method === 'CIE76') {
     return deltaECIE76(colorA, colorB);
   }
   if (method === 'CIE94') {
-    return deltaECIE94(colorA, colorB);
+    return deltaECIE94(colorA, colorB, cie94Options);
   }
   if (method === 'CIEDE2000') {
     return deltaECIEDE2000(colorA, colorB);

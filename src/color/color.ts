@@ -16,7 +16,7 @@ import {
   toOKLCH,
   toRGB,
 } from './conversions';
-import type { DeltaEMethod } from './deltaE';
+import type { DeltaEOptions } from './deltaE';
 import { getDeltaE } from './deltaE';
 import type {
   ColorCMYK,
@@ -699,7 +699,7 @@ export class Color {
    * const midLight = extendedSwatch[150]; // halfway between 100 and 200
    * const darkest = extendedSwatch[950];  // darker than 900
    * ```
-  */
+   */
   getColorSwatch(): ColorSwatch;
   getColorSwatch(options?: ColorSwatchOptions & { extended: true }): ExtendedColorSwatch;
   getColorSwatch(options?: ColorSwatchOptions): ColorSwatch;
@@ -750,20 +750,26 @@ export class Color {
 
   /**
    * Get the Delta E (perceptual difference) between this color and another color.
-   * Uses CIEDE2000 by default but supports additional calculation methods.
+   * Uses CIEDE2000 by default but supports additional calculation methods and
+   * configurable weighting for CIE94.
    *
    * @param other The other {@link Color} or color input to compare against.
-   * @param method Optional {@link DeltaEMethod} calculation to use. Defaults to `'CIEDE2000'`.
+   * @param options Optional {@link DeltaEOptions} to control the calculation.
+   * Defaults to `'CIEDE2000'`. Configure `method` and related options to customize behavior.
    * @returns The Delta E value where higher numbers represent more visible difference.
    *
    * @example
    * ```ts
    * new Color('#ff0000').differenceFrom(new Color('#ff0100')); // ~0.034 (CIEDE2000)
-   * new Color('#ff0000').differenceFrom(new Color('#00ff00'), 'CIE76'); // ~170.585
+   * new Color('#ff0000').differenceFrom(new Color('#00ff00'), { method: 'CIE76' }); // ~170.585
+   * new Color('#ff6666').differenceFrom(new Color('#aa0000'), {
+   *   method: 'CIE94',
+   *   cie94Options: { kL: 2, kC: 1, kH: 1.5 },
+   * });
    * ```
    */
-  differenceFrom(other: ValidColorInputFormat, method: DeltaEMethod = 'CIEDE2000'): number {
-    return getDeltaE(this, new Color(other), method);
+  differenceFrom(other: ValidColorInputFormat, options: DeltaEOptions = {}): number {
+    return getDeltaE(this, new Color(other), options);
   }
 
   /**
