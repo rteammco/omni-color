@@ -5,6 +5,7 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
@@ -69,6 +70,19 @@ function isValidCMYKColor(color: ColorCMYK): boolean {
   const { c, m, y, k } = color;
   const check = (value: number) => typeof value === 'number' && value >= 0 && value <= 100;
   return [c, m, y, k].every(check);
+}
+
+function isValidLABColor(color: ColorLAB): boolean {
+  const { l, a, b } = color;
+  return (
+    typeof l === 'number' &&
+    l >= 0 &&
+    l <= 100 &&
+    typeof a === 'number' &&
+    Number.isFinite(a) &&
+    typeof b === 'number' &&
+    Number.isFinite(b)
+  );
 }
 
 function isValidLCHColor(color: ColorLCH): boolean {
@@ -148,6 +162,11 @@ export function validateColorOrThrow(color?: ColorFormat | null): void {
     case 'CMYK':
       if (!isValidCMYKColor(value)) {
         throw new Error(`invalid CMYK color: "${JSON.stringify(value)}"`);
+      }
+      break;
+    case 'LAB':
+      if (!isValidLABColor(value)) {
+        throw new Error(`invalid LAB color: "${JSON.stringify(value)}"`);
       }
       break;
     case 'LCH':

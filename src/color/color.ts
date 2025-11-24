@@ -11,6 +11,7 @@ import {
   toHSLA,
   toHSV,
   toHSVA,
+  toLAB,
   toLCH,
   toOKLCH,
   toRGB,
@@ -25,6 +26,7 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
@@ -34,6 +36,7 @@ import {
   cmykToString,
   hslaToString,
   hslToString,
+  labToString,
   lchToString,
   oklchToString,
   rgbaToString,
@@ -280,6 +283,20 @@ export class Color {
    */
   toCMYKString(): string {
     return cmykToString(this.toCMYK());
+  }
+
+  /**
+   * Get the color as a {@link ColorLAB} `{ l, a, b }` object.
+   */
+  toLAB(): ColorLAB {
+    return toLAB(this.color);
+  }
+
+  /**
+   * Get the color as a CSS `lab(l% a b)` string.
+   */
+  toLABString(): string {
+    return labToString(this.toLAB());
   }
 
   /**

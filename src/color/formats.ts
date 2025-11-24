@@ -43,6 +43,12 @@ export interface ColorLCH {
   h: number; // 0-360
 }
 
+export interface ColorLAB {
+  l: number; // 0-100
+  a: number; // unbounded
+  b: number; // unbounded
+}
+
 export interface ColorOKLCH {
   l: number; // 0-1
   c: number; // >=0
@@ -58,6 +64,7 @@ export type ColorFormat =
   | ColorHSV
   | ColorHSVA
   | ColorCMYK
+  | ColorLAB
   | ColorLCH
   | ColorOKLCH;
 
@@ -71,6 +78,7 @@ type ColorFormatTypeAndValue =
   | { formatType: 'HSV'; value: ColorHSV }
   | { formatType: 'HSVA'; value: ColorHSVA }
   | { formatType: 'CMYK'; value: ColorCMYK }
+  | { formatType: 'LAB'; value: ColorLAB }
   | { formatType: 'LCH'; value: ColorLCH }
   | { formatType: 'OKLCH'; value: ColorOKLCH };
 
@@ -119,6 +127,10 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
     return 'a' in color
       ? { formatType: 'HSLA', value: color }
       : { formatType: 'HSL', value: color };
+  }
+
+  if ('l' in color && 'a' in color && 'b' in color) {
+    return { formatType: 'LAB', value: color };
   }
 
   if ('h' in color && 'l' in color && 'c' in color) {
@@ -180,6 +192,10 @@ export function cmykToString({ c, m, y, k }: ColorCMYK): string {
   return `cmyk(${getDecimalString(c)}%, ${getDecimalString(m)}%, ${getDecimalString(
     y
   )}%, ${getDecimalString(k)}%)`;
+}
+
+export function labToString({ l, a, b }: ColorLAB): string {
+  return `lab(${getDecimalString(l)}% ${getDecimalString(a)} ${getDecimalString(b)})`;
 }
 
 export function lchToString({ l, c, h }: ColorLCH): string {

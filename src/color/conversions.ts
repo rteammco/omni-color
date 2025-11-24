@@ -6,6 +6,7 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
@@ -291,16 +292,13 @@ function cmykToRGBA(color: ColorCMYK, alpha?: number): ColorRGBA {
   return rgbToRGBA(rgb, alpha);
 }
 
-//  srgbChannelToLinear(
-function rgbToLCH(color: ColorRGB): ColorLCH {
+function rgbToLabUnrounded(color: ColorRGB): ColorLAB {
   const r = srgbChannelToLinear(color.r, 'SRGB');
   const g = srgbChannelToLinear(color.g, 'SRGB');
   const b = srgbChannelToLinear(color.b, 'SRGB');
-  // sRGB to XYZ (D65)
   let x = r * 0.4124 + g * 0.3576 + b * 0.1805;
   let y = r * 0.2126 + g * 0.7152 + b * 0.0722;
   let z = r * 0.0193 + g * 0.1192 + b * 0.9505;
-  // Normalize
   x /= 0.95047;
   y /= 1.0;
   z /= 1.08883;
@@ -310,22 +308,22 @@ function rgbToLCH(color: ColorRGB): ColorLCH {
   const l = 116 * fy - 16;
   const a = 500 * (fx - fy);
   const b2 = 200 * (fy - fz);
-  const c = Math.sqrt(a * a + b2 * b2);
-  const h = (Math.atan2(b2, a) * 180) / Math.PI;
+  return { l, a, b: b2 };
+}
+
+function rgbToLAB(color: ColorRGB): ColorLAB {
+  const { l, a, b } = rgbToLabUnrounded(color);
   return {
     l: +l.toFixed(3),
-    c: +c.toFixed(3),
-    h: +((h + 360) % 360).toFixed(3),
+    a: +a.toFixed(3),
+    b: +b.toFixed(3),
   };
 }
 
-function lchToRGB(color: ColorLCH): ColorRGB {
-  const hRad = (color.h * Math.PI) / 180;
-  const a = color.c * Math.cos(hRad);
-  const b = color.c * Math.sin(hRad);
+function labToRGB(color: ColorLAB): ColorRGB {
   const fy = (color.l + 16) / 116;
-  const fx = a / 500 + fy;
-  const fz = fy - b / 200;
+  const fx = color.a / 500 + fy;
+  const fz = fy - color.b / 200;
   const fx3 = fx ** 3;
   const fy3 = fy ** 3;
   const fz3 = fz ** 3;
@@ -346,6 +344,27 @@ function lchToRGB(color: ColorLCH): ColorRGB {
     g: Math.round(g),
     b: Math.round(b3),
   };
+}
+
+function rgbToLCH(color: ColorRGB): ColorLCH {
+  const { l, a, b } = rgbToLabUnrounded(color);
+  const c = Math.sqrt(a * a + b * b);
+  const h = (Math.atan2(b, a) * 180) / Math.PI;
+  return {
+    l,
+    c: +c.toFixed(3),
+    h: +((h + 360) % 360).toFixed(3),
+  };
+}
+
+function lchToRGB(color: ColorLCH): ColorRGB {
+  const hRad = (color.h * Math.PI) / 180;
+  const labColor: ColorLAB = {
+    l: color.l,
+    a: color.c * Math.cos(hRad),
+    b: color.c * Math.sin(hRad),
+  };
+  return labToRGB(labColor);
 }
 
 function lchToRGBA(color: ColorLCH, alpha?: number): ColorRGBA {
@@ -424,6 +443,8 @@ export function toRGB(color: ColorFormat): ColorRGB {
       return rgbaToRGB(hsvaToRGBA(value));
     case 'CMYK':
       return cmykToRGB(value);
+    case 'LAB':
+      return labToRGB(value);
     case 'LCH':
       return lchToRGB(value);
     case 'OKLCH':
@@ -454,6 +475,8 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
       return hsvaToRGBA(value);
     case 'CMYK':
       return cmykToRGBA(value);
+    case 'LAB':
+      return rgbToRGBA(labToRGB(value));
     case 'LCH':
       return lchToRGBA(value);
     case 'OKLCH':
@@ -485,6 +508,8 @@ export function toHex(color: ColorFormat): ColorHex {
       return rgbaToHex(hsvaToRGBA(value));
     case 'CMYK':
       return rgbToHex(cmykToRGB(value));
+    case 'LAB':
+      return rgbToHex(labToRGB(value));
     case 'LCH':
       return rgbToHex(lchToRGB(value));
     case 'OKLCH':
@@ -516,6 +541,8 @@ export function toHex8(color: ColorFormat): ColorHex {
       return rgbaToHex8(hsvaToRGBA(value));
     case 'CMYK':
       return rgbToHex8(cmykToRGB(value));
+    case 'LAB':
+      return rgbToHex8(labToRGB(value));
     case 'LCH':
       return rgbToHex8(lchToRGB(value));
     case 'OKLCH':
@@ -548,6 +575,15 @@ export function toHSVA(color: ColorFormat): ColorHSVA {
 export function toCMYK(color: ColorFormat): ColorCMYK {
   validateColorOrThrow(color);
   return rgbToCMYK(toRGB(color));
+}
+
+export function toLAB(color: ColorFormat): ColorLAB {
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  if (formatType === 'LAB') {
+    return { ...value };
+  }
+  return rgbToLAB(toRGB(color));
 }
 
 export function toLCH(color: ColorFormat): ColorLCH {

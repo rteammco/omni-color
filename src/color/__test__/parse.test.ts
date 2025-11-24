@@ -102,6 +102,18 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('cmyk(0%, 100%, 0%, 0%)')?.toHex()).toBe('#ff00ff');
   });
 
+  it('parses LAB inputs', () => {
+    expect(parseCSSColorFormatString('lab(0% 0 0)')?.toHex()).toBe('#000000');
+    expect(parseCSSColorFormatString('lab(100% 0.005 -0.01)')?.toHex()).toBe('#ffffff');
+    expect(parseCSSColorFormatString('lab(53.585% 0.003 -0.006)')?.toHex()).toBe('#808080');
+    expect(parseCSSColorFormatString('lab(53.233% 80.109 67.22)')?.toHex()).toBe('#ff0000');
+    expect(parseCSSColorFormatString('lab(87.737% -86.185 83.181)')?.toHex()).toBe('#00ff00');
+    expect(parseCSSColorFormatString('lab(32.303% 79.197 -107.864)')?.toHex()).toBe('#0000ff');
+    expect(parseCSSColorFormatString('lab(97.138% -21.556 94.482)')?.toHex()).toBe('#ffff00');
+    expect(parseCSSColorFormatString('lab(91.117% -48.08 -14.138)')?.toHex()).toBe('#00ffff');
+    expect(parseCSSColorFormatString('lab(60.32% 98.254 -60.843)')?.toHex()).toBe('#ff00ff');
+  });
+
   it('parses LCH inputs', () => {
     expect(parseCSSColorFormatString('lch(0% 0 0)')?.toHex()).toBe('#000000');
     expect(parseCSSColorFormatString('lch(100% 0.012 296.813)')?.toHex()).toBe('#ffffff');
@@ -136,6 +148,8 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('hsva(0,0%,0%)')).toBeNull();
     expect(parseCSSColorFormatString('cmyk(0%,0%,0%)')).toBeNull();
     expect(parseCSSColorFormatString('cmyk(0%,0%,0%,101%)')).toBeNull();
+    expect(parseCSSColorFormatString('lab(120% 0 0)')).toBeNull();
+    expect(parseCSSColorFormatString('lab(50% 0)')).toBeNull();
     expect(parseCSSColorFormatString('lch(120% 0 0)')).toBeNull();
     expect(parseCSSColorFormatString('lch(50% 30)')).toBeNull();
     expect(parseCSSColorFormatString('oklch(1.1 0 0)')).toBeNull();

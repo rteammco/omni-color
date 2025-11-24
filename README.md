@@ -30,7 +30,7 @@ const accessibleText = new Color('#1a1a1a').isReadableAsTextColor(brand);
 ### Constructing colors
 
 #### `new Color(input?)`
-- Accepts any CSS color string, hex (3/4/6/8 digit), RGB(A)/HSL(A)/HSV(A)/CMYK/LCH/OKLCH objects, another `Color`, or a named CSS color. Passing `null`/`undefined` generates a random color. Invalid input throws.
+- Accepts any CSS color string, hex (3/4/6/8 digit), RGB(A)/HSL(A)/HSV(A)/CMYK/LAB/LCH/OKLCH objects, another `Color`, or a named CSS color. Passing `null`/`undefined` generates a random color. Invalid input throws.
 - Example:
   ```ts
   const red = new Color('#ff0000');
@@ -85,6 +85,9 @@ Each converter returns a new representation without mutating the original color.
 
 #### `toCMYK()` / `toCMYKString()`
 - Returns CMYK object or `cmyk(c, m, y, k)` string.
+
+#### `toLAB()` / `toLABString()`
+- Returns CIELAB object or `lab(l% a b)` string.
 
 #### `toLCH()` / `toLCHString()`
 - Returns CIELCh object or `lch(l% c h)` string.
@@ -248,7 +251,7 @@ reference.differenceFrom({ l: 70, c: 40, h: 210 }, 'CIE94'); // ~71.40
 
 Import these TypeScript types from `omni-color` for safe typings:
 
-- Color formats: `ColorFormat`, `ColorHex`, `ColorRGB`, `ColorRGBA`, `ColorHSL`, `ColorHSLA`, `ColorHSV`, `ColorHSVA`, `ColorCMYK`, `ColorLCH`, `ColorOKLCH`.
+- Color formats: `ColorFormat`, `ColorHex`, `ColorRGB`, `ColorRGBA`, `ColorHSL`, `ColorHSLA`, `ColorHSV`, `ColorHSVA`, `ColorCMYK`, `ColorLAB`, `ColorLCH`, `ColorOKLCH`.
 - Combination utilities: `MixColorsOptions`, `BlendColorsOptions`, `AverageColorsOptions`, `MixType`, `MixSpace`, `BlendMode`, `BlendSpace`.
 - Harmonies, swatches, and palettes: `ColorHarmony`, `ColorSwatch`, `ExtendedColorSwatch`, `ColorSwatchOptions`, `ColorPalette`, `GenerateColorPaletteOptions`.
 - Naming and temperature: `BaseColorName`, `ColorLightnessModifier`, `ColorNameAndLightness`, `ColorTemperatureAndLabel`, `ColorTemperatureLabel`, `ColorTemperatureStringFormatOptions`.

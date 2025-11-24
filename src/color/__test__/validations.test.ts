@@ -288,6 +288,22 @@ describe('validateColorOrThrow CMYK format', () => {
   });
 });
 
+describe('validateColorOrThrow LAB format', () => {
+  it('accepts valid LAB objects', () => {
+    expect(() => validateColorOrThrow({ l: 0, a: 0, b: 0 })).not.toThrow();
+    expect(() => validateColorOrThrow({ l: 100, a: -128, b: 128 })).not.toThrow();
+    expect(() => validateColorOrThrow({ l: 53.233, a: 80.109, b: 67.22 })).not.toThrow();
+  });
+
+  it('rejects invalid LAB objects', () => {
+    expect(() => validateColorOrThrow({ l: -0.1, a: 0, b: 0 })).toThrow(/invalid LAB color/);
+    expect(() => validateColorOrThrow({ l: 100.1, a: 0, b: 0 })).toThrow(/invalid LAB color/);
+    expect(() => validateColorOrThrow({ l: 50, a: Infinity, b: 0 })).toThrow(/invalid LAB color/);
+    expect(() => validateColorOrThrow({ l: 50, a: 0, b: NaN } as any)).toThrow(/invalid LAB color/);
+    expect(() => validateColorOrThrow({ l: '50' as any, a: 0, b: 0 })).toThrow(/invalid LAB color/);
+  });
+});
+
 describe('validateColorOrThrow LCH format', () => {
   it('accepts valid LCH objects', () => {
     expect(() => validateColorOrThrow({ l: 0, c: 0, h: 0 })).not.toThrow();

@@ -1,6 +1,11 @@
 import { Color } from './color/color';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
-import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
+import {
+  AverageColorsOptions,
+  BlendColorsOptions,
+  MixColorsOptions,
+} from './color/combinations';
+import { toLAB } from './color/conversions';
 import type { DeltaEMethod } from './color/deltaE';
 import type { ColorFormat } from './color/formats';
 import {
@@ -10,10 +15,12 @@ import {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
+  labToString,
 } from './color/formats';
 import type { ColorHarmony } from './color/harmonies';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
@@ -32,11 +39,8 @@ import {
   TextReadabilityReport,
 } from './color/readability';
 import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
-import {
-  ColorTemperatureAndLabel,
-  type ColorTemperatureLabel,
-  ColorTemperatureStringFormatOptions,
-} from './color/temperature';
+import type { ColorTemperatureLabel } from './color/temperature';
+import { ColorTemperatureAndLabel, ColorTemperatureStringFormatOptions } from './color/temperature';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
@@ -54,6 +58,7 @@ export {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   type ColorLightnessModifier,
   ColorNameAndLightness,
@@ -71,6 +76,7 @@ export {
   GenerateColorPaletteOptions,
   getBestBackgroundColorForText,
   getMostReadableTextColorForBackground,
+  labToString,
   MixColorsOptions,
   type MixSpace,
   type MixType,
@@ -81,4 +87,5 @@ export {
   TextReadabilityOptions,
   TextReadabilityReport,
   type TextReadabilityTextSizeOptions,
+  toLAB,
 };
