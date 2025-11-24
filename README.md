@@ -220,14 +220,14 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 
 ### Perceptual difference (Delta E)
 
-Use Delta E calculations to measure how visually different two colors appear. `Color.differenceFrom` compares against another `Color` or any accepted color input and defaults to the CIEDE2000 method. The optional `method` parameter accepts `'CIE76'`, `'CIE94'`, or `'CIEDE2000'`.
+Use Delta E calculations to measure how visually different two colors appear. `Color.differenceFrom` compares against another `Color` and defaults to the CIEDE2000 method. The optional `method` parameter accepts `'CIE76'`, `'CIE94'`, or `'CIEDE2000'`.
 
 ```ts
 const reference = new Color('#e63946');
 
-reference.differenceFrom('#e5383b'); // ~2.81 (CIEDE2000)
-reference.differenceFrom('#14a085', 'CIE76'); // ~110.91
-reference.differenceFrom({ l: 70, c: 40, h: 210 }, 'CIE94'); // ~71.40
+reference.differenceFrom(new Color('#e5383b')); // ~2.81 (CIEDE2000)
+reference.differenceFrom(new Color('#14a085'), 'CIE76'); // ~110.91
+reference.differenceFrom(new Color({ l: 70, c: 40, h: 210 }), 'CIE94'); // ~71.40
 ```
 
 ### Names, temperature, and metadata

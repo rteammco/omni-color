@@ -833,7 +833,7 @@ describe('Color.equals', () => {
 describe('Color.differenceFrom', () => {
   it('returns 0 for identical colors', () => {
     const color = new Color('#abcdef');
-    expect(color.differenceFrom('#abcdef')).toBeCloseTo(0, 6);
+    expect(color.differenceFrom(new Color('#abcdef'))).toBeCloseTo(0, 6);
   });
 
   it('calculates differences using different methods', () => {

@@ -1,57 +1,23 @@
-import { toLCH } from './conversions';
-import type { ColorFormat, ColorLCH } from './formats';
+import type { Color } from './color';
+import type { ColorLAB } from './formats';
 
 export type DeltaEMethod = 'CIE76' | 'CIE94' | 'CIEDE2000';
 
-interface LabColor {
-  l: number;
-  a: number;
-  b: number;
-}
-
-type ColorInput = ColorFormat | { toLCH(): ColorLCH };
-
-function isColorWithToLCH(color: ColorInput): color is { toLCH(): ColorLCH } {
-  return typeof color === 'object' && color !== null && 'toLCH' in color && typeof color.toLCH === 'function';
-}
-
-function isColorLCHValue(color: ColorInput): color is ColorLCH {
-  return (
-    typeof color === 'object' &&
-    color !== null &&
-    'l' in color &&
-    'c' in color &&
-    'h' in color &&
-    typeof color.l === 'number' &&
-    typeof color.c === 'number' &&
-    typeof color.h === 'number'
-  );
-}
-
-function toLab(color: ColorInput): LabColor {
+function toLab(color: Color): ColorLAB {
   if (color === null || typeof color === 'undefined') {
     throw new TypeError('Color input for Delta E cannot be null or undefined');
   }
 
-  let lch: ColorLCH;
-  if (isColorWithToLCH(color)) {
-    lch = color.toLCH();
-  } else if (isColorLCHValue(color)) {
-    lch = color;
-  } else {
-    lch = toLCH(color as ColorFormat);
+  const lab = color.toLAB();
+
+  if (!Number.isFinite(lab.l) || !Number.isFinite(lab.a) || !Number.isFinite(lab.b)) {
+    throw new TypeError('Color input for Delta E must contain finite numeric L, A, and B values');
   }
 
-  if (!Number.isFinite(lch.l) || !Number.isFinite(lch.c) || !Number.isFinite(lch.h)) {
-    throw new TypeError('Color input for Delta E must contain finite numeric L, C, and H values');
-  }
-  const hueInRadians = (lch.h * Math.PI) / 180;
-  const a = lch.c * Math.cos(hueInRadians);
-  const b = lch.c * Math.sin(hueInRadians);
-  return { l: lch.l, a, b };
+  return lab;
 }
 
-export function deltaECIE76(colorA: ColorInput, colorB: ColorInput): number {
+export function deltaECIE76(colorA: Color, colorB: Color): number {
   const lab1 = toLab(colorA);
   const lab2 = toLab(colorB);
   const deltaL = lab1.l - lab2.l;
@@ -61,8 +27,8 @@ export function deltaECIE76(colorA: ColorInput, colorB: ColorInput): number {
 }
 
 export function deltaECIE94(
-  colorA: ColorInput,
-  colorB: ColorInput,
+  colorA: Color,
+  colorB: Color,
   options: { kL?: number; kC?: number; kH?: number; K1?: number; K2?: number } = {}
 ): number {
   const { kL = 1, kC = 1, kH = 1, K1 = 0.045, K2 = 0.015 } = options;
@@ -89,7 +55,7 @@ export function deltaECIE94(
   return Math.sqrt(lTerm ** 2 + cTerm ** 2 + hTerm ** 2);
 }
 
-export function deltaECIEDE2000(colorA: ColorInput, colorB: ColorInput): number {
+export function deltaECIEDE2000(colorA: Color, colorB: Color): number {
   const lab1 = toLab(colorA);
   const lab2 = toLab(colorB);
 
@@ -164,8 +130,8 @@ export function deltaECIEDE2000(colorA: ColorInput, colorB: ColorInput): number 
 }
 
 export function getDeltaE(
-  colorA: ColorInput,
-  colorB: ColorInput,
+  colorA: Color,
+  colorB: Color,
   method: DeltaEMethod = 'CIEDE2000'
 ): number {
   if (method === 'CIE76') {
