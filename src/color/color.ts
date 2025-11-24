@@ -42,6 +42,8 @@ import {
   rgbaToString,
   rgbToString,
 } from './formats';
+import type { ColorGradientOptions } from './gradients';
+import { createColorGradient } from './gradients';
 import type { ColorHarmony } from './harmonies';
 import {
   getAnalogousHarmonyColors,
@@ -172,6 +174,34 @@ export class Color {
       return getColorFromTemperature(temperature);
     }
     return getColorFromTemperatureLabel(temperature);
+  }
+
+  /**
+   * Create an interpolated gradient between two or more colors.
+   *
+   * @param colors - Array of {@link Color}s or color inputs to interpolate between.
+   * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation style, and stop count.
+   * @returns An array of new {@link Color}s representing the generated gradient.
+   *
+   * @example
+   * ```ts
+   * const gradient = Color.createInterpolatedGradient([
+   *   '#ff0000',
+   *   '#00ff00',
+   *   '#0000ff',
+   * ], { stops: 7, interpolation: 'LINEAR', space: 'OKLCH' });
+   * gradient.map((color) => color.toHex());
+   * // ['#ff0000', '#ef6c00', '#99da00', '#00ff00', '#00db86', '#006ee6', '#0000ff']
+   * ```
+   */
+  static createInterpolatedGradient(
+    colors: (Color | ColorFormat | string)[],
+    options?: ColorGradientOptions
+  ): Color[] {
+    const colorInstances = colors.map((color) =>
+      color instanceof Color ? color : new Color(color)
+    );
+    return createColorGradient(colorInstances, options);
   }
 
   /**
@@ -474,6 +504,31 @@ export class Color {
       return this.clone();
     }
     return averageColors([this, ...others], options);
+  }
+
+  /**
+   * Generate an interpolated gradient that begins with this color.
+   *
+   * @param stops - Additional {@link Color}s or inputs to interpolate through.
+   * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, and stop count.
+   * @returns An array of {@link Color}s representing the full gradient including this color and the provided stops.
+   */
+  createGradientThrough(
+    stops: (Color | ColorFormat | string)[],
+    options?: ColorGradientOptions
+  ): Color[] {
+    return Color.createInterpolatedGradient([this, ...stops], options);
+  }
+
+  /**
+   * Generate a gradient between this color and a target color.
+   *
+   * @param target - The final color for the gradient.
+   * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, and stop count.
+   * @returns An array of {@link Color}s beginning with this color and ending with `target`.
+   */
+  createGradientTo(target: ColorFormat | Color | string, options?: ColorGradientOptions): Color[] {
+    return Color.createInterpolatedGradient([this, target], options);
   }
 
   /**
