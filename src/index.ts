@@ -14,6 +14,13 @@ import {
   ColorRGB,
   ColorRGBA,
 } from './color/formats';
+import type {
+  ColorGradientEasing,
+  ColorGradientInterpolation,
+  ColorGradientOptions,
+  ColorGradientSpace,
+} from './color/gradients';
+import { createColorGradient } from './color/gradients';
 import type { ColorHarmony } from './color/harmonies';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
@@ -40,6 +47,10 @@ export {
   Color,
   ColorCMYK,
   type ColorFormat,
+  ColorGradientEasing,
+  ColorGradientInterpolation,
+  ColorGradientOptions,
+  ColorGradientSpace,
   type ColorHarmony,
   ColorHex,
   ColorHSL,
@@ -58,6 +69,7 @@ export {
   ColorTemperatureAndLabel,
   type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
+  createColorGradient,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
   MixColorsOptions,

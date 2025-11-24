@@ -749,3 +749,27 @@ describe('Color.equals', () => {
     expect(base.equals(tooFar)).toBe(false);
   });
 });
+
+describe('Color gradients', () => {
+  it('creates OKLCH gradients through instance helpers', () => {
+    const gradient = new Color('#ff6b6b').createGradientTo('#004cff', { stops: 3 });
+
+    expect(gradient).toHaveLength(3);
+    expect(gradient[0].toHex()).toBe('#ff6b6b');
+    expect(gradient[1].toHex()).toBe('#9571be');
+    expect(gradient[2].toHex()).toBe('#004cff');
+  });
+
+  it('keeps intermediate anchors fixed when easing through multiple colors', () => {
+    const base = new Color('#004cff');
+    const middle = new Color('#00ffaa');
+    const end = new Color('#ff6600');
+
+    const gradient = base.createGradientThrough([middle, end], { stops: 3, easing: 'EASE_IN' });
+
+    expect(gradient).toHaveLength(3);
+    expect(gradient[0].toHex()).toBe('#004cff');
+    expect(gradient[1].toHex()).toBe('#00ffaa');
+    expect(gradient[2].toHex()).toBe('#ff6600');
+  });
+});

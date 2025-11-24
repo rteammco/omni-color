@@ -150,6 +150,38 @@ Each converter returns a new representation without mutating the original color.
   base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex();
   ```
 
+### Gradients and color scales
+
+#### `Color.createInterpolatedGradient(colors, options?)`
+- Build multi-stop gradients across color spaces with optional easing. Options include:
+  - `stops`: number of colors to return (anchors included, defaults to `5`).
+  - `space`: interpolation space (`'RGB'`, `'HSL'`, `'HSV'`, `'LCH'`, `'OKLCH'`).
+  - `interpolation`: `'LINEAR'` (segment-based) or `'BEZIER'` (uses anchors as control points).
+  - `easing`: `'LINEAR'`, `'EASE_IN'`, `'EASE_OUT'`, `'EASE_IN_OUT'`, or a custom `(t) => number`.
+  - `clamp`: keep intermediate stops inside the selected gamut (default `true`).
+- Example:
+  ```ts
+  const linearGradient = Color.createInterpolatedGradient(
+    ['#ff0000', '#00ff00', '#0000ff'],
+    { stops: 7, space: 'OKLCH', easing: 'EASE_IN_OUT' }
+  );
+  linearGradient.map((color) => color.toHex());
+  // ['#ff0000', '#ef6c00', '#99da00', '#00ff00', '#00db86', '#006ee6', '#0000ff']
+
+  const bezierGradient = Color.createInterpolatedGradient(
+    ['#f43f5e', '#fbbf24', '#22d3ee'],
+    { stops: 5, interpolation: 'BEZIER', space: 'HSL' }
+  );
+  bezierGradient.map((color) => color.toHex());
+  // ['#f43e5c', '#e16647', '#c1995e', '#70a67c', '#20d3ee']
+  ```
+
+#### Instance helpers
+- `createGradientTo(target, options?)` builds a gradient between `this` color and a target.
+- `createGradientThrough(stops, options?)` interpolates through additional anchors while keeping them fixed.
+
+Both helpers forward the same options as `createInterpolatedGradient` and always include the instance color as the first anchor.
+
 ### Harmonies
 
 All harmony helpers return arrays of new `Color` instances. Use the specialized helpers or the generic `getHarmonyColors(harmony)`.
