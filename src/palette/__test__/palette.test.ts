@@ -118,6 +118,31 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
   });
 
+  describe('swatch options', () => {
+    it('forwards swatch options to palette swatches', () => {
+      const baseColor = new Color('#111111');
+      const palette = generateColorPaletteFromBaseColor(baseColor, 'COMPLEMENTARY', {
+        swatchOptions: { extended: true, centerOn500: false },
+      });
+
+      const expected = baseColor.getColorSwatch({ extended: true, centerOn500: false });
+
+      expect(palette.primary.type).toBe('EXTENDED');
+
+      const primarySwatch = palette.primary.type === 'EXTENDED' ? palette.primary : null;
+
+      expect(primarySwatch?.mainStop).toBe(expected.mainStop);
+      expect(primarySwatch?.[950].toHex()).toBe(expected[950].toHex());
+    });
+
+    it('centers palette swatches on 500 by default', () => {
+      const baseColor = new Color('#222222');
+      const palette = generateColorPaletteFromBaseColor(baseColor);
+
+      expect(palette.primary.mainStop).toBe(500);
+    });
+  });
+
   describe('neutral harmonization across the full swatch', () => {
     it('produces a complete range for red', () => {
       const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));

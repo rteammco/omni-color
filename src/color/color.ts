@@ -674,28 +674,35 @@ export class Color {
   }
 
   /**
-   * Returns a {@link ColorSwatch} of lighter and darker variants of the color. By
-   * default the swatch has keys `100`–`900` where `500` is the base color, lower
-   * numbers are lighter and higher numbers are darker. Passing
+   * Returns a {@link ColorSwatch} of lighter and darker variants of the color. The
+   * swatch has keys `100`–`900` and, by default, anchors the original color on the
+   * stop that best matches its lightness (reported via the `mainStop` property).
+   * Lower numbers are lighter and higher numbers are darker, with black and white
+   * always centered on `500`. Passing `{ centerOn500: true }` forces the original
+   * color onto the `500` stop regardless of its brightness. Passing
    * `{ extended: true }` adds midpoint stops (`50`, `150`, `250`, ... `950`) that
-   * are interpolated between the base swatch colors.
+   * are interpolated between the base swatch colors while still anchoring the
+   * base color on a `100`–`900` stop.
    *
-   * @param options - Optional {@link ColorSwatchOptions} for requesting the extended swatch.
+   * @param options - Optional {@link ColorSwatchOptions} for requesting the extended swatch or customizing the anchor stop.
    * @returns A {@link ColorSwatch} containing lighter and darker {@link Color}s ranging from lightest to darkest.
    *
    * @example
    * ```ts
    * const swatch = new Color('#ff0000').getColorSwatch();
+   * swatch.mainStop; // e.g. 500
    * const light = swatch[100]; // lightest shade
    * const dark = swatch[900];  // darkest shade
    *
-   * const extendedSwatch = new Color('#ff0000').getColorSwatch({ extended: true });
+   * const extendedSwatch = new Color('#ff0000').getColorSwatch({ extended: true, centerOn500: true });
+   * extendedSwatch.mainStop; // 500
    * const midLight = extendedSwatch[150]; // halfway between 100 and 200
    * const darkest = extendedSwatch[950];  // darker than 900
    * ```
-   */
+  */
   getColorSwatch(): ColorSwatch;
-  getColorSwatch(options: ColorSwatchOptions & { extended: true }): ExtendedColorSwatch;
+  getColorSwatch(options?: ColorSwatchOptions & { extended: true }): ExtendedColorSwatch;
+  getColorSwatch(options?: ColorSwatchOptions): ColorSwatch;
   getColorSwatch(options?: ColorSwatchOptions): ColorSwatch {
     return getColorSwatch(this, options);
   }
@@ -707,7 +714,9 @@ export class Color {
    * swatches for statuses like info or warning.
    *
    * @param harmony - {@link ColorHarmony} used to generate secondary colors (default `'COMPLEMENTARY'`).
-   * @param options - Optional {@link GenerateColorPaletteOptions} options for harmonizing neutral and semantic colors.
+   * @param options - Optional {@link GenerateColorPaletteOptions} options for harmonizing neutral and semantic colors and
+   * customizing swatch generation. Palette swatches default to centering the source color on the `500` stop; override
+   * `options.swatchOptions.centerOn500` to change that anchoring if needed.
    * @returns A {@link ColorPalette} containing {@link ColorSwatch}s and different palette values, each with new {@link Color}s.
    *
    * @example
