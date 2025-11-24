@@ -6,12 +6,13 @@ import {
   toHSLA,
   toHSV,
   toHSVA,
+  toLAB,
   toLCH,
   toOKLCH,
   toRGB,
   toRGBA,
 } from '../conversions';
-import type { ColorHex, ColorHSL, ColorRGBA } from '../formats';
+import type { ColorHex, ColorHSL, ColorLAB, ColorRGBA } from '../formats';
 
 describe('conversions', () => {
   describe('toRGB', () => {
@@ -28,6 +29,7 @@ describe('conversions', () => {
       expect(toRGB({ h: 0, s: 100, v: 100 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ l: 53.233, a: 80.109, b: 67.22 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0 });
     });
@@ -61,6 +63,7 @@ describe('conversions', () => {
       expect(toRGBA({ h: 0, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ h: 0, s: 100, v: 100 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ l: 53.233, a: 80.109, b: 67.22 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
     });
@@ -125,6 +128,7 @@ describe('conversions', () => {
       expect(toHex({ h: 0, s: 100, v: 100 })).toBe('#ff0000');
       expect(toHex({ h: 0, s: 100, v: 100, a: 0.5 })).toBe('#ff0000');
       expect(toHex({ c: 0, m: 100, y: 100, k: 0 })).toBe('#ff0000');
+      expect(toHex({ l: 53.233, a: 80.109, b: 67.22 })).toBe('#ff0000');
       expect(toHex({ l: 53.233, c: 104.576, h: 40 })).toBe('#ff0000');
       expect(toHex({ l: 0.627955, c: 0.257683, h: 29.234 })).toBe('#ff0000');
     });
@@ -147,6 +151,7 @@ describe('conversions', () => {
       expect(toHex8({ h: 0, s: 100, l: 50 })).toBe('#ff0000ff');
       expect(toHex8({ h: 0, s: 100, v: 100 })).toBe('#ff0000ff');
       expect(toHex8({ c: 0, m: 100, y: 100, k: 0 })).toBe('#ff0000ff');
+      expect(toHex8({ l: 53.233, a: 80.109, b: 67.22 })).toBe('#ff0000ff');
       expect(toHex8({ l: 53.233, c: 104.576, h: 40 })).toBe('#ff0000ff');
       expect(toHex8({ l: 0.627955, c: 0.257683, h: 29.234 })).toBe('#ff0000ff');
     });
@@ -342,6 +347,36 @@ describe('conversions', () => {
 
     it('converts arbitrary colors', () => {
       expect(toCMYK('#123456')).toEqual({ c: 79, m: 40, y: 0, k: 66 });
+    });
+  });
+
+  describe('toLAB', () => {
+    it('converts inputs to LAB', () => {
+      const expected: ColorLAB = { l: 53.233, a: 80.109, b: 67.22 };
+      expect(toLAB('#ff0000')).toEqual(expected);
+      expect(toLAB('#ff0000ff')).toEqual(expected);
+      expect(toLAB({ r: 255, g: 0, b: 0 })).toEqual(expected);
+      expect(toLAB({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual(expected);
+      expect(toLAB({ h: 0, s: 100, l: 50 })).toEqual(expected);
+      expect(toLAB({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual(expected);
+      expect(toLAB({ h: 0, s: 100, v: 100 })).toEqual(expected);
+      expect(toLAB({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual(expected);
+      expect(toLAB({ c: 0, m: 100, y: 100, k: 0 })).toEqual(expected);
+      expect(toLAB({ l: 53.233, c: 104.576, h: 40 })).toEqual(expected);
+      expect(toLAB({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual(expected);
+    });
+
+    it('returns a shallow copy for LAB input', () => {
+      const original: ColorLAB = { l: 75, a: -20, b: 10 };
+      const result = toLAB(original);
+      expect(result).toEqual(original);
+      expect(result).not.toBe(original);
+    });
+
+    it('round-trips between LAB and RGB', () => {
+      const lab = toLAB('#123456');
+      expect(lab).toEqual({ l: 21.043, a: 1.059, b: -24.105 });
+      expect(toHex(lab)).toBe('#123456');
     });
   });
 

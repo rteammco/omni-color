@@ -1,6 +1,12 @@
 import { Color } from './color/color';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
-import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
+import {
+  AverageColorsOptions,
+  BlendColorsOptions,
+  MixColorsOptions,
+} from './color/combinations';
+import { toLAB } from './color/conversions';
+import type { DeltaEMethod } from './color/deltaE';
 import type { ColorFormat } from './color/formats';
 import {
   ColorCMYK,
@@ -9,10 +15,12 @@ import {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
+  labToString,
 } from './color/formats';
 import type {
   ColorGradientEasing,
@@ -25,16 +33,20 @@ import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
 import type {
+  ReadabilityAlgorithm,
+  ReadabilityComparisonOptions,
   TextReadabilityConformanceLevel,
   TextReadabilityTextSizeOptions,
 } from './color/readability';
-import { TextReadabilityOptions, TextReadabilityReport } from './color/readability';
-import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
 import {
-  ColorTemperatureAndLabel,
-  type ColorTemperatureLabel,
-  ColorTemperatureStringFormatOptions,
-} from './color/temperature';
+  getBestBackgroundColorForText,
+  getMostReadableTextColorForBackground,
+  TextReadabilityOptions,
+  TextReadabilityReport,
+} from './color/readability';
+import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
+import type { ColorTemperatureLabel } from './color/temperature';
+import { ColorTemperatureAndLabel, ColorTemperatureStringFormatOptions } from './color/temperature';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
@@ -56,6 +68,7 @@ export {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   type ColorLightnessModifier,
   ColorNameAndLightness,
@@ -68,14 +81,21 @@ export {
   ColorTemperatureAndLabel,
   type ColorTemperatureLabel,
   ColorTemperatureStringFormatOptions,
+  type DeltaEMethod,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
+  getBestBackgroundColorForText,
+  getMostReadableTextColorForBackground,
+  labToString,
   MixColorsOptions,
   type MixSpace,
   type MixType,
   RandomColorOptions,
+  type ReadabilityAlgorithm,
+  ReadabilityComparisonOptions,
   type TextReadabilityConformanceLevel,
   TextReadabilityOptions,
   TextReadabilityReport,
   type TextReadabilityTextSizeOptions,
+  toLAB,
 };

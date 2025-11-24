@@ -4,6 +4,7 @@ import {
   getColorFormatType,
   hslaToString,
   hslToString,
+  labToString,
   lchToString,
   oklchToString,
   rgbaToString,
@@ -253,6 +254,44 @@ describe('cmykToString', () => {
   });
 });
 
+describe('labToString', () => {
+  it('generates lab strings', () => {
+    const black = new Color('#000000');
+    expect(labToString(black.toLAB())).toBe('lab(0% 0 0)');
+    expect(black.toLABString()).toBe('lab(0% 0 0)');
+
+    const white = new Color('#ffffff');
+    expect(labToString(white.toLAB())).toBe('lab(100% 0.005 -0.01)');
+    expect(white.toLABString()).toBe('lab(100% 0.005 -0.01)');
+
+    const gray = new Color('#808080');
+    expect(labToString(gray.toLAB())).toBe('lab(53.585% 0.003 -0.006)');
+    expect(gray.toLABString()).toBe('lab(53.585% 0.003 -0.006)');
+
+    const red = new Color('#ff0000');
+    expect(labToString(red.toLAB())).toBe('lab(53.233% 80.109 67.22)');
+    expect(red.toLABString()).toBe('lab(53.233% 80.109 67.22)');
+
+    const green = new Color('#00ff00');
+    expect(labToString(green.toLAB())).toBe('lab(87.737% -86.185 83.181)');
+    expect(green.toLABString()).toBe('lab(87.737% -86.185 83.181)');
+
+    const blue = new Color('#0000ff');
+    expect(labToString(blue.toLAB())).toBe('lab(32.303% 79.197 -107.864)');
+    expect(blue.toLABString()).toBe('lab(32.303% 79.197 -107.864)');
+
+    const custom = new Color('#abc123');
+    expect(labToString(custom.toLAB())).toBe('lab(74.138% -26.201 69.136)');
+    expect(custom.toLABString()).toBe('lab(74.138% -26.201 69.136)');
+  });
+
+  it('rounds lab components to three decimals', () => {
+    expect(labToString({ l: 12.3456, a: -7.654321, b: 123.4567 })).toBe(
+      'lab(12.346% -7.654 123.457)'
+    );
+  });
+});
+
 describe('lchToString', () => {
   it('generates lch strings', () => {
     const black = new Color('#000000');
@@ -411,6 +450,11 @@ describe('getColorFormatType', () => {
     expect(getColorFormatType({ c: 1, m: 2, y: 3, k: 4 })).toEqual({
       formatType: 'CMYK',
       value: { c: 1, m: 2, y: 3, k: 4 },
+    });
+
+    expect(getColorFormatType({ l: 50, a: 10, b: -20 })).toEqual({
+      formatType: 'LAB',
+      value: { l: 50, a: 10, b: -20 },
     });
 
     expect(getColorFormatType({ l: 50, c: 20, h: 100 })).toEqual({

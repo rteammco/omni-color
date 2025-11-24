@@ -7,11 +7,13 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
 } from '../formats';
 import { getRandomColorRGBA } from '../random';
+import type { ReadabilityComparisonOptions } from '../readability';
 import { getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
@@ -27,6 +29,7 @@ const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
 const BASE_HSL: ColorHSL = { h: 0, s: 100, l: 50 };
 const BASE_HSV: ColorHSV = { h: 0, s: 100, v: 100 };
 const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
+const BASE_LAB: ColorLAB = { l: 53.233, a: 80.109, b: 67.22 };
 const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
 const BASE_OKLCH: ColorOKLCH = { l: 0.627955, c: 0.257683, h: 29.234 };
 
@@ -43,6 +46,10 @@ function checkAllConversions(color: Color, alpha: number, hex8: ColorHex) {
   expect(color.toHSV()).toEqual(BASE_HSV);
   expect(color.toHSVA()).toEqual({ ...BASE_HSV, a: alpha });
   expect(color.toCMYK()).toEqual(BASE_CMYK);
+  const lab = color.toLAB();
+  expect(lab.l).toBeCloseTo(BASE_LAB.l, 3);
+  expect(lab.a).toBeCloseTo(BASE_LAB.a, 3);
+  expect(lab.b).toBeCloseTo(BASE_LAB.b, 3);
   const lch = color.toLCH();
   expect(lch.l).toBeCloseTo(BASE_LCH.l, 3);
   expect(lch.c).toBeCloseTo(BASE_LCH.c, 3);
@@ -244,6 +251,7 @@ describe('Color.toXString methods', () => {
     expect(color.toHSLString()).toBe('hsl(0, 100%, 50%)');
     expect(color.toHSLAString()).toBe('hsla(0, 100%, 50%, 0.5)');
     expect(color.toCMYKString()).toBe('cmyk(0%, 100%, 100%, 0%)');
+    expect(color.toLABString()).toBe('lab(53.233% 80.109 67.22)');
     expect(color.toLCHString()).toBe('lch(53.233% 104.576 40)');
     expect(color.toOKLCHString()).toBe('oklch(0.627955 0.257683 29.234)');
   });
@@ -644,6 +652,28 @@ describe('Color.getReadabilityScore', () => {
   });
 });
 
+describe('Color.getMostReadableTextColor', () => {
+  it('returns the text color with the strongest WCAG readability', () => {
+    const background = new Color('#ffffff');
+    const black = new Color('#000000');
+    const charcoal = new Color('#1a1a1a');
+    const gray = new Color('#777777');
+
+    const result = background.getMostReadableTextColor([gray, charcoal, black]);
+    expect(result.toHex()).toBe('#000000');
+  });
+
+  it('can evaluate candidates with APCA scoring', () => {
+    const background = new Color('#0a0a0a');
+    const cyan = new Color('#00ffff');
+    const orange = new Color('#ff9900');
+    const options = { algorithm: 'APCA' as const };
+
+    const result = background.getMostReadableTextColor([cyan, orange], options);
+    expect(result.toHex()).toBe('#00ffff');
+  });
+});
+
 describe('Color.getTextReadabilityReport', () => {
   it('provides readability details for color pairs', () => {
     const c1 = new Color('#444444');
@@ -678,6 +708,56 @@ describe('Color.isReadableAsTextColor', () => {
     expect(c2.isReadableAsTextColor(c1)).toBe(true);
     expect(c1.isReadableAsTextColor(c2, { level: 'AAA' })).toBe(false);
     expect(c2.isReadableAsTextColor(c1, { level: 'AAA' })).toBe(false);
+  });
+});
+
+describe('Color.getBestBackgroundColor', () => {
+  it('returns the most readable background color for a given text color', () => {
+    const textColor = new Color('#111111');
+    const white = new Color('#ffffff');
+    const darkGray = new Color('#222222');
+    const slate = new Color('#333333');
+
+    const result = textColor.getBestBackgroundColor([darkGray, slate, white]);
+    expect(result.toHex()).toBe(white.toHex());
+  });
+
+  it('respects WCAG options when picking the closest match', () => {
+    const textColor = new Color('#808080');
+    const paleGray = new Color('#c0c0c0');
+    const black = new Color('#000000');
+    const options: ReadabilityComparisonOptions = {
+      textReadabilityOptions: { level: 'AAA', size: 'SMALL' },
+    };
+
+    const result = textColor.getBestBackgroundColor([paleGray, black], options);
+    expect(result.toHex()).toBe(black.toHex());
+  });
+
+  it('handles a single background color', () => {
+    const textColor = new Color('#121212');
+    const onlyBackground = new Color('#fafafa');
+
+    const result = textColor.getBestBackgroundColor([onlyBackground]);
+    expect(result.toHex()).toBe('#fafafa');
+  });
+
+  it('picks the strongest APCA background from multiple candidates', () => {
+    const textColor = new Color('#ffeeaa');
+    const slate = new Color('#1c1f24');
+    const teal = new Color('#0f4c5c');
+    const wheat = new Color('#f5deb3');
+
+    const result = textColor.getBestBackgroundColor([slate, teal, wheat], { algorithm: 'APCA' });
+    expect(result.toHex()).toBe('#1c1f24');
+  });
+
+  it('throws when no background colors are provided', () => {
+    const textColor = new Color('#123456');
+
+    expect(() => textColor.getBestBackgroundColor([])).toThrow(
+      'At least one background color must be provided.'
+    );
   });
 });
 
@@ -747,6 +827,30 @@ describe('Color.equals', () => {
     const tooFar = new Color('rgba(12, 20, 30, 0.333)');
     expect(base.equals(rounded)).toBe(true);
     expect(base.equals(tooFar)).toBe(false);
+  });
+});
+
+describe('Color.differenceFrom', () => {
+  it('returns 0 for identical colors', () => {
+    const color = new Color('#abcdef');
+    expect(color.differenceFrom('#abcdef')).toBeCloseTo(0, 6);
+  });
+
+  it('calculates differences using different methods', () => {
+    const color = new Color('#ff0000');
+    const other = new Color('#00ff00');
+
+    expect(color.differenceFrom(other, 'CIE76')).toBeGreaterThan(0);
+    expect(color.differenceFrom(other, 'CIE94')).toBeCloseTo(73.432, 2);
+    expect(color.differenceFrom(other)).toBeCloseTo(86.615, 2);
+  });
+
+  it('rejects invalid inputs for difference calculations', () => {
+    const color = new Color('#123456');
+
+    expect(() => color.differenceFrom(null as unknown as Color)).toThrow(
+      'Color input for Delta E cannot be null or undefined'
+    );
   });
 });
 

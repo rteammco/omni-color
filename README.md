@@ -30,7 +30,7 @@ const accessibleText = new Color('#1a1a1a').isReadableAsTextColor(brand);
 ### Constructing colors
 
 #### `new Color(input?)`
-- Accepts any CSS color string, hex (3/4/6/8 digit), RGB(A)/HSL(A)/HSV(A)/CMYK/LCH/OKLCH objects, another `Color`, or a named CSS color. Passing `null`/`undefined` generates a random color. Invalid input throws.
+- Accepts any CSS color string, hex (3/4/6/8 digit), RGB(A)/HSL(A)/HSV(A)/CMYK/LAB/LCH/OKLCH objects, another `Color`, or a named CSS color. Passing `null`/`undefined` generates a random color. Invalid input throws.
 - Example:
   ```ts
   const red = new Color('#ff0000');
@@ -85,6 +85,9 @@ Each converter returns a new representation without mutating the original color.
 
 #### `toCMYK()` / `toCMYKString()`
 - Returns CMYK object or `cmyk(c, m, y, k)` string.
+
+#### `toLAB()` / `toLABString()`
+- Returns CIELAB object or `lab(l% a b)` string.
 
 #### `toLCH()` / `toLCHString()`
 - Returns CIELCh object or `lch(l% c h)` string.
@@ -241,6 +244,24 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 #### `isReadableAsTextColor(background, options?)`
 - Convenience boolean wrapper around the readability report.
 
+#### `getMostReadableTextColor(candidateTextColors, options?)`
+- Returns the candidate text color with the strongest readability against the current color used as the background. Accepts `ReadabilityComparisonOptions` to choose between `WCAG` contrast or `APCA` scoring and pass optional WCAG text readability inputs.
+
+#### `getBestBackgroundColor(candidateBackgroundColors, options?)`
+- Returns the candidate background color that maximizes readability for the current color as text, using the same `ReadabilityComparisonOptions` as above.
+
+### Perceptual difference (Delta E)
+
+Use Delta E calculations to measure how visually different two colors appear. `Color.differenceFrom` compares against another `Color` or any accepted color input and defaults to the CIEDE2000 method. The optional `method` parameter accepts `'CIE76'`, `'CIE94'`, or `'CIEDE2000'`.
+
+```ts
+const reference = new Color('#e63946');
+
+reference.differenceFrom('#e5383b'); // ~2.81 (CIEDE2000)
+reference.differenceFrom('#14a085', 'CIE76'); // ~110.91
+reference.differenceFrom({ l: 70, c: 40, h: 210 }, 'CIE94'); // ~71.40
+```
+
 ### Names, temperature, and metadata
 
 #### `getTemperature()` / `getTemperatureAsString(options?)`
@@ -262,11 +283,11 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 
 Import these TypeScript types from `omni-color` for safe typings:
 
-- Color formats: `ColorFormat`, `ColorHex`, `ColorRGB`, `ColorRGBA`, `ColorHSL`, `ColorHSLA`, `ColorHSV`, `ColorHSVA`, `ColorCMYK`, `ColorLCH`, `ColorOKLCH`.
+- Color formats: `ColorFormat`, `ColorHex`, `ColorRGB`, `ColorRGBA`, `ColorHSL`, `ColorHSLA`, `ColorHSV`, `ColorHSVA`, `ColorCMYK`, `ColorLAB`, `ColorLCH`, `ColorOKLCH`.
 - Combination utilities: `MixColorsOptions`, `BlendColorsOptions`, `AverageColorsOptions`, `MixType`, `MixSpace`, `BlendMode`, `BlendSpace`.
 - Harmonies, swatches, and palettes: `ColorHarmony`, `ColorSwatch`, `ExtendedColorSwatch`, `ColorSwatchOptions`, `ColorPalette`, `GenerateColorPaletteOptions`.
 - Naming and temperature: `BaseColorName`, `ColorLightnessModifier`, `ColorNameAndLightness`, `ColorTemperatureAndLabel`, `ColorTemperatureLabel`, `ColorTemperatureStringFormatOptions`.
-- Randomness and readability: `RandomColorOptions`, `TextReadabilityConformanceLevel`, `TextReadabilityTextSizeOptions`, `TextReadabilityOptions`, `TextReadabilityReport`.
+- Randomness and readability: `RandomColorOptions`, `TextReadabilityConformanceLevel`, `TextReadabilityTextSizeOptions`, `TextReadabilityOptions`, `TextReadabilityReport`, `ReadabilityAlgorithm`, `ReadabilityComparisonOptions`.
 
 
 ---

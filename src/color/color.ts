@@ -11,10 +11,13 @@ import {
   toHSLA,
   toHSV,
   toHSVA,
+  toLAB,
   toLCH,
   toOKLCH,
   toRGB,
 } from './conversions';
+import type { DeltaEMethod } from './deltaE';
+import { getDeltaE } from './deltaE';
 import type {
   ColorCMYK,
   ColorFormat,
@@ -23,6 +26,7 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorLAB,
   ColorLCH,
   ColorOKLCH,
   ColorRGB,
@@ -32,6 +36,7 @@ import {
   cmykToString,
   hslaToString,
   hslToString,
+  labToString,
   lchToString,
   oklchToString,
   rgbaToString,
@@ -62,9 +67,15 @@ import type { ColorNameAndLightness } from './names';
 import { getBaseColorName } from './names';
 import type { RandomColorOptions } from './random';
 import { getRandomColorRGBA } from './random';
-import type { TextReadabilityOptions, TextReadabilityReport } from './readability';
+import type {
+  ReadabilityComparisonOptions,
+  TextReadabilityOptions,
+  TextReadabilityReport,
+} from './readability';
 import {
   getAPCAReadabilityScore,
+  getBestBackgroundColorForText,
+  getMostReadableTextColorForBackground,
   getTextReadabilityReport,
   getWCAGContrastRatio,
   isTextReadable,
@@ -302,6 +313,20 @@ export class Color {
    */
   toCMYKString(): string {
     return cmykToString(this.toCMYK());
+  }
+
+  /**
+   * Get the color as a {@link ColorLAB} `{ l, a, b }` object.
+   */
+  toLAB(): ColorLAB {
+    return toLAB(this.color);
+  }
+
+  /**
+   * Get the color as a CSS `lab(l% a b)` string.
+   */
+  toLABString(): string {
+    return labToString(this.toLAB());
   }
 
   /**
@@ -716,6 +741,24 @@ export class Color {
   }
 
   /**
+   * Get the Delta E (perceptual difference) between this color and another color.
+   * Uses CIEDE2000 by default but supports additional calculation methods.
+   *
+   * @param other The other {@link Color} or color input to compare against.
+   * @param method Optional {@link DeltaEMethod} calculation to use. Defaults to `'CIEDE2000'`.
+   * @returns The Delta E value where higher numbers represent more visible difference.
+   *
+   * @example
+   * ```ts
+   * new Color('#ff0000').differenceFrom(new Color('#ff0100')); // ~0.034 (CIEDE2000)
+   * new Color('#ff0000').differenceFrom('#00ff00', 'CIE76'); // ~170.585
+   * ```
+   */
+  differenceFrom(other: Color | ColorFormat, method: DeltaEMethod = 'CIEDE2000'): number {
+    return getDeltaE(this, other, method);
+  }
+
+  /**
    * Determine if the color is visually dark using luminance.
    *
    * @example
@@ -789,6 +832,20 @@ export class Color {
   }
 
   /**
+   * Find the most readable text color against this color as a background.
+   *
+   * @param textColors A non-empty list of candidate text colors.
+   * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
+   * @returns The candidate color with the strongest readability against this color.
+   */
+  getMostReadableTextColor(
+    textColors: (Color | ColorFormat | string)[],
+    options: ReadabilityComparisonOptions = {}
+  ): Color {
+    return getMostReadableTextColorForBackground(this, textColors, options);
+  }
+
+  /**
    * Determine if this color meets WCAG contrast guidelines against a background color.
    *
    * @param backgroundColor The background {@link Color} to compare against.
@@ -803,6 +860,20 @@ export class Color {
    */
   isReadableAsTextColor(backgroundColor: Color, options?: TextReadabilityOptions): boolean {
     return isTextReadable(this, backgroundColor, options);
+  }
+
+  /**
+   * Find the best background color for this color as foreground text.
+   *
+   * @param backgroundColors A non-empty list of candidate background colors.
+   * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
+   * @returns The candidate background color that maximizes readability for this color.
+   */
+  getBestBackgroundColor(
+    backgroundColors: (Color | ColorFormat | string)[],
+    options: ReadabilityComparisonOptions = {}
+  ): Color {
+    return getBestBackgroundColorForText(this, backgroundColors, options);
   }
 
   /**
