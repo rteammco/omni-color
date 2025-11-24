@@ -95,6 +95,8 @@ import {
 } from './temperature';
 import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from './utils';
 
+type ValidColorInputFormat = Color | ColorFormat | string;
+
 /**
  * The base omni-color object.
  *
@@ -137,7 +139,7 @@ export class Color {
    * const random = new Color();
    * ```
    */
-  constructor(color?: ColorFormat | Color | string | null) {
+  constructor(color?: ValidColorInputFormat | null) {
     // getColorRGBAFromInput always returns a fresh object
     this.color = getColorRGBAFromInput(color);
   }
@@ -195,13 +197,13 @@ export class Color {
    * ```
    */
   static createInterpolatedGradient(
-    colors: (Color | ColorFormat | string)[],
+    colors: ValidColorInputFormat[],
     options?: ColorGradientOptions
   ): Color[] {
-    const colorInstances = colors.map((color) =>
-      color instanceof Color ? color : new Color(color)
+    return createColorGradient(
+      colors.map((c) => new Color(c)),
+      options
     );
-    return createColorGradient(colorInstances, options);
   }
 
   /**
@@ -470,64 +472,61 @@ export class Color {
   /**
    * Mix this color with one or more other colors.
    *
-   * @param others - Array of one or more other {@link Color}s to mix with.
+   * @param others - Array of one or more other {@link Color}s or color inputs to mix with.
    * @param options - Optional {@link MixColorsOptions} mixing options and weights.
    * @returns A new {@link Color} that is the result of the mixing.
    */
-  mix(others: Color[], options?: MixColorsOptions): Color {
+  mix(others: ValidColorInputFormat[], options?: MixColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return mixColors([this, ...others], options);
+    return mixColors([this, ...others.map((c) => new Color(c))], options);
   }
 
   /**
    * Blend this color with another color.
    *
-   * @param other - The {@link Color} to blend with.
+   * @param other - The {@link Color} or color input to blend with.
    * @param options - Optional {@link BlendColorsOptions} for blend mode, space, and ratio.
    * @returns A new {@link Color} that is the result of the blending.
    */
-  blend(other: Color, options?: BlendColorsOptions): Color {
-    return blendColors(this, other, options);
+  blend(other: ValidColorInputFormat, options?: BlendColorsOptions): Color {
+    return blendColors(this, new Color(other), options);
   }
 
   /**
    * Average this color with one or more other colors by averaging their channels in the selected color space.
    *
-   * @param others - Array of one or more other {@link Color}s to average with.
+   * @param others - Array of one or more other {@link Color}s or color inputs to average with.
    * @param options - Optional {@link AverageColorsOptions} mix space and weights.
    * @returns A new {@link Color} that is the result of the averaging.
    */
-  average(others: Color[], options?: AverageColorsOptions): Color {
+  average(others: ValidColorInputFormat[], options?: AverageColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors([this, ...others], options);
+    return averageColors([this, ...others.map((c) => new Color(c))], options);
   }
 
   /**
    * Generate an interpolated gradient that begins with this color.
    *
-   * @param stops - Additional {@link Color}s or inputs to interpolate through.
+   * @param stops - Additional {@link Color}s or color inputs to interpolate through.
    * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, and stop count.
    * @returns An array of {@link Color}s representing the full gradient including this color and the provided stops.
    */
-  createGradientThrough(
-    stops: (Color | ColorFormat | string)[],
-    options?: ColorGradientOptions
-  ): Color[] {
+  createGradientThrough(stops: ValidColorInputFormat[], options?: ColorGradientOptions): Color[] {
     return Color.createInterpolatedGradient([this, ...stops], options);
   }
 
   /**
    * Generate a gradient between this color and a target color.
    *
-   * @param target - The final color for the gradient.
+   * @param target - The final color ({@link Color} or color input) for the gradient.
    * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, and stop count.
    * @returns An array of {@link Color}s beginning with this color and ending with `target`.
    */
-  createGradientTo(target: ColorFormat | Color | string, options?: ColorGradientOptions): Color[] {
+  createGradientTo(target: ValidColorInputFormat, options?: ColorGradientOptions): Color[] {
     return Color.createInterpolatedGradient([this, target], options);
   }
 
@@ -727,7 +726,7 @@ export class Color {
   /**
    * Determine if this color is equal to another color. Allows for minor rounding differences.
    *
-   * @param other The other {@link Color} to compare against.
+   * @param other The other {@link Color} or color input to compare against.
    * @returns `true` if the colors are equal within rounding tolerance.
    *
    * @example
@@ -736,15 +735,15 @@ export class Color {
    * new Color('#ff0000').equals(new Color('#00ff00')); // false
    * ```
    */
-  equals(other: Color): boolean {
-    return areColorsEqual(this, other);
+  equals(other: ValidColorInputFormat): boolean {
+    return areColorsEqual(this, new Color(other));
   }
 
   /**
    * Get the Delta E (perceptual difference) between this color and another color.
    * Uses CIEDE2000 by default but supports additional calculation methods.
    *
-   * @param other The other {@link Color} to compare against.
+   * @param other The other {@link Color} or color input to compare against.
    * @param method Optional {@link DeltaEMethod} calculation to use. Defaults to `'CIEDE2000'`.
    * @returns The Delta E value where higher numbers represent more visible difference.
    *
@@ -754,8 +753,8 @@ export class Color {
    * new Color('#ff0000').differenceFrom(new Color('#00ff00'), 'CIE76'); // ~170.585
    * ```
    */
-  differenceFrom(other: Color, method: DeltaEMethod = 'CIEDE2000'): number {
-    return getDeltaE(this, other, method);
+  differenceFrom(other: ValidColorInputFormat, method: DeltaEMethod = 'CIEDE2000'): number {
+    return getDeltaE(this, new Color(other), method);
   }
 
   /**
@@ -789,11 +788,11 @@ export class Color {
   /**
    * Get the contrast ratio between this color and another color.
    *
-   * @param other The other {@link Color} to compare against.
+   * @param other The other {@link Color} or color input to compare against.
    * @returns The WCAG contrast ratio between the two colors.
    */
-  getContrastRatio(other: Color): number {
-    return getWCAGContrastRatio(this, other);
+  getContrastRatio(other: ValidColorInputFormat): number {
+    return getWCAGContrastRatio(this, new Color(other));
   }
 
   /**
@@ -801,11 +800,11 @@ export class Color {
    *
    * NOTE: This is based on draft recommendations and is provided for advisory use only as WCAG 3 is not finalized.
    *
-   * @param backgroundColor The background {@link Color} to compare against.
+   * @param backgroundColor The background {@link Color} or color input to compare against.
    * @returns The APCA readability score as a number.
    */
-  getReadabilityScore(backgroundColor: Color): number {
-    return getAPCAReadabilityScore(this, backgroundColor);
+  getReadabilityScore(backgroundColor: ValidColorInputFormat): number {
+    return getAPCAReadabilityScore(this, new Color(backgroundColor));
   }
 
   /**
@@ -814,7 +813,7 @@ export class Color {
    * Calculates the WCAG contrast ratio and determines whether this color meets
    * the specified conformance level and text size requirements.
    *
-   * @param backgroundColor The background {@link Color} to compare against.
+   * @param backgroundColor The background {@link Color} or color input to compare against.
    * @param options Optional {@link TextReadabilityOptions} for conformance level and text size.
    * @returns A {@link TextReadabilityReport} with the contrast ratio, required contrast, readability flag, and shortfall.
    *
@@ -825,30 +824,34 @@ export class Color {
    * ```
    */
   getTextReadabilityReport(
-    backgroundColor: Color,
+    backgroundColor: ValidColorInputFormat,
     options?: TextReadabilityOptions
   ): TextReadabilityReport {
-    return getTextReadabilityReport(this, backgroundColor, options);
+    return getTextReadabilityReport(this, new Color(backgroundColor), options);
   }
 
   /**
    * Find the most readable text color against this color as a background.
    *
-   * @param textColors A non-empty list of candidate text colors.
+   * @param textColors A non-empty list of {@link Color} or color input candidate text colors.
    * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
    * @returns The candidate color with the strongest readability against this color.
    */
   getMostReadableTextColor(
-    textColors: (Color | ColorFormat | string)[],
-    options: ReadabilityComparisonOptions = {}
+    textColors: ValidColorInputFormat[],
+    options?: ReadabilityComparisonOptions
   ): Color {
-    return getMostReadableTextColorForBackground(this, textColors, options);
+    return getMostReadableTextColorForBackground(
+      this,
+      textColors.map((c) => new Color(c)),
+      options
+    );
   }
 
   /**
    * Determine if this color meets WCAG contrast guidelines against a background color.
    *
-   * @param backgroundColor The background {@link Color} to compare against.
+   * @param backgroundColor The background {@link Color} or color input to compare against.
    * @param options Optional {@link TextReadabilityOptions} for conformance level and text size.
    * @returns `true` if the contrast ratio meets the specified requirements.
    *
@@ -858,22 +861,29 @@ export class Color {
    * new Color('#777777').isReadable(new Color('#888888')); // false
    * ```
    */
-  isReadableAsTextColor(backgroundColor: Color, options?: TextReadabilityOptions): boolean {
-    return isTextReadable(this, backgroundColor, options);
+  isReadableAsTextColor(
+    backgroundColor: ValidColorInputFormat,
+    options?: TextReadabilityOptions
+  ): boolean {
+    return isTextReadable(this, new Color(backgroundColor), options);
   }
 
   /**
    * Find the best background color for this color as foreground text.
    *
-   * @param backgroundColors A non-empty list of candidate background colors.
+   * @param backgroundColors A non-empty list of candidate background {@link Color}s or color inputs.
    * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
    * @returns The candidate background color that maximizes readability for this color.
    */
   getBestBackgroundColor(
-    backgroundColors: (Color | ColorFormat | string)[],
-    options: ReadabilityComparisonOptions = {}
+    backgroundColors: ValidColorInputFormat[],
+    options?: ReadabilityComparisonOptions
   ): Color {
-    return getBestBackgroundColorForText(this, backgroundColors, options);
+    return getBestBackgroundColorForText(
+      this,
+      backgroundColors.map((c) => new Color(c)),
+      options
+    );
   }
 
   /**

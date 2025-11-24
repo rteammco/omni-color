@@ -2860,7 +2860,9 @@ describe('getAPCAReadabilityScore', () => {
 describe('readability selection helpers', () => {
   it('selects the most readable text color using WCAG inputs', () => {
     const background = new Color('#fefefe');
-    const candidates = ['#000000', new Color('#1a1a1a'), { r: 120, g: 120, b: 120 }];
+    const candidates = ['#000000', new Color('#1a1a1a'), { r: 120, g: 120, b: 120 }].map(
+      (c) => new Color(c)
+    );
 
     const result = getMostReadableTextColorForBackground(background, candidates, {
       textReadabilityOptions: { level: 'AAA', size: 'LARGE' },
@@ -2871,7 +2873,7 @@ describe('readability selection helpers', () => {
 
   it('selects the best background color for APCA scoring', () => {
     const textColor = new Color('#f4e4c0');
-    const backgrounds = ['#101010', '#444444', '#ffffff'];
+    const backgrounds = ['#101010', '#444444', '#ffffff'].map((bg) => new Color(bg));
 
     const result = getBestBackgroundColorForText(textColor, backgrounds, { algorithm: 'APCA' });
 
