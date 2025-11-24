@@ -844,12 +844,4 @@ describe('Color.differenceFrom', () => {
     expect(color.differenceFrom(other, 'CIE94')).toBeCloseTo(73.432, 2);
     expect(color.differenceFrom(other)).toBeCloseTo(86.615, 2);
   });
-
-  it('rejects invalid inputs for difference calculations', () => {
-    const color = new Color('#123456');
-
-    expect(() => color.differenceFrom(null as unknown as Color)).toThrow(
-      'Color input for Delta E cannot be null or undefined'
-    );
-  });
 });

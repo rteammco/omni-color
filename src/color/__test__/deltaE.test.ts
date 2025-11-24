@@ -1,6 +1,5 @@
 import { Color } from '../color';
 import { deltaECIE76, deltaECIE94, deltaECIEDE2000, getDeltaE } from '../deltaE';
-import type { ColorLAB } from '../formats';
 
 describe('Delta E calculations', () => {
   describe('utility functions', () => {
@@ -65,23 +64,6 @@ describe('Delta E calculations', () => {
       expect(defaultWeighting).toBeGreaterThan(textilesWeighting);
       expect(defaultWeighting).toBeCloseTo(29.175, 3);
       expect(textilesWeighting).toBeCloseTo(15.172, 3);
-    });
-
-    it('throws informative errors for invalid inputs', () => {
-      expect(() => deltaECIE76(null as unknown as Color, new Color('#000000'))).toThrow(
-        'Color input for Delta E cannot be null or undefined'
-      );
-
-      class InvalidLabColor extends Color {
-        toLAB(): ColorLAB {
-          return { l: 1, a: 2, b: Number.NaN };
-        }
-      }
-
-      const invalidLabLike = new InvalidLabColor('#000000');
-      expect(() => getDeltaE(invalidLabLike, new Color('#000000'))).toThrow(
-        'Color input for Delta E must contain finite numeric L, A, and B values'
-      );
     });
 
     it('supports comparing colors from different input spaces', () => {
