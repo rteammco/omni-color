@@ -273,28 +273,36 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
     case 'LCH': {
       let l = 0;
       let c = 0;
-      let h = 0;
+      let x = 0;
+      let y = 0;
       colors.forEach((color, i) => {
         const val: ColorLCH = color.toLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        const rad = (val.h * Math.PI) / 180;
+        x += Math.cos(rad) * weight;
+        y += Math.sin(rad) * weight;
       });
-      return new Color({ l, c, h });
+      const hue = (Math.atan2(y, x) * 180) / Math.PI;
+      return new Color({ l, c, h: (hue + 360) % 360 });
     }
     case 'OKLCH': {
       let l = 0;
       let c = 0;
-      let h = 0;
+      let x = 0;
+      let y = 0;
       colors.forEach((color, i) => {
         const val: ColorOKLCH = color.toOKLCH();
         const weight = normalizedWeights[i];
         l += val.l * weight;
         c += val.c * weight;
-        h += val.h * weight;
+        const rad = (val.h * Math.PI) / 180;
+        x += Math.cos(rad) * weight;
+        y += Math.sin(rad) * weight;
       });
-      return new Color({ l, c, h });
+      const hue = (Math.atan2(y, x) * 180) / Math.PI;
+      return new Color({ l, c, h: (hue + 360) % 360 });
     }
     case 'RGB':
     default: {
