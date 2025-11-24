@@ -1,5 +1,5 @@
-import { Color } from './color';
-import type { ColorFormat, ColorRGBA } from './formats';
+import type { Color } from './color';
+import type { ColorRGBA } from './formats';
 import { srgbChannelToLinear } from './utils';
 
 // Does alpha blending between the two RGBA colors. Calculates what the a
@@ -255,19 +255,18 @@ function getReadabilityComparisonResult(
  */
 export function getMostReadableTextColorForBackground(
   backgroundColor: Color,
-  textColors: (Color | ColorFormat | string)[],
+  textColors: Color[],
   options: ReadabilityComparisonOptions = {}
 ): Color {
   if (textColors.length === 0) {
     throw new Error('At least one text color must be provided.');
   }
 
-  const candidates = textColors.map((input) => new Color(input));
-  let mostReadableTextColor = candidates[0];
+  let mostReadableTextColor = textColors[0];
   let bestResult = getReadabilityComparisonResult(mostReadableTextColor, backgroundColor, options);
 
-  for (let i = 1; i < candidates.length; i += 1) {
-    const candidate = candidates[i];
+  for (let i = 1; i < textColors.length; i += 1) {
+    const candidate = textColors[i];
     const candidateResult = getReadabilityComparisonResult(candidate, backgroundColor, options);
     if (isBetterReadabilityCandidate(candidateResult, bestResult)) {
       mostReadableTextColor = candidate;
@@ -283,19 +282,18 @@ export function getMostReadableTextColorForBackground(
  */
 export function getBestBackgroundColorForText(
   textColor: Color,
-  backgroundColors: (Color | ColorFormat | string)[],
+  backgroundColors: Color[],
   options: ReadabilityComparisonOptions = {}
 ): Color {
   if (backgroundColors.length === 0) {
     throw new Error('At least one background color must be provided.');
   }
 
-  const candidates = backgroundColors.map((input) => new Color(input));
-  let bestBackgroundColor = candidates[0];
+  let bestBackgroundColor = backgroundColors[0];
   let bestResult = getReadabilityComparisonResult(textColor, bestBackgroundColor, options);
 
-  for (let i = 1; i < candidates.length; i += 1) {
-    const candidate = candidates[i];
+  for (let i = 1; i < backgroundColors.length; i += 1) {
+    const candidate = backgroundColors[i];
     const candidateResult = getReadabilityComparisonResult(textColor, candidate, options);
     if (isBetterReadabilityCandidate(candidateResult, bestResult)) {
       bestBackgroundColor = candidate;

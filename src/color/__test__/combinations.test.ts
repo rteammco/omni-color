@@ -200,6 +200,24 @@ describe('averageColors', () => {
     expect(result.toHex()).toBe('#ff0000');
   });
 
+  it('averages LCH hues correctly across 360 boundary', () => {
+    const h1 = new Color({ l: 50, c: 50, h: 350 });
+    const h2 = new Color({ l: 50, c: 50, h: 10 });
+    const result = averageColors([h1, h2], { space: 'LCH' });
+    const h = result.toLCH().h;
+    const distTo0 = Math.min(h, 360 - h);
+    expect(distTo0).toBeLessThan(10);
+  });
+
+  it('averages OKLCH hues correctly across 360 boundary', () => {
+    const h1 = new Color({ l: 0.5, c: 0.1, h: 350 });
+    const h2 = new Color({ l: 0.5, c: 0.1, h: 10 });
+    const result = averageColors([h1, h2], { space: 'OKLCH' });
+    const h = result.toOKLCH().h;
+    const distTo0 = Math.min(h, 360 - h);
+    expect(distTo0).toBeLessThan(10);
+  });
+
   it('defaults to equal weights when weights length mismatches', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');

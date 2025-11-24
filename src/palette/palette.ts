@@ -1,7 +1,7 @@
 import { Color } from '../color/color';
 import { BLACK_HEX, WHITE_HEX } from '../color/color.constants';
 import { type ColorHarmony } from '../color/harmonies';
-import type { ColorSwatch } from '../color/swatch';
+import type { ColorSwatch, ColorSwatchOptions } from '../color/swatch';
 import { clampValue } from '../utils';
 
 type SemanticColor = 'info' | 'positive' | 'negative' | 'warning' | 'special';
@@ -68,6 +68,7 @@ const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: Required<NeutralColorHarmoniz
 export interface GenerateColorPaletteOptions {
   neutralHarmonization?: NeutralColorHarmonizationOptions;
   semanticHarmonization?: SemanticColorHarmonizationOptions;
+  swatchOptions?: ColorSwatchOptions;
 }
 
 function harmonizeNeutrals(paletteBaseColor: Color): Color {
@@ -162,39 +163,50 @@ export function generateColorPaletteFromBaseColor(
       DEFAULT_SEMANTIC_COLOR_HARMONIZATION_OPTIONS.chromaRange,
   };
 
+  const paletteSwatchOptions: ColorSwatchOptions = {
+    centerOn500: true,
+    ...options?.swatchOptions,
+  };
+
   const harmonyColors = baseColor.getHarmonyColors(harmony);
-  const primary = harmonyColors[0].getColorSwatch();
+  const primary = harmonyColors[0].getColorSwatch(paletteSwatchOptions);
 
   return {
     primary,
-    secondaryColors: harmonyColors.slice(1).map((color) => color.getColorSwatch()),
-    neutrals: harmonizeNeutrals(baseColor).getColorSwatch(),
+    secondaryColors: harmonyColors
+      .slice(1)
+      .map((color) => color.getColorSwatch(paletteSwatchOptions)),
+    neutrals: harmonizeNeutrals(baseColor).getColorSwatch(paletteSwatchOptions),
     tintedNeutrals: harmonizeTintedNeutrals(
       baseColor,
       neutralHarmonizationOptions
-    ).getColorSwatch(),
+    ).getColorSwatch(paletteSwatchOptions),
     back: new Color(BLACK_HEX),
     white: new Color(WHITE_HEX),
-    info: harmonizeSemanticColor(baseColor, 'info', semanticHarmonizationOptions).getColorSwatch(),
+    info: harmonizeSemanticColor(
+      baseColor,
+      'info',
+      semanticHarmonizationOptions
+    ).getColorSwatch(paletteSwatchOptions),
     positive: harmonizeSemanticColor(
       baseColor,
       'positive',
       semanticHarmonizationOptions
-    ).getColorSwatch(),
+    ).getColorSwatch(paletteSwatchOptions),
     negative: harmonizeSemanticColor(
       baseColor,
       'negative',
       semanticHarmonizationOptions
-    ).getColorSwatch(),
+    ).getColorSwatch(paletteSwatchOptions),
     warning: harmonizeSemanticColor(
       baseColor,
       'warning',
       semanticHarmonizationOptions
-    ).getColorSwatch(),
+    ).getColorSwatch(paletteSwatchOptions),
     special: harmonizeSemanticColor(
       baseColor,
       'special',
       semanticHarmonizationOptions
-    ).getColorSwatch(),
+    ).getColorSwatch(paletteSwatchOptions),
   };
 }
