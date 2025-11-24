@@ -753,7 +753,7 @@ export class Color {
    * Uses CIEDE2000 by default but supports additional calculation methods and
    * configurable weighting for CIE94.
    *
-   * @param other The other @link Color} or color input to compare against.
+   * @param other The other {@link Color} or color input to compare against.
    * @param options Optional {@link DeltaEOptions} to control the calculation.
    * Defaults to `'CIEDE2000'`. Configure `method` and related options to customize behavior.
    * @returns The Delta E value where higher numbers represent more visible difference.
