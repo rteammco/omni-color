@@ -18,6 +18,7 @@ interface Props {
   noBorderRadius?: boolean;
   overlayColor?: Color;
   overlayIcon?: IconType;
+  overlaySize?: 'SMALL' | 'LARGE'; // 'LARGE' is default
   overlayText?: string;
   width?: 'NORMAL' | 'DOUBLE' | 'HALF' | 'STRETCH'; // 'NORMAL' is default
 }
@@ -29,31 +30,42 @@ export function ColorBox({
   noBorderRadius,
   overlayColor,
   overlayIcon,
+  overlaySize = 'LARGE',
   overlayText,
-  width,
+  width = 'NORMAL',
 }: Props) {
-  const textColor = color.isDark() ? 'text-white' : 'text-black';
+  const textColor = color.isDark() ? 'white' : 'black';
+  const textColorClass = `text-${textColor}`;
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
 
   const overlayContent = useMemo(() => {
     if (overlayIcon) {
       return (
         <div className="flex justify-center items-center">
-          <Icon color={color.isDark() ? 'white' : 'black'} type={overlayIcon} />
+          <Icon color={textColor} type={overlayIcon} />
         </div>
       );
     }
 
     if (overlayText || overlayColor) {
+      const text = overlayText ?? getOverlayColorLetters(overlayColor ?? new Color(textColor));
+      const textStyle = { color: overlayColor?.toHex() ?? textColor };
+      if (overlaySize === 'SMALL') {
+        return (
+          <h6 className="text-center" style={textStyle}>
+            {text}
+          </h6>
+        );
+      }
       return (
-        <h4 className="text-center font-bold" style={{ color: overlayColor?.toHex() ?? textColor }}>
-          {overlayText ?? getOverlayColorLetters(overlayColor ?? color)}
+        <h4 className="text-center font-bold" style={textStyle}>
+          {text}
         </h4>
       );
     }
 
     return undefined;
-  }, [color, overlayColor, overlayIcon, overlayText, textColor]);
+  }, [overlayColor, overlayIcon, overlaySize, overlayText, textColor]);
 
   let widthClass = 'w-16';
   if (width === 'DOUBLE') {
@@ -74,7 +86,7 @@ export function ColorBox({
       } ${noBorderRadius ? 'rounded-none' : 'rounded-md'}`}
     >
       {overlayContent}
-      {label && <div className={`pb-1 pt-0.5 text-xs ${textColor}`}>{label}</div>}
+      {label && <div className={`py-1 text-xs ${textColorClass}`}>{label}</div>}
     </div>
   );
 }

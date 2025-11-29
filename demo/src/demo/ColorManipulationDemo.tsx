@@ -1,65 +1,64 @@
 import type { Color } from '../../../dist';
+import { Card } from '../components/Card';
 import { ColorBox } from '../components/ColorBox';
-
-function CenteredCellContainer({ children }: { children: React.ReactNode }) {
-  return <div className="w-full flex py-2 sm:py-0 justify-center">{children}</div>;
-}
 
 interface Props {
   color: Color;
 }
 
 export function ColorManipulationDemo({ color }: Props) {
+  const brightenedColor = color.brighten();
+  const darkenedColor = color.darken();
+  const saturatedColor = color.saturate();
+  const desaturatedColor = color.desaturate();
+  const grayscaleColor = color.grayscale();
+
   return (
-    <div className="w-full flex flex-row justify-center">
-      <div className="w-2xl">
-        <table className="table-fixed w-full border-collapse">
-          <thead className="hidden sm:table-header-group">
-            <tr>
-              <th className="pb-1 font-normal">Original</th>
-              <th className="pb-1 font-normal">Brighten</th>
-              <th className="pb-1 font-normal">Darken</th>
-              <th className="pb-1 font-normal">Saturate</th>
-              <th className="pb-1 font-normal">Desaturate</th>
-              <th className="pb-1 font-normal">Grayscale</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="sm:table-row block sm:border-none">
-              <td className="sm:table-cell block before:content-['Original'] sm:before:content-none">
-                <CenteredCellContainer>
-                  <ColorBox color={color} />
-                </CenteredCellContainer>
-              </td>
-              <td className="sm:table-cell block before:content-['Brighten'] sm:before:content-none">
-                <CenteredCellContainer>
-                  <ColorBox color={color.brighten()} />
-                </CenteredCellContainer>
-              </td>
-              <td className="sm:table-cell block before:content-['Darken'] sm:before:content-none">
-                <CenteredCellContainer>
-                  <ColorBox color={color.darken()} />
-                </CenteredCellContainer>
-              </td>
-              <td className="sm:table-cell block before:content-['Saturate'] sm:before:content-none">
-                <CenteredCellContainer>
-                  <ColorBox color={color.saturate()} />
-                </CenteredCellContainer>
-              </td>
-              <td className="sm:table-cell block before:content-['Desaturate'] sm:before:content-none">
-                <CenteredCellContainer>
-                  <ColorBox color={color.desaturate()} />
-                </CenteredCellContainer>
-              </td>
-              <td className="sm:table-cell block before:content-['Grayscale'] sm:before:content-none">
-                <CenteredCellContainer>
-                  <ColorBox color={color.grayscale()} />
-                </CenteredCellContainer>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <Card>
+      <div className="flex flex-row gap-2">
+        <ColorBox
+          color={color}
+          label={color.toHex()}
+          overlaySize="SMALL"
+          overlayText="Original"
+          width="STRETCH"
+        />
+        <ColorBox
+          width="STRETCH"
+          overlayText="Brighten"
+          overlaySize="SMALL"
+          label={brightenedColor.toHex()}
+          color={brightenedColor}
+        />
+        <ColorBox
+          color={darkenedColor}
+          label={darkenedColor.toHex()}
+          overlaySize="SMALL"
+          overlayText="Darken"
+          width="STRETCH"
+        />
+        <ColorBox
+          color={saturatedColor}
+          label={saturatedColor.toHex()}
+          overlaySize="SMALL"
+          overlayText="Saturate"
+          width="STRETCH"
+        />
+        <ColorBox
+          color={desaturatedColor}
+          label={desaturatedColor.toHex()}
+          overlaySize="SMALL"
+          overlayText="Desaturate"
+          width="STRETCH"
+        />
+        <ColorBox
+          color={grayscaleColor}
+          label={grayscaleColor.toHex()}
+          overlaySize="SMALL"
+          overlayText="Grayscale"
+          width="STRETCH"
+        />
       </div>
-    </div>
+    </Card>
   );
 }

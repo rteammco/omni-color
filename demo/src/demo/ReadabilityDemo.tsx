@@ -63,6 +63,7 @@ export function ReadabilityDemo({ color }: Props) {
             color={bestBackgroundColor}
             label="on the best background"
             overlayColor={color}
+            overlaySize="SMALL"
             overlayText="Your color"
             width="STRETCH"
           />
@@ -70,6 +71,7 @@ export function ReadabilityDemo({ color }: Props) {
             color={color}
             label="with your color as the background"
             overlayColor={bestTextColor}
+            overlaySize="SMALL"
             overlayText="Best text color"
             width="STRETCH"
           />
