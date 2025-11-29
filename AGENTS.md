@@ -89,6 +89,8 @@ describe('function or util being tested', () => {
 - `Color` inputs and outputs should almost always be hex strings ('#rrggbb') so it's readable at a glance in the IDE - unless it doesn't make sense since we're checking a specific value like alpha or a specific conversion.
 - Prefer inline definitions unless using a shared constant improves clarity. E.g. `expect(myColor.toHex()).toBe('#ff0000');` is preferable to `expect(myColor.toHex()).toBe(RED);`.
 - `src/color/__test__/utils.test.ts` is a good example of nice test structure.
+- Keep all test cases for a suite of utils in the same test file, e.g. all tests for `gradients.ts` should go into its associated `__test__/gradients.test.ts`.
+- Do not export helper functions just to test them, but do make sure test coverage extends to those cases as well.
 
 In general:
 
