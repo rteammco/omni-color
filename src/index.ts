@@ -47,6 +47,7 @@ import {
 import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
 import type { ColorTemperatureLabel } from './color/temperature';
 import { ColorTemperatureAndLabel, ColorTemperatureStringFormatOptions } from './color/temperature';
+import { ColorDarknessMode, IsColorDarkOptions } from './color/utils';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
@@ -58,6 +59,7 @@ export {
   type CIE94Options,
   Color,
   ColorCMYK,
+  ColorDarknessMode,
   type ColorFormat,
   ColorGradientEasing,
   ColorGradientInterpolation,
@@ -88,6 +90,7 @@ export {
   GenerateColorPaletteOptions,
   getBestBackgroundColorForText,
   getMostReadableTextColorForBackground,
+  IsColorDarkOptions,
   labToString,
   MixColorsOptions,
   type MixSpace,
