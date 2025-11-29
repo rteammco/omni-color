@@ -50,11 +50,33 @@ describe('mixColors', () => {
     expect(result.toHex()).toBe('#5100ff');
   });
 
-  it('defaults to additive RGB mixing', () => {
+  it('defaults to additive Linear RGB mixing', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
     const result = mixColors([red, green]);
+    // Pure Red + Pure Green sums to Pure Yellow in both sRGB and Linear RGB
     expect(result.toHex()).toBe('#ffff00');
+  });
+
+  it('mixes colors additively in Linear RGB space (brighter mix)', () => {
+    const red = new Color('#cc0000');
+    const green = new Color('#00cc00');
+    // In sRGB: cc(204) + 0 = 204. Result #cccc00.
+    // In Linear:
+    // 204/255 = 0.8. Linear(0.8) ~= 0.6.
+    // 0.6 + 0 = 0.6.
+    // 0 + 0.6 = 0.6.
+    // Linear(0.6) -> sRGB(0.8) -> 204.
+    // Wait, pure additive of non-clipping colors should be similar?
+    // Let's test averaging behavior via weights summing to 1.
+    const result = mixColors([red, green], { space: 'LINEAR_RGB', weights: [0.5, 0.5] });
+    // sRGB Avg: 102, 102, 0 -> #666600
+    // Linear Avg: 0.6*0.5 + 0 = 0.3. sRGB(0.3) -> ~150 (#96)
+    expect(result.toHex()).not.toBe('#666600');
+    // Approx #969600
+    const { r, g } = result.toRGBA();
+    expect(r).toBeGreaterThan(140);
+    expect(g).toBeGreaterThan(140);
   });
 
   it('throws when fewer than two colors are provided', () => {
@@ -141,6 +163,15 @@ describe('averageColors', () => {
     expect(result.toHex()).toBe('#800080');
   });
 
+  it('averages colors in Linear RGB space (brighter purple)', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = averageColors([red, blue], { space: 'LINEAR_RGB' });
+    // RGB avg: 128, 0, 128 -> #800080
+    // Linear avg: #bc00bc
+    expect(result.toHex()).toBe('#bc00bc');
+  });
+
   it('averages red, green, and blue to gray in RGB space', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
@@ -159,11 +190,12 @@ describe('averageColors', () => {
     expect(result.toHex()).toBe('#80ff00');
   });
 
-  it('defaults to RGB averaging', () => {
+  it('defaults to Linear RGB averaging', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
     const result = averageColors([red, green]);
-    expect(result.toHex()).toBe('#808000');
+    // Expect brighter yellow than #808000
+    expect(result.toHex()).toBe('#bcbc00');
   });
 
   it('throws when fewer than two colors are provided', () => {
@@ -222,14 +254,14 @@ describe('averageColors', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = averageColors([red, blue], { weights: [2] });
-    expect(result.toHex()).toBe('#800080');
+    expect(result.toHex()).toBe('#bc00bc');
   });
 
   it('defaults weights to equal when provided weights sum to 0', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = averageColors([red, blue], { weights: [1, -1] });
-    expect(result.toHex()).toBe('#800080');
+    expect(result.toHex()).toBe('#bc00bc');
   });
 });
 
