@@ -14,11 +14,27 @@ function useInfoContainerColors(color: Color) {
   return { backgroundColor, textColor, titleColor };
 }
 
-function InfoPill({ bold, children, color }: { bold?: boolean; children: string; color: Color }) {
+function InfoPill({
+  bold,
+  children,
+  color,
+  variant = 'filled',
+}: {
+  bold?: boolean;
+  children: string;
+  color: Color;
+  variant?: 'filled' | 'outlined';
+}) {
   const { backgroundColor, textColor } = useInfoContainerColors(color);
 
   return (
-    <div className="inline-block px-4 py-1 rounded-full" style={{ backgroundColor }}>
+    <div
+      className="inline-block px-4 py-1 rounded-full"
+      style={{
+        backgroundColor: variant === 'filled' ? backgroundColor : 'transparent',
+        border: variant === 'outlined' ? `1px solid ${backgroundColor}` : 'transparent',
+      }}
+    >
       <span className={bold ? 'font-bold' : undefined} style={{ color: textColor }}>
         {children}
       </span>
@@ -70,7 +86,9 @@ export function ColorInfoCard({ color, extended }: Props) {
           {color.getNameAsString().toUpperCase()}
         </InfoPill>
         <div className="flex flex-row items-center gap-2">
-          {extended && <InfoPill color={color}>{`Alpha: ${color.getAlpha()}`}</InfoPill>}
+          {extended && (
+            <InfoPill color={color} variant="outlined">{`Alpha: ${color.getAlpha()}`}</InfoPill>
+          )}
           <InfoPill color={color}>{color.toHex8()}</InfoPill>
           {extended && <InfoPill color={color}>{color.toHex8()}</InfoPill>}
         </div>
