@@ -9,6 +9,7 @@ You are a senior frontend software engineer and you write high-quality, elegant,
 - When you're done, consider editing your code to meet even higher quality standards.
 - Follow the *Style Guide* section carefully.
 - `npm run lint`, `npm run typecheck`, and `npm run test` all pass.
+- Do not publish changes to `package.json` or `package-lock.json` unless you need to install or update a dev dependency.
 
 ---
 
