@@ -66,25 +66,22 @@ export function ColorDemo() {
         <ReadabilityDemo color={color} />
       </SectionContainer>
       <SectionContainer
-        description="Brighten, darken, saturate, desaturate, or go grayscale."
+        description="Brighten, darken, saturate, desaturate, or go grayscale"
         title="Manipulations"
       >
         <ColorManipulationDemo color={color} />
       </SectionContainer>
       <SectionContainer
-        description="Blend, mix, and average colors. Explore new shades and mix modes."
+        description="Blend, mix, and average colors with a large variety of customization options"
         title="Combinations"
       >
         <ColorCombinationDemo color={color} />
       </SectionContainer>
-      <SectionContainer
-        description="Instantly generate color harmonies - complementary, triadic, square, etc."
-        title="Harmonies"
-      >
+      <SectionContainer description="Instantly generate complete color harmonies" title="Harmonies">
         <ColorHarmonyDemo color={color} />
       </SectionContainer>
       <SectionContainer
-        description="Generate an entire production-ready color palette from a single base color."
+        description="Generate an entire production-ready color palette from a single base color"
         title="Palette"
       >
         <ColorPaletteDemo color={color} />
