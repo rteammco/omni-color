@@ -54,7 +54,7 @@ export function ColorDemo() {
         <ColorInput color={color} onColorChanged={handleColorChanged} />
       </SectionContainer>
       <SectionContainer
-        description="Quick conversions, perceptual palettes, and temperature hints."
+        description="Quick conversions, swatches, and temperature"
         title="Color info"
       >
         <ColorInfo color={color} />
