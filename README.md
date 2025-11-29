@@ -133,7 +133,7 @@ Each converter returns a new representation without mutating the original color.
 
 #### `mix(colors, options?)`
 - Additively or subtractively mixes this color with one or more others.
-- Options: `type` (`'ADDITIVE' | 'SUBTRACTIVE'`), `space` (`'RGB' | 'HSL' | 'LCH' | 'OKLCH'`), and per-color `weights`.
+- Options: `type` (`'ADDITIVE' | 'SUBTRACTIVE'`), `space` (`'RGB' | 'LINEAR_RGB' | 'HSL' | 'LCH' | 'OKLCH'`), and per-color `weights`. Defaults to `LINEAR_RGB`.
   ```ts
   const coral = new Color('#ff7f50');
   const mixed = coral.mix([new Color('rebeccapurple')], { space: 'LCH', weights: [2, 1] });
@@ -147,7 +147,7 @@ Each converter returns a new representation without mutating the original color.
   ```
 
 #### `average(colors, options?)`
-- Averages channel values with optional `weights` in a selected `space`.
+- Averages channel values with optional `weights` in a selected `space`. Defaults to `LINEAR_RGB`.
   ```ts
   const base = new Color('#ff0000');
   base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex();
