@@ -1,31 +1,51 @@
+import { useMemo } from 'react';
 import type { Color } from '../../../dist';
 import { Card } from './Card';
+import { Icon } from './Icon';
+import { IconType } from './Icon.types';
 import { useColorBackgroundAndBorderColors } from './utils';
 
 const INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT = 25;
 
 function useInfoContainerColors(color: Color) {
-  const backgroundColorObj = color.isDark()
-    ? color.brighten(INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT)
-    : color.darken(INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT);
-  const backgroundColor = backgroundColorObj.toHex();
-  const textColor = backgroundColorObj.isDark() ? 'white' : 'black';
-  const titleColor = backgroundColorObj.isDark() ? 'text-neutral-300' : 'text-neutral-700';
-  return { backgroundColor, textColor, titleColor };
+  return useMemo(() => {
+    const backgroundColorObj = color.isDark()
+      ? color.brighten(INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT)
+      : color.darken(INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT);
+
+    const backgroundColor = backgroundColorObj.toHex();
+
+    const filledTextColor = backgroundColorObj.isDark() ? 'white' : 'black';
+    const outlinedTextColor = color.isDark() ? 'white' : 'black';
+
+    const titleColor = backgroundColorObj.isDark() ? 'text-neutral-300' : 'text-neutral-700';
+
+    return { backgroundColor, filledTextColor, outlinedTextColor, titleColor };
+  }, [color]);
 }
 
 function InfoPill({
   bold,
   children,
   color,
+  icon,
   variant = 'filled',
 }: {
   bold?: boolean;
   children: string;
   color: Color;
+  icon?: IconType;
   variant?: 'filled' | 'outlined';
 }) {
-  const { backgroundColor, textColor } = useInfoContainerColors(color);
+  const { backgroundColor, filledTextColor, outlinedTextColor } = useInfoContainerColors(color);
+  const textColor = variant === 'filled' ? filledTextColor : outlinedTextColor;
+  console.log({
+    textColor,
+    filledTextColor,
+    outlinedTextColor,
+    color: color.toHex(),
+    isDark: color.isDark(),
+  });
 
   return (
     <div
@@ -35,9 +55,12 @@ function InfoPill({
         border: variant === 'outlined' ? `1px solid ${backgroundColor}` : 'transparent',
       }}
     >
-      <span className={bold ? 'font-bold' : undefined} style={{ color: textColor }}>
-        {children}
-      </span>
+      <div className="flex flex-row items-center gap-2">
+        {icon && <Icon color={textColor} size={20} type={icon} />}
+        <span className={bold ? 'font-bold' : undefined} style={{ color: textColor }}>
+          {children}
+        </span>
+      </div>
     </div>
   );
 }
@@ -51,12 +74,12 @@ function InfoBox({
   colorStrings: string[];
   title: string;
 }) {
-  const { backgroundColor, textColor, titleColor } = useInfoContainerColors(color);
+  const { backgroundColor, filledTextColor, titleColor } = useInfoContainerColors(color);
 
   return (
     <div
       className="rounded-lg px-2 pb-1 w-full text-left"
-      style={{ backgroundColor, color: textColor, borderColor: textColor }}
+      style={{ backgroundColor, color: filledTextColor, borderColor: filledTextColor }}
     >
       <span className={`text-xs font-mono font-semibold ${titleColor}`}>{title}</span>
       <div className="text-sm flex flex-row gap-2">
@@ -78,13 +101,21 @@ interface Props {
 
 export function ColorInfoCard({ color, extended }: Props) {
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
+  const isDark = color.isDark();
 
   return (
     <Card backgroundColor={backgroundColor} borderColor={borderColor}>
       <div className="flex flex-row justify-between items-center">
-        <InfoPill bold color={color}>
-          {color.getNameAsString().toUpperCase()}
-        </InfoPill>
+        <div className="flex flex-row items-center gap-2">
+          <InfoPill bold color={color}>
+            {color.getNameAsString().toUpperCase()}
+          </InfoPill>
+          {extended && (
+            <InfoPill color={color} icon={isDark ? IconType.MOON : IconType.SUN} variant="outlined">
+              {isDark ? 'Dark' : 'Light'}
+            </InfoPill>
+          )}
+        </div>
         <div className="flex flex-row items-center gap-2">
           {extended && (
             <InfoPill color={color} variant="outlined">{`Alpha: ${color.getAlpha()}`}</InfoPill>
