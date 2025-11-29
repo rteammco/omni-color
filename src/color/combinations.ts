@@ -1,8 +1,8 @@
 import { clampValue } from '../utils';
-import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 import { Color } from './color';
 import { toCMYK } from './conversions';
 import type { ColorCMYK, ColorHSL, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
+import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 
 export type MixType = 'ADDITIVE' | 'SUBTRACTIVE';
 export type MixSpace = 'RGB' | 'LINEAR_RGB' | 'HSL' | 'LCH' | 'OKLCH';
