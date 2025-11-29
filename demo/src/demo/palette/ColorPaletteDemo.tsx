@@ -29,82 +29,35 @@ export function ColorPaletteDemo({ color }: Props) {
   const palette = color.getColorPalette(selectedHarmony, options);
 
   return (
-    <div className="w-full">
-      <PaletteHarmonyOptions
-        selectedHarmony={selectedHarmony}
-        onHarmonySelectionChanged={setSelectedHarmony}
-      />
-      <VSpace height={8} />
-      <PaletteGenerationOptions
-        options={options}
-        onOptionsChanged={setOptions}
-        onReset={() => setOptions(DEFAULT_GENERATE_COLOR_PALETTE_OPTIONS)}
-      />
-      <VSpace height={12} />
-      <div className="w-full overflow-x-auto">
-        <table className="table-auto mx-auto">
-          <tbody>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Primary</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.primary} withLabels />
-              </td>
-            </tr>
-            {palette.secondaryColors.map((swatch, index) => (
-              <tr key={index}>
-                <td className="pb-2 pr-4 text-right">{`Secondary${
-                  palette.secondaryColors.length > 1 ? ` ${index + 1}` : ''
-                }`}</td>
-                <td className="pb-2">
-                  <ColorSwatch swatch={swatch} withLabels />
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td className="pb-2 pr-4 text-right">Neutrals</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.neutrals} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Tinted neutrals</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.tintedNeutrals} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Info (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.info} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Positive (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.positive} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Negative (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.negative} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pb-2 pr-4 text-right">Warning (semantic)</td>
-              <td className="pb-2">
-                <ColorSwatch swatch={palette.warning} withLabels />
-              </td>
-            </tr>
-            <tr>
-              <td className="pr-4 text-right">Special (semantic)</td>
-              <td>
-                <ColorSwatch swatch={palette.special} withLabels />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div className="w-full flex flex-col gap-4">
+      <div>
+        <PaletteHarmonyOptions
+          selectedHarmony={selectedHarmony}
+          onHarmonySelectionChanged={setSelectedHarmony}
+        />
+        <VSpace height={8} />
+        <PaletteGenerationOptions
+          options={options}
+          onOptionsChanged={setOptions}
+          onReset={() => setOptions(DEFAULT_GENERATE_COLOR_PALETTE_OPTIONS)}
+        />
       </div>
+      <ColorSwatch swatch={palette.primary} title="Primary" withLabels />
+      {palette.secondaryColors.map((swatch, index) => (
+        <ColorSwatch
+          key={index}
+          title={`Secondary${palette.secondaryColors.length > 1 ? ` ${index + 1}` : ''}`}
+          swatch={swatch}
+          withLabels
+        />
+      ))}
+      <ColorSwatch swatch={palette.neutrals} title="Neutrals" withLabels />
+      <ColorSwatch swatch={palette.tintedNeutrals} title="Tinted neutrals" withLabels />
+      <ColorSwatch swatch={palette.info} title="Info (semantic)" withLabels />
+      <ColorSwatch swatch={palette.positive} title="Positive (semantic)" withLabels />
+      <ColorSwatch swatch={palette.negative} title="Negative (semantic)" withLabels />
+      <ColorSwatch swatch={palette.warning} title="Warning (semantic)" withLabels />
+      <ColorSwatch swatch={palette.special} title="Special (semantic)" withLabels />
     </div>
   );
 }

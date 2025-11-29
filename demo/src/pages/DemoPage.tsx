@@ -6,14 +6,16 @@ import { Playground } from '../playground/Playground';
 
 export function DemoPage() {
   return (
-    <div className="p-6 w-full text-center">
-      <AppHeader />
-      <VSpace height={40} />
-      <ColorDemo />
-      <VSpace height={40} />
-      <Playground />
-      <VSpace height={40} />
-      <AppFooter />
+    <div className="w-full p-6 text-center">
+      <div className="max-w-7xl justify-self-center">
+        <AppHeader />
+        <VSpace height={40} />
+        <ColorDemo />
+        <VSpace height={40} />
+        <Playground />
+        <VSpace height={40} />
+        <AppFooter />
+      </div>
     </div>
   );
 }

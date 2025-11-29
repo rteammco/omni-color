@@ -6,8 +6,6 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,35 +17,14 @@
   width: 100%;
 }
 
-a {
-  color: #646cff;
-}
-a:hover {
-  color: #858dff;
-}
-a:active {
-  color: #a4acff;
-}
-
 button {
-  background-color: transparent;
-  background: transparent;
-  color: #646cff;
-  cursor: 'pointer';
-  font-size: 1.1em;
-  font-weight: 500;
-  margin: 0;
-  padding: 0;
+  @apply font-semibold shadow-md px-4 py-1 rounded-full cursor-pointer;
 }
 button:hover {
-  color: #858dff;
-  cursor: pointer;
-}
-button:active {
-  color: #a4acff;
+  @apply shadow-lg;
 }
 
-select:hover {
+select {
   cursor: pointer;
 }
 
@@ -90,19 +67,30 @@ h6 {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    @apply bg-slate-50 text-slate-900;
   }
-  a:hover {
-    color: #434bf2;
-  }
-  a:active {
-    color: #242ccf;
+  button {
+    @apply text-indigo-100 bg-stone-900;
   }
   button:hover {
-    color: #434bf2;
+    @apply text-indigo-300;
   }
   button:active {
-    color: #242ccf;
+    @apply text-indigo-400;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @apply bg-slate-900 text-slate-100;
+  }
+  button {
+    @apply text-indigo-800 bg-stone-200;
+  }
+  button:hover {
+    @apply text-indigo-600;
+  }
+  button:active {
+    @apply text-indigo-500;
   }
 }

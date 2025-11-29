@@ -14,7 +14,7 @@ interface Props {
   label?: string;
   noBorderRadius?: boolean;
   overlayColor?: Color;
-  width?: 'NORMAL' | 'DOUBLE' | 'HALF'; // 'NORMAL' is default
+  width?: 'NORMAL' | 'DOUBLE' | 'HALF' | 'STRETCH'; // 'NORMAL' is default
 }
 
 export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColor, width }: Props) {
@@ -25,6 +25,10 @@ export function ColorBox({ color, hideBorder, label, noBorderRadius, overlayColo
     widthClass = 'w-32';
   } else if (width === 'HALF') {
     widthClass = 'w-8';
+  } else if (width === 'NORMAL') {
+    widthClass = 'w-16';
+  } else if (width === 'STRETCH') {
+    widthClass = 'flex-1';
   }
 
   return (

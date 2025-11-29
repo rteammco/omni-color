@@ -3,11 +3,11 @@ import { Color } from '../../../dist';
 import { ColorInput } from './ColorInput';
 import { ColorInfo } from './ColorInfo';
 import { ColorManipulationDemo } from './ColorManipulationDemo';
-import { VSpace } from '../components/VSpace';
 import { ColorHarmonyDemo } from './ColorHarmonyDemo';
 import { ColorPaletteDemo } from './palette/ColorPaletteDemo';
 import { ColorCombinationDemo } from './combinations/ColorCombinationDemo';
 import { ReadabilityDemo } from './ReadabilityDemo';
+import { SectionContainer } from '../components/SectionContainer';
 
 const COLOR_SEARCH_PARAM_KEY = 'color' as const;
 
@@ -46,26 +46,46 @@ export function ColorDemo() {
   }, []);
 
   return (
-    <div>
-      <ColorInput color={color} onColorChanged={handleColorChanged} />
-      <VSpace height={24} />
-      <h5 className="mb-3">Color info</h5>
-      <ColorInfo color={color} />
-      <VSpace height={24} />
-      <h5 className="mb-3">Readability</h5>
-      <ReadabilityDemo color={color} />
-      <VSpace height={24} />
-      <h5 className="mb-3">Manipulations</h5>
-      <ColorManipulationDemo color={color} />
-      <VSpace height={24} />
-      <h5 className="mb-3">Combinations</h5>
-      <ColorCombinationDemo color={color} />
-      <VSpace height={24} />
-      <h5 className="mb-3">Harmonies</h5>
-      <ColorHarmonyDemo color={color} />
-      <VSpace height={24} />
-      <h5 className="mb-2">Palette</h5>
-      <ColorPaletteDemo color={color} />
+    <div className="flex flex-col gap-8">
+      <SectionContainer
+        description="Enter any format, pick a preset, or let omni-color surprise you with a palette-friendly option"
+        title="Pick a starting color"
+      >
+        <ColorInput color={color} onColorChanged={handleColorChanged} />
+      </SectionContainer>
+      <SectionContainer
+        description="Quick conversions, swatches, and temperature"
+        title="Color info"
+      >
+        <ColorInfo color={color} />
+      </SectionContainer>
+      <SectionContainer
+        description="Check contrast ratios and readability scores against any background color"
+        title="Readability"
+      >
+        <ReadabilityDemo color={color} />
+      </SectionContainer>
+      <SectionContainer
+        description="Brighten, darken, saturate, desaturate, or go grayscale"
+        title="Manipulations"
+      >
+        <ColorManipulationDemo color={color} />
+      </SectionContainer>
+      <SectionContainer
+        description="Blend, mix, and average colors with a large variety of customization options"
+        title="Combinations"
+      >
+        <ColorCombinationDemo color={color} />
+      </SectionContainer>
+      <SectionContainer description="Instantly generate complete color harmonies" title="Harmonies">
+        <ColorHarmonyDemo color={color} />
+      </SectionContainer>
+      <SectionContainer
+        description="Generate an entire production-ready color palette from a single base color"
+        title="Palette"
+      >
+        <ColorPaletteDemo color={color} />
+      </SectionContainer>
     </div>
   );
 }
