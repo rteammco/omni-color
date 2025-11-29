@@ -23,6 +23,7 @@ import type {
   ColorGradientInterpolation,
   ColorGradientOptions,
   ColorGradientSpace,
+  HueInterpolationMode,
 } from './color/gradients';
 import type { ColorHarmony } from './color/harmonies';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
@@ -86,6 +87,7 @@ export {
   GenerateColorPaletteOptions,
   getBestBackgroundColorForText,
   getMostReadableTextColorForBackground,
+  HueInterpolationMode,
   IsColorDarkOptions,
   labToString,
   MixColorsOptions,
