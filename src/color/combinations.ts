@@ -2,9 +2,10 @@ import { clampValue } from '../utils';
 import { Color } from './color';
 import { toCMYK } from './conversions';
 import type { ColorCMYK, ColorHSL, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
+import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 
 export type MixType = 'ADDITIVE' | 'SUBTRACTIVE';
-export type MixSpace = 'RGB' | 'HSL' | 'LCH' | 'OKLCH';
+export type MixSpace = 'RGB' | 'LINEAR_RGB' | 'HSL' | 'LCH' | 'OKLCH';
 
 export interface MixColorsOptions {
   space?: MixSpace;
@@ -125,6 +126,27 @@ function mixColorsAdditive(
       const result: ColorOKLCH = { l, c, h: (hue + 360) % 360 };
       return new Color(result);
     }
+    case 'LINEAR_RGB': {
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let a = 0;
+      colors.forEach((color, i) => {
+        const val: ColorRGBA = color.toRGBA();
+        const weight = weights[i];
+        r += srgbChannelToLinear(val.r, 'SRGB') * weight;
+        g += srgbChannelToLinear(val.g, 'SRGB') * weight;
+        b += srgbChannelToLinear(val.b, 'SRGB') * weight;
+        a += (val.a ?? 1) * weight;
+      });
+      const result: ColorRGBA = {
+        r: Math.round(linearChannelToSrgb(r, 'SRGB')),
+        g: Math.round(linearChannelToSrgb(g, 'SRGB')),
+        b: Math.round(linearChannelToSrgb(b, 'SRGB')),
+        a: +clampValue(a / sumOfWeights, 0, 1).toFixed(3),
+      };
+      return new Color(result);
+    }
     case 'RGB':
     default: {
       let r = 0;
@@ -154,7 +176,7 @@ export function mixColors(colors: Color[], options: MixColorsOptions = {}): Colo
   if (colors.length < 2) {
     throw new Error('at least two colors are required for mixing');
   }
-  const { type = 'ADDITIVE', space = 'RGB' } = options;
+  const { type = 'ADDITIVE', space = 'LINEAR_RGB' } = options;
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
 
   if (type === 'SUBTRACTIVE') {
@@ -245,7 +267,7 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
   if (colors.length < 2) {
     throw new Error('at least two colors are required for averaging');
   }
-  const { space = 'RGB' } = options;
+  const { space = 'LINEAR_RGB' } = options;
   const { normalizedWeights } = getWeights(colors.length, options.weights);
 
   switch (space) {
@@ -303,6 +325,26 @@ export function averageColors(colors: Color[], options: AverageColorsOptions = {
       });
       const hue = (Math.atan2(y, x) * 180) / Math.PI;
       return new Color({ l, c, h: (hue + 360) % 360 });
+    }
+    case 'LINEAR_RGB': {
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let a = 0;
+      colors.forEach((color, i) => {
+        const val: ColorRGBA = color.toRGBA();
+        const weight = normalizedWeights[i];
+        r += srgbChannelToLinear(val.r, 'SRGB') * weight;
+        g += srgbChannelToLinear(val.g, 'SRGB') * weight;
+        b += srgbChannelToLinear(val.b, 'SRGB') * weight;
+        a += (val.a ?? 1) * weight;
+      });
+      return new Color({
+        r: Math.round(linearChannelToSrgb(r, 'SRGB')),
+        g: Math.round(linearChannelToSrgb(g, 'SRGB')),
+        b: Math.round(linearChannelToSrgb(b, 'SRGB')),
+        a: +a.toFixed(3),
+      });
     }
     case 'RGB':
     default: {
