@@ -61,10 +61,10 @@ function InfoBox({
       <span className={`text-xs font-mono font-semibold ${titleColor}`}>{title}</span>
       <div className="text-sm flex flex-row gap-2">
         {colorStrings.map((colorString, index) => (
-          <>
-            <span key={`${colorString}-${index}`}>{colorString}</span>
+          <div key={`${colorString}-${index}`}>
+            <span>{colorString}</span>
             {index < colorStrings.length - 1 && <span>&middot;</span>}
-          </>
+          </div>
         ))}
       </div>
     </div>
