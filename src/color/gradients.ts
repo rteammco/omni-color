@@ -12,6 +12,14 @@ export type ColorGradientEasing =
   | 'EASE_IN_OUT'
   | ((t: number) => number);
 
+export type HueInterpolationMode =
+  | 'Cartesian'
+  | 'Shortest'
+  | 'Longest'
+  | 'Increasing'
+  | 'Decreasing'
+  | 'Raw';
+
 export interface ColorGradientOptions {
   /**
    * Number of colors to generate, including the input anchors.
@@ -32,6 +40,14 @@ export interface ColorGradientOptions {
    * converting back to sRGB.
    */
   clamp?: boolean;
+  /**
+   * Strategy for interpolating hue angles in polar color spaces (HSL, HSV, LCH, OKLCH).
+   * Defaults to 'Shortest' for polar spaces, enabling saturation-preserving gradients.
+   * Set to 'Cartesian' to use the legacy method (converting to x/y coordinates),
+   * which may cause desaturation in the middle of the gradient.
+   * Ignored for RGB space.
+   */
+  hueInterpolationMode?: HueInterpolationMode;
 }
 
 type InterpolatableColor = {
@@ -125,46 +141,58 @@ function interpolateBezierScalar(values: number[], t: number): number {
   return working[0];
 }
 
-function getHSLVector(color: Color, alpha: number): InterpolatableColor {
+function getHSLVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
   const { h, s, l } = color.toHSL();
-  const rad = (h * Math.PI) / 180;
-  return { values: [Math.cos(rad) * s, Math.sin(rad) * s, l], alpha };
+  if (isCartesian) {
+    const rad = (h * Math.PI) / 180;
+    return { values: [Math.cos(rad) * s, Math.sin(rad) * s, l], alpha };
+  }
+  return { values: [h, s, l], alpha };
 }
 
-function getHSVVector(color: Color, alpha: number): InterpolatableColor {
+function getHSVVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
   const { h, s, v } = color.toHSV();
-  const rad = (h * Math.PI) / 180;
-  return { values: [Math.cos(rad) * s, Math.sin(rad) * s, v], alpha };
+  if (isCartesian) {
+    const rad = (h * Math.PI) / 180;
+    return { values: [Math.cos(rad) * s, Math.sin(rad) * s, v], alpha };
+  }
+  return { values: [h, s, v], alpha };
 }
 
-function getLCHVector(color: Color, alpha: number): InterpolatableColor {
+function getLCHVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
   const { l, c, h } = color.toLCH();
-  const rad = (h * Math.PI) / 180;
-  return { values: [l, Math.cos(rad) * c, Math.sin(rad) * c], alpha };
+  if (isCartesian) {
+    const rad = (h * Math.PI) / 180;
+    return { values: [l, Math.cos(rad) * c, Math.sin(rad) * c], alpha };
+  }
+  return { values: [l, c, h], alpha };
 }
 
-function getOKLCHVector(color: Color, alpha: number): InterpolatableColor {
+function getOKLCHVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
   const { l, c, h } = color.toOKLCH();
-  const rad = (h * Math.PI) / 180;
-  return { values: [l, Math.cos(rad) * c, Math.sin(rad) * c], alpha };
+  if (isCartesian) {
+    const rad = (h * Math.PI) / 180;
+    return { values: [l, Math.cos(rad) * c, Math.sin(rad) * c], alpha };
+  }
+  return { values: [l, c, h], alpha };
 }
 
 /**
  * Convert a color into an interpolatable vector for the target color space
  * while preserving alpha separately.
  */
-function colorToVector(color: Color, space: ColorGradientSpace): InterpolatableColor {
+function colorToVector(color: Color, space: ColorGradientSpace, isCartesian: boolean): InterpolatableColor {
   const rgba = color.toRGBA();
   const alpha = rgba.a ?? 1;
   switch (space) {
     case 'HSL':
-      return getHSLVector(color, alpha);
+      return getHSLVector(color, alpha, isCartesian);
     case 'HSV':
-      return getHSVVector(color, alpha);
+      return getHSVVector(color, alpha, isCartesian);
     case 'LCH':
-      return getLCHVector(color, alpha);
+      return getLCHVector(color, alpha, isCartesian);
     case 'OKLCH':
-      return getOKLCHVector(color, alpha);
+      return getOKLCHVector(color, alpha, isCartesian);
     case 'RGB':
     default: {
       const { r, g, b } = rgba;
@@ -176,38 +204,67 @@ function colorToVector(color: Color, space: ColorGradientSpace): InterpolatableC
 function vectorToFormat(
   vector: InterpolatableColor,
   space: ColorGradientSpace,
-  clamp: boolean
+  clamp: boolean,
+  isCartesian: boolean
 ): { format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLCH; alpha: number } {
   const [first, second, third] = vector.values;
   const alpha = clamp ? clampValue(vector.alpha, 0, 1) : vector.alpha;
 
   switch (space) {
     case 'HSL': {
-      const saturation = Math.sqrt(second ** 2 + first ** 2);
-      const hue = wrapHue((Math.atan2(second, first) * 180) / Math.PI);
+      if (isCartesian) {
+        const saturation = Math.sqrt(second ** 2 + first ** 2);
+        const hue = wrapHue((Math.atan2(second, first) * 180) / Math.PI);
+        const l = clamp ? clampValue(third, 0, 100) : third;
+        const s = clamp ? clampValue(saturation, 0, 100) : saturation;
+        return { format: { h: hue, s, l }, alpha };
+      }
+      // HSL Polar: [h, s, l]
+      const hue = wrapHue(first);
+      const s = clamp ? clampValue(second, 0, 100) : second;
       const l = clamp ? clampValue(third, 0, 100) : third;
-      const s = clamp ? clampValue(saturation, 0, 100) : saturation;
       return { format: { h: hue, s, l }, alpha };
     }
     case 'HSV': {
-      const saturation = Math.sqrt(second ** 2 + first ** 2);
-      const hue = wrapHue((Math.atan2(second, first) * 180) / Math.PI);
+      if (isCartesian) {
+        const saturation = Math.sqrt(second ** 2 + first ** 2);
+        const hue = wrapHue((Math.atan2(second, first) * 180) / Math.PI);
+        const v = clamp ? clampValue(third, 0, 100) : third;
+        const s = clamp ? clampValue(saturation, 0, 100) : saturation;
+        return { format: { h: hue, s, v }, alpha };
+      }
+      // HSV Polar: [h, s, v]
+      const hue = wrapHue(first);
+      const s = clamp ? clampValue(second, 0, 100) : second;
       const v = clamp ? clampValue(third, 0, 100) : third;
-      const s = clamp ? clampValue(saturation, 0, 100) : saturation;
       return { format: { h: hue, s, v }, alpha };
     }
     case 'LCH': {
-      const chroma = Math.sqrt(second ** 2 + third ** 2);
-      const hue = wrapHue((Math.atan2(third, second) * 180) / Math.PI);
+      if (isCartesian) {
+        const chroma = Math.sqrt(second ** 2 + third ** 2);
+        const hue = wrapHue((Math.atan2(third, second) * 180) / Math.PI);
+        const l = clamp ? clampValue(first, 0, 100) : first;
+        const c = clamp ? clampValue(chroma, 0, MAX_LCH_CHROMA) : chroma;
+        return { format: { l, c, h: hue }, alpha };
+      }
+      // LCH Polar: [l, c, h]
       const l = clamp ? clampValue(first, 0, 100) : first;
-      const c = clamp ? clampValue(chroma, 0, MAX_LCH_CHROMA) : chroma;
+      const c = clamp ? clampValue(second, 0, MAX_LCH_CHROMA) : second;
+      const hue = wrapHue(third);
       return { format: { l, c, h: hue }, alpha };
     }
     case 'OKLCH': {
-      const chroma = Math.sqrt(second ** 2 + third ** 2);
-      const hue = wrapHue((Math.atan2(third, second) * 180) / Math.PI);
+      if (isCartesian) {
+        const chroma = Math.sqrt(second ** 2 + third ** 2);
+        const hue = wrapHue((Math.atan2(third, second) * 180) / Math.PI);
+        const l = clamp ? clampValue(first, 0, 1) : first;
+        const c = clamp ? clampValue(chroma, 0, MAX_OKLCH_CHROMA) : chroma;
+        return { format: { l, c, h: hue }, alpha };
+      }
+      // OKLCH Polar: [l, c, h]
       const l = clamp ? clampValue(first, 0, 1) : first;
-      const c = clamp ? clampValue(chroma, 0, MAX_OKLCH_CHROMA) : chroma;
+      const c = clamp ? clampValue(second, 0, MAX_OKLCH_CHROMA) : second;
+      const hue = wrapHue(third);
       return { format: { l, c, h: hue }, alpha };
     }
     case 'RGB':
@@ -238,7 +295,8 @@ function interpolateLinearStops(
   easing: (t: number) => number,
   space: ColorGradientSpace,
   clamp: boolean,
-  stopCount: number
+  stopCount: number,
+  isCartesian: boolean
 ): ColorRGBA[] {
   const segments = stops.length - 1;
   const results: ColorRGBA[] = [];
@@ -254,7 +312,7 @@ function interpolateLinearStops(
     const end = stops[segmentIndex + 1];
     const values = interpolateLinearVector(start.values, end.values, easedLocalProgress);
     const alpha = interpolateLinearValue(start.alpha, end.alpha, easedLocalProgress);
-    const { format, alpha: clampedAlpha } = vectorToFormat({ values, alpha }, space, clamp);
+    const { format, alpha: clampedAlpha } = vectorToFormat({ values, alpha }, space, clamp, isCartesian);
     results.push({ ...toRGB(format), a: +clampedAlpha.toFixed(3) });
   }
 
@@ -266,7 +324,8 @@ function interpolateBezierStops(
   easing: (t: number) => number,
   space: ColorGradientSpace,
   clamp: boolean,
-  stopCount: number
+  stopCount: number,
+  isCartesian: boolean
 ): ColorRGBA[] {
   const controlPoints = stops.map((stop) => stop.values);
   const alphaPoints = stops.map((stop) => stop.alpha);
@@ -277,11 +336,72 @@ function interpolateBezierStops(
     const t = clampValue(easing(clampValue(rawT, 0, 1)), 0, 1);
     const values = interpolateBezier(controlPoints, t);
     const alpha = interpolateBezierScalar(alphaPoints, t);
-    const { format, alpha: clampedAlpha } = vectorToFormat({ values, alpha }, space, clamp);
+    const { format, alpha: clampedAlpha } = vectorToFormat({ values, alpha }, space, clamp, isCartesian);
     results.push({ ...toRGB(format), a: +clampedAlpha.toFixed(3) });
   }
 
   return results;
+}
+
+function adjustHueStops(
+  stops: InterpolatableColor[],
+  mode: HueInterpolationMode,
+  space: ColorGradientSpace
+): InterpolatableColor[] {
+  // Identify hue index based on space
+  let hueIndex = -1;
+  if (space === 'HSL' || space === 'HSV') hueIndex = 0;
+  else if (space === 'LCH' || space === 'OKLCH') hueIndex = 2;
+
+  if (hueIndex === -1 || mode === 'Raw' || mode === 'Cartesian') {
+    return stops;
+  }
+
+  // Clone stops to avoid mutating the original array/objects from colorToVector
+  const result = stops.map((stop) => ({ ...stop, values: [...stop.values] }));
+
+  for (let i = 0; i < result.length - 1; i += 1) {
+    const start = result[i].values[hueIndex];
+    const end = result[i+1].values[hueIndex];
+
+    let adjustedEnd = end;
+    const diff = end - start;
+
+    switch (mode) {
+      case 'Shortest':
+        // If diff > 180, subtract 360 to go the other way (shorter).
+        // If diff < -180, add 360.
+        if (diff > 180) adjustedEnd -= 360;
+        else if (diff < -180) adjustedEnd += 360;
+        break;
+      case 'Longest':
+        // If |diff| < 180, go the other way to make it longer.
+        if (Math.abs(diff) < 180 && Math.abs(diff) > 0) { // If 0, ambiguous, but 360 is same as 0.
+            if (diff >= 0) adjustedEnd -= 360;
+            else adjustedEnd += 360;
+        }
+        break;
+      case 'Increasing':
+        // Ensure end >= start.
+        if (adjustedEnd < start) {
+           adjustedEnd += 360 * Math.ceil((start - adjustedEnd) / 360);
+           // If they are equal after adjustment? fine.
+           // If adjustedEnd is still < start? (Should not be with ceil).
+           // Example: start 350, end 10. (350 - 10)/360 = 0.94 -> ceil 1. End += 360 -> 370.
+        }
+        break;
+      case 'Decreasing':
+        // Ensure end <= start
+        if (adjustedEnd > start) {
+           adjustedEnd -= 360 * Math.ceil((adjustedEnd - start) / 360);
+        }
+        break;
+    }
+
+    result[i+1].values[hueIndex] = adjustedEnd;
+  }
+
+  return result;
 }
 
 /**
@@ -303,15 +423,32 @@ export function createColorGradient(colors: Color[], options: ColorGradientOptio
   const clamp = options.clamp ?? true;
   const easing = getEasingFunction(options.easing);
 
-  const vectors = colors.map((color) => colorToVector(color, space));
+  // Determine Hue Interpolation Mode
+  // Default to 'Shortest' for Polar spaces, 'Cartesian' (legacy) for RGB or if explicit.
+  // Actually, legacy for Polar was Cartesian.
+  // New default for Polar is Shortest.
+  let hueMode = options.hueInterpolationMode;
+  if (!hueMode) {
+    if (space === 'RGB') hueMode = 'Cartesian';
+    else hueMode = 'Shortest';
+  }
+
+  const isCartesian = hueMode === 'Cartesian';
+
+  let vectors = colors.map((color) => colorToVector(color, space, isCartesian));
+
+  // Adjust hues if not Cartesian
+  if (!isCartesian) {
+    vectors = adjustHueStops(vectors, hueMode, space);
+  }
 
   if (interpolation === 'BEZIER') {
-    return interpolateBezierStops(vectors, easing, space, clamp, stopCount).map(
+    return interpolateBezierStops(vectors, easing, space, clamp, stopCount, isCartesian).map(
       (stop) => new ColorConstructor(stop)
     );
   }
 
-  return interpolateLinearStops(vectors, easing, space, clamp, stopCount).map(
+  return interpolateLinearStops(vectors, easing, space, clamp, stopCount, isCartesian).map(
     (stop) => new ColorConstructor(stop)
   );
 }

@@ -854,7 +854,7 @@ describe('Color gradients', () => {
 
     expect(gradient).toHaveLength(3);
     expect(gradient[0].toHex()).toBe('#ff6b6b');
-    expect(gradient[1].toHex()).toBe('#9571be');
+    expect(gradient[1].toHex()).toBe('#c145d1');
     expect(gradient[2].toHex()).toBe('#004cff');
   });
 

@@ -45,8 +45,8 @@ describe('createColorGradient', () => {
 
     expect(gradient.map((color) => color.toHex())).toEqual([
       '#f43e5c',
-      '#e46046',
-      '#6baa88',
+      '#f66e33',
+      '#22f33f',
       '#20d3ee',
     ]);
     expect(gradient[0].toHex()).toBe('#f43e5c');
@@ -64,9 +64,9 @@ describe('createColorGradient', () => {
 
     expect(gradient.map((color) => color.toHex())).toEqual([
       '#ff002b',
-      '#fe0117',
-      '#fd0202',
-      '#fe1701',
+      '#ff0015',
+      '#ff0000',
+      '#ff1500',
       '#ff2a00',
     ]);
     expect(gradient[2].toHSL().h).toBeCloseTo(0, 1);
