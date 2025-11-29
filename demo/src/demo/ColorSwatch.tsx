@@ -1,4 +1,5 @@
 import type { Color, ColorSwatch as ColorSwatchType } from '../../../dist';
+import { Card } from '../components/Card';
 import { ColorBox } from '../components/ColorBox';
 
 const BASIC_SWATCH_STOPS = [100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
@@ -25,30 +26,33 @@ export function ColorSwatch(props: Props) {
   const swatch = 'swatch' in props ? props.swatch : props.color.getColorSwatch();
 
   return (
-    <div className="w-full flex flex-row justify-center items-center gap-0">
-      {title && <span className="text-center pr-4">{title}</span>}
-      <div className="flex flex-row justify-center gap-0 border-1 border-neutral-500 rounded-md overflow-hidden">
-        {swatch.type === 'EXTENDED'
-          ? EXTENDED_SWATCH_STOPS.map((stopValue) => (
-              <ColorBox
-                key={stopValue}
-                color={swatch[stopValue]}
-                hideBorder
-                label={withLabels ? `${stopValue}` : undefined}
-                noBorderRadius
-                width="HALF"
-              />
-            ))
-          : BASIC_SWATCH_STOPS.map((stopValue) => (
-              <ColorBox
-                key={stopValue}
-                color={swatch[stopValue]}
-                hideBorder
-                label={withLabels ? `${stopValue}` : undefined}
-                noBorderRadius
-              />
-            ))}
-      </div>
+    <div className="flex flex-col gap-1">
+      {title && <span className="font-semibold text-left">{title}</span>}
+      <Card>
+        <div className="flex flex-row gap-0 justify-center overflow-hidden">
+          {swatch.type === 'EXTENDED'
+            ? EXTENDED_SWATCH_STOPS.map((stopValue) => (
+                <ColorBox
+                  key={stopValue}
+                  color={swatch[stopValue]}
+                  hideBorder
+                  label={withLabels ? `${stopValue}` : undefined}
+                  noBorderRadius
+                  width="STRETCH"
+                />
+              ))
+            : BASIC_SWATCH_STOPS.map((stopValue) => (
+                <ColorBox
+                  key={stopValue}
+                  color={swatch[stopValue]}
+                  hideBorder
+                  label={withLabels ? `${stopValue}` : undefined}
+                  noBorderRadius
+                  width="STRETCH"
+                />
+              ))}
+        </div>
+      </Card>
     </div>
   );
 }
