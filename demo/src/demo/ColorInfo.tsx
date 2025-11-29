@@ -21,15 +21,12 @@ export function ColorInfo({ color }: Props) {
       <ColorInfoCard color={color} extended />
       <ColorSwatch color={color} title="Basic swatch" withLabels />
       <ColorSwatch swatch={extendedSwatch} title="Extended swatch" withLabels />
-      <div className="text-left">
-        <div className="font-semibold text-left mb-1">Color temperature</div>
-        <Card backgroundColor={colorTemperatureBackground}>
-          <div>{color.getTemperatureAsString({ formatNumber: true })}</div>
-          <span className="text-xs text-gray-600">
-            *Note: color temperature is only well-defined for near-white illuminants
-          </span>
-        </Card>
-      </div>
+      <Card backgroundColor={colorTemperatureBackground} title="Color temperature">
+        <div className="text-left mb-1">{color.getTemperatureAsString({ formatNumber: true })}</div>
+        <div className="text-left text-xs text-gray-600">
+          *Note: color temperature is only well-defined for near-white illuminants
+        </div>
+      </Card>
     </div>
   );
 }

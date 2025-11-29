@@ -27,8 +27,7 @@ export function ColorSwatch(props: Props) {
 
   return (
     <div className="flex flex-col gap-1">
-      {title && <span className="font-semibold text-left">{title}</span>}
-      <Card>
+      <Card title={title}>
         <div className="flex flex-row gap-0 justify-center overflow-hidden">
           {swatch.type === 'EXTENDED'
             ? EXTENDED_SWATCH_STOPS.map((stopValue) => (

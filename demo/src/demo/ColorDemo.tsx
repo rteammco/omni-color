@@ -60,7 +60,7 @@ export function ColorDemo() {
         <ColorInfo color={color} />
       </SectionContainer>
       <SectionContainer
-        description="Check contrast ratios and readability scores."
+        description="Check contrast ratios and readability scores against any background color"
         title="Readability"
       >
         <ReadabilityDemo color={color} />
