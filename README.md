@@ -159,6 +159,7 @@ Each converter returns a new representation without mutating the original color.
 - Build multi-stop gradients across color spaces with optional easing. Options include:
   - `stops`: number of colors to return (anchors included, defaults to `5`).
   - `space`: interpolation space (`'RGB'`, `'HSL'`, `'HSV'`, `'LCH'`, `'OKLCH'`).
+  - `hueInterpolationMode`: Strategy for hue interpolation in polar spaces (`'Shortest'`, `'Longest'`, `'Increasing'`, `'Decreasing'`, `'Raw'`, `'Cartesian'`). Defaults to `'Shortest'`.
   - `interpolation`: `'LINEAR'` (segment-based) or `'BEZIER'` (uses anchors as control points).
   - `easing`: `'LINEAR'`, `'EASE_IN'`, `'EASE_OUT'`, `'EASE_IN_OUT'`, or a custom `(t) => number`.
   - `clamp`: keep intermediate stops inside the selected gamut (default `true`).

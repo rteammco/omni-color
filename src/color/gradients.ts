@@ -350,8 +350,11 @@ function adjustHueStops(
 ): InterpolatableColor[] {
   // Identify hue index based on space
   let hueIndex = -1;
-  if (space === 'HSL' || space === 'HSV') hueIndex = 0;
-  else if (space === 'LCH' || space === 'OKLCH') hueIndex = 2;
+  if (space === 'HSL' || space === 'HSV') {
+    hueIndex = 0;
+  } else if (space === 'LCH' || space === 'OKLCH') {
+    hueIndex = 2;
+  }
 
   if (hueIndex === -1 || mode === 'Raw' || mode === 'Cartesian') {
     return stops;
@@ -371,23 +374,26 @@ function adjustHueStops(
       case 'Shortest':
         // If diff > 180, subtract 360 to go the other way (shorter).
         // If diff < -180, add 360.
-        if (diff > 180) adjustedEnd -= 360;
-        else if (diff < -180) adjustedEnd += 360;
+        if (diff > 180) {
+          adjustedEnd -= 360;
+        } else if (diff < -180) {
+          adjustedEnd += 360;
+        }
         break;
       case 'Longest':
         // If |diff| < 180, go the other way to make it longer.
         if (Math.abs(diff) < 180 && Math.abs(diff) > 0) { // If 0, ambiguous, but 360 is same as 0.
-            if (diff >= 0) adjustedEnd -= 360;
-            else adjustedEnd += 360;
+            if (diff >= 0) {
+              adjustedEnd -= 360;
+            } else {
+              adjustedEnd += 360;
+            }
         }
         break;
       case 'Increasing':
         // Ensure end >= start.
         if (adjustedEnd < start) {
            adjustedEnd += 360 * Math.ceil((start - adjustedEnd) / 360);
-           // If they are equal after adjustment? fine.
-           // If adjustedEnd is still < start? (Should not be with ceil).
-           // Example: start 350, end 10. (350 - 10)/360 = 0.94 -> ceil 1. End += 360 -> 370.
         }
         break;
       case 'Decreasing':
@@ -429,8 +435,11 @@ export function createColorGradient(colors: Color[], options: ColorGradientOptio
   // New default for Polar is Shortest.
   let hueMode = options.hueInterpolationMode;
   if (!hueMode) {
-    if (space === 'RGB') hueMode = 'Cartesian';
-    else hueMode = 'Shortest';
+    if (space === 'RGB') {
+      hueMode = 'Cartesian';
+    } else {
+      hueMode = 'Shortest';
+    }
   }
 
   const isCartesian = hueMode === 'Cartesian';
