@@ -11,17 +11,23 @@ export function ReadabilityDemo({ color }: Props) {
   const backgroundColors = useMemo(
     () => [
       new Color('black'),
-      new Color('#333'),
+      // new Color('#333'),
       new Color('#666'),
-      new Color('#999'),
+      // new Color('#999'),
       new Color('#ccc'),
       new Color('white'),
       new Color('red'),
       new Color('green'),
       new Color('blue'),
+      new Color('yellow'),
+      new Color('magenta'),
+      new Color('cyan'),
     ],
     []
   );
+
+  const bestBackgroundColor = color.getBestBackgroundColor(backgroundColors);
+  const bestTextColor = color.getMostReadableTextColor(backgroundColors);
 
   return (
     <div className="flex flex-col gap-4">
@@ -49,6 +55,24 @@ export function ReadabilityDemo({ color }: Props) {
               width="STRETCH"
             />
           ))}
+        </div>
+      </Card>
+      <Card title="Most readable">
+        <div className="flex flex-row items-center gap-2">
+          <ColorBox
+            color={bestBackgroundColor}
+            label="on the best background"
+            overlayColor={color}
+            overlayText="Your color"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={color}
+            label="with your color as the background"
+            overlayColor={bestTextColor}
+            overlayText="Best text color"
+            width="STRETCH"
+          />
         </div>
       </Card>
     </div>

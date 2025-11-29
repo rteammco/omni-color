@@ -39,13 +39,6 @@ function InfoPill({
 }) {
   const { backgroundColor, filledTextColor, outlinedTextColor } = useInfoContainerColors(color);
   const textColor = variant === 'filled' ? filledTextColor : outlinedTextColor;
-  console.log({
-    textColor,
-    filledTextColor,
-    outlinedTextColor,
-    color: color.toHex(),
-    isDark: color.isDark(),
-  });
 
   return (
     <div
