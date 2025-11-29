@@ -95,7 +95,7 @@ export function getRelativeLuminance(rgb: ColorRGBA): number {
  */
 export type ColorDarknessMode = 'WCAG' | 'YIQ';
 
-export interface IsColorDarkWcagOptions {
+interface IsColorDarkWCAGOptions {
   /**
    * The algorithm to use for calculating darkness.
    * - 'WCAG': Uses WCAG 2.x Relative Luminance (linearized RGB). More accurate to human perception.
@@ -112,7 +112,7 @@ export interface IsColorDarkWcagOptions {
   yiqThreshold?: never;
 }
 
-export interface IsColorDarkYiqOptions {
+interface IsColorDarkYIQOptions {
   /**
    * The algorithm to use for calculating darkness.
    * - 'WCAG': Uses WCAG 2.x Relative Luminance (linearized RGB). More accurate to human perception.
@@ -129,7 +129,7 @@ export interface IsColorDarkYiqOptions {
   yiqThreshold?: number;
 }
 
-export type IsColorDarkOptions = IsColorDarkWcagOptions | IsColorDarkYiqOptions;
+export type IsColorDarkOptions = IsColorDarkWCAGOptions | IsColorDarkYIQOptions;
 
 function isColorDarkWCAG(color: Color, threshold: number): boolean {
   return getRelativeLuminance(color.toRGBA()) < threshold;

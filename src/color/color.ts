@@ -776,16 +776,16 @@ export class Color {
   /**
    * Determine if the color is visually dark using luminance.
    *
-    * @param options - Optional {@link IsColorDarkOptions} to control the algorithm and threshold.
-    *
+   * @param options - Optional {@link IsColorDarkOptions} to control the algorithm and threshold.
+   *
    * @example
    * ```ts
    * new Color('#000000').isDark(); // true
    * new Color('#ffffff').isDark(); // false
    * new Color('#7f7f7f').isDark(); // true (just below the threshold)
-    *
-    * // Use legacy YIQ formula:
-    * new Color('#ff0000').isDark({ colorDarknessMode: 'YIQ' });
+   *
+   * // Use legacy YIQ formula:
+   * new Color('#ff0000').isDark({ colorDarknessMode: 'YIQ' });
    * ```
    */
   isDark(options?: IsColorDarkOptions): boolean {

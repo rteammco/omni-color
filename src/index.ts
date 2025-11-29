@@ -1,10 +1,6 @@
 import { Color } from './color/color';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
-import {
-  AverageColorsOptions,
-  BlendColorsOptions,
-  MixColorsOptions,
-} from './color/combinations';
+import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
 import { toLAB } from './color/conversions';
 import type { CIE94Options, DeltaEMethod, DeltaEOptions } from './color/deltaE';
 import type { ColorFormat } from './color/formats';
