@@ -48,7 +48,7 @@ export function ColorDemo() {
   return (
     <div className="flex flex-col gap-8">
       <SectionContainer
-        description="Enter any format, pick a preset, or let omni-color surprise you with a palette-friendly option."
+        description="Enter any format, pick a preset, or let omni-color surprise you with a palette-friendly option"
         title="Pick a starting color"
       >
         <ColorInput color={color} onColorChanged={handleColorChanged} />

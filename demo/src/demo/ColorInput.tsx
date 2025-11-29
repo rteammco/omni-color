@@ -76,7 +76,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
     <div className="flex flex-col gap-4">
       <ColorInfoCard color={color} />
       <div className="text-left">
-        <div className="font-semibold mb-1">Enter a color:</div>
+        <div className="font-semibold mb-1">Enter a color</div>
         <div className="flex flex-row items-center gap-4">
           <input
             className="px-6 py-3 w-2xs flex-1 border-1 border-gray-200 rounded-xl shadow-md"
@@ -97,52 +97,39 @@ export function ColorInput({ color, onColorChanged }: Props) {
         </div>
       </div>
       <div>
-        <div className="font-semibold mb-1 text-left">Or choose a preset:</div>
-        <div className="mt-1 flex flex-row gap-2 flex-wrap">
+        <div className="font-semibold mb-2 text-left">Or choose a preset</div>
+        <div className="flex flex-row gap-2 flex-wrap">
           <button onClick={() => handlePresetColorSelected('red')}>red</button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('darkgreen')}>darkgreen</button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('light blue')}>light blue</button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('#6c18b9')}>#6c18b9</button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('#e6a13799')}>#e6a13799</button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('rgb(232, 243, 17)')}>
             rgb(232, 243, 17)
           </button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('hsla(335, 49%, 37%, 0.75)')}>
             hsla(335, 49%, 37%, 0.75)
           </button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('cmyk(0%, 0%, 0%, 100%)')}>
             cmyk(0%, 0%, 0%, 100%)
           </button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('oklch(0.35 0 89.5)')}>
             oklch(0.35 0 89.5)
           </button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('candlelight')}>candlelight</button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('fluorescent lamp')}>
             fluorescent lamp
           </button>
-          &middot;
           <button onClick={() => handlePresetColorSelected('blue sky')}>blue sky</button>
         </div>
       </div>
       <div>
-        <div className="font-semibold mb-1 text-left">Or randomize:</div>
+        <div className="font-semibold mb-2 text-left">Or randomize</div>
         <div className="flex flex-row gap-2 flex-wrap">
           <button onClick={() => handleRandomColorSelected({})}>Random</button>
-          &middot;
           <button onClick={() => handleRandomColorSelected({ anchorColor: color.getName().name })}>
             Random (same hue)
           </button>
-          &middot;
           <button onClick={() => handleRandomColorSelected({ paletteSuitable: true })}>
             Random (suitable for palette)
           </button>
