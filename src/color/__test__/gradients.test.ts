@@ -56,10 +56,7 @@ describe('createColorGradient', () => {
 
   it('wraps hues smoothly across the 0°/360° boundary in polar spaces', () => {
     const gradient = createColorGradient(
-      [
-        new Color({ h: 350, s: 100, l: 50 }),
-        new Color({ h: 10, s: 100, l: 50 }),
-      ],
+      [new Color({ h: 350, s: 100, l: 50 }), new Color({ h: 10, s: 100, l: 50 })],
       { stops: 5, space: 'HSL' }
     );
 
@@ -74,10 +71,13 @@ describe('createColorGradient', () => {
   });
 
   it('interpolates alpha alongside color channels', () => {
-    const gradient = createColorGradient([new Color('rgba(255,0,0,0.2)'), new Color('rgba(0,0,255,0.8)')], {
-      stops: 3,
-      space: 'RGB',
-    });
+    const gradient = createColorGradient(
+      [new Color('rgba(255,0,0,0.2)'), new Color('rgba(0,0,255,0.8)')],
+      {
+        stops: 3,
+        space: 'RGB',
+      }
+    );
 
     expect(gradient[0].toRGBA()).toEqual({ r: 255, g: 0, b: 0, a: 0.2 });
     expect(gradient[1].toRGBA()).toEqual({ r: 128, g: 0, b: 128, a: 0.5 });
@@ -379,15 +379,15 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   });
 
   it('works with clamping disabled', () => {
-     // Red -> Blue via Longest (0 -> 120 -> 240).
-     // Mid is 120.
-     const gradient = createColorGradient([red, blue], {
-       stops: 3,
-       space: 'HSL',
-       hueInterpolationMode: 'Longest',
-       clamp: false,
-     });
-     expect(gradient[1].toHSL().h).toBeCloseTo(120, 0);
+    // Red -> Blue via Longest (0 -> 120 -> 240).
+    // Mid is 120.
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'Longest',
+      clamp: false,
+    });
+    expect(gradient[1].toHSL().h).toBeCloseTo(120, 0);
   });
 
   it('works with Bezier interpolation and Shortest mode', () => {

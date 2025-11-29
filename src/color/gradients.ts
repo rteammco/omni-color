@@ -181,7 +181,11 @@ function getOKLCHVector(color: Color, alpha: number, isCartesian: boolean): Inte
  * Convert a color into an interpolatable vector for the target color space
  * while preserving alpha separately.
  */
-function colorToVector(color: Color, space: ColorGradientSpace, isCartesian: boolean): InterpolatableColor {
+function colorToVector(
+  color: Color,
+  space: ColorGradientSpace,
+  isCartesian: boolean
+): InterpolatableColor {
   const rgba = color.toRGBA();
   const alpha = rgba.a ?? 1;
   switch (space) {
@@ -312,7 +316,12 @@ function interpolateLinearStops(
     const end = stops[segmentIndex + 1];
     const values = interpolateLinearVector(start.values, end.values, easedLocalProgress);
     const alpha = interpolateLinearValue(start.alpha, end.alpha, easedLocalProgress);
-    const { format, alpha: clampedAlpha } = vectorToFormat({ values, alpha }, space, clamp, isCartesian);
+    const { format, alpha: clampedAlpha } = vectorToFormat(
+      { values, alpha },
+      space,
+      clamp,
+      isCartesian
+    );
     results.push({ ...toRGB(format), a: +clampedAlpha.toFixed(3) });
   }
 
@@ -336,7 +345,12 @@ function interpolateBezierStops(
     const t = clampValue(easing(clampValue(rawT, 0, 1)), 0, 1);
     const values = interpolateBezier(controlPoints, t);
     const alpha = interpolateBezierScalar(alphaPoints, t);
-    const { format, alpha: clampedAlpha } = vectorToFormat({ values, alpha }, space, clamp, isCartesian);
+    const { format, alpha: clampedAlpha } = vectorToFormat(
+      { values, alpha },
+      space,
+      clamp,
+      isCartesian
+    );
     results.push({ ...toRGB(format), a: +clampedAlpha.toFixed(3) });
   }
 
@@ -365,7 +379,7 @@ function adjustHueStops(
 
   for (let i = 0; i < result.length - 1; i += 1) {
     const start = result[i].values[hueIndex];
-    const end = result[i+1].values[hueIndex];
+    const end = result[i + 1].values[hueIndex];
 
     let adjustedEnd = end;
     const diff = end - start;
@@ -382,29 +396,30 @@ function adjustHueStops(
         break;
       case 'Longest':
         // If |diff| < 180, go the other way to make it longer.
-        if (Math.abs(diff) < 180 && Math.abs(diff) > 0) { // If 0, ambiguous, but 360 is same as 0.
-            if (diff >= 0) {
-              adjustedEnd -= 360;
-            } else {
-              adjustedEnd += 360;
-            }
+        if (Math.abs(diff) < 180 && Math.abs(diff) > 0) {
+          // If 0, ambiguous, but 360 is same as 0.
+          if (diff >= 0) {
+            adjustedEnd -= 360;
+          } else {
+            adjustedEnd += 360;
+          }
         }
         break;
       case 'Increasing':
         // Ensure end >= start.
         if (adjustedEnd < start) {
-           adjustedEnd += 360 * Math.ceil((start - adjustedEnd) / 360);
+          adjustedEnd += 360 * Math.ceil((start - adjustedEnd) / 360);
         }
         break;
       case 'Decreasing':
         // Ensure end <= start
         if (adjustedEnd > start) {
-           adjustedEnd -= 360 * Math.ceil((adjustedEnd - start) / 360);
+          adjustedEnd -= 360 * Math.ceil((adjustedEnd - start) / 360);
         }
         break;
     }
 
-    result[i+1].values[hueIndex] = adjustedEnd;
+    result[i + 1].values[hueIndex] = adjustedEnd;
   }
 
   return result;
