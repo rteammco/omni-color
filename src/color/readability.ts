@@ -1,6 +1,6 @@
 import type { Color } from './color';
 import type { ColorRGBA } from './formats';
-import { srgbChannelToLinear } from './utils';
+import { getRelativeLuminance } from './utils';
 
 // Does alpha blending between the two RGBA colors. Calculates what the a
 // semi-transparent foreground color would look like on the background color.
@@ -13,13 +13,6 @@ function getCompositeRGBA(fg: ColorRGBA, bg: ColorRGBA): ColorRGBA {
   const g = (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / compositeAlpha;
   const b = (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / compositeAlpha;
   return { r, g, b, a: compositeAlpha };
-}
-
-function getRelativeLuminance(rgb: ColorRGBA): number {
-  const r = srgbChannelToLinear(rgb.r, 'WCAG');
-  const g = srgbChannelToLinear(rgb.g, 'WCAG');
-  const b = srgbChannelToLinear(rgb.b, 'WCAG');
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b; // standard luminance formula
 }
 
 export function getWCAGContrastRatio(color1: Color, color2: Color): number {
