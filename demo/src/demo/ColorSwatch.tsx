@@ -1,6 +1,7 @@
 import type { Color, ColorSwatch as ColorSwatchType } from '../../../dist';
 import { Card } from '../components/Card';
 import { ColorBox } from '../components/ColorBox';
+import { IconType } from '../components/Icon.types';
 
 const BASIC_SWATCH_STOPS = [100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
 const EXTENDED_SWATCH_STOPS = [
@@ -37,6 +38,7 @@ export function ColorSwatch(props: Props) {
                   hideBorder
                   label={withLabels ? `${stopValue}` : undefined}
                   noBorderRadius
+                  overlayIcon={stopValue === swatch.mainStop ? IconType.CHECK : undefined}
                   width="STRETCH"
                 />
               ))
@@ -47,6 +49,7 @@ export function ColorSwatch(props: Props) {
                   hideBorder
                   label={withLabels ? `${stopValue}` : undefined}
                   noBorderRadius
+                  overlayIcon={stopValue === swatch.mainStop ? IconType.CHECK : undefined}
                   width="STRETCH"
                 />
               ))}

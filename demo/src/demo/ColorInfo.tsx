@@ -8,6 +8,7 @@ interface Props {
 }
 
 export function ColorInfo({ color }: Props) {
+  const basicSwatch = color.getColorSwatch({ extended: false });
   const extendedSwatch = color.getColorSwatch({ extended: true });
 
   const colorTemperature = color.getTemperature().temperature;
@@ -19,7 +20,7 @@ export function ColorInfo({ color }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <ColorInfoCard color={color} extended />
-      <ColorSwatch color={color} title="Basic swatch" withLabels />
+      <ColorSwatch swatch={basicSwatch} title="Basic swatch" withLabels />
       <ColorSwatch swatch={extendedSwatch} title="Extended swatch" withLabels />
       <Card backgroundColor={colorTemperatureBackground} title="Color temperature">
         <div className="text-left mb-1">{color.getTemperatureAsString({ formatNumber: true })}</div>
