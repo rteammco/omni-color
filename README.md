@@ -283,8 +283,9 @@ reference.differenceFrom(new Color('#aa0000'), {
 #### `equals(color)`
 - Compares colors with rounding tolerance.
 
-#### `isDark()` / `isOffWhite()`
+#### `isDark(options?)` / `isOffWhite()`
 - Luminance-based helpers for contrast decisions and off-white detection.
+- `isDark` accepts optional `{ colorDarknessMode: 'WCAG' | 'YIQ' }` (and thresholds) to switch between the modern WCAG relative luminance check (default) and the legacy YIQ brightness formula.
 
 #### `clone()`
 - Returns an identical `Color` instance.

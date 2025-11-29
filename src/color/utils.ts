@@ -83,7 +83,59 @@ export function linearChannelToSrgb(linearChannelVal: number, pivot: SrgbGammaPi
   return clampValue(result * RGB_CHANNEL_MAX_VALUE, 0, RGB_CHANNEL_MAX_VALUE);
 }
 
-export function isColorDark(color: Color): boolean {
+export function getRelativeLuminance(rgb: ColorRGBA): number {
+  const r = srgbChannelToLinear(rgb.r, 'WCAG');
+  const g = srgbChannelToLinear(rgb.g, 'WCAG');
+  const b = srgbChannelToLinear(rgb.b, 'WCAG');
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b; // standard luminance formula
+}
+
+/**
+ * The algorithm mode to use for calculating if a color is dark.
+ */
+export type ColorDarknessMode = 'WCAG' | 'YIQ';
+
+interface IsColorDarkWCAGOptions {
+  /**
+   * The algorithm to use for calculating darkness.
+   * - 'WCAG': Uses WCAG 2.x Relative Luminance (linearized RGB). More accurate to human perception.
+   * - 'YIQ': Uses the legacy Rec. 601 YIQ formula. Matches TinyColor behavior.
+   * @default 'WCAG'
+   */
+  colorDarknessMode?: 'WCAG';
+  /**
+   * The threshold for considering a color "dark" when using the WCAG algorithm.
+   * Range is [0, 1].
+   * @default 0.179
+   */
+  wcagThreshold?: number;
+  yiqThreshold?: never;
+}
+
+interface IsColorDarkYIQOptions {
+  /**
+   * The algorithm to use for calculating darkness.
+   * - 'WCAG': Uses WCAG 2.x Relative Luminance (linearized RGB). More accurate to human perception.
+   * - 'YIQ': Uses the legacy Rec. 601 YIQ formula. Matches TinyColor behavior.
+   * @default 'WCAG'
+   */
+  colorDarknessMode: 'YIQ';
+  wcagThreshold?: never;
+  /**
+   * The threshold for considering a color "dark" when using the YIQ algorithm.
+   * Range is [0, 255].
+   * @default 128
+   */
+  yiqThreshold?: number;
+}
+
+export type IsColorDarkOptions = IsColorDarkWCAGOptions | IsColorDarkYIQOptions;
+
+function isColorDarkWCAG(color: Color, threshold: number): boolean {
+  return getRelativeLuminance(color.toRGBA()) < threshold;
+}
+
+function isColorDarkYIQ(color: Color, threshold: number): boolean {
   // Weighted RGB luminance calculation:
   const { r, g, b } = color.toRGB();
   const brightness = (299 * r + 587 * g + 114 * b) / 1000;
@@ -95,7 +147,22 @@ export function isColorDark(color: Color): boolean {
       return false;
     }
   }
-  return brightness < 128;
+  return brightness < threshold;
+}
+
+/**
+ * Checks if a color is dark based on the specified algorithm and threshold.
+ *
+ * @param color - The color to check.
+ * @param options - Optional {@link IsColorDarkOptions} to control the algorithm and threshold.
+ * @returns `true` if the color is considered dark, `false` otherwise.
+ */
+export function isColorDark(color: Color, options: IsColorDarkOptions = {}): boolean {
+  if (options.colorDarknessMode === 'YIQ') {
+    return isColorDarkYIQ(color, options.yiqThreshold ?? 128);
+  }
+
+  return isColorDarkWCAG(color, options.wcagThreshold ?? 0.179);
 }
 
 export function isColorOffWhite(color: Color): boolean {

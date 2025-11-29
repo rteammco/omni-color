@@ -38,141 +38,248 @@ describe('areColorsEqual', () => {
 });
 
 describe('isColorDark', () => {
-  it('classifies colors correctly', () => {
+  it('matches legacy behavior when using YIQ mode (full regression test)', () => {
+    const opts = { colorDarknessMode: 'YIQ' } as const;
     // Light color cases:
-    expect(isColorDark(new Color('#00c0c0'))).toBe(false);
-    expect(isColorDark(new Color('#00c0ff'))).toBe(false);
-    expect(isColorDark(new Color('#00ff00'))).toBe(false);
-    expect(isColorDark(new Color('#00ff40'))).toBe(false);
-    expect(isColorDark(new Color('#00ff80'))).toBe(false);
-    expect(isColorDark(new Color('#00ffc0'))).toBe(false);
-    expect(isColorDark(new Color('#00ffff'))).toBe(false);
-    expect(isColorDark(new Color('#40c000'))).toBe(false);
-    expect(isColorDark(new Color('#40c040'))).toBe(false);
-    expect(isColorDark(new Color('#40c080'))).toBe(false);
-    expect(isColorDark(new Color('#40c0c0'))).toBe(false);
-    expect(isColorDark(new Color('#40c0ff'))).toBe(false);
-    expect(isColorDark(new Color('#40ff00'))).toBe(false);
-    expect(isColorDark(new Color('#40ff40'))).toBe(false);
-    expect(isColorDark(new Color('#40ff80'))).toBe(false);
-    expect(isColorDark(new Color('#40ffc0'))).toBe(false);
-    expect(isColorDark(new Color('#40ffff'))).toBe(false);
-    expect(isColorDark(new Color('#808080'))).toBe(false);
-    expect(isColorDark(new Color('#8080c0'))).toBe(false);
-    expect(isColorDark(new Color('#8080ff'))).toBe(false);
-    expect(isColorDark(new Color('#80c000'))).toBe(false);
-    expect(isColorDark(new Color('#80c040'))).toBe(false);
-    expect(isColorDark(new Color('#80c080'))).toBe(false);
-    expect(isColorDark(new Color('#80c0c0'))).toBe(false);
-    expect(isColorDark(new Color('#80c0ff'))).toBe(false);
-    expect(isColorDark(new Color('#80ff00'))).toBe(false);
-    expect(isColorDark(new Color('#80ff40'))).toBe(false);
-    expect(isColorDark(new Color('#80ff80'))).toBe(false);
-    expect(isColorDark(new Color('#80ffc0'))).toBe(false);
-    expect(isColorDark(new Color('#80ffff'))).toBe(false);
-    expect(isColorDark(new Color('#c08000'))).toBe(false);
-    expect(isColorDark(new Color('#c08040'))).toBe(false);
-    expect(isColorDark(new Color('#c08080'))).toBe(false);
-    expect(isColorDark(new Color('#c080c0'))).toBe(false);
-    expect(isColorDark(new Color('#c080ff'))).toBe(false);
-    expect(isColorDark(new Color('#c0c000'))).toBe(false);
-    expect(isColorDark(new Color('#c0c040'))).toBe(false);
-    expect(isColorDark(new Color('#c0c080'))).toBe(false);
-    expect(isColorDark(new Color('#c0c0c0'))).toBe(false);
-    expect(isColorDark(new Color('#c0c0ff'))).toBe(false);
-    expect(isColorDark(new Color('#c0ff00'))).toBe(false);
-    expect(isColorDark(new Color('#c0ff40'))).toBe(false);
-    expect(isColorDark(new Color('#c0ff80'))).toBe(false);
-    expect(isColorDark(new Color('#c0ffc0'))).toBe(false);
-    expect(isColorDark(new Color('#c0ffff'))).toBe(false);
-    expect(isColorDark(new Color('#ff4040'))).toBe(false);
-    expect(isColorDark(new Color('#ff4080'))).toBe(false);
-    expect(isColorDark(new Color('#ff40c0'))).toBe(false);
-    expect(isColorDark(new Color('#ff40ff'))).toBe(false);
-    expect(isColorDark(new Color('#ff8000'))).toBe(false);
-    expect(isColorDark(new Color('#ff8040'))).toBe(false);
-    expect(isColorDark(new Color('#ff8080'))).toBe(false);
-    expect(isColorDark(new Color('#ff80c0'))).toBe(false);
-    expect(isColorDark(new Color('#ff80ff'))).toBe(false);
-    expect(isColorDark(new Color('#ffc000'))).toBe(false);
-    expect(isColorDark(new Color('#ffc040'))).toBe(false);
-    expect(isColorDark(new Color('#ffc080'))).toBe(false);
-    expect(isColorDark(new Color('#ffc0c0'))).toBe(false);
-    expect(isColorDark(new Color('#ffc0ff'))).toBe(false);
-    expect(isColorDark(new Color('#ffff00'))).toBe(false);
-    expect(isColorDark(new Color('#ffff40'))).toBe(false);
-    expect(isColorDark(new Color('#ffff80'))).toBe(false);
-    expect(isColorDark(new Color('#ffffc0'))).toBe(false);
-    expect(isColorDark(new Color('#ffffff'))).toBe(false);
+    expect(isColorDark(new Color('#00c0c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#00c0ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#00ff00'), opts)).toBe(false);
+    expect(isColorDark(new Color('#00ff40'), opts)).toBe(false);
+    expect(isColorDark(new Color('#00ff80'), opts)).toBe(false);
+    expect(isColorDark(new Color('#00ffc0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#00ffff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40c000'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40c040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40c080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40c0c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40c0ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40ff00'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40ff40'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40ff80'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40ffc0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#40ffff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#808080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#8080c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#8080ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80c000'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80c040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80c080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80c0c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80c0ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80ff00'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80ff40'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80ff80'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80ffc0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#80ffff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c08000'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c08040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c08080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c080c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c080ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0c000'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0c040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0c080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0c0c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0c0ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0ff00'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0ff40'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0ff80'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0ffc0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#c0ffff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff4040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff4080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff40c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff40ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff8000'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff8040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff8080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff80c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff80ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffc000'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffc040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffc080'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffc0c0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffc0ff'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffff00'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffff40'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffff80'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffffc0'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ffffff'), opts)).toBe(false);
 
     // Dark color cases:
-    expect(isColorDark(new Color('#000000'))).toBe(true);
-    expect(isColorDark(new Color('#000001'))).toBe(true);
-    expect(isColorDark(new Color('#000040'))).toBe(true);
-    expect(isColorDark(new Color('#000080'))).toBe(true);
-    expect(isColorDark(new Color('#0000c0'))).toBe(true);
+    expect(isColorDark(new Color('#000000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#000001'), opts)).toBe(true);
+    expect(isColorDark(new Color('#000040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#000080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#0000c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#0000ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#000100'), opts)).toBe(true);
+    expect(isColorDark(new Color('#000101'), opts)).toBe(true);
+    expect(isColorDark(new Color('#004000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#004040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#004080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#0040c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#0040ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#008000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#008040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#008080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#0080c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#0080ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#00c000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#00c040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#00c080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#010000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#010100'), opts)).toBe(true);
+    expect(isColorDark(new Color('#010101'), opts)).toBe(true);
+    expect(isColorDark(new Color('#400000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#400040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#400080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#4000c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#4000ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#404000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#404040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#404080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#4040c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#4040ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#408000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#408040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#408080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#4080c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#4080ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#800000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#800040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#800080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#8000c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#8000ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#804000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#804040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#804080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#8040c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#8040ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#808000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#808040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c00000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c00040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c00080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c000c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c000ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c04000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c04040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c04080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c040c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#c040ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#ff0000'), opts)).toBe(true);
+    expect(isColorDark(new Color('#ff0040'), opts)).toBe(true);
+    expect(isColorDark(new Color('#ff0080'), opts)).toBe(true);
+    expect(isColorDark(new Color('#ff00c0'), opts)).toBe(true);
+    expect(isColorDark(new Color('#ff00ff'), opts)).toBe(true);
+    expect(isColorDark(new Color('#ff4000'), opts)).toBe(true);
+  });
+
+  it('uses WCAG relative luminance by default', () => {
+    // Pure Red #FF0000
+    // Relative Luminance ~0.2126 > 0.179 => Light (isDark = false)
+    expect(isColorDark(new Color('#ff0000'))).toBe(false);
+
+    // Pure Green #00FF00
+    // Relative Luminance ~0.7152 > 0.179 => Light (isDark = false)
+    expect(isColorDark(new Color('#00ff00'))).toBe(false);
+
+    // Pure Blue #0000FF
+    // Relative Luminance ~0.0722 < 0.179 => Dark (isDark = true)
     expect(isColorDark(new Color('#0000ff'))).toBe(true);
-    expect(isColorDark(new Color('#000100'))).toBe(true);
-    expect(isColorDark(new Color('#000101'))).toBe(true);
-    expect(isColorDark(new Color('#004000'))).toBe(true);
-    expect(isColorDark(new Color('#004040'))).toBe(true);
-    expect(isColorDark(new Color('#004080'))).toBe(true);
-    expect(isColorDark(new Color('#0040c0'))).toBe(true);
-    expect(isColorDark(new Color('#0040ff'))).toBe(true);
-    expect(isColorDark(new Color('#008000'))).toBe(true);
-    expect(isColorDark(new Color('#008040'))).toBe(true);
+
+    // Black
+    expect(isColorDark(new Color('#000000'))).toBe(true);
+
+    // White
+    expect(isColorDark(new Color('#ffffff'))).toBe(false);
+
+    // --- Extended WCAG Test Suite ---
+
+    // Primary & Secondary Colors
+    expect(isColorDark(new Color('#FFFF00'))).toBe(false); // Yellow (0.9278) -> Light
+    expect(isColorDark(new Color('#00FFFF'))).toBe(false); // Cyan (0.7874) -> Light
+    expect(isColorDark(new Color('#FF00FF'))).toBe(false); // Magenta (0.2848) -> Light
+
+    // Grayscale
+    expect(isColorDark(new Color('#101010'))).toBe(true);
+    expect(isColorDark(new Color('#303030'))).toBe(true);
+    expect(isColorDark(new Color('#505050'))).toBe(true);
+    // #767676 is approx 0.179 relative luminance boundary
+    // #757575 -> 0.175 (Dark)
+    // #777777 -> 0.181 (Light)
+    expect(isColorDark(new Color('#757575'))).toBe(true);
+    expect(isColorDark(new Color('#777777'))).toBe(false);
+    expect(isColorDark(new Color('#808080'))).toBe(false);
+    expect(isColorDark(new Color('#A0A0A0'))).toBe(false);
+    expect(isColorDark(new Color('#C0C0C0'))).toBe(false);
+    expect(isColorDark(new Color('#E0E0E0'))).toBe(false);
+
+    // Common UI Colors
+    expect(isColorDark(new Color('#FFA500'))).toBe(false); // Orange (0.48) -> Light
+    expect(isColorDark(new Color('#800080'))).toBe(true); // Purple (0.06) -> Dark
+    expect(isColorDark(new Color('#008080'))).toBe(true); // Teal (0.17... wait, let's verify)
+    // Teal #008080: R=0, G=128(0.50), B=128(0.50).
+    // sRGB -> Linear: 0 -> 0; 0.5019 -> ~0.2158.
+    // L = 0.7152*0.2158 + 0.0722*0.2158 = 0.169.
+    // 0.169 < 0.179 -> Dark.
     expect(isColorDark(new Color('#008080'))).toBe(true);
-    expect(isColorDark(new Color('#0080c0'))).toBe(true);
-    expect(isColorDark(new Color('#0080ff'))).toBe(true);
-    expect(isColorDark(new Color('#00c000'))).toBe(true);
-    expect(isColorDark(new Color('#00c040'))).toBe(true);
-    expect(isColorDark(new Color('#00c080'))).toBe(true);
-    expect(isColorDark(new Color('#010000'))).toBe(true);
-    expect(isColorDark(new Color('#010100'))).toBe(true);
-    expect(isColorDark(new Color('#010101'))).toBe(true);
-    expect(isColorDark(new Color('#400000'))).toBe(true);
-    expect(isColorDark(new Color('#400040'))).toBe(true);
-    expect(isColorDark(new Color('#400080'))).toBe(true);
-    expect(isColorDark(new Color('#4000c0'))).toBe(true);
-    expect(isColorDark(new Color('#4000ff'))).toBe(true);
-    expect(isColorDark(new Color('#404000'))).toBe(true);
-    expect(isColorDark(new Color('#404040'))).toBe(true);
-    expect(isColorDark(new Color('#404080'))).toBe(true);
-    expect(isColorDark(new Color('#4040c0'))).toBe(true);
-    expect(isColorDark(new Color('#4040ff'))).toBe(true);
-    expect(isColorDark(new Color('#408000'))).toBe(true);
-    expect(isColorDark(new Color('#408040'))).toBe(true);
-    expect(isColorDark(new Color('#408080'))).toBe(true);
-    expect(isColorDark(new Color('#4080c0'))).toBe(true);
-    expect(isColorDark(new Color('#4080ff'))).toBe(true);
+
+    // Maroon #800000: R=128, G=0, B=0.
+    // R_lin = ~0.2158. L = 0.2126*0.2158 = 0.045 -> Dark.
     expect(isColorDark(new Color('#800000'))).toBe(true);
-    expect(isColorDark(new Color('#800040'))).toBe(true);
-    expect(isColorDark(new Color('#800080'))).toBe(true);
-    expect(isColorDark(new Color('#8000c0'))).toBe(true);
-    expect(isColorDark(new Color('#8000ff'))).toBe(true);
-    expect(isColorDark(new Color('#804000'))).toBe(true);
-    expect(isColorDark(new Color('#804040'))).toBe(true);
-    expect(isColorDark(new Color('#804080'))).toBe(true);
-    expect(isColorDark(new Color('#8040c0'))).toBe(true);
-    expect(isColorDark(new Color('#8040ff'))).toBe(true);
-    expect(isColorDark(new Color('#808000'))).toBe(true);
-    expect(isColorDark(new Color('#808040'))).toBe(true);
-    expect(isColorDark(new Color('#c00000'))).toBe(true);
-    expect(isColorDark(new Color('#c00040'))).toBe(true);
-    expect(isColorDark(new Color('#c00080'))).toBe(true);
-    expect(isColorDark(new Color('#c000c0'))).toBe(true);
-    expect(isColorDark(new Color('#c000ff'))).toBe(true);
-    expect(isColorDark(new Color('#c04000'))).toBe(true);
-    expect(isColorDark(new Color('#c04040'))).toBe(true);
-    expect(isColorDark(new Color('#c04080'))).toBe(true);
-    expect(isColorDark(new Color('#c040c0'))).toBe(true);
-    expect(isColorDark(new Color('#c040ff'))).toBe(true);
-    expect(isColorDark(new Color('#ff0000'))).toBe(true);
-    expect(isColorDark(new Color('#ff0040'))).toBe(true);
-    expect(isColorDark(new Color('#ff0080'))).toBe(true);
-    expect(isColorDark(new Color('#ff00c0'))).toBe(true);
-    expect(isColorDark(new Color('#ff00ff'))).toBe(true);
-    expect(isColorDark(new Color('#ff4000'))).toBe(true);
+
+    // Navy #000080: B=128. B_lin=0.2158. L=0.0722*0.2158=0.015 -> Dark.
+    expect(isColorDark(new Color('#000080'))).toBe(true);
+
+    // Olive #808000: R=128, G=128. L = 0.2126*0.215 + 0.7152*0.215 = 0.215*0.927 = 0.199.
+    // 0.199 > 0.179 -> Light.
+    expect(isColorDark(new Color('#808000'))).toBe(false);
+
+    // Various Random Colors
+    expect(isColorDark(new Color('#123456'))).toBe(true); // Dark Blue
+    expect(isColorDark(new Color('#654321'))).toBe(true); // Dark Brown
+    expect(isColorDark(new Color('#abcdef'))).toBe(false); // Light Blue
+    expect(isColorDark(new Color('#fedcba'))).toBe(false); // Light Peach
+    expect(isColorDark(new Color('#AA0000'))).toBe(true); // Dark Red
+    expect(isColorDark(new Color('#00AA00'))).toBe(false); // Med Green (L ~ 0.28) -> Light
+  });
+
+  it('allows customizing the WCAG threshold', () => {
+    const red = new Color('#ff0000'); // Luminance ~0.2126
+
+    // Default threshold 0.179 -> Not Dark
+    expect(isColorDark(red)).toBe(false);
+
+    // Higher threshold 0.3 -> Dark (0.2126 < 0.3)
+    expect(isColorDark(red, { wcagThreshold: 0.3 })).toBe(true);
+
+    // Lower threshold 0.1 -> Not Dark (0.2126 > 0.1)
+    expect(isColorDark(red, { wcagThreshold: 0.1 })).toBe(false);
+  });
+
+  it('allows customizing the YIQ threshold', () => {
+    // Gray 120 is brightness 120.
+    const gray120 = new Color('rgb(120, 120, 120)');
+
+    // Default 128 -> Dark (120 < 128)
+    expect(isColorDark(gray120, { colorDarknessMode: 'YIQ' })).toBe(true);
+
+    // Threshold 100 -> Not Dark (120 > 100)
+    expect(isColorDark(gray120, { colorDarknessMode: 'YIQ', yiqThreshold: 100 })).toBe(false);
+  });
+
+  it('handles YIQ edge cases (red-dominant)', () => {
+    // Legacy edge case: red-dominant hue adjustment
+    // Some colors between 120-128 brightness that are red-dominant are forced to be "light" (false)
+    // R=255, G=65, B=65 => Brightness 121.81. Red dominant. Should be Light (false).
+    const trickyRed = new Color('rgb(255, 65, 65)');
+    expect(isColorDark(trickyRed, { colorDarknessMode: 'YIQ' })).toBe(false);
+
+    // R=120, G=120, B=120 => Brightness 120. < 128 => Dark. Not red dominant.
+    const gray120 = new Color('rgb(120, 120, 120)');
+    expect(isColorDark(gray120, { colorDarknessMode: 'YIQ' })).toBe(true);
   });
 });
 
