@@ -246,11 +246,11 @@ describe('Random color pathways', () => {
 describe('Color.toXString methods', () => {
   it('returns string representations of the color', () => {
     const color = new Color({ ...BASE_RGB, a: 0.5 });
-    expect(color.toRGBString()).toBe('rgb(255, 0, 0)');
-    expect(color.toRGBAString()).toBe('rgba(255, 0, 0, 0.5)');
-    expect(color.toHSLString()).toBe('hsl(0, 100%, 50%)');
-    expect(color.toHSLAString()).toBe('hsla(0, 100%, 50%, 0.5)');
-    expect(color.toCMYKString()).toBe('cmyk(0%, 100%, 100%, 0%)');
+    expect(color.toRGBString()).toBe('rgb(255 0 0)');
+    expect(color.toRGBAString()).toBe('rgb(255 0 0 / 0.5)');
+    expect(color.toHSLString()).toBe('hsl(0 100% 50%)');
+    expect(color.toHSLAString()).toBe('hsl(0 100% 50% / 0.5)');
+    expect(color.toCMYKString()).toBe('device-cmyk(0% 100% 100% 0%)');
     expect(color.toLABString()).toBe('lab(53.233% 80.109 67.22)');
     expect(color.toLCHString()).toBe('lch(53.233% 104.576 40)');
     expect(color.toOKLCHString()).toBe('oklch(0.627955 0.257683 29.234)');

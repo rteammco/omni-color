@@ -340,7 +340,7 @@ export class Color {
   }
 
   /**
-   * Get the color as an `lch(l% c h)` string.
+   * Get the color as a CSS `lch(l% c h)` string.
    */
   toLCHString(): string {
     return lchToString(this.toLCH());
@@ -354,7 +354,7 @@ export class Color {
   }
 
   /**
-   * Get the color as an `oklch(l c h)` string.
+   * Get the color as a CSS `oklch(l c h)` string.
    */
   toOKLCHString(): string {
     return oklchToString(this.toOKLCH());
