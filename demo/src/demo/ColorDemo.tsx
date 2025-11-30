@@ -9,6 +9,7 @@ import { ColorCombinationDemo } from './combinations/ColorCombinationDemo';
 import { ReadabilityDemo } from './ReadabilityDemo';
 import { SectionContainer } from '../components/SectionContainer';
 import { DemoSectionIDs } from '../components/utils';
+import { GradientsDemo } from './gradients/GradientsDemo';
 
 const COLOR_SEARCH_PARAM_KEY = 'color' as const;
 
@@ -75,6 +76,13 @@ export function ColorDemo() {
         title="Combinations"
       >
         <ColorCombinationDemo color={color} />
+      </SectionContainer>
+      <SectionContainer
+        description="Instantly generate gradients through one or more colors"
+        sectionID={DemoSectionIDs.GRADIENTS}
+        title="Gradients"
+      >
+        <GradientsDemo color={color} />
       </SectionContainer>
       <SectionContainer
         description="Instantly generate complete color harmonies"

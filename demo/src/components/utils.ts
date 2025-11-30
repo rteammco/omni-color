@@ -7,6 +7,7 @@ export enum DemoSectionIDs {
   READABILITY = 'section-readability',
   MANIPULATIONS = 'section-manipulations',
   COMBINATIONS = 'section-combinations',
+  GRADIENTS = 'section-gradients',
   HARMONIES = 'section-harmonies',
   PALETTE = 'section-palette',
   PLAYGROUND = 'section-playground',

@@ -19,9 +19,10 @@ export function AppHeader({ pageDescription }: Props) {
             <Chip color="orange" href={`#${DemoSectionIDs.COLOR_INFO}`} title="Conversions" />
             <Chip color="yellow" href={`#${DemoSectionIDs.MANIPULATIONS}`} title="Manipulations" />
             <Chip color="green" href={`#${DemoSectionIDs.COMBINATIONS}`} title="Combinations" />
+            <Chip color="cyan" href={`#${DemoSectionIDs.GRADIENTS}`} title="Gradients" />
             <Chip color="blue" href={`#${DemoSectionIDs.HARMONIES}`} title="Harmonies" />
             <Chip color="indigo" href={`#${DemoSectionIDs.PALETTE}`} title="Color palettes" />
-            <Chip color="purple" href={`#${DemoSectionIDs.READABILITY}`} title="Accessibility" />
+            <Chip color="violet" href={`#${DemoSectionIDs.READABILITY}`} title="Accessibility" />
           </div>
         </>
       )}
