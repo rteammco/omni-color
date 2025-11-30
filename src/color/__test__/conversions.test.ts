@@ -34,6 +34,11 @@ describe('conversions', () => {
       expect(toRGB({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0 });
     });
 
+    it('rounds RGB inputs to the nearest integers', () => {
+      expect(toRGB({ r: 10.2, g: 20.7, b: 30.9 })).toEqual({ r: 10, g: 21, b: 31 });
+      expect(toRGB({ r: 199.4, g: 200.5, b: 201.6 })).toEqual({ r: 199, g: 201, b: 202 });
+    });
+
     it('wraps hue values >=360 in HSL', () => {
       expect(toRGB({ h: 360, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0 });
     });
@@ -66,6 +71,15 @@ describe('conversions', () => {
       expect(toRGBA({ l: 53.233, a: 80.109, b: 67.22 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+    });
+
+    it('returns rounded channel values for RGBA input', () => {
+      expect(toRGBA({ r: 199.4, g: 200.5, b: 201.6, a: 0.25 })).toEqual({
+        r: 199,
+        g: 201,
+        b: 202,
+        a: 0.25,
+      });
     });
 
     it('preserves alpha where available', () => {
