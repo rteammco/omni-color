@@ -64,68 +64,12 @@ function mixColorsAdditive(
   colors: Color[],
   space: MixSpace,
   weights: number[],
-  sumOfWeights: number,
-  normalizedWeights: number[]
+  sumOfWeights: number
 ) {
   switch (space) {
-    case 'HSL': {
-      let x = 0;
-      let y = 0;
-      let s = 0;
-      let l = 0;
-      colors.forEach((color, i) => {
-        const val: ColorHSL = color.toHSL();
-        const weight = normalizedWeights[i];
-        const rad = (val.h * Math.PI) / 180;
-        x += Math.cos(rad) * weight;
-        y += Math.sin(rad) * weight;
-        s += val.s * weight;
-        l += val.l * weight;
-      });
-      const hue = (Math.atan2(y, x) * 180) / Math.PI;
-      const result: ColorHSL = {
-        h: Math.round((hue + 360) % 360),
-        s: Math.round(s),
-        l: Math.round(l),
-      };
-      return new Color(result);
-    }
-    case 'LCH': {
-      let l = 0;
-      let c = 0;
-      let x = 0;
-      let y = 0;
-      colors.forEach((color, i) => {
-        const val: ColorLCH = color.toLCH();
-        const weight = normalizedWeights[i];
-        l += val.l * weight;
-        c += val.c * weight;
-        const rad = (val.h * Math.PI) / 180;
-        x += Math.cos(rad) * weight;
-        y += Math.sin(rad) * weight;
-      });
-      const hue = (Math.atan2(y, x) * 180) / Math.PI;
-      const result: ColorLCH = { l, c, h: (hue + 360) % 360 };
-      return new Color(result);
-    }
-    case 'OKLCH': {
-      let l = 0;
-      let c = 0;
-      let x = 0;
-      let y = 0;
-      colors.forEach((color, i) => {
-        const val: ColorOKLCH = color.toOKLCH();
-        const weight = normalizedWeights[i];
-        l += val.l * weight;
-        c += val.c * weight;
-        const rad = (val.h * Math.PI) / 180;
-        x += Math.cos(rad) * weight;
-        y += Math.sin(rad) * weight;
-      });
-      const hue = (Math.atan2(y, x) * 180) / Math.PI;
-      const result: ColorOKLCH = { l, c, h: (hue + 360) % 360 };
-      return new Color(result);
-    }
+    case 'HSL':
+    case 'LCH':
+    case 'OKLCH':
     case 'LINEAR_RGB': {
       let r = 0;
       let g = 0;
@@ -183,7 +127,7 @@ export function mixColors(colors: Color[], options: MixColorsOptions = {}): Colo
     return mixColorsSubtractive(colors, normalizedWeights);
   }
 
-  return mixColorsAdditive(colors, space, weights, sumOfWeights, normalizedWeights);
+  return mixColorsAdditive(colors, space, weights, sumOfWeights);
 }
 
 export type BlendMode = 'NORMAL' | 'MULTIPLY' | 'SCREEN' | 'OVERLAY';
