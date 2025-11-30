@@ -40,7 +40,7 @@ describe('mixColors', () => {
     expect(result.toHex()).toBe('#000000');
   });
 
-  it('mixes colors in HSL space with weights (accumulates light)', () => {
+  it('mixes colors in HSL space with weights (performs additive mixing)', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = mixColors([red, blue], {
@@ -102,19 +102,19 @@ describe('mixColors', () => {
     expect(result.toRGBA().a).toBe(0.75);
   });
 
-  it('mixes colors in LCH space (accumulates light)', () => {
+  it('mixes colors in LCH space (performs additive mixing)', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
     const result = mixColors([black, white], { space: 'LCH' });
-    // Black (0) + White (1) = 1 (White).
+    // Additive mixing of Black (0 light) and White (100% light) results in White (100% light).
     expect(result.toHex()).toBe('#ffffff');
   });
 
-  it('mixes colors in OKLCH space (accumulates light)', () => {
+  it('mixes colors in OKLCH space (performs additive mixing)', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
     const result = mixColors([black, white], { space: 'OKLCH' });
-    // Black (0) + White (1) = 1 (White).
+    // Additive mixing of Black (0 light) and White (100% light) results in White (100% light).
     expect(result.toHex()).toBe('#ffffff');
   });
 
@@ -191,8 +191,7 @@ describe('mixColors', () => {
 
   it('accumulates light when mixing identical colors in HSL space', () => {
     const darkRed = new Color('#800000');
-    // In Averaging (old behavior), result would be #800000.
-    // In Additive (new behavior), result should be brighter (accumulated light).
+    // Additive mixing should produce a brighter result due to light accumulation.
     const result = mixColors([darkRed, darkRed], { space: 'HSL' });
     expect(result.toHex()).not.toBe('#800000');
     // 0x80 (128) is ~0.21 Linear. Sum is 0.42 Linear.

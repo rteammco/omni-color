@@ -64,8 +64,7 @@ function mixColorsAdditive(
   colors: Color[],
   space: MixSpace,
   weights: number[],
-  sumOfWeights: number,
-  _normalizedWeights: number[]
+  sumOfWeights: number
 ) {
   switch (space) {
     case 'HSL':
@@ -128,7 +127,7 @@ export function mixColors(colors: Color[], options: MixColorsOptions = {}): Colo
     return mixColorsSubtractive(colors, normalizedWeights);
   }
 
-  return mixColorsAdditive(colors, space, weights, sumOfWeights, normalizedWeights);
+  return mixColorsAdditive(colors, space, weights, sumOfWeights);
 }
 
 export type BlendMode = 'NORMAL' | 'MULTIPLY' | 'SCREEN' | 'OVERLAY';
