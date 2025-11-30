@@ -80,6 +80,45 @@ const daylight = Color.fromTemperature(6500);
 const cozy = Color.fromTemperature('Warm tungsten');
 ```
 
+### Color Information and Utils
+
+#### `getName()` / `getNameAsString()`
+
+- Returns a human-friendly color name and lightness descriptor; `getNameAsString` flattens to a lowercase string (e.g., `'dark green'`).
+
+#### `equals(color)`
+
+- Compares colors with rounding tolerance.
+
+#### `isDark(options?)` / `isOffWhite()`
+
+- Luminance-based helpers for contrast decisions and off-white detection.
+- `isDark` accepts optional `{ colorDarknessMode: 'WCAG' | 'YIQ' }` (and thresholds) to switch between the modern WCAG relative luminance check (default) and the legacy YIQ brightness formula.
+
+#### `getTemperature()` / `getTemperatureAsString(options?)`
+
+- Estimate correlated color temperature (Kelvin plus label) or format it as a string.
+
+#### `getAlpha(): number`
+
+- <u>Returns</u> the current alpha value (0–1).
+
+```ts
+new Color('#ff0000').getAlpha(); // 1
+```
+
+#### `setAlpha(value): Color`
+
+- <u>Returns</u> a new [`Color`](#types-color) with the specified alpha. Out-of-bounds alpha values will be clamped between 0 and 1.
+
+```ts
+new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
+```
+
+#### `clone()`
+
+- Returns an identical `Color` instance.
+
 ### Color Formats and Conversions
 
 #### `` toHex(): `#${string}` ``
@@ -242,25 +281,7 @@ new Color('#00b7eb').toOKLCH(); // { l: 0.727148, c: 0.140767, h: 227.27 }
 new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 ```
 
-### Alpha Channel
-
-#### `getAlpha(): number`
-
-- <u>Returns</u> the current alpha value (0–1).
-
-```ts
-new Color('#ff0000').getAlpha(); // 1
-```
-
-#### `setAlpha(value): Color`
-
-- <u>Returns</u> a new [`Color`](#types-color) with the specified alpha. Out-of-bounds alpha values will be clamped between 0 and 1.
-
-```ts
-new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
-```
-
-### Channel adjustments
+### Color Manipulations
 
 #### `spin(degrees)`
 
@@ -289,7 +310,7 @@ new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
 
 - Removes chroma while preserving lightness.
 
-### Mixing, blending, and averaging
+### Color Combinations
 
 #### `mix(colors, options?)`
 
@@ -316,7 +337,23 @@ new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
   base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex();
   ```
 
-### Gradients and color scales
+### Perceptual Difference (Delta E)
+
+Use Delta E calculations to measure how visually different two colors appear. `Color.differenceFrom` compares against another `Color` and defaults to the CIEDE2000 method. Configure `DeltaEOptions` to choose a different formula via `method` or adjust CIE94 weighting when needed.
+
+```ts
+const reference = new Color('#e63946');
+
+reference.differenceFrom(new Color('#e5383b')); // ~2.81 (CIEDE2000)
+reference.differenceFrom(new Color('#14a085'), { method: 'CIE76' }); // ~110.91
+reference.differenceFrom(new Color({ l: 70, c: 40, h: 210 }), { method: 'CIE94' }); // ~71.40
+reference.differenceFrom(new Color('#aa0000'), {
+  method: 'CIE94',
+  cie94Options: { kL: 2, kC: 1, kH: 1.5 },
+});
+```
+
+### Gradients and Color Scales
 
 #### `Color.createInterpolatedGradient(colors, options?)`
 
@@ -347,14 +384,7 @@ new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
   // ['#f43e5c', '#e16647', '#c1995e', '#70a67c', '#20d3ee']
   ```
 
-#### Instance helpers
-
-- `createGradientTo(target, options?)` builds a gradient between `this` color and a target.
-- `createGradientThrough(stops, options?)` interpolates through additional anchors while keeping them fixed.
-
-Both helpers forward the same options as `createInterpolatedGradient` and always include the instance color as the first anchor.
-
-### Harmonies
+### Color Harmonies
 
 All harmony helpers return arrays of new `Color` instances. Use the specialized helpers or the generic `getHarmonyColors(harmony)`.
 
@@ -378,7 +408,7 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 
 - `getHarmonyColors(harmony)` accepts any `ColorHarmony` enum (`'COMPLEMENTARY'`, `'SPLIT_COMPLEMENTARY'`, `'TRIADIC'`, `'SQUARE'`, `'TETRADIC'`, `'ANALOGOUS'`, `'MONOCHROMATIC'`).
 
-### Swatches and palettes
+### Swatches and Palettes
 
 #### `getColorSwatch(options?)`
 
@@ -408,7 +438,7 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
   palette.info[500].toHex();
   ```
 
-### Readability and accessibility
+### Readability and Accessibility
 
 #### `getContrastRatio(color)`
 
@@ -437,45 +467,6 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 #### `getBestBackgroundColor(candidateBackgroundColors, options?)`
 
 - Returns the candidate background color that maximizes readability for the current color as text, using the same `ReadabilityComparisonOptions` as above.
-
-### Perceptual difference (Delta E)
-
-Use Delta E calculations to measure how visually different two colors appear. `Color.differenceFrom` compares against another `Color` and defaults to the CIEDE2000 method. Configure `DeltaEOptions` to choose a different formula via `method` or adjust CIE94 weighting when needed.
-
-```ts
-const reference = new Color('#e63946');
-
-reference.differenceFrom(new Color('#e5383b')); // ~2.81 (CIEDE2000)
-reference.differenceFrom(new Color('#14a085'), { method: 'CIE76' }); // ~110.91
-reference.differenceFrom(new Color({ l: 70, c: 40, h: 210 }), { method: 'CIE94' }); // ~71.40
-reference.differenceFrom(new Color('#aa0000'), {
-  method: 'CIE94',
-  cie94Options: { kL: 2, kC: 1, kH: 1.5 },
-});
-```
-
-### Names, temperature, and metadata
-
-#### `getTemperature()` / `getTemperatureAsString(options?)`
-
-- Estimate correlated color temperature (Kelvin plus label) or format it as a string.
-
-#### `getName()` / `getNameAsString()`
-
-- Returns a human-friendly color name and lightness descriptor; `getNameAsString` flattens to a lowercase string (e.g., `'dark green'`).
-
-#### `equals(color)`
-
-- Compares colors with rounding tolerance.
-
-#### `isDark(options?)` / `isOffWhite()`
-
-- Luminance-based helpers for contrast decisions and off-white detection.
-- `isDark` accepts optional `{ colorDarknessMode: 'WCAG' | 'YIQ' }` (and thresholds) to switch between the modern WCAG relative luminance check (default) and the legacy YIQ brightness formula.
-
-#### `clone()`
-
-- Returns an identical `Color` instance.
 
 ### Types
 
