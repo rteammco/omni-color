@@ -1,11 +1,18 @@
 import { Color } from './color/color';
-import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
-import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
+import type {
+  AverageColorsOptions,
+  BlendColorsOptions,
+  BlendMode,
+  BlendSpace,
+  MixColorsOptions,
+  MixSpace,
+  MixType,
+} from './color/combinations';
 import { toLAB } from './color/conversions';
 import type { CIE94Options, DeltaEMethod, DeltaEOptions } from './color/deltaE';
-import type { ColorFormat } from './color/formats';
-import {
+import type {
   ColorCMYK,
+  ColorFormat,
   ColorHex,
   ColorHSL,
   ColorHSLA,
@@ -16,8 +23,8 @@ import {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
-  labToString,
 } from './color/formats';
+import { labToString } from './color/formats';
 import type {
   ColorGradientEasing,
   ColorGradientInterpolation,
@@ -26,79 +33,84 @@ import type {
   HueInterpolationMode,
 } from './color/gradients';
 import type { ColorHarmony } from './color/harmonies';
-import type { BaseColorName, ColorLightnessModifier } from './color/names';
-import { ColorNameAndLightness } from './color/names';
-import { RandomColorOptions } from './color/random';
+import type { BaseColorName, ColorLightnessModifier, ColorNameAndLightness } from './color/names';
+import type { RandomColorOptions } from './color/random';
 import type {
   ReadabilityAlgorithm,
   ReadabilityComparisonOptions,
   TextReadabilityConformanceLevel,
+  TextReadabilityOptions,
+  TextReadabilityReport,
   TextReadabilityTextSizeOptions,
 } from './color/readability';
 import {
   getBestBackgroundColorForText,
   getMostReadableTextColorForBackground,
-  TextReadabilityOptions,
-  TextReadabilityReport,
 } from './color/readability';
-import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
-import type { ColorTemperatureLabel } from './color/temperature';
-import { ColorTemperatureAndLabel, ColorTemperatureStringFormatOptions } from './color/temperature';
-import { ColorDarknessMode, IsColorDarkOptions } from './color/utils';
-import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
+import type { ColorSwatch, ExtendedColorSwatch } from './color/swatch';
+import type { ColorSwatchOptions } from './color/swatch';
+import type {
+  ColorTemperatureAndLabel,
+  ColorTemperatureLabel,
+  ColorTemperatureStringFormatOptions,
+} from './color/temperature';
+import type { IsColorDarkOptions } from './color/utils';
+import type { ColorDarknessMode } from './color/utils';
+import type { ColorPalette } from './palette/palette';
+import type { GenerateColorPaletteOptions } from './palette/palette';
 
 export {
-  AverageColorsOptions,
+  type AverageColorsOptions,
   type BaseColorName,
-  BlendColorsOptions,
+  type BlendColorsOptions,
   type BlendMode,
   type BlendSpace,
   type CIE94Options,
   Color,
-  ColorCMYK,
-  ColorDarknessMode,
+  type ColorCMYK,
+  type ColorDarknessMode,
   type ColorFormat,
-  ColorGradientEasing,
-  ColorGradientInterpolation,
-  ColorGradientOptions,
-  ColorGradientSpace,
+  type ColorGradientEasing,
+  type ColorGradientInterpolation,
+  type ColorGradientOptions,
+  type ColorGradientSpace,
   type ColorHarmony,
-  ColorHex,
-  ColorHSL,
-  ColorHSLA,
-  ColorHSV,
-  ColorHSVA,
-  ColorLAB,
-  ColorLCH,
+  type ColorHex,
+  type ColorHSL,
+  type ColorHSLA,
+  type ColorHSV,
+  type ColorHSVA,
+  type ColorLAB,
+  type ColorLCH,
   type ColorLightnessModifier,
-  ColorNameAndLightness,
-  ColorOKLCH,
-  ColorPalette,
-  ColorRGB,
-  ColorRGBA,
-  ColorSwatch,
-  ColorSwatchOptions,
-  ColorTemperatureAndLabel,
+  type ColorNameAndLightness,
+  type ColorOKLCH,
+  type ColorPalette,
+  type ColorRGB,
+  type ColorRGBA,
+  type ColorSwatch,
+  type ColorSwatchOptions,
+  type ColorTemperatureAndLabel,
   type ColorTemperatureLabel,
-  ColorTemperatureStringFormatOptions,
+  type ColorTemperatureStringFormatOptions,
   type DeltaEMethod,
   type DeltaEOptions,
-  ExtendedColorSwatch,
-  GenerateColorPaletteOptions,
+  type ExtendedColorSwatch,
+  type GenerateColorPaletteOptions,
   getBestBackgroundColorForText,
   getMostReadableTextColorForBackground,
-  HueInterpolationMode,
-  IsColorDarkOptions,
+  type HueInterpolationMode,
+  type IsColorDarkOptions,
   labToString,
-  MixColorsOptions,
+  type MixColorsOptions,
   type MixSpace,
   type MixType,
-  RandomColorOptions,
+  type RandomColorOptions,
   type ReadabilityAlgorithm,
-  ReadabilityComparisonOptions,
+  type ReadabilityComparisonOptions,
   type TextReadabilityConformanceLevel,
-  TextReadabilityOptions,
-  TextReadabilityReport,
+  type TextReadabilityOptions,
+  type TextReadabilityReport,
   type TextReadabilityTextSizeOptions,
   toLAB,
 };

@@ -40,14 +40,17 @@ describe('mixColors', () => {
     expect(result.toHex()).toBe('#000000');
   });
 
-  it('mixes colors in HSL space with weights', () => {
+  it('mixes colors in HSL space with weights (accumulates light)', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = mixColors([red, blue], {
       space: 'HSL',
       weights: [1, 3],
     });
-    expect(result.toHex()).toBe('#5100ff');
+    // Additive Linear Mixing:
+    // Red (1,0,0) * 1 + Blue (0,0,1) * 3 = (1, 0, 3).
+    // Clamped to (1, 0, 1) -> Magenta.
+    expect(result.toHex()).toBe('#ff00ff');
   });
 
   it('defaults to additive Linear RGB mixing', () => {
@@ -99,25 +102,34 @@ describe('mixColors', () => {
     expect(result.toRGBA().a).toBe(0.75);
   });
 
-  it('mixes colors in LCH space', () => {
+  it('mixes colors in LCH space (accumulates light)', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
     const result = mixColors([black, white], { space: 'LCH' });
-    expect(result.toHex()).toBe('#777777');
+    // Black (0) + White (1) = 1 (White).
+    expect(result.toHex()).toBe('#ffffff');
   });
 
-  it('mixes colors in OKLCH space', () => {
+  it('mixes colors in OKLCH space (accumulates light)', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
     const result = mixColors([black, white], { space: 'OKLCH' });
-    expect(result.toHex()).toBe('#636363');
+    // Black (0) + White (1) = 1 (White).
+    expect(result.toHex()).toBe('#ffffff');
   });
 
-  it('handles hue wrap-around in HSL space', () => {
+  it('mixes colors across the red hue boundary using linear addition', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
     const result = mixColors([h1, h2], { space: 'HSL' });
-    expect(result.toHex()).toBe('#ff0000');
+    // Summing two fully saturated red-ish lights results in a very bright,
+    // slightly desaturating result (clipping in R channel).
+    // Not #ff0000 (which was the Average behavior).
+    expect(result.toHex()).not.toBe('#ff0000');
+    const { r, g, b } = result.toRGBA();
+    expect(r).toBe(255);
+    expect(g).toBeGreaterThan(0);
+    expect(b).toBeGreaterThan(0);
   });
 
   it('handles hue wrap-around in LCH space', () => {
@@ -152,6 +164,20 @@ describe('mixColors', () => {
     const blue = new Color('#0000ff');
     const result = mixColors([red, blue], { weights: [0, 1] });
     expect(result.toHex()).toBe('#0000ff');
+  });
+
+  it('accumulates light when mixing identical colors in HSL space', () => {
+    const darkRed = new Color('#800000');
+    // In Averaging (old behavior), result would be #800000.
+    // In Additive (new behavior), result should be brighter (accumulated light).
+    const result = mixColors([darkRed, darkRed], { space: 'HSL' });
+    expect(result.toHex()).not.toBe('#800000');
+    // 0x80 (128) is ~0.21 Linear. Sum is 0.42 Linear.
+    // 0.42 Linear is ~0.68 sRGB (~173 -> 0xAD).
+    // So expect roughly #ad0000 or similar.
+    expect(result.toRGBA().r).toBeGreaterThan(128);
+    expect(result.toRGBA().g).toBe(0);
+    expect(result.toRGBA().b).toBe(0);
   });
 });
 
