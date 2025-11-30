@@ -70,6 +70,7 @@ export default [
       'prefer-const': 'warn',
       'no-nested-ternary': 'warn',
       'no-console': 'warn',
+      'object-shorthand': ['warn', 'always'],
       '@typescript-eslint/consistent-type-imports': 'warn',
     },
   },
