@@ -36,12 +36,35 @@ describe('parseCSSColorFormatString', () => {
   });
 
   it('parses flexible RGB-style inputs', () => {
-    expect(parseCSSColorFormatString('rgb(100 200 150)')?.toRGB()).toEqual({ r: 100, g: 200, b: 150 });
-    expect(parseCSSColorFormatString('rgb(100,200 150)')?.toRGB()).toEqual({ r: 100, g: 200, b: 150 });
+    expect(parseCSSColorFormatString('rgb(100 200 150)')?.toRGB()).toEqual({
+      r: 100,
+      g: 200,
+      b: 150,
+    });
+    expect(parseCSSColorFormatString('rgb(100,200 150)')?.toRGB()).toEqual({
+      r: 100,
+      g: 200,
+      b: 150,
+    });
     expect(parseCSSColorFormatString('rgb(0 0 0.5)')?.toRGB()).toEqual({ r: 0, g: 0, b: 128 });
-    expect(parseCSSColorFormatString('rgb(10% 20% 30% / 50%)')?.toRGBA()).toEqual({ r: 26, g: 51, b: 77, a: 0.5 });
-    expect(parseCSSColorFormatString('rgba(0.1 0.2 0.3 / 0.4)')?.toRGBA()).toEqual({ r: 26, g: 51, b: 77, a: 0.4 });
-    expect(parseCSSColorFormatString('rgba(5 10 15 / 25%)')?.toRGBA()).toEqual({ r: 5, g: 10, b: 15, a: 0.25 });
+    expect(parseCSSColorFormatString('rgb(10% 20% 30% / 50%)')?.toRGBA()).toEqual({
+      r: 26,
+      g: 51,
+      b: 77,
+      a: 0.5,
+    });
+    expect(parseCSSColorFormatString('rgba(0.1 0.2 0.3 / 0.4)')?.toRGBA()).toEqual({
+      r: 26,
+      g: 51,
+      b: 77,
+      a: 0.4,
+    });
+    expect(parseCSSColorFormatString('rgba(5 10 15 / 25%)')?.toRGBA()).toEqual({
+      r: 5,
+      g: 10,
+      b: 15,
+      a: 0.25,
+    });
   });
 
   it('parses HSL inputs', () => {

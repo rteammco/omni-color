@@ -25,7 +25,7 @@ interface SplitColorParamsResult {
 
 function splitColorFunctionParams(
   params: string,
-  { expectedChannels, allowAlpha = false, allowSlashForAlpha = false }: SplitColorParamsOptions,
+  { expectedChannels, allowAlpha = false, allowSlashForAlpha = false }: SplitColorParamsOptions
 ): SplitColorParamsResult | null {
   let channelsSection = params;
   let alphaSection: string | undefined;
@@ -60,7 +60,7 @@ function parseNumberOrPercent(value: string, scale: number): number {
   return value.trim().endsWith('%') ? (num / 100) * scale : num;
 }
 
-function parseRgbNumber(value: string): number {
+function parseRGBNumber(value: string): number {
   const parsed = parseNumberOrPercent(value, 255);
   if (isNaN(parsed)) {
     return NaN;
@@ -105,7 +105,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
 
-    const [r, g, b] = rgbParams.channels.map((value) => Math.round(parseRgbNumber(value)));
+    const [r, g, b] = rgbParams.channels.map((value) => Math.round(parseRGBNumber(value)));
     if ([r, g, b].some((value) => isNaN(value))) {
       return null;
     }
@@ -132,7 +132,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
 
-    const [r, g, b] = rgbaParams.channels.map((value) => Math.round(parseRgbNumber(value)));
+    const [r, g, b] = rgbaParams.channels.map((value) => Math.round(parseRGBNumber(value)));
     const a = parseAlphaValue(rgbaParams.alpha);
     if ([r, g, b, a].some((value) => isNaN(value))) {
       return null;
