@@ -71,6 +71,7 @@ export default [
       'no-nested-ternary': 'warn',
       'no-console': 'warn',
       '@typescript-eslint/consistent-type-imports': 'warn',
+      curly: ['warn', 'all'],
     },
   },
   {
