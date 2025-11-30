@@ -122,14 +122,37 @@ describe('mixColors', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
     const result = mixColors([h1, h2], { space: 'HSL' });
-    // Summing two fully saturated red-ish lights results in a very bright,
-    // slightly desaturating result (clipping in R channel).
-    // Not #ff0000 (which was the Average behavior).
-    expect(result.toHex()).not.toBe('#ff0000');
-    const { r, g, b } = result.toRGBA();
-    expect(r).toBe(255);
-    expect(g).toBeGreaterThan(0);
-    expect(b).toBeGreaterThan(0);
+    // HSL(350, 100, 50) -> RGB(255, 0, ~42)
+    // HSL(10, 100, 50) -> RGB(255, ~42, 0)
+    // Additive mix sums these (converted to linear), resulting in R clipping at 255
+    // and G/B accumulating.
+    expect(result.toHex()).toBe('#ff2a2b');
+  });
+
+  it('respects weights in additive mixing for polar spaces', () => {
+    // Dark Red (sRGB 128, 0, 0) -> Linear ~0.21
+    // Dark Blue (sRGB 0, 0, 128) -> Linear ~0.21
+    const darkRed = new Color('#800000');
+    const darkBlue = new Color('#000080');
+
+    // Weights [2, 1]
+    // Red: 0.21 * 2 = 0.42
+    // Blue: 0.21 * 1 = 0.21
+    // Result Linear: (0.42, 0, 0.21)
+    // Result sRGB:
+    // R: 0.42 -> ~0.68 -> ~174
+    // B: 0.21 -> ~0.50 -> ~128
+    const result = mixColors([darkRed, darkBlue], {
+      space: 'HSL',
+      weights: [2, 1],
+    });
+
+    const { r, b } = result.toRGBA();
+    expect(r).toBeGreaterThan(170);
+    expect(r).toBeLessThan(180);
+    expect(b).toBeGreaterThan(125);
+    expect(b).toBeLessThan(135);
+    expect(result.toRGBA().g).toBe(0);
   });
 
   it('handles hue wrap-around in LCH space', () => {
