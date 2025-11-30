@@ -8,6 +8,7 @@ import { ColorPaletteDemo } from './palette/ColorPaletteDemo';
 import { ColorCombinationDemo } from './combinations/ColorCombinationDemo';
 import { ReadabilityDemo } from './ReadabilityDemo';
 import { SectionContainer } from '../components/SectionContainer';
+import { DemoSectionIDs } from '../components/utils';
 
 const COLOR_SEARCH_PARAM_KEY = 'color' as const;
 
@@ -49,42 +50,52 @@ export function ColorDemo() {
     <div className="flex flex-col gap-8">
       <SectionContainer
         description="Enter any format, pick a preset, or let omni-color surprise you with a palette-friendly option"
+        sectionID={DemoSectionIDs.PICK_COLOR}
         title="Pick a starting color"
       >
         <ColorInput color={color} onColorChanged={handleColorChanged} />
       </SectionContainer>
       <SectionContainer
         description="Quick conversions, swatches, and temperature"
+        sectionID={DemoSectionIDs.COLOR_INFO}
         title="Color info"
       >
         <ColorInfo color={color} />
       </SectionContainer>
       <SectionContainer
-        description="Check contrast ratios and readability scores against any background color"
-        title="Readability"
-      >
-        <ReadabilityDemo color={color} />
-      </SectionContainer>
-      <SectionContainer
         description="Brighten, darken, saturate, desaturate, or go grayscale"
+        sectionID={DemoSectionIDs.MANIPULATIONS}
         title="Manipulations"
       >
         <ColorManipulationDemo color={color} />
       </SectionContainer>
       <SectionContainer
         description="Mix, blend, and average colors with a large variety of customization options"
+        sectionID={DemoSectionIDs.COMBINATIONS}
         title="Combinations"
       >
         <ColorCombinationDemo color={color} />
       </SectionContainer>
-      <SectionContainer description="Instantly generate complete color harmonies" title="Harmonies">
+      <SectionContainer
+        description="Instantly generate complete color harmonies"
+        sectionID={DemoSectionIDs.HARMONIES}
+        title="Harmonies"
+      >
         <ColorHarmonyDemo color={color} />
       </SectionContainer>
       <SectionContainer
         description="Generate an entire production-ready color palette from a single base color"
+        sectionID={DemoSectionIDs.PALETTE}
         title="Palette"
       >
         <ColorPaletteDemo color={color} />
+      </SectionContainer>
+      <SectionContainer
+        description="Check contrast ratios and readability scores against any background color"
+        sectionID={DemoSectionIDs.READABILITY}
+        title="Readability"
+      >
+        <ReadabilityDemo color={color} />
       </SectionContainer>
     </div>
   );
