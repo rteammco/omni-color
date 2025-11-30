@@ -95,7 +95,8 @@ function getHexColorFormatType(color: ColorHex): ColorFormatTypeAndValue {
     if (colorLowerCase.length === 5) {
       return {
         formatType: 'HEX8',
-        value: `#${colorLowerCase[1]}${colorLowerCase[1]}${colorLowerCase[2]}${colorLowerCase[2]}${colorLowerCase[3]}${colorLowerCase[3]}${colorLowerCase[4]}${colorLowerCase[4]}` as ColorHex,
+        value:
+          `#${colorLowerCase[1]}${colorLowerCase[1]}${colorLowerCase[2]}${colorLowerCase[2]}${colorLowerCase[3]}${colorLowerCase[3]}${colorLowerCase[4]}${colorLowerCase[4]}` as ColorHex,
       };
     }
     if (colorLowerCase.length === 7) {
