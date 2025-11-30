@@ -99,7 +99,7 @@ interface IsColorDarkWCAGOptions {
   /**
    * The algorithm to use for calculating darkness.
    * - 'WCAG': Uses WCAG 2.x Relative Luminance (linearized RGB). More accurate to human perception.
-   * - 'YIQ': Uses the legacy Rec. 601 YIQ formula. Matches TinyColor behavior.
+   * - 'YIQ': Uses the legacy Rec. 601 YIQ formula.
    * @default 'WCAG'
    */
   colorDarknessMode?: 'WCAG';
@@ -116,7 +116,7 @@ interface IsColorDarkYIQOptions {
   /**
    * The algorithm to use for calculating darkness.
    * - 'WCAG': Uses WCAG 2.x Relative Luminance (linearized RGB). More accurate to human perception.
-   * - 'YIQ': Uses the legacy Rec. 601 YIQ formula. Matches TinyColor behavior.
+   * - 'YIQ': Uses the legacy Rec. 601 YIQ formula.
    * @default 'WCAG'
    */
   colorDarknessMode: 'YIQ';
@@ -139,14 +139,6 @@ function isColorDarkYIQ(color: Color, threshold: number): boolean {
   // Weighted RGB luminance calculation:
   const { r, g, b } = color.toRGB();
   const brightness = (299 * r + 587 * g + 114 * b) / 1000;
-  if (brightness >= 120 && brightness < 128) {
-    // For colors whose brightness is just above the dark threshold,
-    // treat red‑dominant hues as light so that moderately bright reds
-    // aren’t misclassified as dark:
-    if (r > g && r > b && g > 0 && b > 0) {
-      return false;
-    }
-  }
   return brightness < threshold;
 }
 
