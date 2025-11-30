@@ -35,6 +35,15 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('rgba(0,0,255,0%)')?.toHex8()).toBe('#0000ff00');
   });
 
+  it('parses flexible RGB-style inputs', () => {
+    expect(parseCSSColorFormatString('rgb(100 200 150)')?.toRGB()).toEqual({ r: 100, g: 200, b: 150 });
+    expect(parseCSSColorFormatString('rgb(100,200 150)')?.toRGB()).toEqual({ r: 100, g: 200, b: 150 });
+    expect(parseCSSColorFormatString('rgb(0 0 0.5)')?.toRGB()).toEqual({ r: 0, g: 0, b: 128 });
+    expect(parseCSSColorFormatString('rgb(10% 20% 30% / 50%)')?.toRGBA()).toEqual({ r: 26, g: 51, b: 77, a: 0.5 });
+    expect(parseCSSColorFormatString('rgba(0.1 0.2 0.3 / 0.4)')?.toRGBA()).toEqual({ r: 26, g: 51, b: 77, a: 0.4 });
+    expect(parseCSSColorFormatString('rgba(5 10 15 / 25%)')?.toRGBA()).toEqual({ r: 5, g: 10, b: 15, a: 0.25 });
+  });
+
   it('parses HSL inputs', () => {
     expect(parseCSSColorFormatString('hsl(0, 0%, 0%)')?.toHex()).toBe('#000000');
     expect(parseCSSColorFormatString('hsl(0, 0%, 100%)')?.toHex()).toBe('#ffffff');
@@ -90,6 +99,12 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('hsva(240,100%,100%,0%)')?.toHex8()).toBe('#0000ff00');
   });
 
+  it('parses flexible HSL and HSV inputs', () => {
+    expect(parseCSSColorFormatString('hsl(180 100% 50%)')?.toHex()).toBe('#00ffff');
+    expect(parseCSSColorFormatString('hsl(180 100% 50% / 0.25)')?.toHex8()).toBe('#00ffff40');
+    expect(parseCSSColorFormatString('hsv(300 100% 100% / 0.5)')?.toHex8()).toBe('#ff00ff80');
+  });
+
   it('parses CMYK inputs', () => {
     expect(parseCSSColorFormatString('cmyk(0%, 0%, 0%, 100%)')?.toHex()).toBe('#000000');
     expect(parseCSSColorFormatString('cmyk(0%, 0%, 0%, 0%)')?.toHex()).toBe('#ffffff');
@@ -136,6 +151,12 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('oklch(0.967983 0.211006 109.769)')?.toHex()).toBe('#ffff00');
     expect(parseCSSColorFormatString('oklch(0.905399 0.15455 194.769)')?.toHex()).toBe('#00ffff');
     expect(parseCSSColorFormatString('oklch(0.701674 0.322491 328.363)')?.toHex()).toBe('#ff00ff');
+  });
+
+  it('parses additional forgiving input variations', () => {
+    expect(parseCSSColorFormatString('cmyk(0% 100% 100% 0%)')?.toHex()).toBe('#ff0000');
+    expect(parseCSSColorFormatString('lab(53.233%, 80.109, 67.22)')?.toHex()).toBe('#ff0000');
+    expect(parseCSSColorFormatString('lch(53.233%,104.576,40)')?.toHex()).toBe('#ff0000');
   });
 
   it('returns null on invalid inputs', () => {

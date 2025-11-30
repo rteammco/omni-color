@@ -1,16 +1,56 @@
 import { Color } from './color';
 import type { ColorFormat } from './formats';
 
-const MATCH_RGB_STRING_REGEX = /^rgb\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*\)$/;
-const MATCH_RGBA_STRING_REGEX = /^rgba\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
-const MATCH_HSL_STRING_REGEX = /^hsl\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
-const MATCH_HSLA_STRING_REGEX = /^hsla\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
-const MATCH_HSV_STRING_REGEX = /^hsv\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
-const MATCH_HSVA_STRING_REGEX = /^hsva\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
-const MATCH_CMYK_STRING_REGEX = /^cmyk\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)]+)\)$/;
-const MATCH_LAB_STRING_REGEX = /^lab\(\s*([^ ]+)\s+([^ ]+)\s+([^\)]+)\)$/;
-const MATCH_LCH_STRING_REGEX = /^lch\(\s*([^ ]+)\s+([^ ]+)\s+([^\)]+)\)$/;
-const MATCH_OKLCH_STRING_REGEX = /^oklch\(\s*([^ ]+)\s+([^ ]+)\s+([^\)]+)\)$/;
+const MATCH_RGB_STRING_REGEX = /^rgb\((.+)\)$/;
+const MATCH_RGBA_STRING_REGEX = /^rgba\((.+)\)$/;
+const MATCH_HSL_STRING_REGEX = /^hsl\((.+)\)$/;
+const MATCH_HSLA_STRING_REGEX = /^hsla\((.+)\)$/;
+const MATCH_HSV_STRING_REGEX = /^hsv\((.+)\)$/;
+const MATCH_HSVA_STRING_REGEX = /^hsva\((.+)\)$/;
+const MATCH_CMYK_STRING_REGEX = /^cmyk\((.+)\)$/;
+const MATCH_LAB_STRING_REGEX = /^lab\((.+)\)$/;
+const MATCH_LCH_STRING_REGEX = /^lch\((.+)\)$/;
+const MATCH_OKLCH_STRING_REGEX = /^oklch\((.+)\)$/;
+
+interface SplitColorParamsOptions {
+  allowAlpha?: boolean;
+  allowSlashForAlpha?: boolean;
+  expectedChannels: number;
+}
+
+interface SplitColorParamsResult {
+  alpha?: string;
+  channels: string[];
+}
+
+function splitColorFunctionParams(
+  params: string,
+  { expectedChannels, allowAlpha = false, allowSlashForAlpha = false }: SplitColorParamsOptions,
+): SplitColorParamsResult | null {
+  let channelsSection = params;
+  let alphaSection: string | undefined;
+
+  if (allowAlpha && allowSlashForAlpha && params.includes('/')) {
+    const [channelsPart, alphaPart] = params.split('/');
+    channelsSection = channelsPart;
+    alphaSection = alphaPart;
+  }
+
+  const segments = channelsSection.split(/[,\s]+/).filter(Boolean);
+
+  if (allowAlpha && alphaSection === undefined && segments.length === expectedChannels + 1) {
+    alphaSection = segments.pop();
+  }
+
+  if (segments.length !== expectedChannels) {
+    return null;
+  }
+
+  return {
+    channels: segments,
+    alpha: alphaSection?.trim(),
+  };
+}
 
 function parseNumberOrPercent(value: string, scale: number): number {
   const num = parseFloat(value);
@@ -18,6 +58,20 @@ function parseNumberOrPercent(value: string, scale: number): number {
     return NaN;
   }
   return value.trim().endsWith('%') ? (num / 100) * scale : num;
+}
+
+function parseRgbNumber(value: string): number {
+  const parsed = parseNumberOrPercent(value, 255);
+  if (isNaN(parsed)) {
+    return NaN;
+  }
+
+  const trimmedValue = value.trim();
+  if (!trimmedValue.endsWith('%') && trimmedValue.includes('.') && parsed >= 0 && parsed <= 1) {
+    return parsed * 255;
+  }
+
+  return parsed;
 }
 
 function parseAlphaValue(value: string): number {
@@ -42,22 +96,45 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
 
   const rgbMatch = str.match(MATCH_RGB_STRING_REGEX);
   if (rgbMatch) {
-    const r = Math.round(parseNumberOrPercent(rgbMatch[1], 255));
-    const g = Math.round(parseNumberOrPercent(rgbMatch[2], 255));
-    const b = Math.round(parseNumberOrPercent(rgbMatch[3], 255));
-    if ([r, g, b].some((v) => isNaN(v))) {
+    const rgbParams = splitColorFunctionParams(rgbMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!rgbParams) {
       return null;
     }
+
+    const [r, g, b] = rgbParams.channels.map((value) => Math.round(parseRgbNumber(value)));
+    if ([r, g, b].some((value) => isNaN(value))) {
+      return null;
+    }
+
+    if (rgbParams.alpha !== undefined) {
+      const a = parseAlphaValue(rgbParams.alpha);
+      if (isNaN(a)) {
+        return null;
+      }
+      return createColorOrNull({ r, g, b, a });
+    }
+
     return createColorOrNull({ r, g, b });
   }
 
   const rgbaMatch = str.match(MATCH_RGBA_STRING_REGEX);
   if (rgbaMatch) {
-    const r = Math.round(parseNumberOrPercent(rgbaMatch[1], 255));
-    const g = Math.round(parseNumberOrPercent(rgbaMatch[2], 255));
-    const b = Math.round(parseNumberOrPercent(rgbaMatch[3], 255));
-    const a = parseAlphaValue(rgbaMatch[4]);
-    if ([r, g, b, a].some((v) => isNaN(v))) {
+    const rgbaParams = splitColorFunctionParams(rgbaMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!rgbaParams || !rgbaParams.alpha) {
+      return null;
+    }
+
+    const [r, g, b] = rgbaParams.channels.map((value) => Math.round(parseRgbNumber(value)));
+    const a = parseAlphaValue(rgbaParams.alpha);
+    if ([r, g, b, a].some((value) => isNaN(value))) {
       return null;
     }
     return createColorOrNull({ r, g, b, a });
@@ -65,22 +142,51 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
 
   const hslMatch = str.match(MATCH_HSL_STRING_REGEX);
   if (hslMatch) {
-    const h = Math.round(parseFloat(hslMatch[1]));
-    const s = Math.round(parseNumberOrPercent(hslMatch[2], 100));
-    const l = Math.round(parseNumberOrPercent(hslMatch[3], 100));
-    if ([h, s, l].some((v) => isNaN(v))) {
+    const hslParams = splitColorFunctionParams(hslMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!hslParams) {
       return null;
+    }
+
+    const [h, s, l] = [
+      Math.round(parseFloat(hslParams.channels[0])),
+      Math.round(parseNumberOrPercent(hslParams.channels[1], 100)),
+      Math.round(parseNumberOrPercent(hslParams.channels[2], 100)),
+    ];
+    if ([h, s, l].some((value) => isNaN(value))) {
+      return null;
+    }
+    if (hslParams.alpha !== undefined) {
+      const a = parseAlphaValue(hslParams.alpha);
+      if (isNaN(a)) {
+        return null;
+      }
+      return createColorOrNull({ h, s, l, a });
     }
     return createColorOrNull({ h, s, l });
   }
 
   const hslaMatch = str.match(MATCH_HSLA_STRING_REGEX);
   if (hslaMatch) {
-    const h = Math.round(parseFloat(hslaMatch[1]));
-    const s = Math.round(parseNumberOrPercent(hslaMatch[2], 100));
-    const l = Math.round(parseNumberOrPercent(hslaMatch[3], 100));
-    const a = parseAlphaValue(hslaMatch[4]);
-    if ([h, s, l, a].some((v) => isNaN(v))) {
+    const hslaParams = splitColorFunctionParams(hslaMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!hslaParams || !hslaParams.alpha) {
+      return null;
+    }
+
+    const [h, s, l] = [
+      Math.round(parseFloat(hslaParams.channels[0])),
+      Math.round(parseNumberOrPercent(hslaParams.channels[1], 100)),
+      Math.round(parseNumberOrPercent(hslaParams.channels[2], 100)),
+    ];
+    const a = parseAlphaValue(hslaParams.alpha);
+    if ([h, s, l, a].some((value) => isNaN(value))) {
       return null;
     }
     return createColorOrNull({ h, s, l, a });
@@ -88,22 +194,51 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
 
   const hsvMatch = str.match(MATCH_HSV_STRING_REGEX);
   if (hsvMatch) {
-    const h = Math.round(parseFloat(hsvMatch[1]));
-    const s = Math.round(parseNumberOrPercent(hsvMatch[2], 100));
-    const v = Math.round(parseNumberOrPercent(hsvMatch[3], 100));
-    if ([h, s, v].some((v) => isNaN(v))) {
+    const hsvParams = splitColorFunctionParams(hsvMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!hsvParams) {
       return null;
+    }
+
+    const [h, s, v] = [
+      Math.round(parseFloat(hsvParams.channels[0])),
+      Math.round(parseNumberOrPercent(hsvParams.channels[1], 100)),
+      Math.round(parseNumberOrPercent(hsvParams.channels[2], 100)),
+    ];
+    if ([h, s, v].some((value) => isNaN(value))) {
+      return null;
+    }
+    if (hsvParams.alpha !== undefined) {
+      const a = parseAlphaValue(hsvParams.alpha);
+      if (isNaN(a)) {
+        return null;
+      }
+      return createColorOrNull({ h, s, v, a });
     }
     return createColorOrNull({ h, s, v });
   }
 
   const hsvaMatch = str.match(MATCH_HSVA_STRING_REGEX);
   if (hsvaMatch) {
-    const h = Math.round(parseFloat(hsvaMatch[1]));
-    const s = Math.round(parseNumberOrPercent(hsvaMatch[2], 100));
-    const v = Math.round(parseNumberOrPercent(hsvaMatch[3], 100));
-    const a = parseAlphaValue(hsvaMatch[4]);
-    if ([h, s, v, a].some((v) => isNaN(v))) {
+    const hsvaParams = splitColorFunctionParams(hsvaMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!hsvaParams || !hsvaParams.alpha) {
+      return null;
+    }
+
+    const [h, s, v] = [
+      Math.round(parseFloat(hsvaParams.channels[0])),
+      Math.round(parseNumberOrPercent(hsvaParams.channels[1], 100)),
+      Math.round(parseNumberOrPercent(hsvaParams.channels[2], 100)),
+    ];
+    const a = parseAlphaValue(hsvaParams.alpha);
+    if ([h, s, v, a].some((value) => isNaN(value))) {
       return null;
     }
     return createColorOrNull({ h, s, v, a });
@@ -111,11 +246,13 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
 
   const cmykMatch = str.match(MATCH_CMYK_STRING_REGEX);
   if (cmykMatch) {
-    const c = parseNumberOrPercent(cmykMatch[1], 100);
-    const m = parseNumberOrPercent(cmykMatch[2], 100);
-    const y = parseNumberOrPercent(cmykMatch[3], 100);
-    const k = parseNumberOrPercent(cmykMatch[4], 100);
-    if ([c, m, y, k].some((v) => isNaN(v))) {
+    const cmykParams = splitColorFunctionParams(cmykMatch[1], { expectedChannels: 4 });
+    if (!cmykParams) {
+      return null;
+    }
+
+    const [c, m, y, k] = cmykParams.channels.map((value) => parseNumberOrPercent(value, 100));
+    if ([c, m, y, k].some((value) => isNaN(value))) {
       return null;
     }
     return createColorOrNull({ c, m, y, k });
@@ -123,10 +260,17 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
 
   const labMatch = str.match(MATCH_LAB_STRING_REGEX);
   if (labMatch) {
-    const l = parseNumberOrPercent(labMatch[1], 100);
-    const a = parseFloat(labMatch[2]);
-    const b = parseFloat(labMatch[3]);
-    if ([l, a, b].some((v) => isNaN(v))) {
+    const labParams = splitColorFunctionParams(labMatch[1], { expectedChannels: 3 });
+    if (!labParams) {
+      return null;
+    }
+
+    const [l, a, b] = [
+      parseNumberOrPercent(labParams.channels[0], 100),
+      parseFloat(labParams.channels[1]),
+      parseFloat(labParams.channels[2]),
+    ];
+    if ([l, a, b].some((value) => isNaN(value))) {
       return null;
     }
     return createColorOrNull({ l, a, b });
@@ -134,10 +278,17 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
 
   const lchMatch = str.match(MATCH_LCH_STRING_REGEX);
   if (lchMatch) {
-    const l = parseNumberOrPercent(lchMatch[1], 100);
-    const c = parseFloat(lchMatch[2]);
-    const h = parseFloat(lchMatch[3]);
-    if ([l, c, h].some((v) => isNaN(v))) {
+    const lchParams = splitColorFunctionParams(lchMatch[1], { expectedChannels: 3 });
+    if (!lchParams) {
+      return null;
+    }
+
+    const [l, c, h] = [
+      parseNumberOrPercent(lchParams.channels[0], 100),
+      parseFloat(lchParams.channels[1]),
+      parseFloat(lchParams.channels[2]),
+    ];
+    if ([l, c, h].some((value) => isNaN(value))) {
       return null;
     }
     return createColorOrNull({ l, c, h });
@@ -145,10 +296,17 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
 
   const oklchMatch = str.match(MATCH_OKLCH_STRING_REGEX);
   if (oklchMatch) {
-    const l = parseFloat(oklchMatch[1]);
-    const c = parseFloat(oklchMatch[2]);
-    const h = parseFloat(oklchMatch[3]);
-    if ([l, c, h].some((v) => isNaN(v))) {
+    const oklchParams = splitColorFunctionParams(oklchMatch[1], { expectedChannels: 3 });
+    if (!oklchParams) {
+      return null;
+    }
+
+    const [l, c, h] = [
+      parseFloat(oklchParams.channels[0]),
+      parseFloat(oklchParams.channels[1]),
+      parseFloat(oklchParams.channels[2]),
+    ];
+    if ([l, c, h].some((value) => isNaN(value))) {
       return null;
     }
     if (l < 0 || l > 1) {
