@@ -165,17 +165,32 @@ export function isColorOffWhite(color: Color): boolean {
   return brightness >= 240 && maxChannel - minChannel <= 30;
 }
 
-const RGB_CHANNEL_EPSILON = 1; // allow off‑by‑one rounding differences
-const ALPHA_EPSILON = 0.0015; // alpha values are rounded to three decimals and may have floating‑point error
+const RGB_CHANNEL_EPSILON = 1e-6; // only allow near‑zero floating‑point drift
+const ALPHA_EPSILON = 1e-6; // alpha values should match unless the difference is imperceptible floating‑point noise
+
+function normalizeChannel(value: number): number {
+  const rounded = Math.round(value);
+  return Math.abs(value - rounded) <= RGB_CHANNEL_EPSILON ? rounded : value;
+}
+
+function normalizeAlpha(value: number): number {
+  const rounded = Math.round(value * 1000) / 1000;
+  return Math.abs(value - rounded) <= ALPHA_EPSILON ? rounded : value;
+}
 
 export function areColorsEqual(color1: Color, color2: Color): boolean {
   const c1 = color1.toRGBA();
   const c2 = color2.toRGBA();
 
-  return (
-    Math.abs(c1.r - c2.r) <= RGB_CHANNEL_EPSILON &&
-    Math.abs(c1.g - c2.g) <= RGB_CHANNEL_EPSILON &&
-    Math.abs(c1.b - c2.b) <= RGB_CHANNEL_EPSILON &&
-    Math.abs((c1.a ?? 1) - (c2.a ?? 1)) <= ALPHA_EPSILON
-  );
+  const r1 = normalizeChannel(c1.r);
+  const g1 = normalizeChannel(c1.g);
+  const b1 = normalizeChannel(c1.b);
+  const r2 = normalizeChannel(c2.r);
+  const g2 = normalizeChannel(c2.g);
+  const b2 = normalizeChannel(c2.b);
+
+  const a1 = normalizeAlpha(c1.a ?? 1);
+  const a2 = normalizeAlpha(c2.a ?? 1);
+
+  return r1 === r2 && g1 === g2 && b1 === b2 && Math.abs(a1 - a2) <= ALPHA_EPSILON;
 }

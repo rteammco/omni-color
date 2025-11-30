@@ -22,14 +22,21 @@ const LAB_F_LINEAR_COEFFICIENT = 1 / (3 * LAB_DELTA ** 2); // = 7.78703704
 const LAB_KAPPA = 116 * LAB_F_LINEAR_COEFFICIENT; // = 903.29629664
 const LAB_C_OFFSET = 4 / 29; // = 0.13793103 (16 / 116)
 
+function roundRGBChannels(color: ColorRGB): ColorRGB {
+  return {
+    r: Math.round(color.r),
+    g: Math.round(color.g),
+    b: Math.round(color.b),
+  };
+}
+
 function rgbToRGBA(color: ColorRGB, alpha?: number): ColorRGBA {
-  const { r, g, b } = color;
+  const { r, g, b } = roundRGBChannels(color);
   return alpha === undefined ? { r, g, b, a: 1 } : { r, g, b, a: alpha };
 }
 
 function rgbaToRGB(color: ColorRGBA): ColorRGB {
-  const { r, g, b } = color;
-  return { r, g, b };
+  return roundRGBChannels(color);
 }
 
 function hexOrHex8ToRGBA(hex: ColorHex): ColorRGBA {
@@ -58,7 +65,7 @@ function hexOrHex8ToRGBA(hex: ColorHex): ColorRGBA {
     }
   }
 
-  return a === undefined ? { r, g, b, a: 1 } : { r, g, b, a: +a.toFixed(3) };
+  return { r, g, b, a: a ?? 1 };
 }
 
 function hexOrHex8ToRGB(hex: ColorHex): ColorRGB {
@@ -67,17 +74,17 @@ function hexOrHex8ToRGB(hex: ColorHex): ColorRGB {
 }
 
 function numToHex(value: number): string {
-  return value.toString(16).padStart(2, '0');
+  return Math.round(value).toString(16).padStart(2, '0');
 }
 
 function rgbaToHex8(color: ColorRGBA): ColorHex {
-  const { r, g, b, a } = color;
-  const alphaHex = a !== undefined ? numToHex(Math.round(a * 255)) : 'ff';
+  const { r, g, b } = roundRGBChannels(color);
+  const alphaHex = numToHex(Math.round((color.a ?? 1) * 255));
   return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}${alphaHex}`.toLowerCase() as ColorHex;
 }
 
 function rgbaToHex(color: ColorRGBA): ColorHex {
-  const { r, g, b } = color;
+  const { r, g, b } = roundRGBChannels(color);
   return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}`.toLowerCase() as ColorHex;
 }
 
@@ -436,7 +443,7 @@ export function toRGB(color: ColorFormat): ColorRGB {
     case 'HEX8':
       return hexOrHex8ToRGB(value);
     case 'RGB':
-      return value;
+      return roundRGBChannels(value);
     case 'RGBA':
       return rgbaToRGB(value);
     case 'HSL':
@@ -470,7 +477,7 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
     case 'RGB':
       return rgbToRGBA(value);
     case 'RGBA':
-      return { ...value };
+      return { ...roundRGBChannels(value), a: value.a ?? 1 };
     case 'HSL':
       return rgbToRGBA(hslToRGB(value));
     case 'HSLA':

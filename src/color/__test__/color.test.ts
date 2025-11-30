@@ -35,6 +35,8 @@ const BASE_OKLCH: ColorOKLCH = { l: 0.627955, c: 0.257683, h: 29.234 };
 
 const HEX8_OPAQUE: ColorHex = '#ff0000ff';
 const HEX8_SEMI_TRANSPARENT: ColorHex = '#ff000080';
+const SHORT_HEX_ALPHA = 0.5333333333333333;
+const HEX8_ALPHA = 0.5019607843137255;
 
 function checkAllConversions(color: Color, alpha: number, hex8: ColorHex) {
   expect(color.toHex()).toBe(BASE_HEX);
@@ -98,12 +100,12 @@ describe('Color constructor and conversion tests', () => {
   it('correctly initializes from and converts short hex with alpha input', () => {
     const shortHex8: ColorHex = '#f008';
     const color = new Color(shortHex8);
-    checkAllConversions(color, 0.533, '#ff000088');
+    checkAllConversions(color, SHORT_HEX_ALPHA, '#ff000088');
   });
 
   it('correctly initializes from and converts hex8 input', () => {
     const color = new Color(HEX8_SEMI_TRANSPARENT);
-    checkAllConversions(color, 0.502, HEX8_SEMI_TRANSPARENT);
+    checkAllConversions(color, HEX8_ALPHA, HEX8_SEMI_TRANSPARENT);
   });
 
   it('correctly initializes from and converts rgb input', () => {
@@ -114,6 +116,14 @@ describe('Color constructor and conversion tests', () => {
   it('correctly initializes from and converts rgba input', () => {
     const color = new Color({ ...BASE_RGB, a: 0.5 });
     checkAllConversions(color, 0.5, HEX8_SEMI_TRANSPARENT);
+  });
+
+  it('cleans decimal RGB inputs before returning values', () => {
+    const color = new Color({ r: 12.4, g: 100.6, b: 200.5 });
+    expect(color.toRGB()).toEqual({ r: 12, g: 101, b: 201 });
+    expect(color.toRGBA()).toEqual({ r: 12, g: 101, b: 201, a: 1 });
+    expect(color.toHex()).toBe('#0c65c9');
+    expect(color.toHex8()).toBe('#0c65c9ff');
   });
 
   it('correctly initializes from and converts hsl input', () => {
@@ -823,12 +833,12 @@ describe('Color.equals', () => {
     expect(color.equals(different)).toBe(false);
   });
 
-  it('accounts for small rounding differences', () => {
+  it('only permits floating-point drift, not channel differences', () => {
     const base = new Color('rgba(10, 20, 30, 0.333)');
-    const rounded = new Color('rgba(11, 20, 30, 0.333)');
-    const tooFar = new Color('rgba(12, 20, 30, 0.333)');
-    expect(base.equals(rounded)).toBe(true);
-    expect(base.equals(tooFar)).toBe(false);
+    const drift = new Color({ r: 10.0000004, g: 20.0000004, b: 30.0000004, a: 0.3330004 });
+    const offByOne = new Color('rgba(11, 20, 30, 0.333)');
+    expect(base.equals(drift)).toBe(true);
+    expect(base.equals(offByOne)).toBe(false);
   });
 });
 

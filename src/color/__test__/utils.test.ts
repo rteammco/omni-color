@@ -9,26 +9,67 @@ describe('areColorsEqual', () => {
     expect(areColorsEqual(new Color('rgb(0, 0, 255)'), new Color('#0000ff'))).toBe(true);
   });
 
-  it('allows small rounding differences', () => {
+  it('treats even small channel or alpha differences as unequal', () => {
+    expect(areColorsEqual(new Color('rgba(0, 0, 0, 0.5)'), new Color('rgba(1, 0, 0, 0.5)'))).toBe(
+      false
+    );
+    expect(areColorsEqual(new Color('rgba(0, 0, 0, 0.5)'), new Color('rgba(0, 1, 0, 0.5)'))).toBe(
+      false
+    );
+    expect(areColorsEqual(new Color('rgba(0, 0, 0, 0.5)'), new Color('rgba(0, 0, 1, 0.5)'))).toBe(
+      false
+    );
     expect(
-      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(1, 0, 0, 0.333)'))
-    ).toBe(true);
-    expect(
-      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 1, 0, 0.333)'))
-    ).toBe(true);
-    expect(
-      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 0, 1, 0.333)'))
-    ).toBe(true);
-    expect(
-      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 0, 0, 0.334)'))
-    ).toBe(true);
+      areColorsEqual(
+        new Color({ r: 0, g: 0, b: 0, a: 0.5 }),
+        new Color({ r: 0, g: 0, b: 0, a: 0.5005 })
+      )
+    ).toBe(false);
+  });
 
-    expect(
-      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(2, 0, 0, 0.333)'))
-    ).toBe(false);
-    expect(
-      areColorsEqual(new Color('rgba(0, 0, 0, 0.333)'), new Color('rgba(0, 0, 0, 0.335)'))
-    ).toBe(false);
+  it('handles minor floating-point drift without a wide epsilon', () => {
+    const nearlyExact = new Color({ r: 1.0000004, g: 2.0000004, b: 3.0000004 });
+    expect(areColorsEqual(nearlyExact, new Color({ r: 1, g: 2, b: 3 }))).toBe(true);
+  });
+
+  it('compares colors parsed from multiple formats consistently', () => {
+    const base = new Color('#2689d6');
+    const preciseHsl = { h: 206.25, s: 69.841, l: 49.412 };
+    const preciseHsv = { h: 206.25, s: 82.243, v: 83.922 };
+    const formats = [
+      new Color(preciseHsl),
+      new Color(preciseHsv),
+      new Color(base.toLAB()),
+      new Color(base.toLCH()),
+      new Color(base.toOKLCH()),
+      new Color('#2689d6ff'),
+    ];
+
+    const baseRgba = base.toRGBA();
+
+    const [hslColor, hsvColor, labColor, lchColor, oklchColor, hexColor] = formats;
+
+    expect(hslColor.toRGBA()).toEqual(baseRgba);
+    expect(areColorsEqual(hslColor, base)).toBe(true);
+    expect(hslColor.toHex()).toBe('#2689d6');
+
+    expect(hsvColor.toRGBA()).toEqual(baseRgba);
+    expect(areColorsEqual(hsvColor, base)).toBe(true);
+    expect(hsvColor.toHex()).toBe('#2689d6');
+
+    expect(labColor.toRGBA()).toEqual(baseRgba);
+    expect(areColorsEqual(labColor, base)).toBe(true);
+    expect(labColor.toHex()).toBe('#2689d6');
+
+    expect(lchColor.toRGBA()).toEqual(baseRgba);
+    expect(areColorsEqual(lchColor, base)).toBe(true);
+    expect(lchColor.toHex()).toBe('#2689d6');
+
+    expect(oklchColor.toRGBA()).toEqual(baseRgba);
+    expect(areColorsEqual(oklchColor, base)).toBe(true);
+    expect(oklchColor.toHex()).toBe('#2689d6');
+
+    expect(areColorsEqual(hexColor, base)).toBe(true);
   });
 
   it('returns false for different colors', () => {
