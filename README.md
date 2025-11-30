@@ -241,7 +241,8 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
 - Returns the WCAG contrast ratio against another color (alpha-aware).
 
 #### `getReadabilityScore(background)`
-- Returns the APCA draft readability score (Lc) against a background color.
+- Returns the APCA readability score (Lc) against a background color.
+- **Note:** This implementation uses the `0.0.98G-4g` constants from the draft APCA recommendations. As WCAG 3 is not yet finalized, this score is experimental and provided for advisory use only.
 
 #### `getTextReadabilityReport(background, options?)`
 - Returns `{ contrastRatio, requiredContrast, isReadable, shortfall }` for WCAG levels `AA`/`AAA` and text sizes `SMALL`/`LARGE`.
