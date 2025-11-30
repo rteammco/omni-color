@@ -77,37 +77,11 @@ function getAdjustedSaturation(baseSaturation: number, delta: number): number {
 }
 
 const BASE_COLOR_SWATCH_STOPS: readonly BasicColorSwatchStop[] = [
-  100,
-  200,
-  300,
-  400,
-  500,
-  600,
-  700,
-  800,
-  900,
+  100, 200, 300, 400, 500, 600, 700, 800, 900,
 ];
 
 const EXTENDED_COLOR_SWATCH_STOPS: readonly ExtendedColorSwatchStop[] = [
-  50,
-  100,
-  150,
-  200,
-  250,
-  300,
-  350,
-  400,
-  450,
-  500,
-  550,
-  600,
-  650,
-  700,
-  750,
-  800,
-  850,
-  900,
-  950,
+  50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
 ];
 
 const BASIC_SWATCH_DELTAS: ColorSwatchStopDeltas<BasicColorSwatchStop> = {
@@ -178,13 +152,19 @@ function getSwatchStopDelta<Stop extends number>(
   };
 }
 
-function createSwatch<Stop extends number>(
-  baseColor: Color,
-  stops: readonly Stop[],
-  deltas: ColorSwatchStopDeltas<Stop>,
-  mainStop: BasicColorSwatchStop,
-  type: ColorSwatch['type']
-): ColorSwatch {
+function createSwatch<Stop extends number>({
+  baseColor,
+  deltas,
+  mainStop,
+  stops,
+  type,
+}: {
+  baseColor: Color;
+  deltas: ColorSwatchStopDeltas<Stop>;
+  mainStop: BasicColorSwatchStop;
+  stops: readonly Stop[];
+  type: ColorSwatch['type'];
+}): ColorSwatch {
   const { h: baseH, s: baseS, l: baseL } = baseColor.toHSL();
 
   const swatchStops = stops.reduce<Record<number, Color>>((acc, stop) => {
@@ -210,20 +190,26 @@ function createSwatch<Stop extends number>(
 }
 
 function getBaseColorSwatch(baseColor: Color, mainStop: BasicColorSwatchStop): BaseColorSwatch {
-  return createSwatch(baseColor, BASE_COLOR_SWATCH_STOPS, BASIC_SWATCH_DELTAS, mainStop, 'BASIC') as BaseColorSwatch;
+  return createSwatch({
+    baseColor,
+    deltas: BASIC_SWATCH_DELTAS,
+    mainStop,
+    stops: BASE_COLOR_SWATCH_STOPS,
+    type: 'BASIC',
+  }) as BaseColorSwatch;
 }
 
 function getExtendedColorSwatch(
   baseColor: Color,
   mainStop: BasicColorSwatchStop
 ): ExtendedColorSwatch {
-  return createSwatch(
+  return createSwatch({
     baseColor,
-    EXTENDED_COLOR_SWATCH_STOPS,
-    EXTENDED_SWATCH_DELTAS,
+    deltas: EXTENDED_SWATCH_DELTAS,
     mainStop,
-    'EXTENDED'
-  ) as ExtendedColorSwatch;
+    stops: EXTENDED_COLOR_SWATCH_STOPS,
+    type: 'EXTENDED',
+  }) as ExtendedColorSwatch;
 }
 
 export function getColorSwatch(
