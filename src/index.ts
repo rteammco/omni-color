@@ -1,7 +1,6 @@
 import { Color } from './color/color';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
 import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
-import { toLAB } from './color/conversions';
 import type { CIE94Options, DeltaEMethod, DeltaEOptions } from './color/deltaE';
 import type { ColorFormat } from './color/formats';
 import {
@@ -16,7 +15,6 @@ import {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
-  labToString,
 } from './color/formats';
 import type {
   ColorGradientEasing,
@@ -35,12 +33,7 @@ import type {
   TextReadabilityConformanceLevel,
   TextReadabilityTextSizeOptions,
 } from './color/readability';
-import {
-  getBestBackgroundColorForText,
-  getMostReadableTextColorForBackground,
-  TextReadabilityOptions,
-  TextReadabilityReport,
-} from './color/readability';
+import { TextReadabilityOptions, TextReadabilityReport } from './color/readability';
 import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
 import type { ColorTemperatureLabel } from './color/temperature';
 import { ColorTemperatureAndLabel, ColorTemperatureStringFormatOptions } from './color/temperature';
@@ -85,11 +78,8 @@ export {
   type DeltaEOptions,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
-  getBestBackgroundColorForText,
-  getMostReadableTextColorForBackground,
   HueInterpolationMode,
   IsColorDarkOptions,
-  labToString,
   MixColorsOptions,
   type MixSpace,
   type MixType,
@@ -100,5 +90,4 @@ export {
   TextReadabilityOptions,
   TextReadabilityReport,
   type TextReadabilityTextSizeOptions,
-  toLAB,
 };
