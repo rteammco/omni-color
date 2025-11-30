@@ -67,24 +67,25 @@ Each converter returns a new representation without mutating the original color.
   ```
 
 #### `toRGB()` / `toRGBA()` / `toRGBString()` / `toRGBAString()`
-- Object getters return `{ r, g, b }` or `{ r, g, b, a }`; string versions return CSS `rgb(...)`/`rgba(...)`.
+- Object getters return `{ r, g, b }` or `{ r, g, b, a }`.
+- String versions return modern CSS `rgb(r g b)` or `rgb(r g b / a)` strings.
   ```ts
   const c = new Color('#33cc99');
-  c.toRGBString(); // 'rgb(51, 204, 153)'
+  c.toRGBString(); // 'rgb(51 204 153)'
   c.toRGBA().a; // 1
   ```
 
 #### `toHSL()` / `toHSLA()` / `toHSLString()` / `toHSLAString()`
-- Returns HSL(A) object or CSS `hsl(...)`/`hsla(...)` string.
+- Returns HSL(A) object or modern CSS `hsl(h s% l%)` / `hsl(h s% l% / a)` string.
   ```ts
-  new Color('#663399').toHSLAString(); // 'hsla(270, 50%, 40%, 1)'
+  new Color('#663399').toHSLAString(); // 'hsl(270 50% 40% / 1)'
   ```
 
 #### `toHSV()` / `toHSVA()`
 - Returns HSV or HSVA objects with hue 0–360 and saturation/value 0–100.
 
 #### `toCMYK()` / `toCMYKString()`
-- Returns CMYK object or `cmyk(c, m, y, k)` string.
+- Returns CMYK object or CSS `device-cmyk(c% m% y% k%)` string.
 
 #### `toLAB()` / `toLABString()`
 - Returns CIELAB object or `lab(l% a b)` string.
@@ -98,7 +99,7 @@ Each converter returns a new representation without mutating the original color.
 #### `getAlpha()` / `setAlpha(value)`
 - Read or update the alpha channel (clamped 0–1). `setAlpha` returns a new `Color`.
   ```ts
-  new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgba(255, 0, 0, 0.25)'
+  new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
   ```
 
 #### `clone()`

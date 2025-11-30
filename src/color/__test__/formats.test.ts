@@ -14,142 +14,142 @@ import {
 describe('rgbToString', () => {
   it('generates rgb strings', () => {
     const black = new Color('#000000');
-    expect(rgbToString(black.toRGB())).toBe('rgb(0, 0, 0)');
-    expect(black.toRGBString()).toBe('rgb(0, 0, 0)');
+    expect(rgbToString(black.toRGB())).toBe('rgb(0 0 0)');
+    expect(black.toRGBString()).toBe('rgb(0 0 0)');
 
     const white = new Color('#ffffff');
-    expect(rgbToString(white.toRGB())).toBe('rgb(255, 255, 255)');
-    expect(white.toRGBString()).toBe('rgb(255, 255, 255)');
+    expect(rgbToString(white.toRGB())).toBe('rgb(255 255 255)');
+    expect(white.toRGBString()).toBe('rgb(255 255 255)');
 
     const gray = new Color('#808080');
-    expect(rgbToString(gray.toRGB())).toBe('rgb(128, 128, 128)');
-    expect(gray.toRGBString()).toBe('rgb(128, 128, 128)');
+    expect(rgbToString(gray.toRGB())).toBe('rgb(128 128 128)');
+    expect(gray.toRGBString()).toBe('rgb(128 128 128)');
 
     const red = new Color('#ff0000');
-    expect(rgbToString(red.toRGB())).toBe('rgb(255, 0, 0)');
-    expect(red.toRGBString()).toBe('rgb(255, 0, 0)');
+    expect(rgbToString(red.toRGB())).toBe('rgb(255 0 0)');
+    expect(red.toRGBString()).toBe('rgb(255 0 0)');
 
     const green = new Color('#00ff00');
-    expect(rgbToString(green.toRGB())).toBe('rgb(0, 255, 0)');
-    expect(green.toRGBString()).toBe('rgb(0, 255, 0)');
+    expect(rgbToString(green.toRGB())).toBe('rgb(0 255 0)');
+    expect(green.toRGBString()).toBe('rgb(0 255 0)');
 
     const blue = new Color('#0000ff');
-    expect(rgbToString(blue.toRGB())).toBe('rgb(0, 0, 255)');
-    expect(blue.toRGBString()).toBe('rgb(0, 0, 255)');
+    expect(rgbToString(blue.toRGB())).toBe('rgb(0 0 255)');
+    expect(blue.toRGBString()).toBe('rgb(0 0 255)');
 
     const yellow = new Color('#ffff00');
-    expect(rgbToString(yellow.toRGB())).toBe('rgb(255, 255, 0)');
-    expect(yellow.toRGBString()).toBe('rgb(255, 255, 0)');
+    expect(rgbToString(yellow.toRGB())).toBe('rgb(255 255 0)');
+    expect(yellow.toRGBString()).toBe('rgb(255 255 0)');
 
     const cyan = new Color('#00ffff');
-    expect(rgbToString(cyan.toRGB())).toBe('rgb(0, 255, 255)');
-    expect(cyan.toRGBString()).toBe('rgb(0, 255, 255)');
+    expect(rgbToString(cyan.toRGB())).toBe('rgb(0 255 255)');
+    expect(cyan.toRGBString()).toBe('rgb(0 255 255)');
 
     const magenta = new Color('#ff00ff');
-    expect(rgbToString(magenta.toRGB())).toBe('rgb(255, 0, 255)');
-    expect(magenta.toRGBString()).toBe('rgb(255, 0, 255)');
+    expect(rgbToString(magenta.toRGB())).toBe('rgb(255 0 255)');
+    expect(magenta.toRGBString()).toBe('rgb(255 0 255)');
 
     const custom = new Color('#abc123');
-    expect(rgbToString(custom.toRGB())).toBe('rgb(171, 193, 35)');
-    expect(custom.toRGBString()).toBe('rgb(171, 193, 35)');
+    expect(rgbToString(custom.toRGB())).toBe('rgb(171 193 35)');
+    expect(custom.toRGBString()).toBe('rgb(171 193 35)');
   });
 });
 
 describe('rgbaToString', () => {
   it('generates rgba strings', () => {
     const transparentBlack = new Color('#00000000');
-    expect(rgbaToString(transparentBlack.toRGBA())).toBe('rgba(0, 0, 0, 0)');
-    expect(transparentBlack.toRGBAString()).toBe('rgba(0, 0, 0, 0)');
+    expect(rgbaToString(transparentBlack.toRGBA())).toBe('rgb(0 0 0 / 0)');
+    expect(transparentBlack.toRGBAString()).toBe('rgb(0 0 0 / 0)');
 
     const opaqueWhite = new Color('#ffffffff');
-    expect(rgbaToString(opaqueWhite.toRGBA())).toBe('rgba(255, 255, 255, 1)');
-    expect(opaqueWhite.toRGBAString()).toBe('rgba(255, 255, 255, 1)');
+    expect(rgbaToString(opaqueWhite.toRGBA())).toBe('rgb(255 255 255 / 1)');
+    expect(opaqueWhite.toRGBAString()).toBe('rgb(255 255 255 / 1)');
 
     const gray = new Color('#80808080');
-    expect(rgbaToString(gray.toRGBA())).toBe('rgba(128, 128, 128, 0.502)');
-    expect(gray.toRGBAString()).toBe('rgba(128, 128, 128, 0.502)');
+    expect(rgbaToString(gray.toRGBA())).toBe('rgb(128 128 128 / 0.502)');
+    expect(gray.toRGBAString()).toBe('rgb(128 128 128 / 0.502)');
 
     const red = new Color('#ff000080');
-    expect(rgbaToString(red.toRGBA())).toBe('rgba(255, 0, 0, 0.502)');
-    expect(red.toRGBAString()).toBe('rgba(255, 0, 0, 0.502)');
+    expect(rgbaToString(red.toRGBA())).toBe('rgb(255 0 0 / 0.502)');
+    expect(red.toRGBAString()).toBe('rgb(255 0 0 / 0.502)');
 
     const green = new Color('#00ff007f');
-    expect(rgbaToString(green.toRGBA())).toBe('rgba(0, 255, 0, 0.498)');
-    expect(green.toRGBAString()).toBe('rgba(0, 255, 0, 0.498)');
+    expect(rgbaToString(green.toRGBA())).toBe('rgb(0 255 0 / 0.498)');
+    expect(green.toRGBAString()).toBe('rgb(0 255 0 / 0.498)');
 
     const blue = new Color('#0000ff40');
-    expect(rgbaToString(blue.toRGBA())).toBe('rgba(0, 0, 255, 0.251)');
-    expect(blue.toRGBAString()).toBe('rgba(0, 0, 255, 0.251)');
+    expect(rgbaToString(blue.toRGBA())).toBe('rgb(0 0 255 / 0.251)');
+    expect(blue.toRGBAString()).toBe('rgb(0 0 255 / 0.251)');
 
     const yellow = new Color('#ffff00c0');
-    expect(rgbaToString(yellow.toRGBA())).toBe('rgba(255, 255, 0, 0.753)');
-    expect(yellow.toRGBAString()).toBe('rgba(255, 255, 0, 0.753)');
+    expect(rgbaToString(yellow.toRGBA())).toBe('rgb(255 255 0 / 0.753)');
+    expect(yellow.toRGBAString()).toBe('rgb(255 255 0 / 0.753)');
 
     const cyan = new Color('#00ffff20');
-    expect(rgbaToString(cyan.toRGBA())).toBe('rgba(0, 255, 255, 0.125)');
-    expect(cyan.toRGBAString()).toBe('rgba(0, 255, 255, 0.125)');
+    expect(rgbaToString(cyan.toRGBA())).toBe('rgb(0 255 255 / 0.125)');
+    expect(cyan.toRGBAString()).toBe('rgb(0 255 255 / 0.125)');
 
     const magenta = new Color('#ff00ff99');
-    expect(rgbaToString(magenta.toRGBA())).toBe('rgba(255, 0, 255, 0.6)');
-    expect(magenta.toRGBAString()).toBe('rgba(255, 0, 255, 0.6)');
+    expect(rgbaToString(magenta.toRGBA())).toBe('rgb(255 0 255 / 0.6)');
+    expect(magenta.toRGBAString()).toBe('rgb(255 0 255 / 0.6)');
 
     const custom = new Color('#abc123d6');
-    expect(rgbaToString(custom.toRGBA())).toBe('rgba(171, 193, 35, 0.839)');
-    expect(custom.toRGBAString()).toBe('rgba(171, 193, 35, 0.839)');
+    expect(rgbaToString(custom.toRGBA())).toBe('rgb(171 193 35 / 0.839)');
+    expect(custom.toRGBAString()).toBe('rgb(171 193 35 / 0.839)');
   });
 
   it('rounds alpha to three decimals', () => {
-    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.123456 })).toBe('rgba(1, 2, 3, 0.123)');
-    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.98765 })).toBe('rgba(1, 2, 3, 0.988)');
+    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.123456 })).toBe('rgb(1 2 3 / 0.123)');
+    expect(rgbaToString({ r: 1, g: 2, b: 3, a: 0.98765 })).toBe('rgb(1 2 3 / 0.988)');
   });
 });
 
 describe('hslToString', () => {
   it('generates hsl strings', () => {
     const black = new Color('#000000');
-    expect(hslToString(black.toHSL())).toBe('hsl(0, 0%, 0%)');
-    expect(black.toHSLString()).toBe('hsl(0, 0%, 0%)');
+    expect(hslToString(black.toHSL())).toBe('hsl(0 0% 0%)');
+    expect(black.toHSLString()).toBe('hsl(0 0% 0%)');
 
     const white = new Color('#ffffff');
-    expect(hslToString(white.toHSL())).toBe('hsl(0, 0%, 100%)');
-    expect(white.toHSLString()).toBe('hsl(0, 0%, 100%)');
+    expect(hslToString(white.toHSL())).toBe('hsl(0 0% 100%)');
+    expect(white.toHSLString()).toBe('hsl(0 0% 100%)');
 
     const gray = new Color('#808080');
-    expect(hslToString(gray.toHSL())).toBe('hsl(0, 0%, 50%)');
-    expect(gray.toHSLString()).toBe('hsl(0, 0%, 50%)');
+    expect(hslToString(gray.toHSL())).toBe('hsl(0 0% 50%)');
+    expect(gray.toHSLString()).toBe('hsl(0 0% 50%)');
 
     const red = new Color('#ff0000');
-    expect(hslToString(red.toHSL())).toBe('hsl(0, 100%, 50%)');
-    expect(red.toHSLString()).toBe('hsl(0, 100%, 50%)');
+    expect(hslToString(red.toHSL())).toBe('hsl(0 100% 50%)');
+    expect(red.toHSLString()).toBe('hsl(0 100% 50%)');
 
     const green = new Color('#00ff00');
-    expect(hslToString(green.toHSL())).toBe('hsl(120, 100%, 50%)');
-    expect(green.toHSLString()).toBe('hsl(120, 100%, 50%)');
+    expect(hslToString(green.toHSL())).toBe('hsl(120 100% 50%)');
+    expect(green.toHSLString()).toBe('hsl(120 100% 50%)');
 
     const blue = new Color('#0000ff');
-    expect(hslToString(blue.toHSL())).toBe('hsl(240, 100%, 50%)');
-    expect(blue.toHSLString()).toBe('hsl(240, 100%, 50%)');
+    expect(hslToString(blue.toHSL())).toBe('hsl(240 100% 50%)');
+    expect(blue.toHSLString()).toBe('hsl(240 100% 50%)');
 
     const yellow = new Color('#ffff00');
-    expect(hslToString(yellow.toHSL())).toBe('hsl(60, 100%, 50%)');
-    expect(yellow.toHSLString()).toBe('hsl(60, 100%, 50%)');
+    expect(hslToString(yellow.toHSL())).toBe('hsl(60 100% 50%)');
+    expect(yellow.toHSLString()).toBe('hsl(60 100% 50%)');
 
     const cyan = new Color('#00ffff');
-    expect(hslToString(cyan.toHSL())).toBe('hsl(180, 100%, 50%)');
-    expect(cyan.toHSLString()).toBe('hsl(180, 100%, 50%)');
+    expect(hslToString(cyan.toHSL())).toBe('hsl(180 100% 50%)');
+    expect(cyan.toHSLString()).toBe('hsl(180 100% 50%)');
 
     const magenta = new Color('#ff00ff');
-    expect(hslToString(magenta.toHSL())).toBe('hsl(300, 100%, 50%)');
-    expect(magenta.toHSLString()).toBe('hsl(300, 100%, 50%)');
+    expect(hslToString(magenta.toHSL())).toBe('hsl(300 100% 50%)');
+    expect(magenta.toHSLString()).toBe('hsl(300 100% 50%)');
 
     const custom = new Color('#abc123');
-    expect(hslToString(custom.toHSL())).toBe('hsl(68, 69%, 45%)');
-    expect(custom.toHSLString()).toBe('hsl(68, 69%, 45%)');
+    expect(hslToString(custom.toHSL())).toBe('hsl(68 69% 45%)');
+    expect(custom.toHSLString()).toBe('hsl(68 69% 45%)');
   });
 
   it('rounds component values to three decimals', () => {
     expect(hslToString({ h: 123.4567, s: 50.5555, l: 10.1234 })).toBe(
-      'hsl(123.457, 50.556%, 10.123%)'
+      'hsl(123.457 50.556% 10.123%)'
     );
   });
 });
@@ -157,49 +157,49 @@ describe('hslToString', () => {
 describe('hslaToString', () => {
   it('generates hsla strings', () => {
     const transparentBlack = new Color('#00000000');
-    expect(hslaToString(transparentBlack.toHSLA())).toBe('hsla(0, 0%, 0%, 0)');
-    expect(transparentBlack.toHSLAString()).toBe('hsla(0, 0%, 0%, 0)');
+    expect(hslaToString(transparentBlack.toHSLA())).toBe('hsl(0 0% 0% / 0)');
+    expect(transparentBlack.toHSLAString()).toBe('hsl(0 0% 0% / 0)');
 
     const opaqueWhite = new Color('#ffffffff');
-    expect(hslaToString(opaqueWhite.toHSLA())).toBe('hsla(0, 0%, 100%, 1)');
-    expect(opaqueWhite.toHSLAString()).toBe('hsla(0, 0%, 100%, 1)');
+    expect(hslaToString(opaqueWhite.toHSLA())).toBe('hsl(0 0% 100% / 1)');
+    expect(opaqueWhite.toHSLAString()).toBe('hsl(0 0% 100% / 1)');
 
     const gray = new Color('#80808080');
-    expect(hslaToString(gray.toHSLA())).toBe('hsla(0, 0%, 50%, 0.502)');
-    expect(gray.toHSLAString()).toBe('hsla(0, 0%, 50%, 0.502)');
+    expect(hslaToString(gray.toHSLA())).toBe('hsl(0 0% 50% / 0.502)');
+    expect(gray.toHSLAString()).toBe('hsl(0 0% 50% / 0.502)');
 
     const red = new Color('#ff000080');
-    expect(hslaToString(red.toHSLA())).toBe('hsla(0, 100%, 50%, 0.502)');
-    expect(red.toHSLAString()).toBe('hsla(0, 100%, 50%, 0.502)');
+    expect(hslaToString(red.toHSLA())).toBe('hsl(0 100% 50% / 0.502)');
+    expect(red.toHSLAString()).toBe('hsl(0 100% 50% / 0.502)');
 
     const green = new Color('#00ff007f');
-    expect(hslaToString(green.toHSLA())).toBe('hsla(120, 100%, 50%, 0.498)');
-    expect(green.toHSLAString()).toBe('hsla(120, 100%, 50%, 0.498)');
+    expect(hslaToString(green.toHSLA())).toBe('hsl(120 100% 50% / 0.498)');
+    expect(green.toHSLAString()).toBe('hsl(120 100% 50% / 0.498)');
 
     const blue = new Color('#0000ff40');
-    expect(hslaToString(blue.toHSLA())).toBe('hsla(240, 100%, 50%, 0.251)');
-    expect(blue.toHSLAString()).toBe('hsla(240, 100%, 50%, 0.251)');
+    expect(hslaToString(blue.toHSLA())).toBe('hsl(240 100% 50% / 0.251)');
+    expect(blue.toHSLAString()).toBe('hsl(240 100% 50% / 0.251)');
 
     const yellow = new Color('#ffff00c0');
-    expect(hslaToString(yellow.toHSLA())).toBe('hsla(60, 100%, 50%, 0.753)');
-    expect(yellow.toHSLAString()).toBe('hsla(60, 100%, 50%, 0.753)');
+    expect(hslaToString(yellow.toHSLA())).toBe('hsl(60 100% 50% / 0.753)');
+    expect(yellow.toHSLAString()).toBe('hsl(60 100% 50% / 0.753)');
 
     const cyan = new Color('#00ffff20');
-    expect(hslaToString(cyan.toHSLA())).toBe('hsla(180, 100%, 50%, 0.125)');
-    expect(cyan.toHSLAString()).toBe('hsla(180, 100%, 50%, 0.125)');
+    expect(hslaToString(cyan.toHSLA())).toBe('hsl(180 100% 50% / 0.125)');
+    expect(cyan.toHSLAString()).toBe('hsl(180 100% 50% / 0.125)');
 
     const magenta = new Color('#ff00ff99');
-    expect(hslaToString(magenta.toHSLA())).toBe('hsla(300, 100%, 50%, 0.6)');
-    expect(magenta.toHSLAString()).toBe('hsla(300, 100%, 50%, 0.6)');
+    expect(hslaToString(magenta.toHSLA())).toBe('hsl(300 100% 50% / 0.6)');
+    expect(magenta.toHSLAString()).toBe('hsl(300 100% 50% / 0.6)');
 
     const custom = new Color('#abc123d6');
-    expect(hslaToString(custom.toHSLA())).toBe('hsla(68, 69%, 45%, 0.839)');
-    expect(custom.toHSLAString()).toBe('hsla(68, 69%, 45%, 0.839)');
+    expect(hslaToString(custom.toHSLA())).toBe('hsl(68 69% 45% / 0.839)');
+    expect(custom.toHSLAString()).toBe('hsl(68 69% 45% / 0.839)');
   });
 
   it('rounds hsla components to three decimals', () => {
     expect(hslaToString({ h: 123.4567, s: 50.5555, l: 10.1234, a: 0.98765 })).toBe(
-      'hsla(123.457, 50.556%, 10.123%, 0.988)'
+      'hsl(123.457 50.556% 10.123% / 0.988)'
     );
   });
 });
@@ -207,49 +207,49 @@ describe('hslaToString', () => {
 describe('cmykToString', () => {
   it('generates cmyk strings', () => {
     const black = new Color('#000000');
-    expect(cmykToString(black.toCMYK())).toBe('cmyk(0%, 0%, 0%, 100%)');
-    expect(black.toCMYKString()).toBe('cmyk(0%, 0%, 0%, 100%)');
+    expect(cmykToString(black.toCMYK())).toBe('device-cmyk(0% 0% 0% 100%)');
+    expect(black.toCMYKString()).toBe('device-cmyk(0% 0% 0% 100%)');
 
     const white = new Color('#ffffff');
-    expect(cmykToString(white.toCMYK())).toBe('cmyk(0%, 0%, 0%, 0%)');
-    expect(white.toCMYKString()).toBe('cmyk(0%, 0%, 0%, 0%)');
+    expect(cmykToString(white.toCMYK())).toBe('device-cmyk(0% 0% 0% 0%)');
+    expect(white.toCMYKString()).toBe('device-cmyk(0% 0% 0% 0%)');
 
     const gray = new Color('#808080');
-    expect(cmykToString(gray.toCMYK())).toBe('cmyk(0%, 0%, 0%, 50%)');
-    expect(gray.toCMYKString()).toBe('cmyk(0%, 0%, 0%, 50%)');
+    expect(cmykToString(gray.toCMYK())).toBe('device-cmyk(0% 0% 0% 50%)');
+    expect(gray.toCMYKString()).toBe('device-cmyk(0% 0% 0% 50%)');
 
     const red = new Color('#ff0000');
-    expect(cmykToString(red.toCMYK())).toBe('cmyk(0%, 100%, 100%, 0%)');
-    expect(red.toCMYKString()).toBe('cmyk(0%, 100%, 100%, 0%)');
+    expect(cmykToString(red.toCMYK())).toBe('device-cmyk(0% 100% 100% 0%)');
+    expect(red.toCMYKString()).toBe('device-cmyk(0% 100% 100% 0%)');
 
     const green = new Color('#00ff00');
-    expect(cmykToString(green.toCMYK())).toBe('cmyk(100%, 0%, 100%, 0%)');
-    expect(green.toCMYKString()).toBe('cmyk(100%, 0%, 100%, 0%)');
+    expect(cmykToString(green.toCMYK())).toBe('device-cmyk(100% 0% 100% 0%)');
+    expect(green.toCMYKString()).toBe('device-cmyk(100% 0% 100% 0%)');
 
     const blue = new Color('#0000ff');
-    expect(cmykToString(blue.toCMYK())).toBe('cmyk(100%, 100%, 0%, 0%)');
-    expect(blue.toCMYKString()).toBe('cmyk(100%, 100%, 0%, 0%)');
+    expect(cmykToString(blue.toCMYK())).toBe('device-cmyk(100% 100% 0% 0%)');
+    expect(blue.toCMYKString()).toBe('device-cmyk(100% 100% 0% 0%)');
 
     const yellow = new Color('#ffff00');
-    expect(cmykToString(yellow.toCMYK())).toBe('cmyk(0%, 0%, 100%, 0%)');
-    expect(yellow.toCMYKString()).toBe('cmyk(0%, 0%, 100%, 0%)');
+    expect(cmykToString(yellow.toCMYK())).toBe('device-cmyk(0% 0% 100% 0%)');
+    expect(yellow.toCMYKString()).toBe('device-cmyk(0% 0% 100% 0%)');
 
     const cyan = new Color('#00ffff');
-    expect(cmykToString(cyan.toCMYK())).toBe('cmyk(100%, 0%, 0%, 0%)');
-    expect(cyan.toCMYKString()).toBe('cmyk(100%, 0%, 0%, 0%)');
+    expect(cmykToString(cyan.toCMYK())).toBe('device-cmyk(100% 0% 0% 0%)');
+    expect(cyan.toCMYKString()).toBe('device-cmyk(100% 0% 0% 0%)');
 
     const magenta = new Color('#ff00ff');
-    expect(cmykToString(magenta.toCMYK())).toBe('cmyk(0%, 100%, 0%, 0%)');
-    expect(magenta.toCMYKString()).toBe('cmyk(0%, 100%, 0%, 0%)');
+    expect(cmykToString(magenta.toCMYK())).toBe('device-cmyk(0% 100% 0% 0%)');
+    expect(magenta.toCMYKString()).toBe('device-cmyk(0% 100% 0% 0%)');
 
     const custom = new Color('#abc123');
-    expect(cmykToString(custom.toCMYK())).toBe('cmyk(11%, 0%, 82%, 24%)');
-    expect(custom.toCMYKString()).toBe('cmyk(11%, 0%, 82%, 24%)');
+    expect(cmykToString(custom.toCMYK())).toBe('device-cmyk(11% 0% 82% 24%)');
+    expect(custom.toCMYKString()).toBe('device-cmyk(11% 0% 82% 24%)');
   });
 
   it('rounds cmyk components to three decimals', () => {
     expect(cmykToString({ c: 12.3456, m: 0.9876, y: 54.321, k: 10.5555 })).toBe(
-      'cmyk(12.346%, 0.988%, 54.321%, 10.556%)'
+      'device-cmyk(12.346% 0.988% 54.321% 10.556%)'
     );
   });
 });

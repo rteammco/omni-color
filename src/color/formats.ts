@@ -95,7 +95,8 @@ function getHexColorFormatType(color: ColorHex): ColorFormatTypeAndValue {
     if (colorLowerCase.length === 5) {
       return {
         formatType: 'HEX8',
-        value: `#${colorLowerCase[1]}${colorLowerCase[1]}${colorLowerCase[2]}${colorLowerCase[2]}${colorLowerCase[3]}${colorLowerCase[3]}${colorLowerCase[4]}${colorLowerCase[4]}` as ColorHex,
+        value:
+          `#${colorLowerCase[1]}${colorLowerCase[1]}${colorLowerCase[2]}${colorLowerCase[2]}${colorLowerCase[3]}${colorLowerCase[3]}${colorLowerCase[4]}${colorLowerCase[4]}` as ColorHex,
       };
     }
     if (colorLowerCase.length === 7) {
@@ -171,27 +172,27 @@ function getDecimalString(value: number, digits = 3): number {
 }
 
 export function rgbToString({ r, g, b }: ColorRGB): string {
-  return `rgb(${r}, ${g}, ${b})`;
+  return `rgb(${r} ${g} ${b})`;
 }
 
 export function rgbaToString({ r, g, b, a }: ColorRGBA): string {
-  return `rgba(${r}, ${g}, ${b}, ${getDecimalString(a)})`;
+  return `rgb(${r} ${g} ${b} / ${getDecimalString(a)})`;
 }
 
 export function hslToString({ h, s, l }: ColorHSL): string {
-  return `hsl(${getDecimalString(h)}, ${getDecimalString(s)}%, ${getDecimalString(l)}%)`;
+  return `hsl(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(l)}%)`;
 }
 
 export function hslaToString({ h, s, l, a }: ColorHSLA): string {
-  return `hsla(${getDecimalString(h)}, ${getDecimalString(s)}%, ${getDecimalString(
+  return `hsl(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(
     l
-  )}%, ${getDecimalString(a)})`;
+  )}% / ${getDecimalString(a)})`;
 }
 
 export function cmykToString({ c, m, y, k }: ColorCMYK): string {
-  return `cmyk(${getDecimalString(c)}%, ${getDecimalString(m)}%, ${getDecimalString(
+  return `device-cmyk(${getDecimalString(c)}% ${getDecimalString(m)}% ${getDecimalString(
     y
-  )}%, ${getDecimalString(k)}%)`;
+  )}% ${getDecimalString(k)}%)`;
 }
 
 export function labToString({ l, a, b }: ColorLAB): string {
