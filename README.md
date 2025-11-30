@@ -82,7 +82,7 @@ const cozy = Color.fromTemperature('Warm tungsten');
 
 ### Color Formats and Conversions
 
-#### `` toHex(): `#${string}`  ``
+#### `` toHex(): `#${string}` ``
 
 - <u>Returns</u> a [`ColorHex`](#types-color-hex) string in 6-digit `"#rrggbb"` form (alpha is ignored).
 
@@ -90,7 +90,7 @@ const cozy = Color.fromTemperature('Warm tungsten');
 new Color('red').toHex(); // #ff0000
 ```
 
-#### `` toHex(): `#${string}`  ``
+#### `` toHex(): `#${string}` ``
 
 - <u>Returns</u> a [`ColorHex`](#types-color-hex) string in 8-digit `"#rrggbbaa"` form, including the alpha channel.
 
