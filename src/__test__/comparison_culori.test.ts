@@ -10,50 +10,6 @@ import {
 
 import { Color } from '../color/color';
 
-// Type definitions for Culori objects to avoid 'any'
-interface CuloriRGB {
-  mode: 'rgb';
-  r: number;
-  g: number;
-  b: number;
-  alpha?: number;
-}
-interface CuloriHSL {
-  mode: 'hsl';
-  h?: number;
-  s: number;
-  l: number;
-  alpha?: number;
-}
-interface CuloriHSV {
-  mode: 'hsv';
-  h?: number;
-  s: number;
-  v: number;
-  alpha?: number;
-}
-interface CuloriLab {
-  mode: 'lab';
-  l: number;
-  a: number;
-  b: number;
-  alpha?: number;
-}
-interface CuloriLCH {
-  mode: 'lch';
-  l: number;
-  c: number;
-  h?: number;
-  alpha?: number;
-}
-interface CuloriOKLCH {
-  mode: 'oklch';
-  l: number;
-  c: number;
-  h?: number;
-  alpha?: number;
-}
-
 const culoriToRgb = converter('rgb');
 const culoriToHsl = converter('hsl');
 const culoriToHsv = converter('hsv');
@@ -91,8 +47,7 @@ function parseOrThrow(input: string) {
   return result;
 }
 
-// Skipping these tests as they reveal expected differences (e.g. D50 vs D65 white point)
-// that will be addressed in a future task.
+// TODO: unskip and fix these tests
 describe.skip('Cross-check with Culori', () => {
   describe('Conversions', () => {
     TEST_COLORS.forEach((input) => {
@@ -103,7 +58,7 @@ describe.skip('Cross-check with Culori', () => {
       describe(`Input: ${JSON.stringify(input)} (Hex8: ${sourceHex8})`, () => {
         it('matches RGB', () => {
           const omniRgb = omni.toRGB();
-          const culoriRgb = culoriToRgb(culoriColor) as CuloriRGB;
+          const culoriRgb = culoriToRgb(culoriColor);
 
           expect(omniRgb.r).toBeCloseTo(culoriRgb.r * 255, 0);
           expect(omniRgb.g).toBeCloseTo(culoriRgb.g * 255, 0);
@@ -122,7 +77,7 @@ describe.skip('Cross-check with Culori', () => {
 
         it('matches HSL', () => {
           const omniHsl = omni.toHSL();
-          const culoriHsl = culoriToHsl(culoriColor) as CuloriHSL;
+          const culoriHsl = culoriToHsl(culoriColor);
 
           const ch = fixHue(culoriHsl.h);
 
@@ -138,7 +93,7 @@ describe.skip('Cross-check with Culori', () => {
 
         it('matches HSV', () => {
           const omniHsv = omni.toHSV();
-          const culoriHsv = culoriToHsv(culoriColor) as CuloriHSV;
+          const culoriHsv = culoriToHsv(culoriColor);
 
           const ch = fixHue(culoriHsv.h);
 
@@ -153,7 +108,7 @@ describe.skip('Cross-check with Culori', () => {
 
         it('matches Lab', () => {
           const omniLab = omni.toLAB();
-          const culoriLab = culoriToLab(culoriColor) as CuloriLab;
+          const culoriLab = culoriToLab(culoriColor);
 
           expect(omniLab.l).toBeCloseTo(culoriLab.l, 1);
           expect(omniLab.a).toBeCloseTo(culoriLab.a, 1);
@@ -162,7 +117,7 @@ describe.skip('Cross-check with Culori', () => {
 
         it('matches LCH', () => {
           const omniLch = omni.toLCH();
-          const culoriLch = culoriToLch(culoriColor) as CuloriLCH;
+          const culoriLch = culoriToLch(culoriColor);
 
           expect(omniLch.l).toBeCloseTo(culoriLch.l, 1);
           expect(omniLch.c).toBeCloseTo(culoriLch.c, 1);
@@ -177,7 +132,7 @@ describe.skip('Cross-check with Culori', () => {
 
         it('matches OKLCH', () => {
           const omniOklch = omni.toOKLCH();
-          const culoriOklch = culoriToOklch(culoriColor) as CuloriOKLCH;
+          const culoriOklch = culoriToOklch(culoriColor);
 
           expect(omniOklch.l).toBeCloseTo(culoriOklch.l, 3);
           expect(omniOklch.c).toBeCloseTo(culoriOklch.c, 3);
