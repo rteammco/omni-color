@@ -292,7 +292,7 @@ function cmykToRGBA(color: ColorCMYK, alpha?: number): ColorRGBA {
   return rgbToRGBA(rgb, alpha);
 }
 
-function rgbToLabUnrounded(color: ColorRGB): ColorLAB {
+function rgbToLABUnrounded(color: ColorRGB): ColorLAB {
   const r = srgbChannelToLinear(color.r, 'SRGB');
   const g = srgbChannelToLinear(color.g, 'SRGB');
   const b = srgbChannelToLinear(color.b, 'SRGB');
@@ -312,7 +312,7 @@ function rgbToLabUnrounded(color: ColorRGB): ColorLAB {
 }
 
 function rgbToLAB(color: ColorRGB): ColorLAB {
-  const { l, a, b } = rgbToLabUnrounded(color);
+  const { l, a, b } = rgbToLABUnrounded(color);
   return {
     l: +l.toFixed(3),
     a: +a.toFixed(3),
@@ -347,7 +347,7 @@ function labToRGB(color: ColorLAB): ColorRGB {
 }
 
 function rgbToLCH(color: ColorRGB): ColorLCH {
-  const { l, a, b } = rgbToLabUnrounded(color);
+  const { l, a, b } = rgbToLABUnrounded(color);
   const c = Math.sqrt(a * a + b * b);
   const h = (Math.atan2(b, a) * 180) / Math.PI;
   return {
