@@ -1,16 +1,20 @@
+import { useState } from 'react';
 import type { Color } from '../../../dist';
 import { Card } from '../components/Card';
 import { ColorBox } from '../components/ColorBox';
+import { Slider } from '../components/Slider';
 
 interface Props {
   color: Color;
 }
 
 export function ColorManipulationDemo({ color }: Props) {
-  const brightenedColor = color.brighten();
-  const darkenedColor = color.darken();
-  const saturatedColor = color.saturate();
-  const desaturatedColor = color.desaturate();
+  const [percentage, setPercentage] = useState(10);
+
+  const brightenedColor = color.brighten(percentage);
+  const darkenedColor = color.darken(percentage);
+  const saturatedColor = color.saturate(percentage);
+  const desaturatedColor = color.desaturate(percentage);
   const grayscaleColor = color.grayscale();
 
   return (
@@ -58,6 +62,17 @@ export function ColorManipulationDemo({ color }: Props) {
           overlayText="Grayscale"
           width="STRETCH"
         />
+      </div>
+      <div className="flex flex-row justify-center gap-4 mt-4">
+        <Slider
+          label="Intensity:"
+          max={100}
+          min={0}
+          step={1}
+          value={percentage}
+          onChange={setPercentage}
+        />
+        <div className="w-12 text-left">{percentage}%</div>
       </div>
     </Card>
   );
