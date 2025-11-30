@@ -16,7 +16,7 @@ npm install omni-color
 
 ## ℹ️ Documentation
 
-**_omni-color_** is built around the `Color` class. `Color` is immutable - all operations will return a new instance. Import directly from the package:
+**_omni-color_** is built around the [`Color`](#types-color) class. [`Color`](#types-color) is immutable - all operations will return a new instance. Import directly from the package:
 
 ```ts
 import { Color } from 'omni-color';
@@ -29,13 +29,13 @@ const hex8String = darker.toHex8();
 
 ### Initialize Colors
 
-#### `new Color(color?: Color | ColorFormat | string | null)`
+#### `new Color(color?: Color | ColorFormat | string | null): Color`
 
 _`constructor`_
 
-- <u>Returns</u> a new [`Color`](#types) instance of the specified color input.
+- <u>Returns</u> a new [`Color`](#types-color) instance of the specified color input.
 - <u>Inputs</u>:
-  - `color` (optional) - an existing [`Color`](#types), any valid [`ColorFormat`](#types), a named CSS color, or any parsable color format (e.g. `"rgb(0,255,255)"`) including partial or exact matches of a [`ColorTemperatureLabel`](#types).
+  - `color` (optional) - an existing [`Color`](#types-color), any valid [`ColorFormat`](#types-color-format), a named CSS color, or any parsable color format (e.g. `"rgb(0,255,255)"`) including partial or exact matches of a [`ColorTemperatureLabel`](#types-color-temperature-label).
     - No input or passing in `null`/`undefined` generates a random color.
     - **Invalid inputs throw an exception.**
 
@@ -48,11 +48,11 @@ const fromTemperature = new Color('Incandescent lamp');
 const random = new Color();
 ```
 
-#### `Color.random(options?: RandomColorOptions)`
+#### `Color.random(options?: RandomColorOptions): Color`
 
 _`static`_
 
-- <u>Returns</u> a new [`Color`](#types) instance of a randomly-generated color.
+- <u>Returns</u> a new [`Color`](#types-color) instance of a randomly-generated color.
 - <u>Inputs</u>:
   - `options` (optional) - customize how the color will be randomized with `RandomColorOptions`:
     - `alpha` - the alpha value of the random color (0-1). If not specified, it will default to 1 (opaque) unless `randomizeAlpha` is `true`.
@@ -66,14 +66,14 @@ const punchy = Color.random({ anchorColor: 'Orange', paletteSuitable: true });
 const translucent = Color.random({ randomizeAlpha: true });
 ```
 
-#### `Color.fromTemperature(temperature: number | ColorTemperatureLabel)`
+#### `Color.fromTemperature(temperature: number | ColorTemperatureLabel): Color`
 
 _`static`_
 
-- <u>Returns</u> an off-white color reflecting the given color temperature.
+- <u>Returns</u> an off-white [`Color`](#types-color) reflecting the given color temperature.
   - Kelvin to RGB conversion algorithm: https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html.
 - <u>Inputs</u>:
-  - `temperature` - a color temperature value in Kelvin (valid range is ~1000 to ~40000) or a [`ColorTemperatureLabel`](#types).
+  - `temperature` - a color temperature value in Kelvin (valid range is ~1000 to ~40000) or a [`ColorTemperatureLabel`](#types-color-temperature-label).
 
 ```ts
 const daylight = Color.fromTemperature(6500);
@@ -82,167 +82,169 @@ const cozy = Color.fromTemperature('Warm tungsten');
 
 ### Color Formats and Conversions
 
-#### `toHex()`
+#### `` toHex(): `#${string}`  ``
 
-- <u>Returns</u> a [`ColorHex`](#colorhex) string in 6-digit `#rrggbb` form (alpha is ignored).
+- <u>Returns</u> a [`ColorHex`](#types-color-hex) string in 6-digit `"#rrggbb"` form (alpha is ignored).
 
 ```ts
 new Color('red').toHex(); // #ff0000
 ```
 
-#### `toHex8()`
+#### `` toHex(): `#${string}`  ``
 
-- <u>Returns</u> a [`ColorHex`](#colorhex) string in 8-digit `#rrggbbaa` form, including the alpha channel.
+- <u>Returns</u> a [`ColorHex`](#types-color-hex) string in 8-digit `"#rrggbbaa"` form, including the alpha channel.
 
 ```ts
 new Color('rgba(0, 0, 255, 0.5)').toHex8(); // #0000ff80
 ```
 
-#### `toRGB()`
+#### `toRGB(): { r: number; g: number; b: number }`
 
-- <u>Returns</u> a [`ColorRGB`](#colorrgb) object with 0–255 channel values.
+- <u>Returns</u> a [`ColorRGB`](#types-color-rgb) object with 0–255 channel values.
 
 ```ts
 new Color('#33cc99').toRGB(); // { r: 51, g: 204, b: 153 }
 ```
 
-#### `toRGBA()`
+#### `toRGBA(): { r: number; g: number; b: number; a: number }`
 
-- <u>Returns</u> a [`ColorRGBA`](#colorrgba) object with 0–255 RGB channels and alpha 0–1.
+- <u>Returns</u> a [`ColorRGBA`](#types-color-rgba) object with 0–255 RGB channels and alpha 0–1.
 
 ```ts
 new Color('#33cc99').toRGBA(); // { r: 51, g: 204, b: 153, a: 1 }
 ```
 
-#### `toRGBString()`
+#### `toRGBString(): string`
 
-- <u>Returns</u> a CSS `rgb(r g b)` string.
+- <u>Returns</u> a CSS `"rgb(r g b)"` string.
 
 ```ts
 new Color('#33cc99').toRGBString(); // 'rgb(51 204 153)'
 ```
 
-#### `toRGBAString()`
+#### `toRGBAString(): string`
 
-- <u>Returns</u> a CSS `rgb(r g b / a)` string.
+- <u>Returns</u> a CSS `"rgb(r g b / a)"` string.
 
 ```ts
 new Color('#33cc99').setAlpha(0.5).toRGBAString(); // 'rgb(51 204 153 / 0.5)'
 ```
 
-#### `toHSL()`
+#### `toHSL(): { h: number; s: number; l: number }`
 
-- <u>Returns</u> a [`ColorHSL`](#colorhsl) object with hue 0–360 and saturation/lightness 0–100.
+- <u>Returns</u> a [`ColorHSL`](#types-color-hsl) object with hue 0–360 and saturation/lightness 0–100.
 
 ```ts
 new Color('#663399').toHSL(); // { h: 270, s: 50, l: 40 }
 ```
 
-#### `toHSLA()`
+#### `toHSLA(): { h: number; s: number; l: number; a: number }`
 
-- <u>Returns</u> a [`ColorHSLA`](#colorhsla) object with hue 0–360, saturation/lightness 0–100, and alpha 0–1.
+- <u>Returns</u> a [`ColorHSLA`](#types-color-hsla) object with hue 0–360, saturation/lightness 0–100, and alpha 0–1.
 
 ```ts
 new Color('#663399').toHSLA(); // { h: 270, s: 50, l: 40, a: 1 }
 ```
 
-#### `toHSLString()`
+#### `toHSLString(): string`
 
-- <u>Returns</u> an `hsl(h s% l%)` string.
+- <u>Returns</u> a CSS `"hsl(h s% l%)"` string.
 
 ```ts
 new Color('#663399').toHSLString(); // 'hsl(270 50% 40%)'
 ```
 
-#### `toHSLAString()`
+#### `toHSLAString(): string`
 
-- <u>Returns</u> an `hsl(h s% l% / a)` string.
+- <u>Returns</u> a CSS `"hsl(h s% l% / a)"` string.
 
 ```ts
 new Color('#663399').toHSLAString(); // 'hsl(270 50% 40% / 1)'
 ```
 
-#### `toHSV()`
+#### `toHSV(): { h: number; s: number; v: number }`
 
-- <u>Returns</u> a [`ColorHSV`](#colorhsv) object with hue 0–360 and saturation/value 0–100.
+- <u>Returns</u> a [`ColorHSV`](#types-color-hsv) object with hue 0–360 and saturation/value 0–100.
 
 ```ts
 new Color('#1e90ff').toHSV(); // { h: 210, s: 88, v: 100 }
 ```
 
-#### `toHSVA()`
+#### `toHSVA(): { h: number; s: number; v: number; a: number }`
 
-- <u>Returns</u> a [`ColorHSVA`](#colorhsva) object with hue 0–360, saturation/value 0–100, and alpha 0–1.
+- <u>Returns</u> a [`ColorHSVA`](#types-color-hsva) object with hue 0–360, saturation/value 0–100, and alpha 0–1.
 
 ```ts
 new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
 ```
 
-#### `toCMYK()`
+#### `toCMYK(): { c: number; m: number; y: number; k: number }`
 
-- <u>Returns</u> a [`ColorCMYK`](#colorcmyk) object with channel values 0–100.
+- <u>Returns</u> a [`ColorCMYK`](#types-color-cmyk) object with channel values 0–100.
 
 ```ts
 new Color('#00b7eb').toCMYK(); // { c: 100, m: 22, y: 0, k: 8 }
 ```
 
-#### `toCMYKString()`
+#### `toCMYKString(): string`
 
-- <u>Returns</u> a `device-cmyk(c% m% y% k%)` string.
+- <u>Returns</u> a CSS `"device-cmyk(c% m% y% k%)"` string.
 
 ```ts
 new Color('#00b7eb').toCMYKString(); // 'device-cmyk(100% 22% 0% 8%)'
 ```
 
-#### `toLAB()`
+#### `toLAB(): { l: number; a: number; b: number }`
 
-- <u>Returns</u> a [`ColorLAB`](#colorlab) object (CIELAB values).
+- <u>Returns</u> a [`ColorLAB`](#types-color-lab) object (CIELAB values).
 
 ```ts
 new Color('#00b7eb').toLAB(); // { l: 69.373, a: -20.411, b: -36.677 }
 ```
 
-#### `toLABString()`
+#### `toLABString(): string`
 
-- <u>Returns</u> a `lab(l% a b)` string.
+- <u>Returns</u> a CSS `"lab(l% a b)"` string.
 
 ```ts
 new Color('#00b7eb').toLABString(); // 'lab(69.373% -20.411 -36.677)'
 ```
 
-#### `toLCH()`
+#### `toLCH(): { l: number; c: number; h: number }`
 
-- <u>Returns</u> a [`ColorLCH`](#colorlch) object (CIELCh values).
+- <u>Returns</u> a [`ColorLCH`](#types-color-lch) object (CIELCh values).
 
 ```ts
 new Color('#00b7eb').toLCH(); // { l: 69.373, c: 41.974, h: 240.903 }
 ```
 
-#### `toLCHString()`
+#### `toLCHString(): string`
 
-- <u>Returns</u> an `lch(l% c h)` string.
+- <u>Returns</u> a CSS `"lch(l% c h)"` string.
 
 ```ts
 new Color('#00b7eb').toLCHString(); // 'lch(69.373% 41.974 240.903)'
 ```
 
-#### `toOKLCH()`
+#### `toOKLCH(): { l: number; c: number; h: number }`
 
-- <u>Returns</u> a [`ColorOKLCH`](#coloroklch) object (OKLCH values).
+- <u>Returns</u> a [`ColorOKLCH`](#types-color-oklch) object (OKLCH values).
 
 ```ts
 new Color('#00b7eb').toOKLCH(); // { l: 0.727148, c: 0.140767, h: 227.27 }
 ```
 
-#### `toOKLCHString()`
+#### `toOKLCHString(): string`
 
-- <u>Returns</u> an `oklch(l c h)` string.
+- <u>Returns</u> a CSS `"oklch(l c h)"` string.
 
 ```ts
 new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 ```
 
-#### `getAlpha()`
+### Alpha Channel
+
+#### `getAlpha(): number`
 
 - <u>Returns</u> the current alpha value (0–1).
 
@@ -250,9 +252,9 @@ new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 new Color('#ff0000').getAlpha(); // 1
 ```
 
-#### `setAlpha(value)`
+#### `setAlpha(value): Color`
 
-- <u>Returns</u> a new `Color` with alpha clamped between 0 and 1.
+- <u>Returns</u> a new [`Color`](#types-color) with the specified alpha. Out-of-bounds alpha values will be clamped between 0 and 1.
 
 ```ts
 new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
@@ -477,21 +479,21 @@ reference.differenceFrom(new Color('#aa0000'), {
 
 ### Types
 
-- `Color` - the main, immutable color instance.
-- `BaseColorName` - base hue color names: `"Red" | "Orange" | "Yellow" | "Green" | "Blue" | "Purple" | "Pink" | "Black" | "Gray" | "White"`.
-- `ColorFormat` - any of the following supported color formats:
-  - `ColorHex` - a string of the form `#rrggbb` or `#rrggbbaa` (not case-sensitive).
-  - `ColorRGB` - red, green, and blue channels. `{ r: number; g: number; b: number }` where `r`, `g`, and `b` are integers between 0 and 255.
-  - `ColorRGBA` - same as `ColorRGB` but with an alpha channel. `{ r: number; g: number; b: number; a: number }` where `r`, `g`, and `b` are integers between 0 and 255 and `a` is a number between 0 and 1.
-  - `ColorHSL` - hue, saturation, and lightness channels. `{ h: number; s: number; l: number }` where `h` is a number between 0 and 360 (degrees), and `s` and `l` are numbers between 0 and 100 (percentages).
-  - `ColorHSLA` - same as `ColorHSL` but with an alpha channel. `{ h: number; s: number; l: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `l` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
-  - `ColorHSV` - hue, saturation, and value channels. `{ h: number; s: number; v: number }` where `h` is a number between 0 and 360 (degrees), and `s` and `v` are numbers between 0 and 100 (percentages).
-  - `ColorHSVA` - same as `ColorHSV` but with an alpha channel. `{ h: number; s: number; v: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `v` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
-  - `ColorCMYK` - cyan, magenta, yellow, and key (black) channels. `{ c: number; m: number; y: number; k: number }` where `c`, `m`, `y`, and `k` are numbers between 0 and 100 (percentages).
-  - `ColorLAB` - CIELAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 100 (lightness), and `a` and `b` are numbers typically between -128 and 127 (color-opponent dimensions).
-  - `ColorLCH` - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).
-  - `ColorOKLCH` - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
-- `ColorTemperatureLabel` - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
+- <span id="types-color">`Color`</span> - the main, immutable color instance.
+- <span id="types-base-color-name">`BaseColorName`</span> - base hue color names: `"Red" | "Orange" | "Yellow" | "Green" | "Blue" | "Purple" | "Pink" | "Black" | "Gray" | "White"`.
+- <span id="types-color-format">`ColorFormat`</span> - any of the following supported color formats:
+  - <span id="types-color-hex">`ColorHex`</span> - a string of the form `#rrggbb` or `#rrggbbaa` (not case-sensitive).
+  - <span id="types-color-rgb">`ColorRGB`</span> - red, green, and blue channels. `{ r: number; g: number; b: number }` where `r`, `g`, and `b` are integers between 0 and 255.
+  - <span id="types-color-rgba">`ColorRGBA`</span> - same as [`ColorRGB`](#types-color-rgb) but with an alpha channel. `{ r: number; g: number; b: number; a: number }` where `r`, `g`, and `b` are integers between 0 and 255 and `a` is a number between 0 and 1.
+  - <span id="types-color-hsl">`ColorHSL`</span> - hue, saturation, and lightness channels. `{ h: number; s: number; l: number }` where `h` is a number between 0 and 360 (degrees), and `s` and `l` are numbers between 0 and 100 (percentages).
+  - <span id="types-color-hsla">`ColorHSLA`</span> - same as [`ColorHSL`](#types-color-hsl) but with an alpha channel. `{ h: number; s: number; l: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `l` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
+  - <span id="types-color-hsv">`ColorHSV`</span> - hue, saturation, and value channels. `{ h: number; s: number; v: number }` where `h` is a number between 0 and 360 (degrees), and `s` and `v` are numbers between 0 and 100 (percentages).
+  - <span id="types-color-hsva">`ColorHSVA`</span> - same as [`ColorHSV`](#types-color-hsv) but with an alpha channel. `{ h: number; s: number; v: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `v` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
+  - <span id="types-color-cmyk">`ColorCMYK`</span> - cyan, magenta, yellow, and key (black) channels. `{ c: number; m: number; y: number; k: number }` where `c`, `m`, `y`, and `k` are numbers between 0 and 100 (percentages).
+  - <span id="types-color-lab">`ColorLAB`</span> - CIELAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 100 (lightness), and `a` and `b` are numbers typically between -128 and 127 (color-opponent dimensions).
+  - <span id="types-color-lch">`ColorLCH`</span> - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).
+  - <span id="types-color-oklch">`ColorOKLCH`</span> - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
+- <span id="types-color-temperature-label">`ColorTemperatureLabel`</span> - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
 
 ---
 
