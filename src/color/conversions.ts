@@ -16,6 +16,12 @@ import { getColorFormatType } from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 import { validateColorOrThrow } from './validations';
 
+const LAB_DELTA = 6 / 29;
+const LAB_DELTA_CUBED = 216 / 24389; // LAB_DELTA ** 3
+const LAB_F_LINEAR_COEFF = 841 / 108; // 1 / (3 * LAB_DELTA ** 2)
+const LAB_KAPPA = 24389 / 27; // 116 * LAB_F_LINEAR_COEFF (kappa)
+const LAB_C_OFFSET = 4 / 29; // 16 / 116
+
 function rgbToRGBA(color: ColorRGB, alpha?: number): ColorRGBA {
   const { r, g, b } = color;
   return alpha === undefined ? { r, g, b, a: 1 } : { r, g, b, a: alpha };
@@ -302,9 +308,9 @@ function rgbToLabUnrounded(color: ColorRGB): ColorLAB {
   x /= 0.95047;
   y /= 1.0;
   z /= 1.08883;
-  const fx = x > 0.008856 ? Math.cbrt(x) : 7.787 * x + 16 / 116;
-  const fy = y > 0.008856 ? Math.cbrt(y) : 7.787 * y + 16 / 116;
-  const fz = z > 0.008856 ? Math.cbrt(z) : 7.787 * z + 16 / 116;
+  const fx = x > LAB_DELTA_CUBED ? Math.cbrt(x) : LAB_F_LINEAR_COEFF * x + LAB_C_OFFSET;
+  const fy = y > LAB_DELTA_CUBED ? Math.cbrt(y) : LAB_F_LINEAR_COEFF * y + LAB_C_OFFSET;
+  const fz = z > LAB_DELTA_CUBED ? Math.cbrt(z) : LAB_F_LINEAR_COEFF * z + LAB_C_OFFSET;
   const l = 116 * fy - 16;
   const a = 500 * (fx - fy);
   const b2 = 200 * (fy - fz);
@@ -327,9 +333,9 @@ function labToRGB(color: ColorLAB): ColorRGB {
   const fx3 = fx ** 3;
   const fy3 = fy ** 3;
   const fz3 = fz ** 3;
-  let x = fx3 > 0.008856 ? fx3 : (fx - 16 / 116) / 7.787;
-  let y = fy3 > 0.008856 ? fy3 : color.l / 903.3;
-  let z = fz3 > 0.008856 ? fz3 : (fz - 16 / 116) / 7.787;
+  let x = fx3 > LAB_DELTA_CUBED ? fx3 : (fx - LAB_C_OFFSET) / LAB_F_LINEAR_COEFF;
+  let y = fy3 > LAB_DELTA_CUBED ? fy3 : color.l / LAB_KAPPA;
+  let z = fz3 > LAB_DELTA_CUBED ? fz3 : (fz - LAB_C_OFFSET) / LAB_F_LINEAR_COEFF;
   x *= 0.95047;
   y *= 1.0;
   z *= 1.08883;
