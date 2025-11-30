@@ -86,7 +86,6 @@ describe('isColorDark', () => {
     expect(isColorDark(new Color('#c0ff80'), opts)).toBe(false);
     expect(isColorDark(new Color('#c0ffc0'), opts)).toBe(false);
     expect(isColorDark(new Color('#c0ffff'), opts)).toBe(false);
-    expect(isColorDark(new Color('#ff4040'), opts)).toBe(true);
     expect(isColorDark(new Color('#ff4080'), opts)).toBe(false);
     expect(isColorDark(new Color('#ff40c0'), opts)).toBe(false);
     expect(isColorDark(new Color('#ff40ff'), opts)).toBe(false);
@@ -107,6 +106,7 @@ describe('isColorDark', () => {
     expect(isColorDark(new Color('#ffffff'), opts)).toBe(false);
 
     // Dark color cases:
+    expect(isColorDark(new Color('#ff4040'), opts)).toBe(true);
     expect(isColorDark(new Color('#000000'), opts)).toBe(true);
     expect(isColorDark(new Color('#000001'), opts)).toBe(true);
     expect(isColorDark(new Color('#000040'), opts)).toBe(true);
