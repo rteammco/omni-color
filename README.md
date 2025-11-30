@@ -84,7 +84,7 @@ const cozy = Color.fromTemperature('Warm tungsten');
 
 #### `toHex()`
 
-- <u>Returns</u> a 6-digit hex code `#rrggbb` representing the color (ignores alpha).
+- <u>Returns</u> a [`ColorHex`](#colorhex) string in 6-digit `#rrggbb` form (alpha is ignored).
 
 ```ts
 new Color('red').toHex(); // #ff0000
@@ -92,55 +92,171 @@ new Color('red').toHex(); // #ff0000
 
 #### `toHex8()`
 
-- <u>Returns</u> an 8-digit hex code `#rrggbbaa` representing the color, including the alpha channel.
+- <u>Returns</u> a [`ColorHex`](#colorhex) string in 8-digit `#rrggbbaa` form, including the alpha channel.
 
 ```ts
-new Color('rgba(0, 0, 255, 0.5)').toHex(); // #0000ff80
+new Color('rgba(0, 0, 255, 0.5)').toHex8(); // #0000ff80
 ```
 
-#### `toRGB()` / `toRGBA()` / `toRGBString()` / `toRGBAString()`
+#### `toRGB()`
 
-- Object getters return `{ r, g, b }` or `{ r, g, b, a }`.
-- String versions return modern CSS `rgb(r g b)` or `rgb(r g b / a)` strings.
-  ```ts
-  const c = new Color('#33cc99');
-  c.toRGBString(); // 'rgb(51 204 153)'
-  c.toRGBA().a; // 1
-  ```
+- <u>Returns</u> a [`ColorRGB`](#colorrgb) object with 0–255 channel values.
 
-#### `toHSL()` / `toHSLA()` / `toHSLString()` / `toHSLAString()`
+```ts
+new Color('#33cc99').toRGB(); // { r: 51, g: 204, b: 153 }
+```
 
-- Returns HSL(A) object or modern CSS `hsl(h s% l%)` / `hsl(h s% l% / a)` string.
-  ```ts
-  new Color('#663399').toHSLAString(); // 'hsl(270 50% 40% / 1)'
-  ```
+#### `toRGBA()`
 
-#### `toHSV()` / `toHSVA()`
+- <u>Returns</u> a [`ColorRGBA`](#colorrgba) object with 0–255 RGB channels and alpha 0–1.
 
-- Returns HSV or HSVA objects with hue 0–360 and saturation/value 0–100.
+```ts
+new Color('#33cc99').toRGBA(); // { r: 51, g: 204, b: 153, a: 1 }
+```
 
-#### `toCMYK()` / `toCMYKString()`
+#### `toRGBString()`
 
-- Returns CMYK object or CSS `device-cmyk(c% m% y% k%)` string.
+- <u>Returns</u> a CSS `rgb(r g b)` string.
 
-#### `toLAB()` / `toLABString()`
+```ts
+new Color('#33cc99').toRGBString(); // 'rgb(51 204 153)'
+```
 
-- Returns CIELAB object or `lab(l% a b)` string.
+#### `toRGBAString()`
 
-#### `toLCH()` / `toLCHString()`
+- <u>Returns</u> a CSS `rgb(r g b / a)` string.
 
-- Returns CIELCh object or `lch(l% c h)` string.
+```ts
+new Color('#33cc99').setAlpha(0.5).toRGBAString(); // 'rgb(51 204 153 / 0.5)'
+```
 
-#### `toOKLCH()` / `toOKLCHString()`
+#### `toHSL()`
 
-- Returns OKLCH object or `oklch(l c h)` string.
+- <u>Returns</u> a [`ColorHSL`](#colorhsl) object with hue 0–360 and saturation/lightness 0–100.
 
-#### `getAlpha()` / `setAlpha(value)`
+```ts
+new Color('#663399').toHSL(); // { h: 270, s: 50, l: 40 }
+```
 
-- Read or update the alpha channel (clamped 0–1). `setAlpha` returns a new `Color`.
-  ```ts
-  new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
-  ```
+#### `toHSLA()`
+
+- <u>Returns</u> a [`ColorHSLA`](#colorhsla) object with hue 0–360, saturation/lightness 0–100, and alpha 0–1.
+
+```ts
+new Color('#663399').toHSLA(); // { h: 270, s: 50, l: 40, a: 1 }
+```
+
+#### `toHSLString()`
+
+- <u>Returns</u> an `hsl(h s% l%)` string.
+
+```ts
+new Color('#663399').toHSLString(); // 'hsl(270 50% 40%)'
+```
+
+#### `toHSLAString()`
+
+- <u>Returns</u> an `hsl(h s% l% / a)` string.
+
+```ts
+new Color('#663399').toHSLAString(); // 'hsl(270 50% 40% / 1)'
+```
+
+#### `toHSV()`
+
+- <u>Returns</u> a [`ColorHSV`](#colorhsv) object with hue 0–360 and saturation/value 0–100.
+
+```ts
+new Color('#1e90ff').toHSV(); // { h: 210, s: 88, v: 100 }
+```
+
+#### `toHSVA()`
+
+- <u>Returns</u> a [`ColorHSVA`](#colorhsva) object with hue 0–360, saturation/value 0–100, and alpha 0–1.
+
+```ts
+new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
+```
+
+#### `toCMYK()`
+
+- <u>Returns</u> a [`ColorCMYK`](#colorcmyk) object with channel values 0–100.
+
+```ts
+new Color('#00b7eb').toCMYK(); // { c: 100, m: 22, y: 0, k: 8 }
+```
+
+#### `toCMYKString()`
+
+- <u>Returns</u> a `device-cmyk(c% m% y% k%)` string.
+
+```ts
+new Color('#00b7eb').toCMYKString(); // 'device-cmyk(100% 22% 0% 8%)'
+```
+
+#### `toLAB()`
+
+- <u>Returns</u> a [`ColorLAB`](#colorlab) object (CIELAB values).
+
+```ts
+new Color('#00b7eb').toLAB(); // { l: 69.373, a: -20.411, b: -36.677 }
+```
+
+#### `toLABString()`
+
+- <u>Returns</u> a `lab(l% a b)` string.
+
+```ts
+new Color('#00b7eb').toLABString(); // 'lab(69.373% -20.411 -36.677)'
+```
+
+#### `toLCH()`
+
+- <u>Returns</u> a [`ColorLCH`](#colorlch) object (CIELCh values).
+
+```ts
+new Color('#00b7eb').toLCH(); // { l: 69.373, c: 41.974, h: 240.903 }
+```
+
+#### `toLCHString()`
+
+- <u>Returns</u> an `lch(l% c h)` string.
+
+```ts
+new Color('#00b7eb').toLCHString(); // 'lch(69.373% 41.974 240.903)'
+```
+
+#### `toOKLCH()`
+
+- <u>Returns</u> a [`ColorOKLCH`](#coloroklch) object (OKLCH values).
+
+```ts
+new Color('#00b7eb').toOKLCH(); // { l: 0.727148, c: 0.140767, h: 227.27 }
+```
+
+#### `toOKLCHString()`
+
+- <u>Returns</u> an `oklch(l c h)` string.
+
+```ts
+new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
+```
+
+#### `getAlpha()`
+
+- <u>Returns</u> the current alpha value (0–1).
+
+```ts
+new Color('#ff0000').getAlpha(); // 1
+```
+
+#### `setAlpha(value)`
+
+- <u>Returns</u> a new `Color` with alpha clamped between 0 and 1.
+
+```ts
+new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
+```
 
 ### Channel adjustments
 
