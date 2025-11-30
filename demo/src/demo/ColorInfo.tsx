@@ -23,7 +23,9 @@ export function ColorInfo({ color }: Props) {
       <ColorSwatch swatch={basicSwatch} title="Basic swatch" withLabels />
       <ColorSwatch swatch={extendedSwatch} title="Extended swatch" withLabels />
       <Card backgroundColor={colorTemperatureBackground} title="Color temperature">
-        <div className="text-left mb-1">{color.getTemperatureAsString({ formatNumber: true })}</div>
+        <div className="text-left mb-1 text-black">
+          {color.getTemperatureAsString({ formatNumber: true })}
+        </div>
         <div className="text-left text-xs text-gray-600">
           *Note: color temperature is only well-defined for near-white illuminants
         </div>

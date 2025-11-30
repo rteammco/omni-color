@@ -10,12 +10,15 @@ import { MixColorsOptionInputs } from './MixColorsOptionInputs';
 import { BlendColorsOptionInputs } from './BlendColorsOptionInputs';
 import { AverageColorsOptionInputs } from './AverageColorsOptionInputs';
 import { Card } from '../../components/Card';
+import { useIsDarkMode } from '../../components/utils';
 
 interface Props {
   color: Color;
 }
 
 export function ColorCombinationDemo({ color }: Props) {
+  const isDarkMode = useIsDarkMode();
+
   const [mixOptions, setMixOptions] = useState<MixColorsOptions>({
     space: 'LINEAR_RGB',
     type: 'ADDITIVE',
@@ -122,7 +125,7 @@ export function ColorCombinationDemo({ color }: Props) {
             width="STRETCH"
           />
           <ColorBox
-            color={new Color('#ffffff00')} // TODO: fix for dark mode
+            color={isDarkMode ? new Color('#00000000') : new Color('#ffffff00')}
             label="Not supported"
             overlaySize="SMALL"
             overlayText="N/A"

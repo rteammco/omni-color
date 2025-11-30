@@ -69,6 +69,15 @@ h6 {
   :root {
     @apply bg-slate-50 text-slate-900;
   }
+
+  .gray-text-color {
+    @apply text-gray-500;
+  }
+
+  .gray-bg-color {
+    @apply bg-gray-100;
+  }
+
   button {
     @apply text-indigo-100 bg-stone-900;
   }
@@ -82,15 +91,28 @@ h6 {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    @apply bg-slate-900 text-slate-100;
+    @apply bg-slate-950 text-slate-100;
   }
+
+  .container-shadow-color {
+    @apply shadow-slate-700;
+  }
+
+  .gray-text-color {
+    @apply text-gray-400;
+  }
+
+  .gray-bg-color {
+    @apply bg-gray-700;
+  }
+
   button {
-    @apply text-indigo-800 bg-stone-200;
+    @apply text-indigo-900 bg-stone-300 shadow-slate-700;
   }
   button:hover {
-    @apply text-indigo-600;
+    @apply text-indigo-700;
   }
   button:active {
-    @apply text-indigo-500;
+    @apply text-indigo-600;
   }
 }

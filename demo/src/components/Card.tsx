@@ -9,7 +9,7 @@ export function Card({ backgroundColor, borderColor, children, title }: Props) {
   const cardJSX = (
     <div
       className={`p-4 border rounded-2xl ${borderColor ? '' : 'border-gray-200'} ${
-        backgroundColor ? '' : 'bg-gray-100'
+        backgroundColor ? '' : 'gray-bg-color'
       }`}
       style={{ backgroundColor, borderColor }}
     >

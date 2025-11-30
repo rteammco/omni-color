@@ -12,6 +12,10 @@ export enum DemoSectionIDs {
   PLAYGROUND = 'section-playground',
 }
 
+export function useIsDarkMode() {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
 export function useColorBackgroundAndBorderColors(color: Color) {
   return useMemo(() => {
     return {

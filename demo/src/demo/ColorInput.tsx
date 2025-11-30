@@ -79,18 +79,18 @@ export function ColorInput({ color, onColorChanged }: Props) {
         <div className="font-semibold mb-1">Enter a color</div>
         <div className="flex flex-row items-center gap-4">
           <input
-            className="px-6 py-3 w-2xs flex-1 border-1 border-gray-200 rounded-xl shadow-md"
+            className="container-shadow-color px-6 py-3 w-2xs flex-1 border-1 border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow"
             placeholder="Enter a color"
             type="text"
             value={inputValue}
             onChange={handleColorInputChange}
           />
           {isInputColorValid ? (
-            <div className="bg-green-50 rounded-full p-1.5">
+            <div className="rounded-full p-1.5 bg-green-200">
               <Icon color="green" size={32} type={Icon.TYPE.CHECK_CIRCLE} />
             </div>
           ) : (
-            <div className="bg-red-50 rounded-full p-1.5">
+            <div className="rounded-full p-1.5 bg-red-100">
               <Icon color="red" size={32} type={Icon.TYPE.X_CIRCLE} />
             </div>
           )}

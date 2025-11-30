@@ -27,7 +27,8 @@ export function Chip({ color, href, title }: Props) {
     </div>
   );
 
-  const baseContainerClass = 'px-4 py-2 border border-gray-200 rounded-xl shadow-md inline-block';
+  const baseContainerClass =
+    'container-shadow-color px-4 py-2 border border-gray-200 rounded-xl shadow-md inline-block';
 
   if (href) {
     return (

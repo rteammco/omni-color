@@ -14,7 +14,7 @@ export function SectionContainer({ children, description, sectionID, title }: Pr
       id={sectionID}
     >
       <h5 className="text-left font-bold">{title}</h5>
-      {description && <h6 className="text-left text-gray-500">{description}</h6>}
+      {description && <h6 className="gray-text-color text-left">{description}</h6>}
       {children}
     </div>
   );
