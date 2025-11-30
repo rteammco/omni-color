@@ -86,7 +86,7 @@ describe('isColorDark', () => {
     expect(isColorDark(new Color('#c0ff80'), opts)).toBe(false);
     expect(isColorDark(new Color('#c0ffc0'), opts)).toBe(false);
     expect(isColorDark(new Color('#c0ffff'), opts)).toBe(false);
-    expect(isColorDark(new Color('#ff4040'), opts)).toBe(false);
+    expect(isColorDark(new Color('#ff4040'), opts)).toBe(true);
     expect(isColorDark(new Color('#ff4080'), opts)).toBe(false);
     expect(isColorDark(new Color('#ff40c0'), opts)).toBe(false);
     expect(isColorDark(new Color('#ff40ff'), opts)).toBe(false);
@@ -270,14 +270,12 @@ describe('isColorDark', () => {
     expect(isColorDark(gray120, { colorDarknessMode: 'YIQ', yiqThreshold: 100 })).toBe(false);
   });
 
-  it('handles YIQ edge cases (red-dominant)', () => {
-    // Legacy edge case: red-dominant hue adjustment
-    // Some colors between 120-128 brightness that are red-dominant are forced to be "light" (false)
-    // R=255, G=65, B=65 => Brightness 121.81. Red dominant. Should be Light (false).
+  it('handles standard YIQ behavior correctly', () => {
+    // R=255, G=65, B=65 => Brightness 121.81 < 128. Should be Dark (true).
     const trickyRed = new Color('rgb(255, 65, 65)');
-    expect(isColorDark(trickyRed, { colorDarknessMode: 'YIQ' })).toBe(false);
+    expect(isColorDark(trickyRed, { colorDarknessMode: 'YIQ' })).toBe(true);
 
-    // R=120, G=120, B=120 => Brightness 120. < 128 => Dark. Not red dominant.
+    // R=120, G=120, B=120 => Brightness 120 < 128. Should be Dark (true).
     const gray120 = new Color('rgb(120, 120, 120)');
     expect(isColorDark(gray120, { colorDarknessMode: 'YIQ' })).toBe(true);
   });
