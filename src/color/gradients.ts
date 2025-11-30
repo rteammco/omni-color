@@ -294,14 +294,21 @@ function getStopCount(stops?: number): number {
   return Math.max(rounded, MIN_SCALE_STOPS);
 }
 
-function interpolateLinearStops(
-  stops: InterpolatableColor[],
-  easing: (t: number) => number,
-  space: ColorGradientSpace,
-  clamp: boolean,
-  stopCount: number,
-  isCartesian: boolean
-): ColorRGBA[] {
+function interpolateLinearStops({
+  clamp,
+  easing,
+  isCartesian,
+  space,
+  stopCount,
+  stops,
+}: {
+  clamp: boolean;
+  easing: (t: number) => number;
+  isCartesian: boolean;
+  space: ColorGradientSpace;
+  stopCount: number;
+  stops: InterpolatableColor[];
+}): ColorRGBA[] {
   const segments = stops.length - 1;
   const results: ColorRGBA[] = [];
 
@@ -328,14 +335,21 @@ function interpolateLinearStops(
   return results;
 }
 
-function interpolateBezierStops(
-  stops: InterpolatableColor[],
-  easing: (t: number) => number,
-  space: ColorGradientSpace,
-  clamp: boolean,
-  stopCount: number,
-  isCartesian: boolean
-): ColorRGBA[] {
+function interpolateBezierStops({
+  clamp,
+  easing,
+  isCartesian,
+  space,
+  stopCount,
+  stops,
+}: {
+  clamp: boolean;
+  easing: (t: number) => number;
+  isCartesian: boolean;
+  space: ColorGradientSpace;
+  stopCount: number;
+  stops: InterpolatableColor[];
+}): ColorRGBA[] {
   const controlPoints = stops.map((stop) => stop.values);
   const alphaPoints = stops.map((stop) => stop.alpha);
   const results: ColorRGBA[] = [];
@@ -467,12 +481,22 @@ export function createColorGradient(colors: Color[], options: ColorGradientOptio
   }
 
   if (interpolation === 'BEZIER') {
-    return interpolateBezierStops(vectors, easing, space, clamp, stopCount, isCartesian).map(
-      (stop) => new ColorConstructor(stop)
-    );
+    return interpolateBezierStops({
+      clamp,
+      easing,
+      isCartesian,
+      space,
+      stopCount,
+      stops: vectors,
+    }).map((stop) => new ColorConstructor(stop));
   }
 
-  return interpolateLinearStops(vectors, easing, space, clamp, stopCount, isCartesian).map(
-    (stop) => new ColorConstructor(stop)
-  );
+  return interpolateLinearStops({
+    clamp,
+    easing,
+    isCartesian,
+    space,
+    stopCount,
+    stops: vectors,
+  }).map((stop) => new ColorConstructor(stop));
 }
