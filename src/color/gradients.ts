@@ -13,12 +13,12 @@ export type ColorGradientEasing =
   | ((t: number) => number);
 
 export type HueInterpolationMode =
-  | 'Cartesian'
-  | 'Shortest'
-  | 'Longest'
-  | 'Increasing'
-  | 'Decreasing'
-  | 'Raw';
+  | 'CARTESIAN'
+  | 'SHORTEST'
+  | 'LONGEST'
+  | 'INCREASING'
+  | 'DECREASING'
+  | 'RAW';
 
 export interface ColorGradientOptions {
   /**
@@ -42,8 +42,8 @@ export interface ColorGradientOptions {
   clamp?: boolean;
   /**
    * Strategy for interpolating hue angles in polar color spaces (HSL, HSV, LCH, OKLCH).
-   * Defaults to 'Shortest' for polar spaces, enabling saturation-preserving gradients.
-   * Set to 'Cartesian' to use the legacy method (converting to x/y coordinates),
+   * Defaults to 'SHORTEST' for polar spaces, enabling saturation-preserving gradients.
+   * Set to 'CARTESIAN' to use the legacy method (converting to x/y coordinates),
    * which may cause desaturation in the middle of the gradient.
    * Ignored for RGB space.
    */
@@ -370,7 +370,7 @@ function adjustHueStops(
     hueIndex = 2;
   }
 
-  if (hueIndex === -1 || mode === 'Raw' || mode === 'Cartesian') {
+  if (hueIndex === -1 || mode === 'RAW' || mode === 'CARTESIAN') {
     return stops;
   }
 
@@ -385,7 +385,7 @@ function adjustHueStops(
     const diff = end - start;
 
     switch (mode) {
-      case 'Shortest':
+      case 'SHORTEST':
         // If diff > 180, subtract 360 to go the other way (shorter).
         // If diff < -180, add 360.
         if (diff > 180) {
@@ -394,7 +394,7 @@ function adjustHueStops(
           adjustedEnd += 360;
         }
         break;
-      case 'Longest':
+      case 'LONGEST':
         // If |diff| < 180, go the other way to make it longer.
         if (Math.abs(diff) < 180 && Math.abs(diff) > 0) {
           // If 0, ambiguous, but 360 is same as 0.
@@ -405,13 +405,13 @@ function adjustHueStops(
           }
         }
         break;
-      case 'Increasing':
+      case 'INCREASING':
         // Ensure end >= start.
         if (adjustedEnd < start) {
           adjustedEnd += 360 * Math.ceil((start - adjustedEnd) / 360);
         }
         break;
-      case 'Decreasing':
+      case 'DECREASING':
         // Ensure end <= start
         if (adjustedEnd > start) {
           adjustedEnd -= 360 * Math.ceil((adjustedEnd - start) / 360);
@@ -445,19 +445,19 @@ export function createColorGradient(colors: Color[], options: ColorGradientOptio
   const easing = getEasingFunction(options.easing);
 
   // Determine Hue Interpolation Mode
-  // Default to 'Shortest' for Polar spaces, 'Cartesian' (legacy) for RGB or if explicit.
+  // Default to 'SHORTEST' for Polar spaces, 'CARTESIAN' (legacy) for RGB or if explicit.
   // Actually, legacy for Polar was Cartesian.
   // New default for Polar is Shortest.
   let hueMode = options.hueInterpolationMode;
   if (!hueMode) {
     if (space === 'RGB') {
-      hueMode = 'Cartesian';
+      hueMode = 'CARTESIAN';
     } else {
-      hueMode = 'Shortest';
+      hueMode = 'SHORTEST';
     }
   }
 
-  const isCartesian = hueMode === 'Cartesian';
+  const isCartesian = hueMode === 'CARTESIAN';
 
   let vectors = colors.map((color) => colorToVector(color, space, isCartesian));
 

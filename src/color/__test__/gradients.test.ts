@@ -134,7 +134,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, blue], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Cartesian',
+      hueInterpolationMode: 'CARTESIAN',
     });
     const mid = gradient[1];
     const hsl = mid.toHSL();
@@ -176,7 +176,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, blue], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Longest',
+      hueInterpolationMode: 'LONGEST',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(120, 0);
@@ -189,7 +189,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, blue], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Increasing',
+      hueInterpolationMode: 'INCREASING',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(120, 0);
@@ -204,7 +204,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([start, end], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Increasing',
+      hueInterpolationMode: 'INCREASING',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(0, 0);
@@ -216,7 +216,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, blue], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Decreasing',
+      hueInterpolationMode: 'DECREASING',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(300, 0);
@@ -231,7 +231,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([start, end], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Decreasing',
+      hueInterpolationMode: 'DECREASING',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(0, 0);
@@ -245,7 +245,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([start, end], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Raw',
+      hueInterpolationMode: 'RAW',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(180, 0);
@@ -260,7 +260,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, cyan], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Shortest',
+      hueInterpolationMode: 'SHORTEST',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(90, 0);
@@ -276,7 +276,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, cyan], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Longest',
+      hueInterpolationMode: 'LONGEST',
     });
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(90, 0);
@@ -286,7 +286,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, red], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Shortest',
+      hueInterpolationMode: 'SHORTEST',
     });
     expect(gradient[1].toHSL().h).toBeCloseTo(0, 0);
   });
@@ -327,7 +327,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, blue], {
       stops: 3,
       space: 'RGB',
-      hueInterpolationMode: 'Longest', // Should be ignored
+      hueInterpolationMode: 'LONGEST', // Should be ignored
     });
     const mid = gradient[1];
     expect(mid.toHex()).toBe('#800080');
@@ -339,7 +339,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, green, blue], {
       stops: 5,
       space: 'HSL',
-      hueInterpolationMode: 'Shortest',
+      hueInterpolationMode: 'SHORTEST',
     });
     // Stops: 0, 90, 180.
     // 5 stops: 0, 45, 90, 135 (approx), 180 (approx).
@@ -363,7 +363,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([start, mid, end], {
       stops: 5, // 0, 5, 10, 0, -10 (350).
       space: 'HSL',
-      hueInterpolationMode: 'Shortest',
+      hueInterpolationMode: 'SHORTEST',
     });
     // Segment 1: 0 -> 10. 3 stops. 0, 5, 10.
     // Segment 2: 10 -> 350 (adj -10). 3 stops. 10, 0, -10.
@@ -384,7 +384,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const gradient = createColorGradient([red, blue], {
       stops: 3,
       space: 'HSL',
-      hueInterpolationMode: 'Longest',
+      hueInterpolationMode: 'LONGEST',
       clamp: false,
     });
     expect(gradient[1].toHSL().h).toBeCloseTo(120, 0);
