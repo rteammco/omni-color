@@ -7,7 +7,7 @@ interface Props {
 
 export function MixColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
   return (
-    <div className="flex flex-row gap-2 items-center">
+    <div className="flex flex-row gap-8 align-center justify-center">
       <label>
         Mix type:
         <select
@@ -19,7 +19,6 @@ export function MixColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
           <option value="SUBTRACTIVE">Subtractive</option>
         </select>
       </label>
-      &middot;
       <label>
         Mix space:
         <select
@@ -27,6 +26,7 @@ export function MixColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
           value={mixOptions.space}
           onChange={(e) => onOptionsChanged({ ...mixOptions, space: e.target.value as MixSpace })}
         >
+          <option value="LINEAR_RGB">Linear RGB</option>
           <option value="RGB">RGB</option>
           <option value="HSL">HSL</option>
           <option value="LCH">LCH</option>

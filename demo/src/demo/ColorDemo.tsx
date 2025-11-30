@@ -72,7 +72,7 @@ export function ColorDemo() {
         <ColorManipulationDemo color={color} />
       </SectionContainer>
       <SectionContainer
-        description="Blend, mix, and average colors with a large variety of customization options"
+        description="Mix, blend, and average colors with a large variety of customization options"
         title="Combinations"
       >
         <ColorCombinationDemo color={color} />

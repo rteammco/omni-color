@@ -9,6 +9,7 @@ import { ColorBox } from '../../components/ColorBox';
 import { MixColorsOptionInputs } from './MixColorsOptionInputs';
 import { BlendColorsOptionInputs } from './BlendColorsOptionInputs';
 import { AverageColorsOptionInputs } from './AverageColorsOptionInputs';
+import { Card } from '../../components/Card';
 
 interface Props {
   color: Color;
@@ -16,7 +17,7 @@ interface Props {
 
 export function ColorCombinationDemo({ color }: Props) {
   const [mixOptions, setMixOptions] = useState<MixColorsOptions>({
-    space: 'RGB',
+    space: 'LINEAR_RGB',
     type: 'ADDITIVE',
   });
 
@@ -27,97 +28,152 @@ export function ColorCombinationDemo({ color }: Props) {
   });
 
   const [averageOptions, setAverageOptions] = useState<AverageColorsOptions>({
-    space: 'RGB',
+    space: 'LINEAR_RGB',
   });
 
   const { red, green, blue } = useMemo(() => {
     return { red: new Color('red'), green: new Color('green'), blue: new Color('blue') };
   }, []);
 
+  const mixRed = color.mix([red], mixOptions);
+  const mixGreen = color.mix([green], mixOptions);
+  const mixBlue = color.mix([blue], mixOptions);
+  const mixRGB = color.mix([red, green, blue], mixOptions);
+
+  const blendRed = color.blend(red, blendOptions);
+  const blendGreen = color.blend(green, blendOptions);
+  const blendBlue = color.blend(blue, blendOptions);
+
+  const averageRed = color.average([red], averageOptions);
+  const averageGreen = color.average([green], averageOptions);
+  const averageBlue = color.average([blue], averageOptions);
+  const averageRGB = color.average([red, green, blue], averageOptions);
+
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="table-auto mx-auto">
-        <thead>
-          <tr>
-            <th />
-            <th className="pb-1 font-normal">Original</th>
-            <th className="pb-1 font-normal">+ Red</th>
-            <th className="pb-1 font-normal">+ Green</th>
-            <th className="pb-1 font-normal">+ Blue</th>
-            <th className="pb-1 font-normal">+ RGB</th>
-            <th className="pb-1 font-normal">Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="pb-2 pr-2 text-right">Mix</td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.mix([red], mixOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.mix([green], mixOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.mix([blue], mixOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.mix([red, green, blue], mixOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <MixColorsOptionInputs mixOptions={mixOptions} onOptionsChanged={setMixOptions} />
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2 pr-2 text-right">Blend</td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.blend(red, blendOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.blend(green, blendOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.blend(blue, blendOptions)} />
-            </td>
-            <td className="pb-2 px-2">N / A</td>
-            <td className="pb-2 px-2">
-              <BlendColorsOptionInputs
-                blendOptions={blendOptions}
-                onOptionsChanged={setBlendOptions}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2 pr-2 text-right">Average</td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.average([red], averageOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.average([green], averageOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.average([blue], averageOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <ColorBox color={color.average([red, green, blue], averageOptions)} />
-            </td>
-            <td className="pb-2 px-2">
-              <AverageColorsOptionInputs
-                mixOptions={averageOptions}
-                onOptionsChanged={setAverageOptions}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="w-full flex flex-col gap-4">
+      <Card title="Mix">
+        <div className="flex flex-row gap-2 mb-4">
+          <ColorBox
+            color={color}
+            label={color.toHex()}
+            overlaySize="SMALL"
+            overlayText="Original"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={mixRed}
+            label={mixRed.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Red"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={mixGreen}
+            label={mixGreen.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Green"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={mixBlue}
+            label={mixBlue.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Blue"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={mixRGB}
+            label={mixRGB.toHex()}
+            overlaySize="SMALL"
+            overlayText="+RGB"
+            width="STRETCH"
+          />
+        </div>
+        <MixColorsOptionInputs mixOptions={mixOptions} onOptionsChanged={setMixOptions} />
+      </Card>
+      <Card title="Blend">
+        <div className="flex flex-row gap-2 mb-4">
+          <ColorBox
+            color={color}
+            label={color.toHex()}
+            overlaySize="SMALL"
+            overlayText="Original"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={blendRed}
+            label={blendRed.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Red"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={blendGreen}
+            label={blendGreen.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Green"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={blendBlue}
+            label={blendBlue.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Blue"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={new Color('#ffffff00')} // TODO: fix for dark mode
+            label="Not supported"
+            overlaySize="SMALL"
+            overlayText="N/A"
+            width="STRETCH"
+          />
+        </div>
+        <BlendColorsOptionInputs blendOptions={blendOptions} onOptionsChanged={setBlendOptions} />
+      </Card>
+      <Card title="Average">
+        <div className="flex flex-row gap-2 mb-4">
+          <ColorBox
+            color={color}
+            label={color.toHex()}
+            overlaySize="SMALL"
+            overlayText="Original"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={averageRed}
+            label={averageRed.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Red"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={averageGreen}
+            label={averageGreen.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Green"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={averageBlue}
+            label={averageBlue.toHex()}
+            overlaySize="SMALL"
+            overlayText="+Blue"
+            width="STRETCH"
+          />
+          <ColorBox
+            color={averageRGB}
+            label={averageRGB.toHex()}
+            overlaySize="SMALL"
+            overlayText="+RGB"
+            width="STRETCH"
+          />
+        </div>
+        <AverageColorsOptionInputs
+          mixOptions={averageOptions}
+          onOptionsChanged={setAverageOptions}
+        />
+      </Card>
     </div>
   );
 }
