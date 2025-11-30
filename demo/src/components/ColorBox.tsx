@@ -35,7 +35,7 @@ export function ColorBox({
   width = 'NORMAL',
 }: Props) {
   const textColor = color.isDark() ? 'white' : 'black';
-  const textColorClass = `text-${textColor}`;
+  const textColorClass = color.isDark() ? 'text-white' : 'text-black';
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
 
   const overlayContent = useMemo(() => {
