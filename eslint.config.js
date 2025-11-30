@@ -71,6 +71,7 @@ export default [
       'no-nested-ternary': 'warn',
       'no-console': 'warn',
       'max-params': ['warn', 4],
+      'object-shorthand': ['warn', 'always'],
       '@typescript-eslint/consistent-type-imports': 'warn',
     },
   },
