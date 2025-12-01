@@ -82,22 +82,73 @@ const cozy = Color.fromTemperature('Warm tungsten');
 
 ### Color Information and Utils
 
-#### `getName()` / `getNameAsString()`
+#### `getName(): { name: BaseColorName; lightness: 'Light' | 'Normal' | 'Dark' }`
 
-- Returns a human-friendly color name and lightness descriptor; `getNameAsString` flattens to a lowercase string (e.g., `'dark green'`).
+- <u>Returns</u> a human-friendly `[BaseColorName](#types-base-color-name)` paired with a lightness descriptor.
 
-#### `equals(color)`
+```ts
+new Color('#ff0000').getName(); // { name: 'Red', lightness: 'Normal' }
+new Color('#006400').getName(); // { name: 'Green', lightness: 'Dark' }
+```
 
-- Compares colors with rounding tolerance.
+#### `getNameAsString(): string`
 
-#### `isDark(options?)` / `isOffWhite()`
+- <u>Returns</u> the color name and lightness as a lowercase string (e.g., `'dark green'`).
 
-- Luminance-based helpers for contrast decisions and off-white detection.
-- `isDark` accepts optional `{ colorDarknessMode: 'WCAG' | 'YIQ' }` (and thresholds) to switch between the modern WCAG relative luminance check (default) and the legacy YIQ brightness formula.
+```ts
+new Color('#ff0000').getNameAsString(); // 'red'
+new Color('#87cefa').getNameAsString(); // 'light blue'
+```
 
-#### `getTemperature()` / `getTemperatureAsString(options?)`
+#### `equals(color: Color | ColorFormat | string): boolean`
 
-- Estimate correlated color temperature (Kelvin plus label) or format it as a string.
+- <u>Returns</u> `true` if the color matches another color within rounding tolerance.
+- <u>Inputs</u>:
+  - `color` - another [`Color`](#types-color), any [`ColorFormat`](#types-color-format), or a parsable color string to compare against.
+
+```ts
+new Color('#ff0000').equals(new Color('rgb(255, 0, 0)')); // true
+new Color('#ff0000').equals(new Color('#00ff00')); // false
+```
+
+#### `isDark(options?): boolean`
+
+- <u>Returns</u> `true` if the color is considered visually dark based on luminance checks.
+- <u>Inputs</u>:
+  - `options` (optional) - choose the darkness algorithm via `colorDarknessMode: 'WCAG' | 'YIQ'` and provide thresholds (`wcagThreshold` or `yiqThreshold`). Defaults to the WCAG relative luminance check.
+
+```ts
+new Color('#000000').isDark(); // true
+new Color('#ffffff').isDark(); // false
+new Color('#ff0000').isDark({ colorDarknessMode: 'YIQ' });
+```
+
+#### `isOffWhite(): boolean`
+
+- <u>Returns</u> `true` if the color is pure white or a very light off-white.
+
+```ts
+new Color('#ffffff').isOffWhite(); // true
+new Color('#cccccc').isOffWhite(); // false
+```
+
+#### `getTemperature(): { temperature: number; label: ColorTemperatureLabel }`
+
+- <u>Returns</u> the estimated correlated color temperature in Kelvin plus a [`ColorTemperatureLabel`](#types-color-temperature-label) describing the closest standard lighting condition.
+
+```ts
+new Color('#ff0000').getTemperature(); // { temperature: 2655, label: 'Incandescent lamp' }
+```
+
+#### `getTemperatureAsString(options?): string`
+
+- <u>Returns</u> the color temperature formatted as a string in Kelvin, optionally including the label when the color is close to the Planckian locus.
+- <u>Inputs</u>:
+  - `options` (optional) - set `formatNumber` to format the temperature value with locale separators.
+
+```ts
+new Color('#ffffff').getTemperatureAsString(); // '6504 K (cloudy sky)'
+```
 
 #### `getAlpha(): number`
 
@@ -115,9 +166,14 @@ new Color('#ff0000').getAlpha(); // 1
 new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
 ```
 
-#### `clone()`
+#### `clone(): Color`
 
-- Returns an identical `Color` instance.
+- <u>Returns</u> a new [`Color`](#types-color) identical to the source instance.
+
+```ts
+const original = new Color('#ff7f50');
+const copy = original.clone();
+```
 
 ### Color Formats and Conversions
 
