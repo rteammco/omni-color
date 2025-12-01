@@ -82,9 +82,9 @@ const cozy = Color.fromTemperature('Warm tungsten');
 
 ### Color Information and Utils
 
-#### `getName(): { name: BaseColorName; lightness: 'Light' | 'Normal' | 'Dark' }`
+#### `getName(): { name: BaseColorName; lightness: ColorLightnessModifier }`
 
-- <u>Returns</u> a human-friendly `[BaseColorName](#types-base-color-name)` paired with a lightness descriptor.
+- <u>Returns</u> a human-friendly [`BaseColorName`](#types-base-color-name) paired with a lightness descriptor: `type ColorLightnessModifier = "Light" | "Normal" | "Dark"`.
 
 ```ts
 new Color('#ff0000').getName(); // { name: 'Red', lightness: 'Normal' }
@@ -93,7 +93,7 @@ new Color('#006400').getName(); // { name: 'Green', lightness: 'Dark' }
 
 #### `getNameAsString(): string`
 
-- <u>Returns</u> the color name and lightness as a lowercase string (e.g., `'dark green'`).
+- <u>Returns</u> the color name and lightness as a lowercase string (e.g., `"dark green"`).
 
 ```ts
 new Color('#ff0000').getNameAsString(); // 'red'
@@ -108,14 +108,18 @@ new Color('#87cefa').getNameAsString(); // 'light blue'
 
 ```ts
 new Color('#ff0000').equals(new Color('rgb(255, 0, 0)')); // true
-new Color('#ff0000').equals(new Color('#00ff00')); // false
+new Color('#ff0000').equals('red'); // true
+new Color('#ff0000').equals({ r: 0, g: 255, b: 0 }); // false
 ```
 
-#### `isDark(options?): boolean`
+#### `isDark(options?: IsColorDarkOptions): boolean`
 
 - <u>Returns</u> `true` if the color is considered visually dark based on luminance checks.
 - <u>Inputs</u>:
-  - `options` (optional) - choose the darkness algorithm via `colorDarknessMode: 'WCAG' | 'YIQ'` and provide thresholds (`wcagThreshold` or `yiqThreshold`). Defaults to the WCAG relative luminance check.
+  - `options` (optional) - customize the darkness algorithm with `IsColorDarkOptions`:
+    - `colorDarknessMode` - the algorithm to use, either `"WCAG"` (default / recommended) or `"YIQ"` (legacy).
+    - `wcagThreshold` - the threshold (0 to 1) for considering a color "dark" when using the WCAG algorithm. Default is 0.179. Only applicable to `"WCAG"` mode.
+    - `yiqThreshold` - the threshold (0 to 255) for considering a color "dark" when using the YIQ algorithm. Default is 128. Only applicable to `"YIQ"` mode.
 
 ```ts
 new Color('#000000').isDark(); // true
@@ -140,14 +144,16 @@ new Color('#cccccc').isOffWhite(); // false
 new Color('#ff0000').getTemperature(); // { temperature: 2655, label: 'Incandescent lamp' }
 ```
 
-#### `getTemperatureAsString(options?): string`
+#### `getTemperatureAsString(options?: ColorTemperatureStringFormatOptions): string`
 
 - <u>Returns</u> the color temperature formatted as a string in Kelvin, optionally including the label when the color is close to the Planckian locus.
 - <u>Inputs</u>:
-  - `options` (optional) - set `formatNumber` to format the temperature value with locale separators.
+  - `options` (optional) - `ColorTemperatureStringFormatOptions`:
+    - `formatNumber` - set to `true` to format the temperature value with locale separators.
 
 ```ts
 new Color('#ffffff').getTemperatureAsString(); // '6504 K (cloudy sky)'
+new Color('#ffffff').getTemperatureAsString({ formatNumber: true }); // '6,504 K (cloudy sky)'
 ```
 
 #### `getAlpha(): number`
@@ -156,9 +162,10 @@ new Color('#ffffff').getTemperatureAsString(); // '6504 K (cloudy sky)'
 
 ```ts
 new Color('#ff0000').getAlpha(); // 1
+new Color('#ff000080').getAlpha(); // 0.5
 ```
 
-#### `setAlpha(value): Color`
+#### `setAlpha(value: number): Color`
 
 - <u>Returns</u> a new [`Color`](#types-color) with the specified alpha. Out-of-bounds alpha values will be clamped between 0 and 1.
 
@@ -173,6 +180,7 @@ new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
 ```ts
 const original = new Color('#ff7f50');
 const copy = original.clone();
+original.equals(copy); // true
 ```
 
 ### Color Formats and Conversions
