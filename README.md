@@ -33,8 +33,8 @@ const hex8String = darker.toHex8();
 
 _`constructor`_
 
-- <u>Returns</u> a new [`Color`](#types-color) instance of the specified color input.
-- <u>Inputs</u>:
+- <ins>Returns</ins> a new [`Color`](#types-color) instance of the specified color input.
+- <ins>Inputs</ins>:
   - `color` (optional) - an existing [`Color`](#types-color), any valid [`ColorFormat`](#types-color-format), a named CSS color, or any parsable color format (e.g. `"rgb(0,255,255)"`) including partial or exact matches of a [`ColorTemperatureLabel`](#types-color-temperature-label).
     - No input or passing in `null`/`undefined` generates a random color.
     - **Invalid inputs throw an exception.**
@@ -52,8 +52,8 @@ const random = new Color();
 
 _`static`_
 
-- <u>Returns</u> a new [`Color`](#types-color) instance of a randomly-generated color.
-- <u>Inputs</u>:
+- <ins>Returns</ins> a new [`Color`](#types-color) instance of a randomly-generated color.
+- <ins>Inputs</ins>:
   - `options` (optional) - customize how the color will be randomized with `RandomColorOptions`:
     - `alpha` - the alpha value of the random color (0-1). If not specified, it will default to 1 (opaque) unless `randomizeAlpha` is `true`.
     - `randomizeAlpha` - if `true`, the alpha value of the generated color will be randomized (0-1). This option is ignored if an `alpha` value is explicitly provided.
@@ -70,9 +70,9 @@ const translucent = Color.random({ randomizeAlpha: true });
 
 _`static`_
 
-- <u>Returns</u> an off-white [`Color`](#types-color) reflecting the given color temperature.
+- <ins>Returns</ins> an off-white [`Color`](#types-color) reflecting the given color temperature.
   - Kelvin to RGB conversion algorithm: https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html.
-- <u>Inputs</u>:
+- <ins>Inputs</ins>:
   - `temperature` - a color temperature value in Kelvin (valid range is ~1000 to ~40000) or a [`ColorTemperatureLabel`](#types-color-temperature-label).
 
 ```ts
@@ -84,7 +84,7 @@ const cozy = Color.fromTemperature('Warm tungsten');
 
 #### `getName(): { name: BaseColorName; lightness: ColorLightnessModifier }`
 
-- <u>Returns</u> a human-friendly [`BaseColorName`](#types-base-color-name) paired with a lightness descriptor: `type ColorLightnessModifier = "Light" | "Normal" | "Dark"`.
+- <ins>Returns</ins> a human-friendly [`BaseColorName`](#types-base-color-name) paired with a lightness descriptor: `type ColorLightnessModifier = "Light" | "Normal" | "Dark"`.
 
 ```ts
 new Color('#ff0000').getName(); // { name: 'Red', lightness: 'Normal' }
@@ -93,7 +93,7 @@ new Color('#006400').getName(); // { name: 'Green', lightness: 'Dark' }
 
 #### `getNameAsString(): string`
 
-- <u>Returns</u> the color name and lightness as a lowercase string (e.g., `"dark green"`).
+- <ins>Returns</ins> the color name and lightness as a lowercase string (e.g., `"dark green"`).
 
 ```ts
 new Color('#ff0000').getNameAsString(); // 'red'
@@ -102,8 +102,8 @@ new Color('#87cefa').getNameAsString(); // 'light blue'
 
 #### `equals(color: Color | ColorFormat | string): boolean`
 
-- <u>Returns</u> `true` if the color matches another color within rounding tolerance.
-- <u>Inputs</u>:
+- <ins>Returns</ins> `true` if the color matches another color within rounding tolerance.
+- <ins>Inputs</ins>:
   - `color` - another [`Color`](#types-color), any [`ColorFormat`](#types-color-format), or a parsable color string to compare against.
 
 ```ts
@@ -114,8 +114,8 @@ new Color('#ff0000').equals({ r: 0, g: 255, b: 0 }); // false
 
 #### `isDark(options?: IsColorDarkOptions): boolean`
 
-- <u>Returns</u> `true` if the color is considered visually dark based on luminance checks.
-- <u>Inputs</u>:
+- <ins>Returns</ins> `true` if the color is considered visually dark based on luminance checks.
+- <ins>Inputs</ins>:
   - `options` (optional) - customize the darkness algorithm with `IsColorDarkOptions`:
     - `colorDarknessMode` - the algorithm to use, either `"WCAG"` (default / recommended) or `"YIQ"` (legacy).
     - `wcagThreshold` - the threshold (0 to 1) for considering a color "dark" when using the WCAG algorithm. Default is 0.179. Only applicable to `"WCAG"` mode.
@@ -129,7 +129,7 @@ new Color('#ff0000').isDark({ colorDarknessMode: 'YIQ' });
 
 #### `isOffWhite(): boolean`
 
-- <u>Returns</u> `true` if the color is pure white or a very light off-white.
+- <ins>Returns</ins> `true` if the color is pure white or a very light off-white.
 
 ```ts
 new Color('#ffffff').isOffWhite(); // true
@@ -138,7 +138,7 @@ new Color('#cccccc').isOffWhite(); // false
 
 #### `getTemperature(): { temperature: number; label: ColorTemperatureLabel }`
 
-- <u>Returns</u> the estimated correlated color temperature in Kelvin plus a [`ColorTemperatureLabel`](#types-color-temperature-label) describing the closest standard lighting condition.
+- <ins>Returns</ins> the estimated correlated color temperature in Kelvin plus a [`ColorTemperatureLabel`](#types-color-temperature-label) describing the closest standard lighting condition.
 
 ```ts
 new Color('#ff0000').getTemperature(); // { temperature: 2655, label: 'Incandescent lamp' }
@@ -146,8 +146,8 @@ new Color('#ff0000').getTemperature(); // { temperature: 2655, label: 'Incandesc
 
 #### `getTemperatureAsString(options?: ColorTemperatureStringFormatOptions): string`
 
-- <u>Returns</u> the color temperature formatted as a string in Kelvin, optionally including the label when the color is close to the Planckian locus.
-- <u>Inputs</u>:
+- <ins>Returns</ins> the color temperature formatted as a string in Kelvin, optionally including the label when the color is close to the Planckian locus.
+- <ins>Inputs</ins>:
   - `options` (optional) - `ColorTemperatureStringFormatOptions`:
     - `formatNumber` - set to `true` to format the temperature value with locale separators.
 
@@ -158,7 +158,7 @@ new Color('#ffffff').getTemperatureAsString({ formatNumber: true }); // '6,504 K
 
 #### `getAlpha(): number`
 
-- <u>Returns</u> the current alpha value (0–1).
+- <ins>Returns</ins> the current alpha value (0–1).
 
 ```ts
 new Color('#ff0000').getAlpha(); // 1
@@ -167,7 +167,7 @@ new Color('#ff000080').getAlpha(); // 0.5
 
 #### `setAlpha(value: number): Color`
 
-- <u>Returns</u> a new [`Color`](#types-color) with the specified alpha. Out-of-bounds alpha values will be clamped between 0 and 1.
+- <ins>Returns</ins> a new [`Color`](#types-color) with the specified alpha. Out-of-bounds alpha values will be clamped between 0 and 1.
 
 ```ts
 new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
@@ -175,7 +175,7 @@ new Color('#ff0000').setAlpha(0.25).toRGBAString(); // 'rgb(255 0 0 / 0.25)'
 
 #### `clone(): Color`
 
-- <u>Returns</u> a new [`Color`](#types-color) identical to the source instance.
+- <ins>Returns</ins> a new [`Color`](#types-color) identical to the source instance.
 
 ```ts
 const original = new Color('#ff7f50');
@@ -187,7 +187,7 @@ original.equals(copy); // true
 
 #### `` toHex(): `#${string}` ``
 
-- <u>Returns</u> a [`ColorHex`](#types-color-hex) string in 6-digit `"#rrggbb"` form (alpha is ignored).
+- <ins>Returns</ins> a [`ColorHex`](#types-color-hex) string in 6-digit `"#rrggbb"` form (alpha is ignored).
 
 ```ts
 new Color('red').toHex(); // #ff0000
@@ -195,7 +195,7 @@ new Color('red').toHex(); // #ff0000
 
 #### `` toHex(): `#${string}` ``
 
-- <u>Returns</u> a [`ColorHex`](#types-color-hex) string in 8-digit `"#rrggbbaa"` form, including the alpha channel.
+- <ins>Returns</ins> a [`ColorHex`](#types-color-hex) string in 8-digit `"#rrggbbaa"` form, including the alpha channel.
 
 ```ts
 new Color('rgba(0, 0, 255, 0.5)').toHex8(); // #0000ff80
@@ -203,7 +203,7 @@ new Color('rgba(0, 0, 255, 0.5)').toHex8(); // #0000ff80
 
 #### `toRGB(): { r: number; g: number; b: number }`
 
-- <u>Returns</u> a [`ColorRGB`](#types-color-rgb) object with 0–255 channel values.
+- <ins>Returns</ins> a [`ColorRGB`](#types-color-rgb) object with 0–255 channel values.
 
 ```ts
 new Color('#33cc99').toRGB(); // { r: 51, g: 204, b: 153 }
@@ -211,7 +211,7 @@ new Color('#33cc99').toRGB(); // { r: 51, g: 204, b: 153 }
 
 #### `toRGBA(): { r: number; g: number; b: number; a: number }`
 
-- <u>Returns</u> a [`ColorRGBA`](#types-color-rgba) object with 0–255 RGB channels and alpha 0–1.
+- <ins>Returns</ins> a [`ColorRGBA`](#types-color-rgba) object with 0–255 RGB channels and alpha 0–1.
 
 ```ts
 new Color('#33cc99').toRGBA(); // { r: 51, g: 204, b: 153, a: 1 }
@@ -219,7 +219,7 @@ new Color('#33cc99').toRGBA(); // { r: 51, g: 204, b: 153, a: 1 }
 
 #### `toRGBString(): string`
 
-- <u>Returns</u> a CSS `"rgb(r g b)"` string.
+- <ins>Returns</ins> a CSS `"rgb(r g b)"` string.
 
 ```ts
 new Color('#33cc99').toRGBString(); // 'rgb(51 204 153)'
@@ -227,7 +227,7 @@ new Color('#33cc99').toRGBString(); // 'rgb(51 204 153)'
 
 #### `toRGBAString(): string`
 
-- <u>Returns</u> a CSS `"rgb(r g b / a)"` string.
+- <ins>Returns</ins> a CSS `"rgb(r g b / a)"` string.
 
 ```ts
 new Color('#33cc99').setAlpha(0.5).toRGBAString(); // 'rgb(51 204 153 / 0.5)'
@@ -235,7 +235,7 @@ new Color('#33cc99').setAlpha(0.5).toRGBAString(); // 'rgb(51 204 153 / 0.5)'
 
 #### `toHSL(): { h: number; s: number; l: number }`
 
-- <u>Returns</u> a [`ColorHSL`](#types-color-hsl) object with hue 0–360 and saturation/lightness 0–100.
+- <ins>Returns</ins> a [`ColorHSL`](#types-color-hsl) object with hue 0–360 and saturation/lightness 0–100.
 
 ```ts
 new Color('#663399').toHSL(); // { h: 270, s: 50, l: 40 }
@@ -243,7 +243,7 @@ new Color('#663399').toHSL(); // { h: 270, s: 50, l: 40 }
 
 #### `toHSLA(): { h: number; s: number; l: number; a: number }`
 
-- <u>Returns</u> a [`ColorHSLA`](#types-color-hsla) object with hue 0–360, saturation/lightness 0–100, and alpha 0–1.
+- <ins>Returns</ins> a [`ColorHSLA`](#types-color-hsla) object with hue 0–360, saturation/lightness 0–100, and alpha 0–1.
 
 ```ts
 new Color('#663399').toHSLA(); // { h: 270, s: 50, l: 40, a: 1 }
@@ -251,7 +251,7 @@ new Color('#663399').toHSLA(); // { h: 270, s: 50, l: 40, a: 1 }
 
 #### `toHSLString(): string`
 
-- <u>Returns</u> a CSS `"hsl(h s% l%)"` string.
+- <ins>Returns</ins> a CSS `"hsl(h s% l%)"` string.
 
 ```ts
 new Color('#663399').toHSLString(); // 'hsl(270 50% 40%)'
@@ -259,7 +259,7 @@ new Color('#663399').toHSLString(); // 'hsl(270 50% 40%)'
 
 #### `toHSLAString(): string`
 
-- <u>Returns</u> a CSS `"hsl(h s% l% / a)"` string.
+- <ins>Returns</ins> a CSS `"hsl(h s% l% / a)"` string.
 
 ```ts
 new Color('#663399').toHSLAString(); // 'hsl(270 50% 40% / 1)'
@@ -267,7 +267,7 @@ new Color('#663399').toHSLAString(); // 'hsl(270 50% 40% / 1)'
 
 #### `toHSV(): { h: number; s: number; v: number }`
 
-- <u>Returns</u> a [`ColorHSV`](#types-color-hsv) object with hue 0–360 and saturation/value 0–100.
+- <ins>Returns</ins> a [`ColorHSV`](#types-color-hsv) object with hue 0–360 and saturation/value 0–100.
 
 ```ts
 new Color('#1e90ff').toHSV(); // { h: 210, s: 88, v: 100 }
@@ -275,7 +275,7 @@ new Color('#1e90ff').toHSV(); // { h: 210, s: 88, v: 100 }
 
 #### `toHSVA(): { h: number; s: number; v: number; a: number }`
 
-- <u>Returns</u> a [`ColorHSVA`](#types-color-hsva) object with hue 0–360, saturation/value 0–100, and alpha 0–1.
+- <ins>Returns</ins> a [`ColorHSVA`](#types-color-hsva) object with hue 0–360, saturation/value 0–100, and alpha 0–1.
 
 ```ts
 new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
@@ -283,7 +283,7 @@ new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
 
 #### `toCMYK(): { c: number; m: number; y: number; k: number }`
 
-- <u>Returns</u> a [`ColorCMYK`](#types-color-cmyk) object with channel values 0–100.
+- <ins>Returns</ins> a [`ColorCMYK`](#types-color-cmyk) object with channel values 0–100.
 
 ```ts
 new Color('#00b7eb').toCMYK(); // { c: 100, m: 22, y: 0, k: 8 }
@@ -291,7 +291,7 @@ new Color('#00b7eb').toCMYK(); // { c: 100, m: 22, y: 0, k: 8 }
 
 #### `toCMYKString(): string`
 
-- <u>Returns</u> a CSS `"device-cmyk(c% m% y% k%)"` string.
+- <ins>Returns</ins> a CSS `"device-cmyk(c% m% y% k%)"` string.
 
 ```ts
 new Color('#00b7eb').toCMYKString(); // 'device-cmyk(100% 22% 0% 8%)'
@@ -299,7 +299,7 @@ new Color('#00b7eb').toCMYKString(); // 'device-cmyk(100% 22% 0% 8%)'
 
 #### `toLAB(): { l: number; a: number; b: number }`
 
-- <u>Returns</u> a [`ColorLAB`](#types-color-lab) object (CIELAB values).
+- <ins>Returns</ins> a [`ColorLAB`](#types-color-lab) object (CIELAB values).
 
 ```ts
 new Color('#00b7eb').toLAB(); // { l: 69.373, a: -20.411, b: -36.677 }
@@ -307,7 +307,7 @@ new Color('#00b7eb').toLAB(); // { l: 69.373, a: -20.411, b: -36.677 }
 
 #### `toLABString(): string`
 
-- <u>Returns</u> a CSS `"lab(l% a b)"` string.
+- <ins>Returns</ins> a CSS `"lab(l% a b)"` string.
 
 ```ts
 new Color('#00b7eb').toLABString(); // 'lab(69.373% -20.411 -36.677)'
@@ -315,7 +315,7 @@ new Color('#00b7eb').toLABString(); // 'lab(69.373% -20.411 -36.677)'
 
 #### `toLCH(): { l: number; c: number; h: number }`
 
-- <u>Returns</u> a [`ColorLCH`](#types-color-lch) object (CIELCh values).
+- <ins>Returns</ins> a [`ColorLCH`](#types-color-lch) object (CIELCh values).
 
 ```ts
 new Color('#00b7eb').toLCH(); // { l: 69.373, c: 41.974, h: 240.903 }
@@ -323,7 +323,7 @@ new Color('#00b7eb').toLCH(); // { l: 69.373, c: 41.974, h: 240.903 }
 
 #### `toLCHString(): string`
 
-- <u>Returns</u> a CSS `"lch(l% c h)"` string.
+- <ins>Returns</ins> a CSS `"lch(l% c h)"` string.
 
 ```ts
 new Color('#00b7eb').toLCHString(); // 'lch(69.373% 41.974 240.903)'
@@ -331,7 +331,7 @@ new Color('#00b7eb').toLCHString(); // 'lch(69.373% 41.974 240.903)'
 
 #### `toOKLCH(): { l: number; c: number; h: number }`
 
-- <u>Returns</u> a [`ColorOKLCH`](#types-color-oklch) object (OKLCH values).
+- <ins>Returns</ins> a [`ColorOKLCH`](#types-color-oklch) object (OKLCH values).
 
 ```ts
 new Color('#00b7eb').toOKLCH(); // { l: 0.727148, c: 0.140767, h: 227.27 }
@@ -339,7 +339,7 @@ new Color('#00b7eb').toOKLCH(); // { l: 0.727148, c: 0.140767, h: 227.27 }
 
 #### `toOKLCHString(): string`
 
-- <u>Returns</u> a CSS `"oklch(l c h)"` string.
+- <ins>Returns</ins> a CSS `"oklch(l c h)"` string.
 
 ```ts
 new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
