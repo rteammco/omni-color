@@ -87,4 +87,256 @@ describe('Color interoperability with chroma-js', () => {
       expect(mutedTealHsvFromOmniColor.v).toBeCloseTo(mutedTealHsv[2] * 100, 0);
     });
   });
+
+  describe('manipulation helpers align with chroma-js HSL operations', () => {
+    describe('brightens colors by the same HSL lightness delta', () => {
+      it('brightens deep navy by 25%', () => {
+        const omniRgba = new Color('#001f3f').brighten(25).toRGBA();
+        const chromaRgba = chroma('#001f3f').brighten(2.5).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('brightens pure black significantly', () => {
+        const omniRgba = new Color('#000000').brighten(50).toRGBA();
+        const chromaRgba = chroma('#000000').brighten(5).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('brightens a nearly white tone without overshooting', () => {
+        const omniRgba = new Color('#fafafa').brighten(30).toRGBA();
+        const chromaRgba = chroma('#fafafa').brighten(3).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('brightens a translucent teal with the default amount', () => {
+        const omniRgba = new Color('rgba(0, 128, 128, 0.35)').brighten().toRGBA();
+        const chromaRgba = chroma('rgba(0, 128, 128, 0.35)').brighten().rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+    });
+
+    describe('darkens colors by decreasing HSL lightness identically', () => {
+      it('darkens a coral shade slightly', () => {
+        const omniRgba = new Color('#ff7f50').darken(15).toRGBA();
+        const chromaRgba = chroma('#ff7f50').darken(1.5).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('darkens a near-black charcoal heavily', () => {
+        const omniRgba = new Color('#222222').darken(60).toRGBA();
+        const chromaRgba = chroma('#222222').darken(6).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('darkens pure white dramatically', () => {
+        const omniRgba = new Color('#ffffff').darken(80).toRGBA();
+        const chromaRgba = chroma('#ffffff').darken(8).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('darkens a warm translucent yellow with the default delta', () => {
+        const omniRgba = new Color('rgba(255, 200, 0, 0.75)').darken().toRGBA();
+        const chromaRgba = chroma('rgba(255, 200, 0, 0.75)').darken().rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+    });
+
+    describe('saturates colors by increasing HSL saturation with clamping', () => {
+      it('saturates a muted teal by 40%', () => {
+        const omniRgba = new Color('hsl(190, 25%, 55%)').saturate(40).toRGBA();
+        const chromaRgba = chroma('hsl(190, 25%, 55%)').saturate(4).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('saturates a flat gray noticeably', () => {
+        const omniRgba = new Color('#808080').saturate(30).toRGBA();
+        const chromaRgba = chroma('#808080').saturate(3).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('attempts to saturate pure black', () => {
+        const omniRgba = new Color('#000000').saturate(90).toRGBA();
+        const chromaRgba = chroma('#000000').saturate(9).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('saturates a translucent violet using the default amount', () => {
+        const omniRgba = new Color('rgba(120, 80, 200, 0.5)').saturate().toRGBA();
+        const chromaRgba = chroma('rgba(120, 80, 200, 0.5)').saturate().rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+    });
+
+    describe('desaturates colors by decreasing HSL saturation identically', () => {
+      it('desaturates a vivid pink by half', () => {
+        const omniRgba = new Color('#ff69b4').desaturate(50).toRGBA();
+        const chromaRgba = chroma('#ff69b4').desaturate(5).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('desaturates pure green with the default amount', () => {
+        const omniRgba = new Color('#00ff00').desaturate().toRGBA();
+        const chromaRgba = chroma('#00ff00').desaturate().rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('desaturates pure blue completely', () => {
+        const omniRgba = new Color('#0000ff').desaturate(100).toRGBA();
+        const chromaRgba = chroma('#0000ff').desaturate(10).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('desaturates a neutral gray slightly', () => {
+        const omniRgba = new Color('#7a7a7a').desaturate(25).toRGBA();
+        const chromaRgba = chroma('#7a7a7a').desaturate(2.5).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+    });
+
+    describe('matches chroma-js grayscale conversion', () => {
+      it('converts red to grayscale', () => {
+        const omniRgba = new Color('#ff0000').grayscale().toRGBA();
+        const chromaRgba = chroma('#ff0000').desaturate(100).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('converts a warm tan to grayscale', () => {
+        const omniRgba = new Color('#bca27f').grayscale().toRGBA();
+        const chromaRgba = chroma('#bca27f').desaturate(100).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('converts translucent purple to grayscale while retaining alpha', () => {
+        const omniRgba = new Color('rgba(128, 0, 128, 0.4)').grayscale().toRGBA();
+        const chromaRgba = chroma('rgba(128, 0, 128, 0.4)').desaturate(100).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+
+      it('converts near-black to grayscale without changing channel values', () => {
+        const omniRgba = new Color('#050505').grayscale().toRGBA();
+        const chromaRgba = chroma('#050505').desaturate(100).rgba();
+
+        expect(omniRgba).toEqual({
+          r: chromaRgba[0],
+          g: chromaRgba[1],
+          b: chromaRgba[2],
+          a: chromaRgba[3],
+        });
+      });
+    });
+  });
 });
