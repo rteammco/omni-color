@@ -769,7 +769,7 @@ export class Color {
    * });
    * ```
    */
-  differenceFrom(other: ValidColorInputFormat, options: DeltaEOptions = {}): number {
+  differenceFrom(other: ValidColorInputFormat, options?: DeltaEOptions): number {
     return getDeltaE(this, new Color(other), options);
   }
 

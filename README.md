@@ -454,15 +454,29 @@ base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toH
 
 ### Perceptual Difference (Delta E)
 
-Use Delta E calculations to measure how visually different two colors appear. `Color.differenceFrom` compares against another `Color` and defaults to the CIEDE2000 method. Configure `DeltaEOptions` to choose a different formula via `method` or adjust CIE94 weighting when needed.
+Delta E calculations measure how visually different two colors appear.
+
+#### `differenceFrom(other: Color | ColorFormat | string, options?: DeltaEOptions): number`
+
+- <ins>Returns</ins> the Delta E value where higher numbers represent a more visible difference. The value depends on the algorithm used.
+- <ins>Inputs</ins>:
+  - `other` - the [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input to compare against.
+  - `options` (optional) - `DeltaEOptions`:
+    - `method` - the algorithm to use, either `"CIE76"`, `"CIE94"`, or `"CIEDE2000"` (default is `"CIEDE2000"`).
+    - `cie94Options` - optional inputs for the `"CIE94"` algorithm only (does not apply to any other selected `method`), `CIE94Options`:
+      - `kL` - lightness weighting factor. Defaults to `1`.
+      - `kC` - chroma weighting factor. Defaults to `1`.
+      - `kH` - hue weighting factor. Defaults to `1`.
+      - `K1` - chroma scaling constant. Defaults to `0.045`.
+      - `kL` - hue scaling constant. Defaults to `0.015`.
 
 ```ts
-const reference = new Color('#e63946');
+const base = new Color('#e63946');
 
-reference.differenceFrom(new Color('#e5383b')); // ~2.81 (CIEDE2000)
-reference.differenceFrom(new Color('#14a085'), { method: 'CIE76' }); // ~110.91
-reference.differenceFrom(new Color({ l: 70, c: 40, h: 210 }), { method: 'CIE94' }); // ~71.40
-reference.differenceFrom(new Color('#aa0000'), {
+base.differenceFrom(new Color('#e5383b')); // ~2.81 (CIEDE2000)
+base.differenceFrom(new Color('#14a085'), { method: 'CIE76' }); // ~110.91
+base.differenceFrom(new Color({ l: 70, c: 40, h: 210 }), { method: 'CIE94' }); // ~71.40
+base.differenceFrom(new Color('#aa0000'), {
   method: 'CIE94',
   cie94Options: { kL: 2, kC: 1, kH: 1.5 },
 });
