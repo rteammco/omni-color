@@ -409,26 +409,33 @@ new Color('#ff7f50').grayscale().toHex(); // '#a8a8a8'
 
 #### `mix(others: Array<Color | ColorFormat | string>, options?: MixColorsOptions): Color`
 
-- <ins>Returns</ins> a new [`Color`](#types-color) created by additively or subtractively mixing this color with additional colors.
+- <ins>Returns</ins> a new [`Color`](#types-color) created by additively or subtractively mixing this color with additional colors. If `others` is empty, the original color will be returned.
 - <ins>Inputs</ins>:
   - `others` - one or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to mix with this color.
-  - `options` (optional) - `MixColorsOptions` for mixing `type` (`'ADDITIVE'` | `'SUBTRACTIVE'`), color `space` (`'RGB'` | `'LINEAR_RGB'` | `'HSL'` | `'LCH'` | `'OKLCH'`), and per-color `weights`. Defaults to additive mixing in `LINEAR_RGB`.
+  - `options` (optional) - `MixColorsOptions`:
+    - `space` - the mix space: `"LINEAR_RGB" | "RGB" | "HSL" | "LCH" | "OKLCH"`.
+    - `type` - the mix type: `"ADDITIVE" | "SUBTRACTIVE"`.
+    - `weights` - per-color weights for how much each color is weighted during mixing. Number of weights must match the number of colors being mixed (i.e. `others.length + 1`). Colors are weighted equally by default.
 
 ```ts
 const coral = new Color('#ff7f50');
-const mixed = coral.mix([new Color('rebeccapurple')], { space: 'LCH', weights: [2, 1] });
-mixed.toOKLCHString(); // stable mid-hue blend
+const mixed = coral.mix(['red', '#00ff00', new Color('blue')]);
+const weightedMix = coral.mix([new Color()], { space: 'LCH', weights: [2, 1] } });
 ```
 
 #### `blend(other: Color | ColorFormat | string, options?: BlendColorsOptions): Color`
 
 - <ins>Returns</ins> a new [`Color`](#types-color) that blends this color with another.
 - <ins>Inputs</ins>:
-  - `other` - the [`Color`](#types-color), [`ColorFormat`](#types-color-format), or color string to blend with.
-  - `options` (optional) - `BlendColorsOptions` for `mode` (`'NORMAL'` | `'MULTIPLY'` | `'SCREEN'` | `'OVERLAY'`), `space` (`'RGB'` | `'HSL'`), and blend `ratio` between `0` and `1` (default `0.5`).
+  - `other` - the [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input to blend with.
+  - `options` (optional) - `BlendColorsOptions`:
+    - `mode` - the blend mode: `"NORMAL" | "MULTIPLY" | "SCREEN" | "OVERLAY"`.
+    - `space` - the blend space: `"RGB" | "HSL"`.
+    - `ratio` - the blend ratio between `0` and `1` (default is `0.5`).
 
 ```ts
-new Color('#ff0000').blend(new Color('#0000ff'), { mode: 'SCREEN', ratio: 0.25 }).toHex();
+new Color('#ff0000').blend('blue'), { space: 'HSL' });
+new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 });
 ```
 
 #### `average(others: Array<Color | ColorFormat | string>, options?: AverageColorsOptions): Color`
@@ -436,7 +443,9 @@ new Color('#ff0000').blend(new Color('#0000ff'), { mode: 'SCREEN', ratio: 0.25 }
 - <ins>Returns</ins> a new [`Color`](#types-color) averaging channel values with other colors.
 - <ins>Inputs</ins>:
   - `others` - one or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to average with this color.
-  - `options` (optional) - `AverageColorsOptions` to choose the averaging `space` (`'RGB'` | `'LINEAR_RGB'` | `'HSL'` | `'LCH'` | `'OKLCH'`) and supply per-color `weights`. Defaults to `LINEAR_RGB`.
+  - `options` (optional) - `AverageColorsOptions`:
+    - `space` - the averaging space: `"LINEAR_RGB" | "RGB" | "HSL" | "LCH" | "OKLCH"`.
+    - `weights` - per-color weights for how much each color is weighted during averaging. Number of weights must match the number of colors being averaged (i.e. `others.length + 1`). Colors are weighted equally by default.
 
 ```ts
 const base = new Color('#ff0000');
