@@ -484,118 +484,279 @@ base.differenceFrom(new Color('#aa0000'), {
 
 ### Gradients and Color Scales
 
-#### `Color.createInterpolatedGradient(colors, options?)`
+#### `Color.createInterpolatedGradient(colors: Array<Color | ColorFormat | string>, options?: ColorGradientOptions): Color[]`
 
-- Build multi-stop gradients across color spaces with optional easing. Options include:
-  - `stops`: number of colors to return (anchors included, defaults to `5`).
-  - `space`: interpolation space (`'RGB'`, `'HSL'`, `'HSV'`, `'LCH'`, `'OKLCH'`).
-  - `hueInterpolationMode`: Strategy for hue interpolation in polar spaces (`'SHORTEST'`, `'LONGEST'`, `'INCREASING'`, `'DECREASING'`, `'RAW'`, `'CARTESIAN'`). Defaults to `'SHORTEST'`.
-  - `interpolation`: `'LINEAR'` (segment-based) or `'BEZIER'` (uses anchors as control points).
-  - `easing`: `'LINEAR'`, `'EASE_IN'`, `'EASE_OUT'`, `'EASE_IN_OUT'`, or a custom `(t) => number`.
-  - `clamp`: keep intermediate stops inside the selected gamut (default `true`).
-- Example:
+_`static`_
 
-  ```ts
-  const linearGradient = Color.createInterpolatedGradient(['#ff0000', '#00ff00', '#0000ff'], {
-    stops: 7,
-    space: 'OKLCH',
-    easing: 'EASE_IN_OUT',
-  });
-  linearGradient.map((color) => color.toHex());
-  // ['#ff0000', '#ef6c00', '#99da00', '#00ff00', '#00db86', '#006ee6', '#0000ff']
+- <ins>Returns</ins> an array of new [`Color`](#types-color) instances interpolated between the provided anchors.
+- <ins>Inputs</ins>:
+  - `colors` - two or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to interpolate between.
+    - **Fewer than 2 color inputs will throw an exception.**
+  - `options` (optional) - `ColorGradientOptions`:
+    - `stops` - number of colors to return (anchors included, defaults to `5`).
+    - `space` - interpolation space: `"RGB" | "HSL" | "HSV" | "LCH" | "OKLCH"`.
+    - `hueInterpolationMode` - strategy for hue interpolation in polar spaces: `"SHORTEST" | "LONGEST" | "INCREASING" | "DECREASING" | "RAW" | "CARTESIAN"` (default is `"SHORTEST"`).
+    - `interpolation` - `'LINEAR'` (segment-based) or `'BEZIER'` (uses anchors as control points).
+    - `easing` - `"LINEAR" | "EASE_IN" | "EASE_OUT" | "EASE_IN_OUT"` or a custom `(t) => number` easing function.
+    - `clamp` - keep intermediate stops inside the selected gamut (default `true`).
 
-  const bezierGradient = Color.createInterpolatedGradient(['#f43f5e', '#fbbf24', '#22d3ee'], {
-    stops: 5,
-    interpolation: 'BEZIER',
-    space: 'HSL',
-  });
-  bezierGradient.map((color) => color.toHex());
-  // ['#f43e5c', '#e16647', '#c1995e', '#70a67c', '#20d3ee']
-  ```
+```ts
+const linearGradient = Color.createInterpolatedGradient(['#ff0000', '#00ff00', '#0000ff'], {
+  stops: 7,
+  space: 'OKLCH',
+  easing: 'EASE_IN_OUT',
+});
+linearGradient.map((color) => color.toHex());
+// ['#ff0000', '#ef6c00', '#99da00', '#00ff00', '#00db86', '#006ee6', '#0000ff']
+
+const bezierGradient = Color.createInterpolatedGradient(['#f43f5e', '#fbbf24', '#22d3ee'], {
+  stops: 5,
+  interpolation: 'BEZIER',
+  space: 'HSL',
+});
+bezierGradient.map((color) => color.toHex());
+// ['#f43e5c', '#e16647', '#c1995e', '#70a67c', '#20d3ee']
+```
+
+#### `createGradientThrough(colors: Array<Color | ColorFormat | string>, options?: ColorGradientOptions): Color[]`
+
+- <ins>Returns</ins> an array of new [`Color`](#types-color) instances interpolated through the provided anchors, ensuring every anchor is included as a stop.
+- <ins>Inputs</ins>:
+  - `colors` - two or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to pass through.
+  - `options` (optional) - `ColorGradientOptions` (same as [`Color.createInterpolatedGradient`](#colorcreateinterpolatedgradientcolors-arraycolor--colorformat--string-options-colorgradientoptions-color)).
+
+```ts
+const throughGradient = Color.createGradientThrough(['#ff7f50', '#1a73e8', '#10b981'], { stops: 6 });
+throughGradient.map((color) => color.toHex());
+// ['#ff7f50', '#d04e8d', '#9b44c4', '#4d66da', '#26a1b4', '#10b981']
+```
+
+#### `createGradientTo(color: Color | ColorFormat | string, options?: ColorGradientOptions): Color[]`
+
+- <ins>Returns</ins> an array of new [`Color`](#types-color) instances interpolated from the current color to the target color.
+- <ins>Inputs</ins>:
+  - `color` - the destination [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
+  - `options` (optional) - gradient options excluding `interpolation`, forwarded to [`Color.createInterpolatedGradient`](#colorcreateinterpolatedgradientcolors-arraycolor--colorformat--string-options-colorgradientoptions-color).
+
+```ts
+const [start, end] = new Color('#3b82f6').createGradientTo('#f472b6', { stops: 2 });
+start.toHex(); // '#3b82f6'
+end.toHex(); // '#f472b6'
+```
 
 ### Color Harmonies
 
-All harmony helpers return arrays of new `Color` instances. Use the specialized helpers or the generic `getHarmonyColors(harmony)`.
+#### `getComplementaryColors(): [Color, Color]`
 
-#### Complementary schemes
+- <ins>Returns</ins> the base [`Color`](#types-color) and its complementary [`Color`](#types-color) (hues 180° apart).
 
-- `getComplementaryColors()` returns `[base, complement]` (hues 180° apart).
-- `getSplitComplementaryColors()` returns `[base, split1, split2]` (hues at ±150°/210°).
+```ts
+const [base, complement] = new Color('#ff0000').getComplementaryColors();
+base.toHex(); // '#ff0000'
+complement.toHex(); // '#00ffff'
+```
 
-#### Triads and quads
+#### `getSplitComplementaryColors(): [Color, Color, Color]`
 
-- `getTriadicHarmonyColors()` → three evenly spaced hues.
-- `getSquareHarmonyColors()` → four hues 90° apart.
-- `getTetradicHarmonyColors()` → rectangular four-color harmony.
+- <ins>Returns</ins> the base [`Color`](#types-color) plus two [`Color`](#types-color) hues adjacent to its complement (rotated ±30° from 180°).
 
-#### Analogous and monochromatic
+```ts
+const [base, split1, split2] = new Color('#ff0000').getSplitComplementaryColors();
+base.toHex(); // '#ff0000'
+split1.toHex(); // '#0080ff'
+split2.toHex(); // '#00ff80'
+```
 
-- `getAnalogousHarmonyColors()` → five neighboring hues (±30° steps) around the base.
-- `getMonochromaticHarmonyColors()` → five lightness variants of a single hue.
+#### `getTriadicHarmonyColors(): [Color, Color, Color]`
 
-#### Generic helper
+- <ins>Returns</ins> three evenly spaced [`Color`](#types-color) hues 120° apart on the color wheel.
 
-- `getHarmonyColors(harmony)` accepts any `ColorHarmony` enum (`'COMPLEMENTARY'`, `'SPLIT_COMPLEMENTARY'`, `'TRIADIC'`, `'SQUARE'`, `'TETRADIC'`, `'ANALOGOUS'`, `'MONOCHROMATIC'`).
+```ts
+const [base, triad1, triad2] = new Color('#ff0000').getTriadicHarmonyColors();
+base.toHex(); // '#ff0000'
+triad1.toHex(); // '#0000ff'
+triad2.toHex(); // '#00ff00'
+```
+
+#### `getSquareHarmonyColors(): [Color, Color, Color, Color]`
+
+- <ins>Returns</ins> four [`Color`](#types-color) hues forming a square on the color wheel (90° apart).
+
+```ts
+const [base, square1, square2, square3] = new Color('#ff0000').getSquareHarmonyColors();
+base.toHex(); // '#ff0000'
+square1.toHex(); // '#80ff00'
+square2.toHex(); // '#00ffff'
+square3.toHex(); // '#8000ff'
+```
+
+#### `getTetradicHarmonyColors(): [Color, Color, Color, Color]`
+
+- <ins>Returns</ins> a rectangular harmony of four [`Color`](#types-color) instances made of two complementary pairs.
+
+```ts
+const [base, tetrad1, tetrad2, tetrad3] = new Color('#ff0000').getTetradicHarmonyColors();
+base.toHex(); // '#ff0000'
+tetrad1.toHex(); // '#ffff00'
+tetrad2.toHex(); // '#00ffff'
+tetrad3.toHex(); // '#0000ff'
+```
+
+#### `getAnalogousHarmonyColors(): [Color, Color, Color, Color, Color]`
+
+- <ins>Returns</ins> five neighboring [`Color`](#types-color) hues around the base color (±30° steps).
+
+```ts
+const [base, analogous1, analogous2, analogous3, analogous4] = new Color('#ff0000').getAnalogousHarmonyColors();
+base.toHex(); // '#ff0000'
+analogous1.toHex(); // '#ff0080'
+analogous2.toHex(); // '#ff8000'
+analogous3.toHex(); // '#ff00ff'
+analogous4.toHex(); // '#ffff00'
+```
+
+#### `getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color]`
+
+- <ins>Returns</ins> five [`Color`](#types-color) variants of the base hue with differing lightness and saturation.
+
+```ts
+const [base, mono1, mono2, mono3, mono4] = new Color('#ff0000').getMonochromaticHarmonyColors();
+base.toHex(); // '#ff0000'
+mono1.toHex(); // '#ff6666'
+mono2.toHex(); // '#990000'
+mono3.toHex(); // '#ff0000'
+mono4.toHex(); // '#e61919'
+```
+
+#### `getHarmonyColors(harmony: ColorHarmony): Color[]`
+
+- <ins>Returns</ins> new [`Color`](#types-color) instances generated by the specified `ColorHarmony` algorithm.
+- <ins>Inputs</ins>:
+  - `harmony` - one of `"COMPLEMENTARY" | "SPLIT_COMPLEMENTARY" | "TRIADIC" | "SQUARE" | "TETRADIC" | "ANALOGOUS" | "MONOCHROMATIC"`.
+
+```ts
+new Color('#ff7f50').getHarmonyColors('TRIADIC').map((color) => color.toHex());
+// ['#ff7f50', '#507fff', '#50ff7f']
+```
 
 ### Swatches and Palettes
 
-#### `getColorSwatch(options?)`
+#### `getColorSwatch(options?: ColorSwatchOptions): ColorSwatch`
 
-- Generates lighter/darker stops keyed `100`–`900`. By default the original color is placed on the stop that best matches its
-  lightness and the rest of the stops are interpolated around it; pure black and white are always centered on `500`.
-  - Set `centerOn500: true` to force the original color onto the `500` stop (the previous behavior).
-  - `{ extended: true }` adds half-steps `50`–`950` without ever shifting the main color onto a half-stop.
-  - Each swatch exposes `mainStop` so you can see which stop the original color was anchored to.
-  ```ts
-  const swatch = new Color('#ff0000').getColorSwatch({ extended: true });
-  swatch[150].toHex(); // midway between 100 and 200
-  ```
+- <ins>Returns</ins> a [`ColorSwatch`](#types-color-swatch) of lighter and darker variants keyed `100`–`900`, reporting the anchored stop via `mainStop`. When `extended` is `true`, returns instead an [`ExtendedColorSwatch`](#types-extended-color-swatch) with half-steps `50`–`950` are added without moving the base color to a half-stop; otherwise, [`BaseColorSwatch`](#types-base-color-swatch).
+- <ins>Inputs</ins>:
+  - `options` (optional) - `ColorSwatchOptions`:
+    - `centerOn500` - force the original color onto the `500` stop instead of dynamically anchoring by lightness (default is `false`).
+    - `extended` - set to `true` to include midpoint stops `50`–`950` and return an [`ExtendedColorSwatch`](#types-extended-color-swatch).
 
-#### `getColorPalette(harmony = 'COMPLEMENTARY', options?)`
+```ts
+const green = new Color('green');
+const swatch = green.getColorSwatch({ centerOn500: true });
+swatch.mainStop; // 500
+swatch[500].equals(green); // true
+swatch[100].toHex(); // lightest
+swatch[900].toHex(); // darkest
 
-- Builds a full `ColorPalette`: primary swatch, secondary swatches from the chosen harmony, neutral and tinted neutrals, plus semantic swatches (`info`, `positive`, `negative`, `warning`, `special`).
-- `GenerateColorPaletteOptions` let you tune:
-  - `neutralHarmonization`: `tintChromaFactor` (fraction of chroma applied to neutrals) and `maxTintChroma` cap.
-  - `semanticHarmonization`: `huePull` (blend semantic hues toward the base hue) and `chromaRange` bounds for semantic swatches.
-  - `swatchOptions`: forwarded to swatch generation for every palette color. Palettes center the source color on the `500` stop by default; override `centerOn500` to opt into dynamic anchoring.
-  ```ts
-  const palette = new Color('#ff7f50').getColorPalette('ANALOGOUS', {
-    neutralHarmonization: { tintChromaFactor: 0.12 },
-    semanticHarmonization: { huePull: 0.35 },
-    swatchOptions: { centerOn500: false },
-  });
-  palette.info[500].toHex();
-  ```
+const extendedSwatch = new Color('#008000').getColorSwatch({ extended: true });
+extendedSwatch.mainStop; // 700
+extendedSwatch[700].equals('#008000'); // true
+extendedSwatch[50].toHex(); // lightest
+extendedSwatch[500].toHex(); // middle
+extendedSwatch[950].toHex(); // darkest
+```
+
+#### `getColorPalette(harmony = 'COMPLEMENTARY', options?: GenerateColorPaletteOptions): ColorPalette`
+
+- <ins>Returns</ins> a complete [`ColorPalette`](#types-color-palette) containing the primary swatch, secondary swatches from the chosen harmony, neutral/tinted neutrals, and semantic swatches (`info`, `positive`, `negative`, `warning`, `special`).
+- <ins>Inputs</ins>:
+  - `harmony` (optional) - [`ColorHarmony`](#types-color-harmony) used to generate secondary colors (defaults to `'COMPLEMENTARY'`).
+  - `options` (optional) - `GenerateColorPaletteOptions`:
+    - `neutralHarmonization` - `tintChromaFactor` (fraction of chroma applied to neutrals) and `maxTintChroma` cap.
+    - `semanticHarmonization` - `huePull` (blend semantic hues toward the base hue) and `chromaRange` bounds for semantic swatches.
+    - `swatchOptions` - forwarded to swatch generation for every palette color; palettes center the source color on `500` by default, override `centerOn500` to opt into dynamic anchoring.
+
+```ts
+const palette = new Color('#ff7f50').getColorPalette('ANALOGOUS', {
+  neutralHarmonization: { tintChromaFactor: 0.12 },
+  semanticHarmonization: { huePull: 0.35 },
+  swatchOptions: { centerOn500: false },
+});
+palette.info[500].toHex();
+```
 
 ### Readability and Accessibility
 
-#### `getContrastRatio(color)`
+#### `getContrastRatio(color: Color | ColorFormat | string): number`
 
-- Returns the WCAG contrast ratio against another color (alpha-aware).
+- <ins>Returns</ins> the WCAG contrast ratio against another color (alpha-aware).
+- <ins>Inputs</ins>:
+  - `color` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
 
-#### `getReadabilityScore(background)`
+```ts
+new Color('#000000').getContrastRatio('#ffffff'); // 21
+```
 
-- Returns the APCA readability score (Lc) against a background color.
-- **Note:** This implementation uses the `0.0.98G-4g` constants from the draft APCA recommendations. As WCAG 3 is not yet finalized, this score is experimental and provided for advisory use only.
+#### `getReadabilityScore(background: Color | ColorFormat | string): number`
 
-#### `getTextReadabilityReport(background, options?)`
+**Note:** This implementation uses the `0.0.98G-4g` constants from the draft APCA recommendations. As WCAG 3 is not yet finalized, this score is experimental and provided for advisory use only.
 
-- Returns `{ contrastRatio, requiredContrast, isReadable, shortfall }` for WCAG levels `AA`/`AAA` and text sizes `SMALL`/`LARGE`.
-  ```ts
-  new Color('#444').getTextReadabilityReport(new Color('#bbb'), { level: 'AA', size: 'LARGE' });
-  ```
+- <ins>Returns</ins> the APCA readability score (Lc) against a background color.
+- <ins>Inputs</ins>:
+  - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
 
-#### `isReadableAsTextColor(background, options?)`
+```ts
+new Color('#1a73e8').getReadabilityScore('#ffffff'); // e.g. 71.61
+```
 
-- Convenience boolean wrapper around the readability report.
+#### `getTextReadabilityReport(background: Color | ColorFormat | string, options?: TextReadabilityOptions): TextReadabilityReport`
 
-#### `getMostReadableTextColor(candidateTextColors, options?)`
+- <ins>Returns</ins> `{ contrastRatio, requiredContrast, isReadable, shortfall }` for WCAG levels `"AA" | "AAA"` and text sizes `"SMALL" | "LARGE"`.
+- <ins>Inputs</ins>:
+  - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
+  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level (`"AA" | "AAA"`) and text size (`"SMALL" | "LARGE"`).
 
-- Returns the candidate text color with the strongest readability against the current color used as the background. Accepts `ReadabilityComparisonOptions` to choose between `WCAG` contrast or `APCA` scoring and pass optional WCAG text readability inputs.
+```ts
+new Color('#444').getTextReadabilityReport(new Color('#bbb'), { level: 'AA', size: 'LARGE' });
+```
 
-#### `getBestBackgroundColor(candidateBackgroundColors, options?)`
+#### `isReadableAsTextColor(background: Color | ColorFormat | string, options?: TextReadabilityOptions): boolean`
 
-- Returns the candidate background color that maximizes readability for the current color as text, using the same `ReadabilityComparisonOptions` as above.
+- <ins>Returns</ins> `true` if the color meets the specified WCAG contrast requirements against a background color.
+- <ins>Inputs</ins>:
+  - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
+  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level and text size.
+
+```ts
+new Color('#000000').isReadableAsTextColor('#ffffff'); // true
+```
+
+#### `getMostReadableTextColor(candidateTextColors: Array<Color | ColorFormat | string>, options?: ReadabilityComparisonOptions): Color`
+
+- <ins>Returns</ins> the candidate [`Color`](#types-color) with the strongest readability against the current color used as the background.
+- <ins>Inputs</ins>:
+  - `candidateTextColors` - one or more candidate text colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs.
+    - **Empty list of candidate colors will throw an exception.**
+  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs.
+
+```ts
+const background = new Color('#121212');
+const text = background.getMostReadableTextColor(['#ffffff', '#bbbbbb', '#00ffd0']);
+text.toHex();
+```
+
+#### `getBestBackgroundColor(candidateBackgroundColors: Array<Color | ColorFormat | string>, options?: ReadabilityComparisonOptions): Color`
+
+- <ins>Returns</ins> the background [`Color`](#types-color) that maximizes readability for the current color used as text.
+- <ins>Inputs</ins>:
+  - `candidateBackgroundColors` - one or more candidate background colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs.
+    - **Empty list of candidate colors will throw an exception.**
+  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs.
+
+```ts
+const textColor = new Color('#ff7f50');
+const background = textColor.getBestBackgroundColor(['#0d0d0d', '#1c1c1c', '#2a2a2a']);
+background.toHex();
+```
 
 ### Types
 
@@ -614,6 +775,11 @@ All harmony helpers return arrays of new `Color` instances. Use the specialized 
   - <span id="types-color-lch">`ColorLCH`</span> - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).
   - <span id="types-color-oklch">`ColorOKLCH`</span> - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
 - <span id="types-color-temperature-label">`ColorTemperatureLabel`</span> - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
+- <span id="types-base-color-swatch">`BaseColorSwatch`</span> - a swatch representing shades of the same color from 100 to 900 `{ 100: number; 200 number; ... 900: number }` where `100` is the lightest shade and `900` is the darkest shade.
+- <span id="types-extended-color-swatch">`ExtendedColorSwatch`</span> - same as a [`ColorSwatch`](#types-color-swatch) but includes half-shades at 50, 100, 150, ..., 950. It is a superset of [`ColorSwatch`](#types-color-swatch).
+- <span id="types-color-swatch">`ColorSwatch`</span> - `BaseColorSwatch | ExtendedColorSwatch`.
+- <span id="types-color-palette">`ColorPalette`</span> - a collection of [`ColorSwatch`](#types-color-swatch)es representing a color palette for a specified [`ColorHarmony`](#types-color-harmony). Includes a `primary` swatch for the main (base) color, `secondaryColors` swatches depending on the color harmony, and swatches for `neutrals`, `tintedNeutrals` (neutrals slightly tinted towards the main color), and swatches for semantic colors `info`, `negative`, `positive`, `special`, and `warning`.
+- <span id="types-color-harmony">`ColorHarmony`</span> - a type of color harmony to generate [`ColorPalette`](#types-color-palette): `"COMPLEMENTARY" | "SPLIT_COMPLEMENTARY" | "TRIADIC" | "SQUARE" | "TETRADIC" | "ANALOGOUS" | "MONOCHROMATIC"`
 
 ---
 
