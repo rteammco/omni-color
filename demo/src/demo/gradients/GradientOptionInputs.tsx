@@ -7,13 +7,16 @@ type TargetColorName = (typeof TARGET_COLORS_NAMES)[number];
 interface Props {
   options: ColorGradientOptions;
   onOptionsChanged: (options: ColorGradientOptions) => void;
-  onTargetColorChanged: (targetColor: Color) => void;
+  onTargetColorChanged?: (targetColor: Color) => void;
 }
 
-export function GradientToOptionInputs({ options, onOptionsChanged, onTargetColorChanged }: Props) {
+export function GradientOptionInputs({ options, onOptionsChanged, onTargetColorChanged }: Props) {
   const [selectedTargetColorName, setSelectedTargetColorName] = useState<TargetColorName>('Random');
 
   const handleTargetColorNameChanged = (colorName: TargetColorName) => {
+    if (!onTargetColorChanged) {
+      return;
+    }
     setSelectedTargetColorName(colorName);
     if (colorName === 'Random') {
       onTargetColorChanged(new Color());
@@ -24,20 +27,22 @@ export function GradientToOptionInputs({ options, onOptionsChanged, onTargetColo
 
   return (
     <div className="mt-4 flex flex-row flex-wrap justify-center gap-x-8 gap-y-4">
-      <label>
-        Target color:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={selectedTargetColorName}
-          onChange={(e) => handleTargetColorNameChanged(e.target.value as TargetColorName)}
-        >
-          {TARGET_COLORS_NAMES.map((colorName) => (
-            <option key={colorName} value={colorName}>
-              {colorName}
-            </option>
-          ))}
-        </select>
-      </label>
+      {onTargetColorChanged && (
+        <label>
+          Target color:
+          <select
+            className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
+            value={selectedTargetColorName}
+            onChange={(e) => handleTargetColorNameChanged(e.target.value as TargetColorName)}
+          >
+            {TARGET_COLORS_NAMES.map((colorName) => (
+              <option key={colorName} value={colorName}>
+                {colorName}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <label>
         Stops:
         <input

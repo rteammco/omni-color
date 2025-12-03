@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Color, type ColorGradientOptions } from '../../../../dist';
 import { Card } from '../../components/Card';
 import { ColorBox } from '../../components/ColorBox';
-import { GradientToOptionInputs } from './GradientToOptionInputs';
+import { GradientOptionInputs } from './GradientOptionInputs';
 
 const DEFAULT_NUM_STOPS = 5;
 
@@ -46,7 +46,7 @@ export function GradientToCard({ color }: Props) {
           );
         })}
       </div>
-      <GradientToOptionInputs
+      <GradientOptionInputs
         options={options}
         onOptionsChanged={setOptions}
         onTargetColorChanged={setTargetColor}

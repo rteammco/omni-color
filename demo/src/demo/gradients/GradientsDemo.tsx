@@ -1,4 +1,5 @@
 import { Color } from '../../../../dist';
+import { GradientThroughCard } from './GradientThroughCard';
 import { GradientToCard } from './GradientToCard';
 
 interface Props {
@@ -7,8 +8,9 @@ interface Props {
 
 export function GradientsDemo({ color }: Props) {
   return (
-    <div>
+    <div className="w-full flex flex-col gap-4">
       <GradientToCard color={color} />
+      <GradientThroughCard color={color} />
     </div>
   );
 }
