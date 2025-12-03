@@ -347,59 +347,101 @@ new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 
 ### Color Manipulations
 
-#### `spin(degrees)`
+#### `spin(degrees: number): Color`
 
-- Rotates hue around the HSL wheel (wraps at 0/360).
-  ```ts
-  new Color('#ff0000').spin(180).toHex(); // '#00ffff'
-  ```
+- <ins>Returns</ins> a new [`Color`](#types-color) with its hue rotated in HSL space (wraps at 0–360).
+- <ins>Inputs</ins>:
+  - `degrees` - amount to rotate the hue by in degrees.
 
-#### `brighten(percent = 10)` / `darken(percent = 10)`
+```ts
+new Color('#ff0000').spin(180).toHex(); // '#00ffff'
+```
 
-- Lighten or darken HSL lightness by a percentage.
-  ```ts
-  new Color('#808080').brighten(20).toHex(); // '#b3b3b3'
-  new Color('#808080').darken(20).toHex(); // '#4d4d4d'
-  ```
+#### `brighten(percentage = 10): Color`
 
-#### `saturate(percent = 10)` / `desaturate(percent = 10)`
+- <ins>Returns</ins> a new [`Color`](#types-color) with increased HSL lightness.
+- <ins>Inputs</ins>:
+  - `percentage` (optional) - percent to raise lightness (default `10`).
 
-- Increase or decrease HSL saturation.
-  ```ts
-  new Color('hsl(200, 40%, 50%)').saturate(20).toHSLString(); // 'hsl(200, 60%, 50%)'
-  new Color('hsl(200, 40%, 50%)').desaturate(20).toHSLString(); // 'hsl(200, 20%, 50%)'
-  ```
+```ts
+new Color('#808080').brighten(20).toHex(); // '#b3b3b3'
+```
 
-#### `grayscale()`
+#### `darken(percentage = 10): Color`
 
-- Removes chroma while preserving lightness.
+- <ins>Returns</ins> a new [`Color`](#types-color) with decreased HSL lightness.
+- <ins>Inputs</ins>:
+  - `percentage` (optional) - percent to lower lightness (default `10`).
+
+```ts
+new Color('#808080').darken(20).toHex(); // '#4d4d4d'
+```
+
+#### `saturate(percentage = 10): Color`
+
+- <ins>Returns</ins> a new [`Color`](#types-color) with increased HSL saturation.
+- <ins>Inputs</ins>:
+  - `percentage` (optional) - percent to raise saturation (default `10`).
+
+```ts
+new Color('hsl(200, 40%, 50%)').saturate(20).toHSLString(); // 'hsl(200, 60%, 50%)'
+```
+
+#### `desaturate(percentage = 10): Color`
+
+- <ins>Returns</ins> a new [`Color`](#types-color) with decreased HSL saturation.
+- <ins>Inputs</ins>:
+  - `percentage` (optional) - percent to lower saturation (default `10`).
+
+```ts
+new Color('hsl(200, 40%, 50%)').desaturate(20).toHSLString(); // 'hsl(200, 20%, 50%)'
+```
+
+#### `grayscale(): Color`
+
+- <ins>Returns</ins> a new [`Color`](#types-color) converted to grayscale while preserving lightness.
+
+```ts
+new Color('#ff7f50').grayscale().toHex(); // '#a8a8a8'
+```
 
 ### Color Combinations
 
-#### `mix(colors, options?)`
+#### `mix(others: Array<Color | ColorFormat | string>, options?: MixColorsOptions): Color`
 
-- Additively or subtractively mixes this color with one or more others.
-- Options: `type` (`'ADDITIVE' | 'SUBTRACTIVE'`), `space` (`'RGB' | 'LINEAR_RGB' | 'HSL' | 'LCH' | 'OKLCH'`), and per-color `weights`. Defaults to `LINEAR_RGB`.
-  ```ts
-  const coral = new Color('#ff7f50');
-  const mixed = coral.mix([new Color('rebeccapurple')], { space: 'LCH', weights: [2, 1] });
-  mixed.toOKLCHString(); // stable mid-hue blend
-  ```
+- <ins>Returns</ins> a new [`Color`](#types-color) created by additively or subtractively mixing this color with additional colors.
+- <ins>Inputs</ins>:
+  - `others` - one or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to mix with this color.
+  - `options` (optional) - `MixColorsOptions` for mixing `type` (`'ADDITIVE'` | `'SUBTRACTIVE'`), color `space` (`'RGB'` | `'LINEAR_RGB'` | `'HSL'` | `'LCH'` | `'OKLCH'`), and per-color `weights`. Defaults to additive mixing in `LINEAR_RGB`.
 
-#### `blend(color, options?)`
+```ts
+const coral = new Color('#ff7f50');
+const mixed = coral.mix([new Color('rebeccapurple')], { space: 'LCH', weights: [2, 1] });
+mixed.toOKLCHString(); // stable mid-hue blend
+```
 
-- Blends with another color in `RGB` or `HSL` using `NORMAL`, `MULTIPLY`, `SCREEN`, or `OVERLAY` modes; `ratio` controls weighting (defaults to 0.5).
-  ```ts
-  new Color('#ff0000').blend(new Color('#0000ff'), { mode: 'SCREEN', ratio: 0.25 }).toHex();
-  ```
+#### `blend(other: Color | ColorFormat | string, options?: BlendColorsOptions): Color`
 
-#### `average(colors, options?)`
+- <ins>Returns</ins> a new [`Color`](#types-color) that blends this color with another.
+- <ins>Inputs</ins>:
+  - `other` - the [`Color`](#types-color), [`ColorFormat`](#types-color-format), or color string to blend with.
+  - `options` (optional) - `BlendColorsOptions` for `mode` (`'NORMAL'` | `'MULTIPLY'` | `'SCREEN'` | `'OVERLAY'`), `space` (`'RGB'` | `'HSL'`), and blend `ratio` between `0` and `1` (default `0.5`).
 
-- Averages channel values with optional `weights` in a selected `space`. Defaults to `LINEAR_RGB`.
-  ```ts
-  const base = new Color('#ff0000');
-  base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex();
-  ```
+```ts
+new Color('#ff0000').blend(new Color('#0000ff'), { mode: 'SCREEN', ratio: 0.25 }).toHex();
+```
+
+#### `average(others: Array<Color | ColorFormat | string>, options?: AverageColorsOptions): Color`
+
+- <ins>Returns</ins> a new [`Color`](#types-color) averaging channel values with other colors.
+- <ins>Inputs</ins>:
+  - `others` - one or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to average with this color.
+  - `options` (optional) - `AverageColorsOptions` to choose the averaging `space` (`'RGB'` | `'LINEAR_RGB'` | `'HSL'` | `'LCH'` | `'OKLCH'`) and supply per-color `weights`. Defaults to `LINEAR_RGB`.
+
+```ts
+const base = new Color('#ff0000');
+base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex();
+```
 
 ### Perceptual Difference (Delta E)
 
