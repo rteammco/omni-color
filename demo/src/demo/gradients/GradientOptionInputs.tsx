@@ -102,6 +102,15 @@ export function GradientOptionInputs({ options, onOptionsChanged, onTargetColorC
           <option value="EASE_IN_OUT">Ease in/out</option>
         </select>
       </label>
+      <label>
+        Clamp:
+        <input
+          className="ml-2 px-2 shadow-md"
+          checked={options.clamp ?? true}
+          type="checkbox"
+          onChange={(e) => onOptionsChanged({ ...options, clamp: e.target.checked })}
+        />
+      </label>
       {options.space !== 'RGB' && (
         <label>
           Hue interpolation:

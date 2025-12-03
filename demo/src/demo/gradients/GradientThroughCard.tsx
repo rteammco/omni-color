@@ -3,6 +3,7 @@ import { Color, type ColorGradientOptions } from '../../../../dist';
 import { Card } from '../../components/Card';
 import { ColorBox } from '../../components/ColorBox';
 import { GradientOptionInputs } from './GradientOptionInputs';
+import { DEFAULT_COLOR_GRADIENT_OPTIONS } from './gradientOptions.consts';
 
 const STOP_COLORS = ['Red', 'Green', 'Blue']; // TODO: ` as const` once available
 
@@ -14,12 +15,8 @@ interface Props {
 
 export function GradientThroughCard({ color }: Props) {
   const [options, setOptions] = useState<ColorGradientOptions>({
+    ...DEFAULT_COLOR_GRADIENT_OPTIONS,
     stops: DEFAULT_NUM_STOPS,
-    space: 'RGB',
-    interpolation: 'LINEAR',
-    easing: 'LINEAR',
-    // clamp: true,
-    // hueInterpolationMode: 'CARTESIAN',
   });
 
   const colorBoxes = useMemo(() => {
