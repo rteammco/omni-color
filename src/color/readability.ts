@@ -248,7 +248,7 @@ function getReadabilityComparisonResult(
  */
 export function getMostReadableTextColorForBackground(
   backgroundColor: Color,
-  textColors: Color[],
+  textColors: readonly Color[],
   options: ReadabilityComparisonOptions = {}
 ): Color {
   if (textColors.length === 0) {
@@ -275,7 +275,7 @@ export function getMostReadableTextColorForBackground(
  */
 export function getBestBackgroundColorForText(
   textColor: Color,
-  backgroundColors: Color[],
+  backgroundColors: readonly Color[],
   options: ReadabilityComparisonOptions = {}
 ): Color {
   if (backgroundColors.length === 0) {
