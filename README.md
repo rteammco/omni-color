@@ -468,7 +468,7 @@ Delta E calculations measure how visually different two colors appear.
       - `kC` - chroma weighting factor. Defaults to `1`.
       - `kH` - hue weighting factor. Defaults to `1`.
       - `K1` - chroma scaling constant. Defaults to `0.045`.
-      - `kL` - hue scaling constant. Defaults to `0.015`.
+      - `K2` - hue scaling constant. Defaults to `0.015`.
 
 ```ts
 const base = new Color('#e63946');
