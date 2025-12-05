@@ -446,7 +446,10 @@ function adjustHueStops(
  * chosen color space and optionally clamped to that space's valid gamut before
  * being converted back to RGB.
  */
-export function createColorGradient(colors: Color[], options: ColorGradientOptions = {}): Color[] {
+export function createColorGradient(
+  colors: readonly Color[],
+  options: ColorGradientOptions = {}
+): Color[] {
   if (colors.length < MIN_SCALE_STOPS) {
     throw new Error('at least two colors are required to build a gradient');
   }

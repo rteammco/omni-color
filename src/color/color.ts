@@ -196,9 +196,9 @@ export class Color {
    * gradient.map((color) => color.toHex());
    * // ['#ff0000', '#ef6c00', '#99da00', '#00ff00', '#00db86', '#006ee6', '#0000ff']
    * ```
-   */
+  */
   static createInterpolatedGradient(
-    colors: ValidColorInputFormat[],
+    colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions
   ): Color[] {
     return createColorGradient(
@@ -477,7 +477,7 @@ export class Color {
    * @param options - Optional {@link MixColorsOptions} mixing options and weights.
    * @returns A new {@link Color} that is the result of the mixing.
    */
-  mix(others: ValidColorInputFormat[], options?: MixColorsOptions): Color {
+  mix(others: readonly ValidColorInputFormat[], options?: MixColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
@@ -502,7 +502,7 @@ export class Color {
    * @param options - Optional {@link AverageColorsOptions} mix space and weights.
    * @returns A new {@link Color} that is the result of the averaging.
    */
-  average(others: ValidColorInputFormat[], options?: AverageColorsOptions): Color {
+  average(others: readonly ValidColorInputFormat[], options?: AverageColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
@@ -516,7 +516,10 @@ export class Color {
    * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, hue interpolation mode, and stop count.
    * @returns An array of {@link Color}s representing the full gradient including this color and the provided stops.
    */
-  createGradientThrough(stops: ValidColorInputFormat[], options?: ColorGradientOptions): Color[] {
+  createGradientThrough(
+    stops: readonly ValidColorInputFormat[],
+    options?: ColorGradientOptions
+  ): Color[] {
     return Color.createInterpolatedGradient([this, ...stops], options);
   }
 
@@ -859,7 +862,7 @@ export class Color {
    * @returns The candidate color with the strongest readability against this color.
    */
   getMostReadableTextColor(
-    textColors: ValidColorInputFormat[],
+    textColors: readonly ValidColorInputFormat[],
     options?: ReadabilityComparisonOptions
   ): Color {
     return getMostReadableTextColorForBackground(
@@ -897,7 +900,7 @@ export class Color {
    * @returns The candidate background color that maximizes readability for this color.
    */
   getBestBackgroundColor(
-    backgroundColors: ValidColorInputFormat[],
+    backgroundColors: readonly ValidColorInputFormat[],
     options?: ReadabilityComparisonOptions
   ): Color {
     return getBestBackgroundColorForText(
