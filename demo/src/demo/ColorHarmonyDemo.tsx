@@ -2,15 +2,22 @@ import React from 'react';
 import type { Color } from '../../../dist';
 import { ColorBox } from '../components/ColorBox';
 import { Icon } from '../components/Icon';
+import { Card } from '../components/Card';
 
 function ColorHarmonyRow({ colors }: { colors: Color[] }) {
   return (
     <div className="flex flex-row gap-2 items-center">
-      <ColorBox color={colors[0]} />
+      <ColorBox
+        color={colors[0]}
+        label={colors[0].getName().name}
+        overlayText="Original"
+        overlaySize="SMALL"
+        width="DOUBLE"
+      />
       <Icon size={20} type={Icon.TYPE.ARROW_RIGHT} />
       {colors.slice(1).map((color, index) => (
         <React.Fragment key={index}>
-          <ColorBox color={color} />
+          <ColorBox color={color} label={color.getName().name} width="DOUBLE" />
           {index < colors.length - 2 && <Icon size={20} type={Icon.TYPE.PLUS} />}
         </React.Fragment>
       ))}
@@ -24,53 +31,28 @@ interface Props {
 
 export function ColorHarmonyDemo({ color }: Props) {
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="table-auto mx-auto">
-        <tbody>
-          <tr>
-            <td className="pb-2 pr-4 text-right">Complementary</td>
-            <td className="pb-2">
-              <ColorHarmonyRow colors={color.getComplementaryColors()} />
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2 pr-4 text-right">Split complementary</td>
-            <td className="pb-2">
-              <ColorHarmonyRow colors={color.getSplitComplementaryColors()} />
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2 pr-4 text-right">Triadic</td>
-            <td className="pb-2">
-              <ColorHarmonyRow colors={color.getTriadicHarmonyColors()} />
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2 pr-4 text-right">Square</td>
-            <td className="pb-2">
-              <ColorHarmonyRow colors={color.getSquareHarmonyColors()} />
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2 pr-4 text-right">Tetradic</td>
-            <td className="pb-2">
-              <ColorHarmonyRow colors={color.getTetradicHarmonyColors()} />
-            </td>
-          </tr>
-          <tr>
-            <td className="pb-2 pr-4 text-right">Analogous</td>
-            <td className="pb-2">
-              <ColorHarmonyRow colors={color.getAnalogousHarmonyColors()} />
-            </td>
-          </tr>
-          <tr>
-            <td className="pr-4 text-right">Monochromatic</td>
-            <td>
-              <ColorHarmonyRow colors={color.getMonochromaticHarmonyColors()} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="w-full flex flex-col gap-4">
+      <Card title="Complementary">
+        <ColorHarmonyRow colors={color.getComplementaryColors()} />
+      </Card>
+      <Card title="Split complementary">
+        <ColorHarmonyRow colors={color.getSplitComplementaryColors()} />
+      </Card>
+      <Card title="Triadic">
+        <ColorHarmonyRow colors={color.getTriadicHarmonyColors()} />
+      </Card>
+      <Card title="Square">
+        <ColorHarmonyRow colors={color.getSquareHarmonyColors()} />
+      </Card>
+      <Card title="Tetradic">
+        <ColorHarmonyRow colors={color.getTetradicHarmonyColors()} />
+      </Card>
+      <Card title="Analogous">
+        <ColorHarmonyRow colors={color.getAnalogousHarmonyColors()} />
+      </Card>
+      <Card title="Monochromatic">
+        <ColorHarmonyRow colors={color.getMonochromaticHarmonyColors()} />
+      </Card>
     </div>
   );
 }
