@@ -196,7 +196,7 @@ export class Color {
    * gradient.map((color) => color.toHex());
    * // ['#ff0000', '#ef6c00', '#99da00', '#00ff00', '#00db86', '#006ee6', '#0000ff']
    * ```
-  */
+   */
   static createInterpolatedGradient(
     colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions
