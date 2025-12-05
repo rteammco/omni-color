@@ -193,7 +193,7 @@ original.equals(copy); // true
 new Color('red').toHex(); // #ff0000
 ```
 
-#### `toHex(): ColorHex`
+#### `toHex8(): ColorHex`
 
 - <ins>Returns</ins> a [`ColorHex`](#types-color-hex) string in 8-digit `"#rrggbbaa"` form, including the alpha channel.
 
@@ -420,7 +420,7 @@ new Color('#ff7f50').grayscale().toHex(); // '#a8a8a8'
 ```ts
 const coral = new Color('#ff7f50');
 const mixed = coral.mix(['red', '#00ff00', new Color('blue')]);
-const weightedMix = coral.mix([new Color()], { space: 'LCH', weights: [2, 1] } });
+const weightedMix = coral.mix([new Color()], { space: 'LCH', weights: [2, 1] });
 ```
 
 #### `blend(other: Color | ColorFormat | string, options?: BlendColorsOptions): Color`
@@ -434,7 +434,7 @@ const weightedMix = coral.mix([new Color()], { space: 'LCH', weights: [2, 1] } }
     - `ratio` - the blend ratio between `0` and `1` (default is `0.5`).
 
 ```ts
-new Color('#ff0000').blend('blue'), { space: 'HSL' });
+new Color('#ff0000').blend('blue', { space: 'HSL' });
 new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 });
 ```
 
@@ -526,7 +526,9 @@ bezierGradient.map((color) => color.toHex());
   - `options` (optional) - `ColorGradientOptions` (same as [`Color.createInterpolatedGradient`](#colorcreateinterpolatedgradientcolors-arraycolor--colorformat--string-options-colorgradientoptions-color)).
 
 ```ts
-const throughGradient = Color.createGradientThrough(['#ff7f50', '#1a73e8', '#10b981'], { stops: 6 });
+const throughGradient = Color.createGradientThrough(['#ff7f50', '#1a73e8', '#10b981'], {
+  stops: 6,
+});
 throughGradient.map((color) => color.toHex());
 // ['#ff7f50', '#d04e8d', '#9b44c4', '#4d66da', '#26a1b4', '#10b981']
 ```
@@ -607,7 +609,9 @@ tetrad3.toHex(); // '#0000ff'
 - <ins>Returns</ins> five neighboring [`Color`](#types-color) hues around the base color (±30° steps).
 
 ```ts
-const [base, analogous1, analogous2, analogous3, analogous4] = new Color('#ff0000').getAnalogousHarmonyColors();
+const [base, analogous1, analogous2, analogous3, analogous4] = new Color(
+  '#ff0000'
+).getAnalogousHarmonyColors();
 base.toHex(); // '#ff0000'
 analogous1.toHex(); // '#ff0080'
 analogous2.toHex(); // '#ff8000'
