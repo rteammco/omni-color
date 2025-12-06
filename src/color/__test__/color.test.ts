@@ -429,6 +429,14 @@ describe('Color.getComplementaryColors', () => {
     expect(orig).not.toBe(red);
     expect(comp).not.toBe(red);
   });
+
+  it('respects grayscale handling mode for grayscale colors', () => {
+    const gray = new Color('#7f7f7f');
+
+    const [base, complement] = gray.getComplementaryColors({ grayscaleHandlingMode: 'IGNORE' });
+    expect(base.toHex()).toBe('#7f7f7f');
+    expect(complement.toHex()).toBe('#7f7f7f');
+  });
 });
 
 describe('Color.getSplitComplementaryColors', () => {
@@ -494,6 +502,27 @@ describe('Color.getMonochromaticHarmonyColors', () => {
     expect(mono3.toHex()).toBe('#990000');
     expect(mono4.toHex()).toBe('#ff0000');
     expect(mono5.toHex()).toBe('#e61919');
+  });
+});
+
+describe('Color.getHarmonyColors', () => {
+  it('returns harmony colors for the requested algorithm', () => {
+    const base = new Color('#ff0000');
+
+    const harmony = base.getHarmonyColors('SQUARE');
+    expect(harmony.map((color) => color.toHex())).toEqual([
+      '#ff0000',
+      '#80ff00',
+      '#00ffff',
+      '#8000ff',
+    ]);
+  });
+
+  it('forwards grayscale handling mode', () => {
+    const gray = new Color('#606060');
+
+    const harmony = gray.getHarmonyColors('TRIADIC', { grayscaleHandlingMode: 'IGNORE' });
+    expect(harmony.map((color) => color.toHex())).toEqual(['#606060', '#606060', '#606060']);
   });
 });
 

@@ -75,12 +75,14 @@ describe('getComplementaryColors', () => {
   });
 
   it('handles grayscale color modes', () => {
-    const spin = getComplementaryColors(new Color('#000000'), 'SPIN_LIGHTNESS').map((c) =>
-      c.toHex()
-    );
+    const spin = getComplementaryColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'SPIN_LIGHTNESS',
+    }).map((c) => c.toHex());
     expect(spin).toEqual(['#000000', '#ffffff']);
 
-    const ignore = getComplementaryColors(new Color('#000000'), 'IGNORE').map((c) => c.toHex());
+    const ignore = getComplementaryColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'IGNORE',
+    }).map((c) => c.toHex());
     expect(ignore).toEqual(['#000000', '#000000']);
   });
 });
@@ -175,14 +177,14 @@ describe('getSplitComplementaryColors', () => {
   });
 
   it('handles grayscale color modes', () => {
-    const spin = getSplitComplementaryColors(new Color('#000000'), 'SPIN_LIGHTNESS').map((c) =>
-      c.toHex()
-    );
+    const spin = getSplitComplementaryColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'SPIN_LIGHTNESS',
+    }).map((c) => c.toHex());
     expect(spin).toEqual(['#000000', '#d4d4d4', '#d4d4d4']);
 
-    const ignore = getSplitComplementaryColors(new Color('#000000'), 'IGNORE').map((c) =>
-      c.toHex()
-    );
+    const ignore = getSplitComplementaryColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'IGNORE',
+    }).map((c) => c.toHex());
     expect(ignore).toEqual(['#000000', '#000000', '#000000']);
   });
 });
@@ -273,12 +275,14 @@ describe('getTriadicHarmonyColors', () => {
   });
 
   it('handles grayscale color modes', () => {
-    const spin = getTriadicHarmonyColors(new Color('#000000'), 'SPIN_LIGHTNESS').map((c) =>
-      c.toHex()
-    );
+    const spin = getTriadicHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'SPIN_LIGHTNESS',
+    }).map((c) => c.toHex());
     expect(spin).toEqual(['#000000', '#ababab', '#ababab']);
 
-    const ignore = getTriadicHarmonyColors(new Color('#000000'), 'IGNORE').map((c) => c.toHex());
+    const ignore = getTriadicHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'IGNORE',
+    }).map((c) => c.toHex());
     expect(ignore).toEqual(['#000000', '#000000', '#000000']);
   });
 });
@@ -383,12 +387,14 @@ describe('getSquareHarmonyColors', () => {
   });
 
   it('handles grayscale color modes', () => {
-    const spin = getSquareHarmonyColors(new Color('#000000'), 'SPIN_LIGHTNESS').map((c) =>
-      c.toHex()
-    );
+    const spin = getSquareHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'SPIN_LIGHTNESS',
+    }).map((c) => c.toHex());
     expect(spin).toEqual(['#000000', '#808080', '#ffffff', '#808080']);
 
-    const ignore = getSquareHarmonyColors(new Color('#000000'), 'IGNORE').map((c) => c.toHex());
+    const ignore = getSquareHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'IGNORE',
+    }).map((c) => c.toHex());
     expect(ignore).toEqual(['#000000', '#000000', '#000000', '#000000']);
   });
 });
@@ -493,12 +499,14 @@ describe('getTetradicHarmonyColors', () => {
   });
 
   it('handles grayscale color modes', () => {
-    const spin = getTetradicHarmonyColors(new Color('#000000'), 'SPIN_LIGHTNESS').map((c) =>
-      c.toHex()
-    );
+    const spin = getTetradicHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'SPIN_LIGHTNESS',
+    }).map((c) => c.toHex());
     expect(spin).toEqual(['#000000', '#545454', '#ffffff', '#ababab']);
 
-    const ignore = getTetradicHarmonyColors(new Color('#000000'), 'IGNORE').map((c) => c.toHex());
+    const ignore = getTetradicHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'IGNORE',
+    }).map((c) => c.toHex());
     expect(ignore).toEqual(['#000000', '#000000', '#000000', '#000000']);
   });
 });
@@ -629,12 +637,14 @@ describe('getAnalogousHarmonyColors', () => {
   });
 
   it('handles grayscale color modes', () => {
-    const spin = getAnalogousHarmonyColors(new Color('#000000'), 'SPIN_LIGHTNESS').map((c) =>
-      c.toHex()
-    );
+    const spin = getAnalogousHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'SPIN_LIGHTNESS',
+    }).map((c) => c.toHex());
     expect(spin).toEqual(['#000000', '#2b2b2b', '#2b2b2b', '#545454', '#545454']);
 
-    const ignore = getAnalogousHarmonyColors(new Color('#000000'), 'IGNORE').map((c) => c.toHex());
+    const ignore = getAnalogousHarmonyColors(new Color('#000000'), {
+      grayscaleHandlingMode: 'IGNORE',
+    }).map((c) => c.toHex());
     expect(ignore).toEqual(['#000000', '#000000', '#000000', '#000000', '#000000']);
   });
 });

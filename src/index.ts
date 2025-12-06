@@ -23,7 +23,7 @@ import type {
   ColorGradientSpace,
   HueInterpolationMode,
 } from './color/gradients';
-import type { ColorHarmony } from './color/harmonies';
+import type { ColorHarmony, ColorHarmonyOptions, GrayscaleHandlingMode } from './color/harmonies';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
@@ -56,6 +56,7 @@ export {
   ColorGradientOptions,
   ColorGradientSpace,
   type ColorHarmony,
+  type ColorHarmonyOptions,
   ColorHex,
   ColorHSL,
   ColorHSLA,
@@ -78,6 +79,7 @@ export {
   type DeltaEOptions,
   ExtendedColorSwatch,
   GenerateColorPaletteOptions,
+  type GrayscaleHandlingMode,
   HueInterpolationMode,
   IsColorDarkOptions,
   MixColorsOptions,
