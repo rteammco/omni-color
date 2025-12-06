@@ -1,4 +1,4 @@
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
 import type { ColorHSL } from './formats';
 
@@ -124,22 +124,24 @@ export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Colo
 
 export function getHarmonyColors(
   color: Color,
-  harmony: ColorHarmony,
-  grayscaleHandlingMode: GrayscaleHandlingMode = 'SPIN_LIGHTNESS'
+  harmony: CaseInsensitive<ColorHarmony>,
+  grayscaleHandlingMode: CaseInsensitive<GrayscaleHandlingMode> = 'SPIN_LIGHTNESS'
 ): Color[] {
-  switch (harmony) {
+  const mode = grayscaleHandlingMode.toUpperCase() as GrayscaleHandlingMode;
+
+  switch (harmony.toUpperCase()) {
     case 'COMPLEMENTARY':
-      return getComplementaryColors(color, grayscaleHandlingMode);
+      return getComplementaryColors(color, mode);
     case 'SPLIT_COMPLEMENTARY':
-      return getSplitComplementaryColors(color, grayscaleHandlingMode);
+      return getSplitComplementaryColors(color, mode);
     case 'TRIADIC':
-      return getTriadicHarmonyColors(color, grayscaleHandlingMode);
+      return getTriadicHarmonyColors(color, mode);
     case 'SQUARE':
-      return getSquareHarmonyColors(color, grayscaleHandlingMode);
+      return getSquareHarmonyColors(color, mode);
     case 'TETRADIC':
-      return getTetradicHarmonyColors(color, grayscaleHandlingMode);
+      return getTetradicHarmonyColors(color, mode);
     case 'ANALOGOUS':
-      return getAnalogousHarmonyColors(color, grayscaleHandlingMode);
+      return getAnalogousHarmonyColors(color, mode);
     case 'MONOCHROMATIC':
       return getMonochromaticHarmonyColors(color);
     default:

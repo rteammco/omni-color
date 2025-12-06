@@ -2879,4 +2879,23 @@ describe('readability selection helpers', () => {
 
     expect(result.toHex()).toBe('#101010');
   });
+
+  it('accepts mixed case level and size', () => {
+    const fg = new Color('black');
+    const bg = new Color('white');
+    const r1 = fg.getTextReadabilityReport(bg, { level: 'AA', size: 'SMALL' });
+    const r2 = fg.getTextReadabilityReport(bg, { level: 'aa', size: 'small' });
+
+    expect(r1.isReadable).toBe(r2.isReadable);
+    expect(r1.requiredContrast).toBe(r2.requiredContrast);
+  });
+
+  it('accepts mixed case algorithm', () => {
+    const fg = new Color('black');
+    const bg = new Color('white');
+    const best1 = bg.getBestBackgroundColor([fg], { algorithm: 'APCA' });
+    const best2 = bg.getBestBackgroundColor([fg], { algorithm: 'apca' });
+
+    expect(best1.toHex()).toBe(best2.toHex());
+  });
 });

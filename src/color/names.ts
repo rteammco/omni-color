@@ -1,3 +1,4 @@
+import type { CaseInsensitive } from '../utils';
 import type { Color } from './color';
 
 export const BASE_COLOR_NAME_OPTIONS = {
@@ -14,6 +15,7 @@ export const BASE_COLOR_NAME_OPTIONS = {
 } as const;
 
 export type BaseColorName = (typeof BASE_COLOR_NAME_OPTIONS)[keyof typeof BASE_COLOR_NAME_OPTIONS];
+export type BaseColorNameOptions = CaseInsensitive<BaseColorName>;
 
 const COLOR_LIGHTNESS_MODIFIER_OPTIONS = {
   LIGHT: 'Light',

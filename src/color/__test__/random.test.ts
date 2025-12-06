@@ -317,6 +317,29 @@ describe('getRandomColorRGBA', () => {
     expectBluePalette(0.9999);
   });
 
+  it('accepts mixed case anchorColor', () => {
+    // We can't easily verify the color itself is red since it's random,
+    // but if it didn't throw, that's a good sign.
+    // We can check if it returns a valid Color object.
+    const c1 = Color.random({ anchorColor: 'Red' });
+    const c2 = Color.random({ anchorColor: 'red' });
+    const c3 = Color.random({ anchorColor: 'RED' });
+
+    expect(c1).toBeInstanceOf(Color);
+    expect(c2).toBeInstanceOf(Color);
+    expect(c3).toBeInstanceOf(Color);
+
+    // anchorColor "Red" logic should be triggered
+    // White is easier to check because of lightness constraints
+    const white1 = Color.random({ anchorColor: 'White' });
+    const white2 = Color.random({ anchorColor: 'white' });
+    const white3 = Color.random({ anchorColor: 'WHITE' });
+
+    expect(white1.toHSL().l).toBeGreaterThan(90);
+    expect(white2.toHSL().l).toBeGreaterThan(90);
+    expect(white3.toHSL().l).toBeGreaterThan(90);
+  });
+
   it('produces maximum component values when Math.random is near one', () => {
     const spy = jest.spyOn(Math, 'random').mockReturnValue(0.999999);
     const colorRGBA = getRandomColorRGBA();

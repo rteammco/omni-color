@@ -831,6 +831,15 @@ describe('getHarmonyColors', () => {
     ]);
   });
 
+  it('accepts mixed case harmony', () => {
+    const c = new Color('red');
+    const h1 = c.getHarmonyColors('TRIADIC');
+    const h2 = c.getHarmonyColors('triadic');
+
+    expect(h1.length).toBe(h2.length);
+    expect(h1[1].toHex()).toBe(h2[1].toHex());
+  });
+
   it('delegates for brand purple as well', () => {
     expect(getHarmonyColors(new Color('#ee6ffc'), 'COMPLEMENTARY').map((c) => c.toHex())).toEqual([
       '#ee6ffc',

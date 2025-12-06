@@ -122,5 +122,14 @@ describe('Delta E calculations', () => {
 
       expect(forward).toBeCloseTo(reverse, 12);
     });
+
+    it('accepts mixed case method', () => {
+      const c1 = new Color('red');
+      const c2 = new Color('maroon');
+      const d1 = c1.differenceFrom(c2, { method: 'CIE94' });
+      const d2 = c1.differenceFrom(c2, { method: 'cie94' });
+
+      expect(d1).toBe(d2);
+    });
   });
 });

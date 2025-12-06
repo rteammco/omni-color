@@ -53,6 +53,27 @@ describe('mixColors', () => {
     expect(result.toHex()).toBe('#ff00ff');
   });
 
+  it('accepts mixed case mix space', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const mix1 = c1.mix([c2], { space: 'RGB' });
+    const mix2 = c1.mix([c2], { space: 'rgb' });
+    // @ts-expect-error - testing mixed casing not covered by type but valid runtime
+    const mix3 = c1.mix([c2], { space: 'rGb' });
+
+    expect(mix1.toHex()).toBe(mix2.toHex());
+    expect(mix1.toHex()).toBe(mix3.toHex());
+  });
+
+  it('accepts mixed case mix type', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const sub1 = c1.mix([c2], { type: 'SUBTRACTIVE' });
+    const sub2 = c1.mix([c2], { type: 'subtractive' });
+
+    expect(sub1.toHex()).toBe(sub2.toHex());
+  });
+
   it('defaults to additive Linear RGB mixing', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
@@ -319,6 +340,24 @@ describe('blendColors', () => {
     const blue = new Color('#0000ff');
     const result = blendColors(red, blue, { mode: 'MULTIPLY', ratio: 1 });
     expect(result.toHex()).toBe('#000000');
+  });
+
+  it('accepts mixed case blend mode', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const b1 = c1.blend(c2, { mode: 'MULTIPLY' });
+    const b2 = c1.blend(c2, { mode: 'multiply' });
+
+    expect(b1.toHex()).toBe(b2.toHex());
+  });
+
+  it('accepts mixed case blend space', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const b1 = c1.blend(c2, { space: 'HSL' });
+    const b2 = c1.blend(c2, { space: 'hsl' });
+
+    expect(b1.toHex()).toBe(b2.toHex());
   });
 
   it('partially blends using multiply mode', () => {

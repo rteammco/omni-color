@@ -408,4 +408,40 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // stops=3. 0, 0.5, 1.
     expect(gradient[1].toHSL().h).toBeCloseTo(120, 1);
   });
+
+  it('accepts mixed case gradient space', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const g1 = Color.createInterpolatedGradient([c1, c2], { space: 'HSL' });
+    const g2 = Color.createInterpolatedGradient([c1, c2], { space: 'hsl' });
+
+    expect(g1[1].toHex()).toBe(g2[1].toHex());
+  });
+
+  it('accepts mixed case interpolation', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const g1 = Color.createInterpolatedGradient([c1, c2], { interpolation: 'BEZIER' });
+    const g2 = Color.createInterpolatedGradient([c1, c2], { interpolation: 'bezier' });
+
+    expect(g1[1].toHex()).toBe(g2[1].toHex());
+  });
+
+  it('accepts mixed case easing', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const g1 = Color.createInterpolatedGradient([c1, c2], { easing: 'EASE_IN' });
+    const g2 = Color.createInterpolatedGradient([c1, c2], { easing: 'ease_in' });
+
+    expect(g1[1].toHex()).toBe(g2[1].toHex());
+  });
+
+  it('accepts mixed case hue interpolation mode', () => {
+    const c1 = new Color('red');
+    const c2 = new Color('blue');
+    const g1 = Color.createInterpolatedGradient([c1, c2], { hueInterpolationMode: 'LONGEST' });
+    const g2 = Color.createInterpolatedGradient([c1, c2], { hueInterpolationMode: 'longest' });
+
+    expect(g1[1].toHex()).toBe(g2[1].toHex());
+  });
 });
