@@ -113,22 +113,20 @@ describe('Delta E calculations', () => {
         'Unsupported Delta E method: INVALID'
       );
     });
-  });
 
-  describe('Color.differenceFrom', () => {
     it('uses CIEDE2000 by default', () => {
       const red = new Color('#ff0000');
       const almostRed = new Color('#ff0100');
 
-      expect(red.differenceFrom(almostRed)).toBeCloseTo(0.034, 3);
+      expect(getDeltaE(red, almostRed)).toBeCloseTo(0.034, 3);
     });
 
     it('accepts alternate methods', () => {
       const blue = new Color('rgb(0, 0, 255)');
       const teal = new Color({ h: 180, s: 100, l: 50 });
 
-      expect(blue.differenceFrom(teal, { method: 'CIE76' })).toBeCloseTo(168.65, 2);
-      expect(blue.differenceFrom(teal, { method: 'CIE94' })).toBeCloseTo(74.762, 2);
+      expect(getDeltaE(blue, teal, { method: 'CIE76' })).toBeCloseTo(168.65, 2);
+      expect(getDeltaE(blue, teal, { method: 'CIE94' })).toBeCloseTo(74.762, 2);
     });
 
     it('accepts Colors created from different input shapes', () => {
@@ -136,16 +134,16 @@ describe('Delta E calculations', () => {
       const identical = new Color({ r: 51, g: 102, b: 153 });
       const white = new Color('#ffffff');
 
-      expect(base.differenceFrom(identical)).toBe(0);
-      expect(base.differenceFrom(white, { method: 'CIE76' })).toBeCloseTo(66.644, 3);
+      expect(getDeltaE(base, identical)).toBe(0);
+      expect(getDeltaE(base, white, { method: 'CIE76' })).toBeCloseTo(66.644, 3);
     });
 
     it('is symmetric regardless of parameter order', () => {
       const golden = new Color('#daa520');
       const navy = new Color('#001f3f');
 
-      const forward = golden.differenceFrom(navy, { method: 'CIEDE2000' });
-      const reverse = navy.differenceFrom(golden, { method: 'CIEDE2000' });
+      const forward = getDeltaE(golden, navy, { method: 'CIEDE2000' });
+      const reverse = getDeltaE(navy, golden, { method: 'CIEDE2000' });
 
       expect(forward).toBeCloseTo(reverse, 12);
     });
@@ -153,8 +151,8 @@ describe('Delta E calculations', () => {
     it('accepts mixed case method', () => {
       const c1 = new Color('red');
       const c2 = new Color('maroon');
-      const d1 = c1.differenceFrom(c2, { method: 'CIE94' });
-      const d2 = c1.differenceFrom(c2, { method: 'cie94' });
+      const d1 = getDeltaE(c1, c2, { method: 'CIE94' });
+      const d2 = getDeltaE(c1, c2, { method: 'cie94' });
 
       expect(d1).toBe(d2);
     });

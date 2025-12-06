@@ -121,7 +121,7 @@ describe('createColorGradient', () => {
 describe('Color gradient helpers', () => {
   it('maintains anchors when easing between multiple colors', () => {
     const anchors = [new Color('#ff0000'), new Color('#00ff00'), new Color('#0000ff')];
-    const gradient = Color.createInterpolatedGradient(anchors, {
+    const gradient = createColorGradient(anchors, {
       stops: 5,
       easing: 'EASE_IN_OUT',
       space: 'RGB',
@@ -420,8 +420,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case gradient space', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = Color.createInterpolatedGradient([c1, c2], { space: 'HSL' });
-    const g2 = Color.createInterpolatedGradient([c1, c2], { space: 'hsl' });
+    const g1 = createColorGradient([c1, c2], { space: 'HSL' });
+    const g2 = createColorGradient([c1, c2], { space: 'hsl' });
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });
@@ -429,8 +429,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case interpolation', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = Color.createInterpolatedGradient([c1, c2], { interpolation: 'BEZIER' });
-    const g2 = Color.createInterpolatedGradient([c1, c2], { interpolation: 'bezier' });
+    const g1 = createColorGradient([c1, c2], { interpolation: 'BEZIER' });
+    const g2 = createColorGradient([c1, c2], { interpolation: 'bezier' });
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });
@@ -438,8 +438,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case easing', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = Color.createInterpolatedGradient([c1, c2], { easing: 'EASE_IN' });
-    const g2 = Color.createInterpolatedGradient([c1, c2], { easing: 'ease_in' });
+    const g1 = createColorGradient([c1, c2], { easing: 'EASE_IN' });
+    const g2 = createColorGradient([c1, c2], { easing: 'ease_in' });
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });
@@ -447,8 +447,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case hue interpolation mode', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = Color.createInterpolatedGradient([c1, c2], { hueInterpolationMode: 'LONGEST' });
-    const g2 = Color.createInterpolatedGradient([c1, c2], { hueInterpolationMode: 'longest' });
+    const g1 = createColorGradient([c1, c2], { hueInterpolationMode: 'LONGEST' });
+    const g2 = createColorGradient([c1, c2], { hueInterpolationMode: 'longest' });
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });

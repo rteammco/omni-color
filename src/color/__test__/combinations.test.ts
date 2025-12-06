@@ -56,10 +56,10 @@ describe('mixColors', () => {
   it('accepts mixed case mix space', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const mix1 = c1.mix([c2], { space: 'RGB' });
-    const mix2 = c1.mix([c2], { space: 'rgb' });
+    const mix1 = mixColors([c1, c2], { space: 'RGB' });
+    const mix2 = mixColors([c1, c2], { space: 'rgb' });
     // @ts-expect-error - testing mixed casing not covered by type but valid runtime
-    const mix3 = c1.mix([c2], { space: 'rGb' });
+    const mix3 = mixColors([c1, c2], { space: 'rGb' });
 
     expect(mix1.toHex()).toBe(mix2.toHex());
     expect(mix1.toHex()).toBe(mix3.toHex());
@@ -68,8 +68,8 @@ describe('mixColors', () => {
   it('accepts mixed case mix type', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const sub1 = c1.mix([c2], { type: 'SUBTRACTIVE' });
-    const sub2 = c1.mix([c2], { type: 'subtractive' });
+    const sub1 = mixColors([c1, c2], { type: 'SUBTRACTIVE' });
+    const sub2 = mixColors([c1, c2], { type: 'subtractive' });
 
     expect(sub1.toHex()).toBe(sub2.toHex());
   });
@@ -345,8 +345,8 @@ describe('blendColors', () => {
   it('accepts mixed case blend mode', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const b1 = c1.blend(c2, { mode: 'MULTIPLY' });
-    const b2 = c1.blend(c2, { mode: 'multiply' });
+    const b1 = blendColors(c1, c2, { mode: 'MULTIPLY' });
+    const b2 = blendColors(c1, c2, { mode: 'multiply' });
 
     expect(b1.toHex()).toBe(b2.toHex());
   });
@@ -354,8 +354,8 @@ describe('blendColors', () => {
   it('accepts mixed case blend space', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const b1 = c1.blend(c2, { space: 'HSL' });
-    const b2 = c1.blend(c2, { space: 'hsl' });
+    const b1 = blendColors(c1, c2, { space: 'HSL' });
+    const b2 = blendColors(c1, c2, { space: 'hsl' });
 
     expect(b1.toHex()).toBe(b2.toHex());
   });

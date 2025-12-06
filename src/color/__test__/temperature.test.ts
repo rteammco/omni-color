@@ -254,9 +254,9 @@ describe('getColorFromTemperatureLabel', () => {
   });
 
   it('accepts mixed case temperature label', () => {
-    const t1 = Color.fromTemperature('Cloudy sky');
-    const t2 = Color.fromTemperature('cloudy sky');
-    const t3 = Color.fromTemperature('CLOUDY SKY');
+    const t1 = getColorFromTemperatureLabel('Cloudy sky');
+    const t2 = getColorFromTemperatureLabel('cloudy sky');
+    const t3 = getColorFromTemperatureLabel('CLOUDY SKY');
 
     expect(t1.toHex()).toBe(t2.toHex());
     expect(t1.toHex()).toBe(t3.toHex());

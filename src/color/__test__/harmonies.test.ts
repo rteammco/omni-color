@@ -843,8 +843,8 @@ describe('getHarmonyColors', () => {
 
   it('accepts mixed case harmony', () => {
     const c = new Color('red');
-    const h1 = c.getHarmonyColors('TRIADIC');
-    const h2 = c.getHarmonyColors('triadic');
+    const h1 = getHarmonyColors(c, 'TRIADIC');
+    const h2 = getHarmonyColors(c, 'triadic');
 
     expect(h1.length).toBe(h2.length);
     expect(h1[1].toHex()).toBe(h2[1].toHex());
