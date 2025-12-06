@@ -522,11 +522,7 @@ describe('Color.getHarmonyColors', () => {
     const gray = new Color('#606060');
 
     const harmony = gray.getHarmonyColors('TRIADIC', { grayscaleHandlingMode: 'IGNORE' });
-    expect(harmony.map((color) => color.toHex())).toEqual([
-      '#606060',
-      '#606060',
-      '#606060',
-    ]);
+    expect(harmony.map((color) => color.toHex())).toEqual(['#606060', '#606060', '#606060']);
   });
 });
 

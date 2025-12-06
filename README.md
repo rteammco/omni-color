@@ -548,11 +548,12 @@ end.toHex(); // '#f472b6'
 
 ### Color Harmonies
 
-#### `getComplementaryColors(options?: { grayscaleHandlingMode?: GrayscaleHandlingMode }): [Color, Color]`
+#### `getComplementaryColors(options?: ColorHarmonyOptions): [Color, Color]`
 
 - <ins>Returns</ins> the base [`Color`](#types-color) and its complementary [`Color`](#types-color) (hues 180° apart).
 - <ins>Inputs</ins>:
-- `options.grayscaleHandlingMode` (optional) - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs; defaults to `'SPIN_LIGHTNESS'`.
+  - `options` (optional) - `ColorHarmonyOptions`:
+    - `grayscaleHandlingMode` - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs (default is `'SPIN_LIGHTNESS'`).
 
 ```ts
 const [base, complement] = new Color('#ff0000').getComplementaryColors();
@@ -560,11 +561,12 @@ base.toHex(); // '#ff0000'
 complement.toHex(); // '#00ffff'
 ```
 
-#### `getSplitComplementaryColors(options?: { grayscaleHandlingMode?: GrayscaleHandlingMode }): [Color, Color, Color]`
+#### `getSplitComplementaryColors(options?: ColorHarmonyOptions): [Color, Color, Color]`
 
 - <ins>Returns</ins> the base [`Color`](#types-color) plus two [`Color`](#types-color) hues adjacent to its complement (rotated ±30° from 180°).
 - <ins>Inputs</ins>:
-- `options.grayscaleHandlingMode` (optional) - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs; defaults to `'SPIN_LIGHTNESS'`.
+  - `options` (optional) - `ColorHarmonyOptions`:
+    - `grayscaleHandlingMode` - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs (default is `'SPIN_LIGHTNESS'`).
 
 ```ts
 const [base, split1, split2] = new Color('#ff0000').getSplitComplementaryColors();
@@ -573,11 +575,12 @@ split1.toHex(); // '#0080ff'
 split2.toHex(); // '#00ff80'
 ```
 
-#### `getTriadicHarmonyColors(options?: { grayscaleHandlingMode?: GrayscaleHandlingMode }): [Color, Color, Color]`
+#### `getTriadicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color]`
 
 - <ins>Returns</ins> three evenly spaced [`Color`](#types-color) hues 120° apart on the color wheel.
 - <ins>Inputs</ins>:
-- `options.grayscaleHandlingMode` (optional) - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs; defaults to `'SPIN_LIGHTNESS'`.
+  - `options` (optional) - `ColorHarmonyOptions`:
+    - `grayscaleHandlingMode` - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs (default is `'SPIN_LIGHTNESS'`).
 
 ```ts
 const [base, triad1, triad2] = new Color('#ff0000').getTriadicHarmonyColors();
@@ -586,11 +589,12 @@ triad1.toHex(); // '#0000ff'
 triad2.toHex(); // '#00ff00'
 ```
 
-#### `getSquareHarmonyColors(options?: { grayscaleHandlingMode?: GrayscaleHandlingMode }): [Color, Color, Color, Color]`
+#### `getSquareHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color]`
 
 - <ins>Returns</ins> four [`Color`](#types-color) hues forming a square on the color wheel (90° apart).
 - <ins>Inputs</ins>:
-- `options.grayscaleHandlingMode` (optional) - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs; defaults to `'SPIN_LIGHTNESS'`.
+  - `options` (optional) - `ColorHarmonyOptions`:
+    - `grayscaleHandlingMode` - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs (default is `'SPIN_LIGHTNESS'`).
 
 ```ts
 const [base, square1, square2, square3] = new Color('#ff0000').getSquareHarmonyColors();
@@ -600,11 +604,12 @@ square2.toHex(); // '#00ffff'
 square3.toHex(); // '#8000ff'
 ```
 
-#### `getTetradicHarmonyColors(options?: { grayscaleHandlingMode?: GrayscaleHandlingMode }): [Color, Color, Color, Color]`
+#### `getTetradicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color]`
 
 - <ins>Returns</ins> a rectangular harmony of four [`Color`](#types-color) instances made of two complementary pairs.
 - <ins>Inputs</ins>:
-- `options.grayscaleHandlingMode` (optional) - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs; defaults to `'SPIN_LIGHTNESS'`.
+  - `options` (optional) - `ColorHarmonyOptions`:
+    - `grayscaleHandlingMode` - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs (default is `'SPIN_LIGHTNESS'`).
 
 ```ts
 const [base, tetrad1, tetrad2, tetrad3] = new Color('#ff0000').getTetradicHarmonyColors();
@@ -614,11 +619,12 @@ tetrad2.toHex(); // '#00ffff'
 tetrad3.toHex(); // '#0000ff'
 ```
 
-#### `getAnalogousHarmonyColors(options?: { grayscaleHandlingMode?: GrayscaleHandlingMode }): [Color, Color, Color, Color, Color]`
+#### `getAnalogousHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color, Color]`
 
 - <ins>Returns</ins> five neighboring [`Color`](#types-color) hues around the base color (±30° steps).
 - <ins>Inputs</ins>:
-- `options.grayscaleHandlingMode` (optional) - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs; defaults to `'SPIN_LIGHTNESS'`.
+  - `options` (optional) - `ColorHarmonyOptions`:
+    - `grayscaleHandlingMode` - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs (default is `'SPIN_LIGHTNESS'`).
 
 ```ts
 const [base, analogous1, analogous2, analogous3, analogous4] = new Color(
@@ -644,12 +650,13 @@ mono3.toHex(); // '#ff0000'
 mono4.toHex(); // '#e61919'
 ```
 
-#### `getHarmonyColors(harmony: ColorHarmony, options?: { grayscaleHandlingMode?: GrayscaleHandlingMode }): Color[]`
+#### `getHarmonyColors(harmony: ColorHarmony, options?: ColorHarmonyOptions): Color[]`
 
 - <ins>Returns</ins> new [`Color`](#types-color) instances generated by the specified `ColorHarmony` algorithm.
 - <ins>Inputs</ins>:
   - `harmony` - one of `"COMPLEMENTARY" | "SPLIT_COMPLEMENTARY" | "TRIADIC" | "SQUARE" | "TETRADIC" | "ANALOGOUS" | "MONOCHROMATIC"`.
-- `options.grayscaleHandlingMode` (optional) - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs; defaults to `'SPIN_LIGHTNESS'`.
+  - `options` (optional) - `ColorHarmonyOptions`:
+    - `grayscaleHandlingMode` - [`GrayscaleHandlingMode`](#types-grayscale-handling-mode) behavior for grayscale inputs (default is `'SPIN_LIGHTNESS'`).
 
 ```ts
 new Color('#ff7f50').getHarmonyColors('TRIADIC').map((color) => color.toHex());
