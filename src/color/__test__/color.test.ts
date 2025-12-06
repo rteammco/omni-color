@@ -429,6 +429,14 @@ describe('Color.getComplementaryColors', () => {
     expect(orig).not.toBe(red);
     expect(comp).not.toBe(red);
   });
+
+  it('respects grayscale handling mode for grayscale colors', () => {
+    const gray = new Color('#7f7f7f');
+
+    const [base, complement] = gray.getComplementaryColors({ grayscaleHandlingMode: 'IGNORE' });
+    expect(base.toHex()).toBe('#7f7f7f');
+    expect(complement.toHex()).toBe('#7f7f7f');
+  });
 });
 
 describe('Color.getSplitComplementaryColors', () => {
@@ -494,6 +502,27 @@ describe('Color.getMonochromaticHarmonyColors', () => {
     expect(mono3.toHex()).toBe('#990000');
     expect(mono4.toHex()).toBe('#ff0000');
     expect(mono5.toHex()).toBe('#e61919');
+  });
+});
+
+describe('Color.getHarmonyColors', () => {
+  it('returns harmony colors for the requested algorithm', () => {
+    const base = new Color('#ff0000');
+
+    const harmony = base.getHarmonyColors('SQUARE');
+    expect(harmony.map((color) => color.toHex())).toEqual([
+      '#ff0000',
+      '#80ff00',
+      '#00ffff',
+      '#8000ff',
+    ]);
+  });
+
+  it('forwards grayscale handling mode', () => {
+    const gray = new Color('#606060');
+
+    const harmony = gray.getHarmonyColors('TRIADIC', { grayscaleHandlingMode: 'IGNORE' });
+    expect(harmony.map((color) => color.toHex())).toEqual(['#606060', '#606060', '#606060']);
   });
 });
 
@@ -684,6 +713,17 @@ describe('Color.getMostReadableTextColor', () => {
     const result = background.getMostReadableTextColor([cyan, orange], options);
     expect(result.toHex()).toBe('#00ffff');
   });
+
+  it('accepts readonly candidate arrays', () => {
+    const background = new Color('#1b263b');
+    const slateBlue = new Color('#6b7b8c');
+    const seaside = new Color('#e0fbfc');
+    const ember = new Color('#e4572e');
+
+    const result = background.getMostReadableTextColor([slateBlue, seaside, ember] as const);
+
+    expect(result.toHex()).toBe(seaside.toHex());
+  });
 });
 
 describe('Color.getTextReadabilityReport', () => {
@@ -770,6 +810,17 @@ describe('Color.getBestBackgroundColor', () => {
     expect(() => textColor.getBestBackgroundColor([])).toThrow(
       'At least one background color must be provided.'
     );
+  });
+
+  it('accepts readonly background candidates', () => {
+    const textColor = new Color('#fdf6e3');
+    const midnight = new Color('#0f172a');
+    const navy = new Color('#1e3a8a');
+    const driftwood = new Color('#b49b6b');
+
+    const result = textColor.getBestBackgroundColor([midnight, navy, driftwood] as const);
+
+    expect(result.toHex()).toBe(midnight.toHex());
   });
 });
 
@@ -861,6 +912,44 @@ describe('Color.differenceFrom', () => {
   });
 });
 
+describe('Color mixing and averaging', () => {
+  it('mixes colors from mutable inputs', () => {
+    const base = new Color('#030303');
+    const others = ['#060606', '#090909'];
+
+    const result = base.mix(others, { space: 'RGB' });
+
+    expect(result.toHex()).toBe('#121212');
+  });
+
+  it('mixes colors from readonly inputs', () => {
+    const base = new Color('#123456');
+    const others = ['#abcdef'] as const;
+
+    const result = base.mix(others, { space: 'RGB' });
+
+    expect(result.toHex()).toBe('#bdffff');
+  });
+
+  it('averages colors from mutable inputs', () => {
+    const base = new Color('#050a0f');
+    const others = ['#0f0a05'];
+
+    const result = base.average(others, { space: 'RGB' });
+
+    expect(result.toHex()).toBe('#0a0a0a');
+  });
+
+  it('averages colors from readonly inputs', () => {
+    const base = new Color('#112233');
+    const others = ['#8899aa', '#223344'] as const;
+
+    const result = base.average(others, { space: 'RGB' });
+
+    expect(result.toHex()).toBe('#3e4f60');
+  });
+});
+
 describe('Color gradients', () => {
   it('creates OKLCH gradients through instance helpers', () => {
     const gradient = new Color('#ff6b6b').createGradientTo('#004cff', { stops: 3 });
@@ -882,5 +971,14 @@ describe('Color gradients', () => {
     expect(gradient[0].toHex()).toBe('#004cff');
     expect(gradient[1].toHex()).toBe('#00ffaa');
     expect(gradient[2].toHex()).toBe('#ff6600');
+  });
+
+  it('builds gradients through readonly stop arrays', () => {
+    const base = new Color('#1d3557');
+    const anchors = [new Color('#2a9d8f'), new Color('#f4a261')] as const;
+
+    const gradient = base.createGradientThrough(anchors, { stops: 3, space: 'RGB' });
+
+    expect(gradient.map((color) => color.toHex())).toEqual(['#1d3557', '#2a9d8f', '#f4a261']);
   });
 });

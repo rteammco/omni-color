@@ -38,7 +38,10 @@ function getWeights(
   return { weights, sumOfWeights, normalizedWeights };
 }
 
-function mixColorsSubtractive(colors: Color[], normalizedWeights: number[]): Color {
+function mixColorsSubtractive(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[]
+): Color {
   let c = 1;
   let m = 1;
   let y = 1;
@@ -61,9 +64,9 @@ function mixColorsSubtractive(colors: Color[], normalizedWeights: number[]): Col
 }
 
 function mixColorsAdditive(
-  colors: Color[],
+  colors: readonly Color[],
   space: MixSpace,
-  weights: number[],
+  weights: readonly number[],
   sumOfWeights: number
 ) {
   switch (space) {
@@ -116,7 +119,7 @@ function mixColorsAdditive(
   }
 }
 
-export function mixColors(colors: Color[], options: MixColorsOptions = {}): Color {
+export function mixColors(colors: readonly Color[], options: MixColorsOptions = {}): Color {
   if (colors.length < 2) {
     throw new Error('at least two colors are required for mixing');
   }
@@ -210,7 +213,7 @@ export interface AverageColorsOptions {
   weights?: number[];
 }
 
-export function averageColors(colors: Color[], options: AverageColorsOptions = {}): Color {
+export function averageColors(colors: readonly Color[], options: AverageColorsOptions = {}): Color {
   if (colors.length < 2) {
     throw new Error('at least two colors are required for averaging');
   }

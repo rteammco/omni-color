@@ -2871,6 +2871,15 @@ describe('readability selection helpers', () => {
     expect(result.toHex()).toBe('#000000');
   });
 
+  it('selects the most readable text color from readonly candidates', () => {
+    const background = new Color('#0d1321');
+    const candidates = [new Color('#f0e9d2'), new Color('#748cab'), new Color('#3e5c76')] as const;
+
+    const result = getMostReadableTextColorForBackground(background, candidates);
+
+    expect(result.toHex()).toBe('#f0e9d2');
+  });
+
   it('selects the best background color for APCA scoring', () => {
     const textColor = new Color('#f4e4c0');
     const backgrounds = ['#101010', '#444444', '#ffffff'].map((bg) => new Color(bg));
@@ -2878,6 +2887,15 @@ describe('readability selection helpers', () => {
     const result = getBestBackgroundColorForText(textColor, backgrounds, { algorithm: 'APCA' });
 
     expect(result.toHex()).toBe('#101010');
+  });
+
+  it('selects the best background from readonly inputs', () => {
+    const textColor = new Color('#1f2937');
+    const backgrounds = [new Color('#e0fbfc'), new Color('#98c1d9'), new Color('#293241')] as const;
+
+    const result = getBestBackgroundColorForText(textColor, backgrounds);
+
+    expect(result.toHex()).toBe('#e0fbfc');
   });
 
   it('accepts mixed case level and size', () => {

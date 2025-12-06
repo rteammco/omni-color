@@ -108,6 +108,14 @@ describe('createColorGradient', () => {
       'at least two colors are required to build a gradient'
     );
   });
+
+  it('accepts readonly anchor arrays', () => {
+    const anchors = [new Color('#14213d'), new Color('#fca311')] as const;
+
+    const gradient = createColorGradient(anchors, { stops: 3, space: 'RGB' });
+
+    expect(gradient.map((color) => color.toHex())).toEqual(['#14213d', '#886227', '#fca311']);
+  });
 });
 
 describe('Color gradient helpers', () => {

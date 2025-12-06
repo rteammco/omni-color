@@ -5,7 +5,7 @@ import { ColorBox } from '../../components/ColorBox';
 import { GradientOptionInputs } from './GradientOptionInputs';
 import { DEFAULT_COLOR_GRADIENT_OPTIONS } from './gradientOptions.consts';
 
-const STOP_COLORS = ['Red', 'Green', 'Blue']; // TODO: ` as const` once available
+const STOP_COLORS = ['Red', 'Green', 'Blue'] as const;
 
 const DEFAULT_NUM_STOPS = 6;
 

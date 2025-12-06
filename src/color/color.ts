@@ -1,6 +1,6 @@
-import { type CaseInsensitive, clampValue } from '../utils';
 import type { ColorPalette, GenerateColorPaletteOptions } from '../palette/palette';
 import { generateColorPaletteFromBaseColor } from '../palette/palette';
+import { type CaseInsensitive, clampValue } from '../utils';
 import type { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './combinations';
 import { averageColors, blendColors, mixColors } from './combinations';
 import {
@@ -44,7 +44,7 @@ import {
 } from './formats';
 import type { ColorGradientOptions } from './gradients';
 import { createColorGradient } from './gradients';
-import type { ColorHarmony } from './harmonies';
+import type { ColorHarmony, ColorHarmonyOptions } from './harmonies';
 import {
   getAnalogousHarmonyColors,
   getComplementaryColors,
@@ -199,7 +199,7 @@ export class Color {
    * ```
    */
   static createInterpolatedGradient(
-    colors: ValidColorInputFormat[],
+    colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions
   ): Color[] {
     return createColorGradient(
@@ -388,6 +388,8 @@ export class Color {
    * from 0–360 where 0 is red, 120 is green and 240 is blue. Values wrap
    * around the circle when they exceed that range.
    *
+   * @param degrees - Degrees to rotate the hue.
+   *
    * @returns A new {@link Color} with the modified hue.
    *
    * @example
@@ -478,7 +480,7 @@ export class Color {
    * @param options - Optional {@link MixColorsOptions} mixing options and weights.
    * @returns A new {@link Color} that is the result of the mixing.
    */
-  mix(others: ValidColorInputFormat[], options?: MixColorsOptions): Color {
+  mix(others: readonly ValidColorInputFormat[], options?: MixColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
@@ -503,7 +505,7 @@ export class Color {
    * @param options - Optional {@link AverageColorsOptions} mix space and weights.
    * @returns A new {@link Color} that is the result of the averaging.
    */
-  average(others: ValidColorInputFormat[], options?: AverageColorsOptions): Color {
+  average(others: readonly ValidColorInputFormat[], options?: AverageColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
@@ -517,7 +519,10 @@ export class Color {
    * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, hue interpolation mode, and stop count.
    * @returns An array of {@link Color}s representing the full gradient including this color and the provided stops.
    */
-  createGradientThrough(stops: ValidColorInputFormat[], options?: ColorGradientOptions): Color[] {
+  createGradientThrough(
+    stops: readonly ValidColorInputFormat[],
+    options?: ColorGradientOptions
+  ): Color[] {
     return Color.createInterpolatedGradient([this, ...stops], options);
   }
 
@@ -536,6 +541,9 @@ export class Color {
    * Get the base color and its complementary color (hues 180° apart).
    * The first element is the original color; the second is its complement.
    *
+   * @param options - Optional {@link ColorHarmonyOptions} configuration for handling grayscale inputs.
+   * Defaults to `'SPIN_LIGHTNESS'` for grayscale colors.
+   *
    * @returns Two new {@link Color}s representing the original color and its complement.
    *
    * @example
@@ -545,14 +553,16 @@ export class Color {
    * comp.toHex(); // '#00ffff'
    * ```
    */
-  getComplementaryColors(): [Color, Color] {
-    return getComplementaryColors(this);
+  getComplementaryColors(options?: ColorHarmonyOptions): [Color, Color] {
+    return getComplementaryColors(this, options);
   }
 
   /**
    * Get the split-complementary harmony for the color. Returns the base
    * color and the two colors adjacent to its complement on the color wheel
    * (hues rotated by 150° and 210°).
+   *
+   * @param options - Optional configuration for handling grayscale inputs. Defaults to `'SPIN_LIGHTNESS'` for grayscale colors.
    *
    * @returns Three new {@link Color}s representing the original color and its split-complementary colors.
    *
@@ -564,14 +574,17 @@ export class Color {
    * c.toHex(); // '#00ff80'
    * ```
    */
-  getSplitComplementaryColors(): [Color, Color, Color] {
-    return getSplitComplementaryColors(this);
+  getSplitComplementaryColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
+    return getSplitComplementaryColors(this, options);
   }
 
   /**
    * Get the triadic harmony for the color. Triadic colors are evenly spaced
    * 120° apart on the color wheel and provide strong contrast while
    * retaining balance.
+   *
+   * @param options - Optional {@link ColorHarmonyOptions} configuration for handling grayscale inputs.
+   * Defaults to `'SPIN_LIGHTNESS'` for grayscale colors.
    *
    * @returns Three new {@link Color}s representing the original color and its triadic harmony colors.
    *
@@ -583,13 +596,16 @@ export class Color {
    * c.toHex(); // '#00ff00'
    * ```
    */
-  getTriadicHarmonyColors(): [Color, Color, Color] {
-    return getTriadicHarmonyColors(this);
+  getTriadicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
+    return getTriadicHarmonyColors(this, options);
   }
 
   /**
    * Get the square harmony for the color. Square harmonies use four colors
    * 90° apart, forming a square on the color wheel.
+   *
+   * @param options - Optional {@link ColorHarmonyOptions} configuration for handling grayscale inputs.
+   * Defaults to `'SPIN_LIGHTNESS'` for grayscale colors.
    *
    * @returns Four new {@link Color}s representing the original color and its square harmony colors.
    *
@@ -602,13 +618,16 @@ export class Color {
    * d.toHex(); // '#8000ff'
    * ```
    */
-  getSquareHarmonyColors(): [Color, Color, Color, Color] {
-    return getSquareHarmonyColors(this);
+  getSquareHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color] {
+    return getSquareHarmonyColors(this, options);
   }
 
   /**
    * Get the tetradic harmony for the color, consisting of two complementary
    * color pairs forming a rectangle on the color wheel.
+   *
+   * @param options - Optional {@link ColorHarmonyOptions} configuration for handling grayscale inputs.
+   * Defaults to `'SPIN_LIGHTNESS'` for grayscale colors.
    *
    * @returns Four new {@link Color}s representing the original color and its tetradic harmony colors.
    *
@@ -621,13 +640,16 @@ export class Color {
    * d.toHex(); // '#0000ff'
    * ```
    */
-  getTetradicHarmonyColors(): [Color, Color, Color, Color] {
-    return getTetradicHarmonyColors(this);
+  getTetradicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color] {
+    return getTetradicHarmonyColors(this, options);
   }
 
   /**
    * Get the analogous harmony for the color. These are colors adjacent to
    * the base hue, offering subtle contrast.
+   *
+   * @param options - Optional {@link ColorHarmonyOptions} configuration for handling grayscale inputs.
+   * Defaults to `'SPIN_LIGHTNESS'` for grayscale colors.
    *
    * @returns Five new {@link Color}s representing the original color and its analogous harmony colors.
    *
@@ -641,8 +663,8 @@ export class Color {
    * e.toHex(); // '#ffff00'
    * ```
    */
-  getAnalogousHarmonyColors(): [Color, Color, Color, Color, Color] {
-    return getAnalogousHarmonyColors(this);
+  getAnalogousHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color, Color] {
+    return getAnalogousHarmonyColors(this, options);
   }
 
   /**
@@ -669,10 +691,13 @@ export class Color {
    * Get harmony colors based on the given {@link ColorHarmony} type.
    *
    * @param harmony - Harmony algorithm to use.
+   * @param options - Optional {@link ColorHarmonyOptions} configuration for handling grayscale inputs.
+   * Defaults to `'SPIN_LIGHTNESS'` for grayscale colors.
+   *
    * @returns A list of new {@link Color}s representing the original color and its harmony colors for the specified `harmony` option.
    */
-  getHarmonyColors(harmony: CaseInsensitive<ColorHarmony>): Color[] {
-    return getHarmonyColors(this, harmony);
+  getHarmonyColors(harmony: ColorHarmony, options?: ColorHarmonyOptions): Color[] {
+    return getHarmonyColors(this, harmony, options);
   }
 
   /**
@@ -860,7 +885,7 @@ export class Color {
    * @returns The candidate color with the strongest readability against this color.
    */
   getMostReadableTextColor(
-    textColors: ValidColorInputFormat[],
+    textColors: readonly ValidColorInputFormat[],
     options?: ReadabilityComparisonOptions
   ): Color {
     return getMostReadableTextColorForBackground(
@@ -898,7 +923,7 @@ export class Color {
    * @returns The candidate background color that maximizes readability for this color.
    */
   getBestBackgroundColor(
-    backgroundColors: ValidColorInputFormat[],
+    backgroundColors: readonly ValidColorInputFormat[],
     options?: ReadabilityComparisonOptions
   ): Color {
     return getBestBackgroundColorForText(
