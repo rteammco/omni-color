@@ -1,4 +1,4 @@
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
 import { srgbChannelToLinear } from './utils';
 
@@ -150,10 +150,6 @@ export function getColorFromTemperature(temperature: number): Color {
   return new Color({ r: Math.round(r), g: Math.round(g), b: Math.round(b) });
 }
 
-export function getColorFromTemperatureLabel(label: ColorTemperatureLabel): Color {
-  return getColorFromTemperature(LABEL_TO_TEMPERATURE_MAP[label]);
-}
-
 export function matchPartialColorTemperatureLabel(
   partialLabel: string
 ): ColorTemperatureLabel | null {
@@ -167,4 +163,12 @@ export function matchPartialColorTemperatureLabel(
     return cleanedPartialLabel === firstWord;
   });
   return matchedLabel ?? null;
+}
+
+export function getColorFromTemperatureLabel(label: CaseInsensitive<ColorTemperatureLabel>): Color {
+  const matchedLabel = matchPartialColorTemperatureLabel(label);
+  if (!matchedLabel) {
+    throw new Error(`Unknown color temperature label: ${label}`);
+  }
+  return getColorFromTemperature(LABEL_TO_TEMPERATURE_MAP[matchedLabel]);
 }

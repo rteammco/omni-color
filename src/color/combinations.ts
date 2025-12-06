@@ -1,4 +1,4 @@
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
 import { toCMYK } from './conversions';
 import type { ColorCMYK, ColorHSL, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
@@ -8,8 +8,8 @@ export type MixType = 'ADDITIVE' | 'SUBTRACTIVE';
 export type MixSpace = 'RGB' | 'LINEAR_RGB' | 'HSL' | 'LCH' | 'OKLCH';
 
 export interface MixColorsOptions {
-  space?: MixSpace;
-  type?: MixType;
+  space?: CaseInsensitive<MixSpace>;
+  type?: CaseInsensitive<MixType>;
   /**
    * Array of non-normalized `weights` for how much each color is weighed during mixing.
    * Length of weights must match number of colors being mixed.
@@ -123,7 +123,9 @@ export function mixColors(colors: readonly Color[], options: MixColorsOptions = 
   if (colors.length < 2) {
     throw new Error('at least two colors are required for mixing');
   }
-  const { type = 'ADDITIVE', space = 'LINEAR_RGB' } = options;
+  const type = (options.type?.toUpperCase() ?? 'ADDITIVE') as MixType;
+  const space = (options.space?.toUpperCase() ?? 'LINEAR_RGB') as MixSpace;
+
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
 
   if (type === 'SUBTRACTIVE') {
@@ -137,8 +139,8 @@ export type BlendMode = 'NORMAL' | 'MULTIPLY' | 'SCREEN' | 'OVERLAY';
 export type BlendSpace = 'RGB' | 'HSL';
 
 export interface BlendColorsOptions {
-  mode?: BlendMode;
-  space?: BlendSpace;
+  mode?: CaseInsensitive<BlendMode>;
+  space?: CaseInsensitive<BlendSpace>;
   ratio?: number; // amount of blend color over base (0 - 1)
 }
 
@@ -186,8 +188,9 @@ function blendColorsInHSLSpace(base: Color, blend: Color, ratio: number): Color 
 }
 
 export function blendColors(base: Color, blend: Color, options: BlendColorsOptions = {}): Color {
-  const { mode = 'NORMAL', space = 'RGB', ratio: inputRatio = 0.5 } = options;
-  const ratio = clampValue(inputRatio, 0, 1);
+  const mode = (options.mode?.toUpperCase() ?? 'NORMAL') as BlendMode;
+  const space = (options.space?.toUpperCase() ?? 'RGB') as BlendSpace;
+  const ratio = clampValue(options.ratio ?? 0.5, 0, 1);
 
   if (space === 'RGB') {
     return blendColorsInRGBSpace(base, blend, mode, ratio);
@@ -197,7 +200,7 @@ export function blendColors(base: Color, blend: Color, options: BlendColorsOptio
 }
 
 export interface AverageColorsOptions {
-  space?: MixSpace;
+  space?: CaseInsensitive<MixSpace>;
   /**
    * Array `weights` for how much each color is weighed during averaging.
    * Length of weights must match number of colors being averaged.
@@ -214,7 +217,7 @@ export function averageColors(colors: readonly Color[], options: AverageColorsOp
   if (colors.length < 2) {
     throw new Error('at least two colors are required for averaging');
   }
-  const { space = 'LINEAR_RGB' } = options;
+  const space = (options.space?.toUpperCase() ?? 'LINEAR_RGB') as MixSpace;
   const { normalizedWeights } = getWeights(colors.length, options.weights);
 
   switch (space) {

@@ -2,7 +2,7 @@ import { Color } from '../color/color';
 import { BLACK_HEX, WHITE_HEX } from '../color/color.constants';
 import { type ColorHarmony } from '../color/harmonies';
 import type { ColorSwatch, ColorSwatchOptions } from '../color/swatch';
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 
 type SemanticColor = 'info' | 'positive' | 'negative' | 'warning' | 'special';
 
@@ -140,7 +140,7 @@ function harmonizeSemanticColor(
 
 export function generateColorPaletteFromBaseColor(
   baseColor: Color,
-  harmony: ColorHarmony = 'COMPLEMENTARY',
+  harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
   options?: GenerateColorPaletteOptions
 ): ColorPalette {
   // TODO: helpers or warnings if the palette is suboptimal
@@ -177,17 +177,14 @@ export function generateColorPaletteFromBaseColor(
       .slice(1)
       .map((color) => color.getColorSwatch(paletteSwatchOptions)),
     neutrals: harmonizeNeutrals(baseColor).getColorSwatch(paletteSwatchOptions),
-    tintedNeutrals: harmonizeTintedNeutrals(
-      baseColor,
-      neutralHarmonizationOptions
-    ).getColorSwatch(paletteSwatchOptions),
+    tintedNeutrals: harmonizeTintedNeutrals(baseColor, neutralHarmonizationOptions).getColorSwatch(
+      paletteSwatchOptions
+    ),
     back: new Color(BLACK_HEX),
     white: new Color(WHITE_HEX),
-    info: harmonizeSemanticColor(
-      baseColor,
-      'info',
-      semanticHarmonizationOptions
-    ).getColorSwatch(paletteSwatchOptions),
+    info: harmonizeSemanticColor(baseColor, 'info', semanticHarmonizationOptions).getColorSwatch(
+      paletteSwatchOptions
+    ),
     positive: harmonizeSemanticColor(
       baseColor,
       'positive',

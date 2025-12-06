@@ -252,6 +252,15 @@ describe('getColorFromTemperatureLabel', () => {
     color = getColorFromTemperatureLabel('Blue sky');
     expect(getColorTemperature(color).label).toBe('Blue sky');
   });
+
+  it('accepts mixed case temperature label', () => {
+    const t1 = getColorFromTemperatureLabel('Cloudy sky');
+    const t2 = getColorFromTemperatureLabel('cloudy sky');
+    const t3 = getColorFromTemperatureLabel('CLOUDY SKY');
+
+    expect(t1.toHex()).toBe(t2.toHex());
+    expect(t1.toHex()).toBe(t3.toHex());
+  });
 });
 
 describe('matchPartialColorTemperatureLabel', () => {

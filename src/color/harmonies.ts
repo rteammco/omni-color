@@ -1,4 +1,4 @@
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
 import type { ColorHSL } from './formats';
 
@@ -16,7 +16,7 @@ export type ColorHarmony =
 export type GrayscaleHandlingMode = 'SPIN_LIGHTNESS' | 'IGNORE';
 
 export interface ColorHarmonyOptions {
-  grayscaleHandlingMode?: GrayscaleHandlingMode;
+  grayscaleHandlingMode?: CaseInsensitive<GrayscaleHandlingMode>;
 }
 
 // "spins" lightness around grayscale degrees, where 0 is black and 180 is white, and
@@ -47,8 +47,13 @@ function spinColorOnHueOrLightness(
   return color.spin(degrees);
 }
 
-function resolveGrayscaleHandlingMode(options?: ColorHarmonyOptions): GrayscaleHandlingMode {
-  return options?.grayscaleHandlingMode ?? 'SPIN_LIGHTNESS';
+function resolveGrayscaleHandlingMode({
+  grayscaleHandlingMode,
+}: ColorHarmonyOptions = {}): GrayscaleHandlingMode {
+  if (!grayscaleHandlingMode) {
+    return 'SPIN_LIGHTNESS';
+  }
+  return grayscaleHandlingMode.toUpperCase() as GrayscaleHandlingMode;
 }
 
 export function getComplementaryColors(
@@ -138,10 +143,10 @@ export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Colo
 
 export function getHarmonyColors(
   color: Color,
-  harmony: ColorHarmony,
+  harmony: CaseInsensitive<ColorHarmony>,
   options?: ColorHarmonyOptions
 ): Color[] {
-  switch (harmony) {
+  switch (harmony.toUpperCase() as ColorHarmony) {
     case 'COMPLEMENTARY':
       return getComplementaryColors(color, options);
     case 'SPLIT_COMPLEMENTARY':

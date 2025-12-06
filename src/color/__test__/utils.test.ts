@@ -320,6 +320,18 @@ describe('isColorDark', () => {
     const gray120 = new Color('rgb(120, 120, 120)');
     expect(isColorDark(gray120, { colorDarknessMode: 'YIQ' })).toBe(true);
   });
+
+  it('accepts mixed case darkness mode', () => {
+    // YIQ threshold 128
+    // Red (255, 0, 0)
+    // YIQ Brightness: (299*255 + 0 + 0) / 1000 = 76.245 < 128 => dark
+    const c = new Color('red');
+    const d1 = isColorDark(c, { colorDarknessMode: 'YIQ' });
+    const d2 = isColorDark(c, { colorDarknessMode: 'yiq' });
+
+    expect(d1).toBe(d2);
+    expect(d1).toBe(true);
+  });
 });
 
 describe('isColorOffWhite', () => {

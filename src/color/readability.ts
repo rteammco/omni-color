@@ -1,3 +1,4 @@
+import { type CaseInsensitive } from '../utils';
 import type { Color } from './color';
 import type { ColorRGBA } from './formats';
 import { getRelativeLuminance } from './utils';
@@ -152,8 +153,8 @@ const WCAG_CONTRAST_READABILITY_THRESHOLDS: {
 } as const;
 
 export interface TextReadabilityOptions {
-  level?: TextReadabilityConformanceLevel;
-  size?: TextReadabilityTextSizeOptions;
+  level?: CaseInsensitive<TextReadabilityConformanceLevel>;
+  size?: CaseInsensitive<TextReadabilityTextSizeOptions>;
 }
 
 export interface TextReadabilityReport {
@@ -166,7 +167,7 @@ export interface TextReadabilityReport {
 export type ReadabilityAlgorithm = 'WCAG' | 'APCA';
 
 export interface ReadabilityComparisonOptions {
-  algorithm?: ReadabilityAlgorithm;
+  algorithm?: CaseInsensitive<ReadabilityAlgorithm>;
   textReadabilityOptions?: TextReadabilityOptions;
 }
 
@@ -200,7 +201,8 @@ export function getTextReadabilityReport(
   background: Color,
   options: TextReadabilityOptions = {}
 ): TextReadabilityReport {
-  const { level = 'AA', size = 'SMALL' } = options;
+  const level = (options.level?.toUpperCase() ?? 'AA') as TextReadabilityConformanceLevel;
+  const size = (options.size?.toUpperCase() ?? 'SMALL') as TextReadabilityTextSizeOptions;
 
   const contrastRatio = getWCAGContrastRatio(foreground, background);
   const requiredContrast = WCAG_CONTRAST_READABILITY_THRESHOLDS[level][size];
@@ -225,7 +227,8 @@ function getReadabilityComparisonResult(
   background: Color,
   options: ReadabilityComparisonOptions = {}
 ): ReadabilityComparisonResult {
-  const { algorithm = 'WCAG', textReadabilityOptions } = options;
+  const algorithm = (options.algorithm?.toUpperCase() ?? 'WCAG') as ReadabilityAlgorithm;
+  const { textReadabilityOptions } = options;
 
   if (algorithm === 'APCA') {
     return {

@@ -1,6 +1,6 @@
 import type { ColorPalette, GenerateColorPaletteOptions } from '../palette/palette';
 import { generateColorPaletteFromBaseColor } from '../palette/palette';
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 import type { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './combinations';
 import { averageColors, blendColors, mixColors } from './combinations';
 import {
@@ -172,7 +172,7 @@ export class Color {
    * const cloudy = Color.fromTemperature('Cloudy sky');
    * ```
    */
-  static fromTemperature(temperature: number | ColorTemperatureLabel): Color {
+  static fromTemperature(temperature: number | CaseInsensitive<ColorTemperatureLabel>): Color {
     if (typeof temperature === 'number') {
       return getColorFromTemperature(temperature);
     }
@@ -695,7 +695,7 @@ export class Color {
    *
    * @returns A list of new {@link Color}s representing the original color and its harmony colors for the specified `harmony` option.
    */
-  getHarmonyColors(harmony: ColorHarmony, options?: ColorHarmonyOptions): Color[] {
+  getHarmonyColors(harmony: CaseInsensitive<ColorHarmony>, options?: ColorHarmonyOptions): Color[] {
     return getHarmonyColors(this, harmony, options);
   }
 
@@ -752,7 +752,7 @@ export class Color {
    * ```
    */
   getColorPalette(
-    harmony: ColorHarmony = 'COMPLEMENTARY',
+    harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
     options?: GenerateColorPaletteOptions
   ): ColorPalette {
     return generateColorPaletteFromBaseColor(this, harmony, options);

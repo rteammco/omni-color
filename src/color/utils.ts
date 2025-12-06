@@ -1,4 +1,4 @@
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.constants';
 import { toRGBA } from './conversions';
@@ -102,7 +102,7 @@ interface IsColorDarkWCAGOptions {
    * - 'YIQ': Uses the legacy Rec. 601 YIQ formula.
    * @default 'WCAG'
    */
-  colorDarknessMode?: 'WCAG';
+  colorDarknessMode?: CaseInsensitive<'WCAG'>;
   /**
    * The threshold for considering a color "dark" when using the WCAG algorithm.
    * Range is [0, 1].
@@ -119,7 +119,7 @@ interface IsColorDarkYIQOptions {
    * - 'YIQ': Uses the legacy Rec. 601 YIQ formula.
    * @default 'WCAG'
    */
-  colorDarknessMode: 'YIQ';
+  colorDarknessMode: CaseInsensitive<'YIQ'>;
   wcagThreshold?: never;
   /**
    * The threshold for considering a color "dark" when using the YIQ algorithm.
@@ -150,7 +150,7 @@ function isColorDarkYIQ(color: Color, threshold: number): boolean {
  * @returns `true` if the color is considered dark, `false` otherwise.
  */
 export function isColorDark(color: Color, options: IsColorDarkOptions = {}): boolean {
-  if (options.colorDarknessMode === 'YIQ') {
+  if (options.colorDarknessMode?.toUpperCase() === 'YIQ') {
     return isColorDarkYIQ(color, options.yiqThreshold ?? 128);
   }
 

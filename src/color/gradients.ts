@@ -1,15 +1,14 @@
-import { clampValue } from '../utils';
+import { type CaseInsensitive, clampValue } from '../utils';
 import type { Color } from './color';
 import { toRGB } from './conversions';
 import type { ColorHSL, ColorHSV, ColorLCH, ColorOKLCH, ColorRGB, ColorRGBA } from './formats';
 
 export type ColorGradientSpace = 'RGB' | 'HSL' | 'HSV' | 'LCH' | 'OKLCH';
 export type ColorGradientInterpolation = 'LINEAR' | 'BEZIER';
+
+type ColorGradientEasingMode = 'LINEAR' | 'EASE_IN' | 'EASE_OUT' | 'EASE_IN_OUT';
 export type ColorGradientEasing =
-  | 'LINEAR'
-  | 'EASE_IN'
-  | 'EASE_OUT'
-  | 'EASE_IN_OUT'
+  | CaseInsensitive<ColorGradientEasingMode>
   | ((t: number) => number);
 
 export type HueInterpolationMode =
@@ -27,12 +26,12 @@ export interface ColorGradientOptions {
    */
   stops?: number;
   /** Color space in which interpolation will occur. */
-  space?: ColorGradientSpace;
+  space?: CaseInsensitive<ColorGradientSpace>;
   /**
    * Interpolation style. Linear moves stop-to-stop evenly; bezier uses
    * the provided colors as control points for a bezier curve.
    */
-  interpolation?: ColorGradientInterpolation;
+  interpolation?: CaseInsensitive<ColorGradientInterpolation>;
   /** Easing to apply across the 0–1 range of the scale. */
   easing?: ColorGradientEasing;
   /**
@@ -47,7 +46,7 @@ export interface ColorGradientOptions {
    * which may cause desaturation in the middle of the gradient.
    * Ignored for RGB space.
    */
-  hueInterpolationMode?: HueInterpolationMode;
+  hueInterpolationMode?: CaseInsensitive<HueInterpolationMode>;
 }
 
 type InterpolatableColor = {
@@ -79,7 +78,8 @@ function getEasingFunction(easing?: ColorGradientEasing): (t: number) => number 
     return easing;
   }
 
-  switch (easing) {
+  const easingMode = (easing ? easing.toUpperCase() : 'LINEAR') as ColorGradientEasingMode;
+  switch (easingMode) {
     case 'EASE_IN':
       return (t: number) => t ** 2;
     case 'EASE_OUT':
@@ -456,8 +456,9 @@ export function createColorGradient(
 
   const ColorConstructor = colors[0].constructor as typeof Color;
   const stopCount = getStopCount(options.stops);
-  const space = options.space ?? DEFAULT_SPACE;
-  const interpolation = options.interpolation ?? DEFAULT_INTERPOLATION;
+  const space = (options.space?.toUpperCase() ?? DEFAULT_SPACE) as ColorGradientSpace;
+  const interpolation = (options.interpolation?.toUpperCase() ??
+    DEFAULT_INTERPOLATION) as ColorGradientInterpolation;
   const clamp = options.clamp ?? true;
   const easing = getEasingFunction(options.easing);
 
@@ -465,7 +466,8 @@ export function createColorGradient(
   // Default to 'SHORTEST' for Polar spaces, 'CARTESIAN' (legacy) for RGB or if explicit.
   // Actually, legacy for Polar was Cartesian.
   // New default for Polar is Shortest.
-  let hueMode = options.hueInterpolationMode;
+  let hueMode = options.hueInterpolationMode?.toUpperCase() as HueInterpolationMode | undefined;
+
   if (!hueMode) {
     if (space === 'RGB') {
       hueMode = 'CARTESIAN';

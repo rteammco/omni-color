@@ -28,18 +28,36 @@ describe('Delta E calculations', () => {
     it('matches reference values for CIE94 and CIE76', () => {
       const firstPairA = new Color({ l: 50, a: 2.6772, b: -79.7751 });
       const firstPairB = new Color({ l: 50, a: 0, b: -82.7485 });
-      expect(getDeltaE(firstPairA, firstPairB, { method: 'CIE94' })).toBeCloseTo(0.7636577088674601, 6);
-      expect(getDeltaE(firstPairA, firstPairB, { method: 'CIE76' })).toBeCloseTo(1.619848449701395, 6);
+      expect(getDeltaE(firstPairA, firstPairB, { method: 'CIE94' })).toBeCloseTo(
+        0.7636577088674601,
+        6
+      );
+      expect(getDeltaE(firstPairA, firstPairB, { method: 'CIE76' })).toBeCloseTo(
+        1.619848449701395,
+        6
+      );
 
       const secondPairA = new Color({ l: 50, a: 3.1571, b: -77.2803 });
       const secondPairB = new Color({ l: 50, a: 0, b: -82.7485 });
-      expect(getDeltaE(secondPairA, secondPairB, { method: 'CIE94' })).toBeCloseTo(1.069608018415056, 6);
-      expect(getDeltaE(secondPairA, secondPairB, { method: 'CIE76' })).toBeCloseTo(1.2429935639415082, 6);
+      expect(getDeltaE(secondPairA, secondPairB, { method: 'CIE94' })).toBeCloseTo(
+        1.069608018415056,
+        6
+      );
+      expect(getDeltaE(secondPairA, secondPairB, { method: 'CIE76' })).toBeCloseTo(
+        1.2429935639415082,
+        6
+      );
 
       const thirdPairA = new Color({ l: 50, a: 2.8361, b: -74.02 });
       const thirdPairB = new Color({ l: 50, a: 0, b: -82.7485 });
-      expect(getDeltaE(thirdPairA, thirdPairB, { method: 'CIE94' })).toBeCloseTo(1.6500919264582965, 6);
-      expect(getDeltaE(thirdPairA, thirdPairB, { method: 'CIE76' })).toBeCloseTo(3.4337015012956535, 6);
+      expect(getDeltaE(thirdPairA, thirdPairB, { method: 'CIE94' })).toBeCloseTo(
+        1.6500919264582965,
+        6
+      );
+      expect(getDeltaE(thirdPairA, thirdPairB, { method: 'CIE76' })).toBeCloseTo(
+        3.4337015012956535,
+        6
+      );
     });
 
     it('handles hue wrapping and zero-chroma inputs correctly', () => {
@@ -49,9 +67,18 @@ describe('Delta E calculations', () => {
       const grayscaleB = new Color({ l: 45, a: 0, b: 0 });
 
       expect(getDeltaE(nearZeroHue, nearFullHue, { method: 'CIEDE2000' })).toBeCloseTo(9.2596, 4);
-      expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIEDE2000' })).toBeCloseTo(10.328990616488563, 6);
-      expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIE94' })).toBeCloseTo(10.329000048382673, 6);
-      expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIE76' })).toBeCloseTo(10.329000048407398, 6);
+      expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIEDE2000' })).toBeCloseTo(
+        10.328990616488563,
+        6
+      );
+      expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIE94' })).toBeCloseTo(
+        10.329000048382673,
+        6
+      );
+      expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIE76' })).toBeCloseTo(
+        10.329000048407398,
+        6
+      );
     });
 
     it('honors custom weighting factors for CIE94', () => {
@@ -86,22 +113,20 @@ describe('Delta E calculations', () => {
         'Unsupported Delta E method: INVALID'
       );
     });
-  });
 
-  describe('Color.differenceFrom', () => {
     it('uses CIEDE2000 by default', () => {
       const red = new Color('#ff0000');
       const almostRed = new Color('#ff0100');
 
-      expect(red.differenceFrom(almostRed)).toBeCloseTo(0.034, 3);
+      expect(getDeltaE(red, almostRed)).toBeCloseTo(0.034, 3);
     });
 
     it('accepts alternate methods', () => {
       const blue = new Color('rgb(0, 0, 255)');
       const teal = new Color({ h: 180, s: 100, l: 50 });
 
-      expect(blue.differenceFrom(teal, { method: 'CIE76' })).toBeCloseTo(168.65, 2);
-      expect(blue.differenceFrom(teal, { method: 'CIE94' })).toBeCloseTo(74.762, 2);
+      expect(getDeltaE(blue, teal, { method: 'CIE76' })).toBeCloseTo(168.65, 2);
+      expect(getDeltaE(blue, teal, { method: 'CIE94' })).toBeCloseTo(74.762, 2);
     });
 
     it('accepts Colors created from different input shapes', () => {
@@ -109,18 +134,27 @@ describe('Delta E calculations', () => {
       const identical = new Color({ r: 51, g: 102, b: 153 });
       const white = new Color('#ffffff');
 
-      expect(base.differenceFrom(identical)).toBe(0);
-      expect(base.differenceFrom(white, { method: 'CIE76' })).toBeCloseTo(66.644, 3);
+      expect(getDeltaE(base, identical)).toBe(0);
+      expect(getDeltaE(base, white, { method: 'CIE76' })).toBeCloseTo(66.644, 3);
     });
 
     it('is symmetric regardless of parameter order', () => {
       const golden = new Color('#daa520');
       const navy = new Color('#001f3f');
 
-      const forward = golden.differenceFrom(navy, { method: 'CIEDE2000' });
-      const reverse = navy.differenceFrom(golden, { method: 'CIEDE2000' });
+      const forward = getDeltaE(golden, navy, { method: 'CIEDE2000' });
+      const reverse = getDeltaE(navy, golden, { method: 'CIEDE2000' });
 
       expect(forward).toBeCloseTo(reverse, 12);
+    });
+
+    it('accepts mixed case method', () => {
+      const c1 = new Color('red');
+      const c2 = new Color('maroon');
+      const d1 = getDeltaE(c1, c2, { method: 'CIE94' });
+      const d2 = getDeltaE(c1, c2, { method: 'cie94' });
+
+      expect(d1).toBe(d2);
     });
   });
 });
