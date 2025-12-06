@@ -85,7 +85,6 @@ import { getColorSwatch } from './swatch';
 import type {
   ColorTemperatureAndLabel,
   ColorTemperatureLabel,
-  ColorTemperatureLabelInput,
   ColorTemperatureStringFormatOptions,
 } from './temperature';
 import {
@@ -173,7 +172,7 @@ export class Color {
    * const cloudy = Color.fromTemperature('Cloudy sky');
    * ```
    */
-  static fromTemperature(temperature: number | ColorTemperatureLabelInput): Color {
+  static fromTemperature(temperature: number | CaseInsensitive<ColorTemperatureLabel>): Color {
     if (typeof temperature === 'number') {
       return getColorFromTemperature(temperature);
     }
@@ -696,7 +695,7 @@ export class Color {
    *
    * @returns A list of new {@link Color}s representing the original color and its harmony colors for the specified `harmony` option.
    */
-  getHarmonyColors(harmony: ColorHarmony, options?: ColorHarmonyOptions): Color[] {
+  getHarmonyColors(harmony: CaseInsensitive<ColorHarmony>, options?: ColorHarmonyOptions): Color[] {
     return getHarmonyColors(this, harmony, options);
   }
 

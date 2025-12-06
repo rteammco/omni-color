@@ -177,17 +177,14 @@ export function generateColorPaletteFromBaseColor(
       .slice(1)
       .map((color) => color.getColorSwatch(paletteSwatchOptions)),
     neutrals: harmonizeNeutrals(baseColor).getColorSwatch(paletteSwatchOptions),
-    tintedNeutrals: harmonizeTintedNeutrals(
-      baseColor,
-      neutralHarmonizationOptions
-    ).getColorSwatch(paletteSwatchOptions),
+    tintedNeutrals: harmonizeTintedNeutrals(baseColor, neutralHarmonizationOptions).getColorSwatch(
+      paletteSwatchOptions
+    ),
     back: new Color(BLACK_HEX),
     white: new Color(WHITE_HEX),
-    info: harmonizeSemanticColor(
-      baseColor,
-      'info',
-      semanticHarmonizationOptions
-    ).getColorSwatch(paletteSwatchOptions),
+    info: harmonizeSemanticColor(baseColor, 'info', semanticHarmonizationOptions).getColorSwatch(
+      paletteSwatchOptions
+    ),
     positive: harmonizeSemanticColor(
       baseColor,
       'positive',

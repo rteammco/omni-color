@@ -24,8 +24,6 @@ export interface ColorTemperatureAndLabel {
   label: ColorTemperatureLabel;
 }
 
-export type ColorTemperatureLabelInput = CaseInsensitive<ColorTemperatureLabel>;
-
 export interface ColorTemperatureStringFormatOptions {
   formatNumber?: boolean; // if `true`, the temperature value will be formatted (e.g. '6,500 K' instead of '6500 K')
 }
@@ -152,14 +150,6 @@ export function getColorFromTemperature(temperature: number): Color {
   return new Color({ r: Math.round(r), g: Math.round(g), b: Math.round(b) });
 }
 
-export function getColorFromTemperatureLabel(label: ColorTemperatureLabelInput): Color {
-  const matchedLabel = matchPartialColorTemperatureLabel(label);
-  if (!matchedLabel) {
-    throw new Error(`Unknown color temperature label: ${label}`);
-  }
-  return getColorFromTemperature(LABEL_TO_TEMPERATURE_MAP[matchedLabel]);
-}
-
 export function matchPartialColorTemperatureLabel(
   partialLabel: string
 ): ColorTemperatureLabel | null {
@@ -173,4 +163,12 @@ export function matchPartialColorTemperatureLabel(
     return cleanedPartialLabel === firstWord;
   });
   return matchedLabel ?? null;
+}
+
+export function getColorFromTemperatureLabel(label: CaseInsensitive<ColorTemperatureLabel>): Color {
+  const matchedLabel = matchPartialColorTemperatureLabel(label);
+  if (!matchedLabel) {
+    throw new Error(`Unknown color temperature label: ${label}`);
+  }
+  return getColorFromTemperature(LABEL_TO_TEMPERATURE_MAP[matchedLabel]);
 }

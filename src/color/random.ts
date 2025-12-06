@@ -1,7 +1,8 @@
-import { clampValue } from '../utils';
+import type { CaseInsensitive } from '../utils';
+import { capitalizeString, clampValue } from '../utils';
 import { toRGBA } from './conversions';
 import type { ColorRGBA } from './formats';
-import type { BaseColorName, BaseColorNameOptions } from './names';
+import type { BaseColorName } from './names';
 import {
   BASE_COLOR_HUE_RANGES,
   BASE_COLOR_NAME_OPTIONS,
@@ -27,7 +28,7 @@ export interface RandomColorOptions {
    * the generated color will have a random hue in the green range (75° to 164°). Grayscale anchor
    * colors will restrict the random color's lightness and saturation to the appropriate ranges.
    */
-  anchorColor?: BaseColorNameOptions;
+  anchorColor?: CaseInsensitive<BaseColorName>;
   /**
    * If `paletteSuitable` is `true`, generated colors will have moderate lightness and
    * sufficient saturation to make them suitable for creating color palettes.
@@ -56,11 +57,9 @@ function getRandomAnchoredHueValue(name: BaseColorName): number {
 export function getRandomColorRGBA(options: RandomColorOptions = {}): ColorRGBA {
   const { alpha, anchorColor: inputAnchorColor, paletteSuitable, randomizeAlpha } = options;
 
-  let anchorColor: BaseColorName | undefined;
-  if (inputAnchorColor) {
-    anchorColor = (inputAnchorColor.charAt(0).toUpperCase() +
-      inputAnchorColor.slice(1).toLowerCase()) as BaseColorName;
-  }
+  const anchorColor = inputAnchorColor
+    ? (capitalizeString(inputAnchorColor) as BaseColorName)
+    : undefined;
 
   let h: number;
   let s: number;

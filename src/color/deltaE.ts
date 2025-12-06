@@ -143,7 +143,7 @@ function deltaECIEDE2000(colorA: Color, colorB: Color): number {
 }
 
 export function getDeltaE(colorA: Color, colorB: Color, options: DeltaEOptions = {}): number {
-  const method = options.method?.toUpperCase() ?? 'CIEDE2000';
+  const method = options.method?.toUpperCase() ?? ('CIEDE2000' as DeltaEMethod);
 
   if (method === 'CIE76') {
     return deltaECIE76(colorA, colorB);

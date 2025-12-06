@@ -143,10 +143,10 @@ export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Colo
 
 export function getHarmonyColors(
   color: Color,
-  harmony: ColorHarmony,
+  harmony: CaseInsensitive<ColorHarmony>,
   options?: ColorHarmonyOptions
 ): Color[] {
-  switch (harmony.toUpperCase()) {
+  switch (harmony.toUpperCase() as ColorHarmony) {
     case 'COMPLEMENTARY':
       return getComplementaryColors(color, options);
     case 'SPLIT_COMPLEMENTARY':

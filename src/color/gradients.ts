@@ -6,8 +6,10 @@ import type { ColorHSL, ColorHSV, ColorLCH, ColorOKLCH, ColorRGB, ColorRGBA } fr
 export type ColorGradientSpace = 'RGB' | 'HSL' | 'HSV' | 'LCH' | 'OKLCH';
 export type ColorGradientInterpolation = 'LINEAR' | 'BEZIER';
 
-export type ColorGradientEasingMode = 'LINEAR' | 'EASE_IN' | 'EASE_OUT' | 'EASE_IN_OUT';
-export type ColorGradientEasing = ColorGradientEasingMode | ((t: number) => number);
+type ColorGradientEasingMode = 'LINEAR' | 'EASE_IN' | 'EASE_OUT' | 'EASE_IN_OUT';
+export type ColorGradientEasing =
+  | CaseInsensitive<ColorGradientEasingMode>
+  | ((t: number) => number);
 
 export type HueInterpolationMode =
   | 'CARTESIAN'
@@ -31,7 +33,7 @@ export interface ColorGradientOptions {
    */
   interpolation?: CaseInsensitive<ColorGradientInterpolation>;
   /** Easing to apply across the 0–1 range of the scale. */
-  easing?: CaseInsensitive<ColorGradientEasingMode> | ((t: number) => number);
+  easing?: ColorGradientEasing;
   /**
    * Clamp the resulting values to the target color space range before
    * converting back to sRGB.
@@ -71,13 +73,12 @@ function wrapHue(degrees: number): number {
 /**
  * Convert a supplied easing configuration into a normalized easing function.
  */
-function getEasingFunction(easing?: ColorGradientOptions['easing']): (t: number) => number {
+function getEasingFunction(easing?: ColorGradientEasing): (t: number) => number {
   if (typeof easing === 'function') {
     return easing;
   }
 
-  const easingMode = easing ? (easing as string).toUpperCase() : 'LINEAR';
-
+  const easingMode = (easing ? easing.toUpperCase() : 'LINEAR') as ColorGradientEasingMode;
   switch (easingMode) {
     case 'EASE_IN':
       return (t: number) => t ** 2;
@@ -465,9 +466,7 @@ export function createColorGradient(
   // Default to 'SHORTEST' for Polar spaces, 'CARTESIAN' (legacy) for RGB or if explicit.
   // Actually, legacy for Polar was Cartesian.
   // New default for Polar is Shortest.
-  let hueMode = (options.hueInterpolationMode?.toUpperCase() ?? undefined) as
-    | HueInterpolationMode
-    | undefined;
+  let hueMode = options.hueInterpolationMode?.toUpperCase() as HueInterpolationMode | undefined;
 
   if (!hueMode) {
     if (space === 'RGB') {
