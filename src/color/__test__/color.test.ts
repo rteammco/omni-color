@@ -524,6 +524,22 @@ describe('Color.getHarmonyColors', () => {
     const harmony = gray.getHarmonyColors('TRIADIC', { grayscaleHandlingMode: 'IGNORE' });
     expect(harmony.map((color) => color.toHex())).toEqual(['#606060', '#606060', '#606060']);
   });
+
+  it('accepts harmony algorithm names case-insensitively', () => {
+    const base = new Color('#1e90ff');
+
+    const triadic = base.getHarmonyColors('triadic');
+    expect(triadic.map((color) => color.toHex())).toEqual(['#1e90ff', '#8fff1f', '#ff1f8f']);
+
+    const analogous = base.getHarmonyColors('analogous');
+    expect(analogous.map((color) => color.toHex())).toEqual([
+      '#1e90ff',
+      '#1fffff',
+      '#1f1fff',
+      '#1fff8f',
+      '#8f1fff',
+    ]);
+  });
 });
 
 describe('Color.getColorSwatch', () => {
@@ -724,6 +740,15 @@ describe('Color.getMostReadableTextColor', () => {
 
     expect(result.toHex()).toBe(seaside.toHex());
   });
+
+  it('resolves readability algorithms without regard to casing', () => {
+    const background = new Color('#f8f9fb');
+    const navy = new Color('#1b2a49');
+    const coral = new Color('#ff715b');
+
+    const result = background.getMostReadableTextColor([navy, coral], { algorithm: 'apca' });
+    expect(result.toHex()).toBe('#1b2a49');
+  });
 });
 
 describe('Color.getTextReadabilityReport', () => {
@@ -749,6 +774,17 @@ describe('Color.getTextReadabilityReport', () => {
     expect(report.requiredContrast).toBe(3);
     expect(report.isReadable).toBe(true);
     expect(report.shortfall).toBeCloseTo(0, 2);
+  });
+
+  it('treats readability options in a case-insensitive way', () => {
+    const c1 = new Color('#555555');
+    const c2 = new Color('#aaaaaa');
+    const report = c1.getTextReadabilityReport(c2, { level: 'aaa', size: 'large' });
+
+    expect(report.contrastRatio).toBeCloseTo(3.21, 2);
+    expect(report.requiredContrast).toBe(4.5);
+    expect(report.isReadable).toBe(false);
+    expect(report.shortfall).toBeCloseTo(1.29, 2);
   });
 });
 
