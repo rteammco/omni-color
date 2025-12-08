@@ -1,4 +1,6 @@
-import type { MixSpace, MixType, MixColorsOptions } from '../../../../dist';
+import type { MixColorsOptions } from '../../../../dist';
+import { InputGroup } from '../../components/inputs/InputGroup';
+import { Select } from '../../components/inputs/Select';
 
 interface Props {
   mixOptions: MixColorsOptions;
@@ -7,32 +9,22 @@ interface Props {
 
 export function MixColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
   return (
-    <div className="flex flex-row gap-8 align-center justify-center">
-      <label>
-        Mix type:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={mixOptions.type}
-          onChange={(e) => onOptionsChanged({ ...mixOptions, type: e.target.value as MixType })}
-        >
-          <option value="ADDITIVE">Additive</option>
-          <option value="SUBTRACTIVE">Subtractive</option>
-        </select>
-      </label>
-      <label>
-        Mix space:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={mixOptions.space}
-          onChange={(e) => onOptionsChanged({ ...mixOptions, space: e.target.value as MixSpace })}
-        >
-          <option value="LINEAR_RGB">Linear RGB</option>
-          <option value="RGB">RGB</option>
-          <option value="HSL">HSL</option>
-          <option value="LCH">LCH</option>
-          <option value="OKLCH">OKLCH</option>
-        </select>
-      </label>
-    </div>
+    <InputGroup>
+      <Select
+        label="Mix type"
+        options={[
+          { label: 'Additive', value: 'ADDITIVE' },
+          { label: 'Subtractive', value: 'SUBTRACTIVE' },
+        ]}
+        value={mixOptions.type}
+        onChange={(value) => onOptionsChanged({ ...mixOptions, type: value })}
+      />
+      <Select
+        label="Mix space"
+        options={[{ label: 'Linear RGB', value: 'LINEAR_RGB' }, 'RGB', 'HSL', 'LCH', 'OKLCH']}
+        value={mixOptions.space}
+        onChange={(value) => onOptionsChanged({ ...mixOptions, space: value })}
+      />
+    </InputGroup>
   );
 }

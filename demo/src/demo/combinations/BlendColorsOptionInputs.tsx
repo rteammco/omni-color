@@ -1,4 +1,7 @@
-import type { BlendMode, BlendSpace, BlendColorsOptions } from '../../../../dist';
+import type { BlendColorsOptions } from '../../../../dist';
+import { InputGroup } from '../../components/inputs/InputGroup';
+import { NumberInput } from '../../components/inputs/NumberInput';
+import { Select } from '../../components/inputs/Select';
 
 interface Props {
   blendOptions: BlendColorsOptions;
@@ -7,45 +10,32 @@ interface Props {
 
 export function BlendColorsOptionInputs({ blendOptions, onOptionsChanged }: Props) {
   return (
-    <div className="flex flex-row gap-8 items-center justify-center">
-      <label>
-        Blend mode:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={blendOptions.mode}
-          onChange={(e) => onOptionsChanged({ ...blendOptions, mode: e.target.value as BlendMode })}
-        >
-          <option value="NORMAL">Normal</option>
-          <option value="MULTIPLY">Multiply</option>
-          <option value="SCREEN">Screen</option>
-          <option value="OVERLAY">Overlay</option>
-        </select>
-      </label>
-      <label>
-        Blend space:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={blendOptions.space}
-          onChange={(e) =>
-            onOptionsChanged({ ...blendOptions, space: e.target.value as BlendSpace })
-          }
-        >
-          <option value="RGB">RGB</option>
-          <option value="HSL">HSL</option>
-        </select>
-      </label>
-      <label>
-        Blend ratio:
-        <input
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          max={1}
-          min={0}
-          step={0.01}
-          type="number"
-          value={blendOptions.ratio}
-          onChange={(e) => onOptionsChanged({ ...blendOptions, ratio: Number(e.target.value) })}
-        />
-      </label>
-    </div>
+    <InputGroup>
+      <Select
+        label="Blend mode"
+        options={[
+          { label: 'Normal', value: 'NORMAL' },
+          { label: 'Multiply', value: 'MULTIPLY' },
+          { label: 'Screen', value: 'SCREEN' },
+          { label: 'Overlay', value: 'OVERLAY' },
+        ]}
+        value={blendOptions.mode}
+        onChange={(value) => onOptionsChanged({ ...blendOptions, mode: value })}
+      />
+      <Select
+        label="Blend space"
+        options={['RGB', 'HSL']}
+        value={blendOptions.space}
+        onChange={(value) => onOptionsChanged({ ...blendOptions, space: value })}
+      />
+      <NumberInput
+        label="Blend ratio"
+        max={1}
+        min={0}
+        step={0.1}
+        value={blendOptions.ratio}
+        onChange={(value) => onOptionsChanged({ ...blendOptions, ratio: value })}
+      />
+    </InputGroup>
   );
 }

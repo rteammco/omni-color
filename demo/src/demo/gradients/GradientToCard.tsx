@@ -22,7 +22,7 @@ export function GradientToCard({ color }: Props) {
 
   return (
     <Card title="Gradient to">
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 mb-4">
         {gradientColors.map((color, index) => {
           const colorHex = color.toHex();
           let title: string | undefined;

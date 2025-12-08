@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Color } from '../../../dist';
 import { Card } from '../components/Card';
 import { ColorBox } from '../components/ColorBox';
-import { Slider } from '../components/Slider';
+import { Slider } from '../components/inputs/Slider';
 
 interface Props {
   color: Color;

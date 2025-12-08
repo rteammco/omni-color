@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { Color, type ColorGradientOptions } from '../../../../dist';
+import { InputGroup } from '../../components/inputs/InputGroup';
+import { Select } from '../../components/inputs/Select';
+import { NumberInput } from '../../components/inputs/NumberInput';
+import { Checkbox } from '../../components/inputs/Checkbox';
 
 const TARGET_COLORS_NAMES = ['Red', 'Green', 'Blue', 'Black', 'White', 'Gray', 'Random'] as const;
 type TargetColorName = (typeof TARGET_COLORS_NAMES)[number];
@@ -26,113 +30,69 @@ export function GradientOptionInputs({ options, onOptionsChanged, onTargetColorC
   };
 
   return (
-    <div className="mt-4 flex flex-row flex-wrap justify-center gap-x-8 gap-y-4">
+    <InputGroup>
       {onTargetColorChanged && (
-        <label>
-          Target color:
-          <select
-            className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-            value={selectedTargetColorName}
-            onChange={(e) => handleTargetColorNameChanged(e.target.value as TargetColorName)}
-          >
-            {TARGET_COLORS_NAMES.map((colorName) => (
-              <option key={colorName} value={colorName}>
-                {colorName}
-              </option>
-            ))}
-          </select>
-        </label>
+        <Select
+          label="Target color"
+          options={TARGET_COLORS_NAMES}
+          value={selectedTargetColorName}
+          onChange={handleTargetColorNameChanged}
+        />
       )}
-      <label>
-        Stops:
-        <input
-          className="ml-2 px-2 py-0.5 w-20 border-1 border-gray-200 rounded-md shadow-md"
-          max={10}
-          min={2}
-          step={1}
-          type="number"
-          value={options.stops}
-          onChange={(e) => onOptionsChanged({ ...options, stops: Number(e.target.value) })}
-        />
-      </label>
-      <label>
-        Color space:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={options.space}
-          onChange={(e) =>
-            onOptionsChanged({ ...options, space: e.target.value as typeof options.space })
-          }
-        >
-          <option value="RGB">RGB</option>
-          <option value="HSL">HSL</option>
-          <option value="HSV">HSV</option>
-          <option value="LCH">LCH</option>
-          <option value="OKLCH">OKLCH</option>
-        </select>
-      </label>
-      <label>
-        Interpolation:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={options.interpolation}
-          onChange={(e) =>
-            onOptionsChanged({
-              ...options,
-              interpolation: e.target.value as typeof options.interpolation,
-            })
-          }
-        >
-          <option value="LINEAR">Linear</option>
-          <option value="BEZIER">Bezier</option>
-        </select>
-      </label>
-      <label>
-        Easing:
-        <select
-          className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-          value={options.easing as string}
-          onChange={(e) =>
-            onOptionsChanged({ ...options, easing: e.target.value as typeof options.easing })
-          }
-        >
-          <option value="LINEAR">Linear</option>
-          <option value="EASE_IN">Ease in</option>
-          <option value="EASE_OUT">Ease out</option>
-          <option value="EASE_IN_OUT">Ease in/out</option>
-        </select>
-      </label>
-      <label>
-        Clamp:
-        <input
-          className="ml-2 px-2 shadow-md"
-          checked={options.clamp ?? true}
-          type="checkbox"
-          onChange={(e) => onOptionsChanged({ ...options, clamp: e.target.checked })}
-        />
-      </label>
+      <NumberInput
+        label="Stops"
+        max={10}
+        min={2}
+        step={1}
+        value={options.stops}
+        onChange={(value) => onOptionsChanged({ ...options, stops: value })}
+      />
+      <Select
+        label="Color space"
+        options={['RGB', 'HSL', 'HSV', 'LCH', 'OKLCH']}
+        value={options.space}
+        onChange={(value) => onOptionsChanged({ ...options, space: value })}
+      />
+      <Select
+        label="Interpolation"
+        options={[
+          { label: 'Linear', value: 'LINEAR' },
+          { label: 'Bezier', value: 'BEZIER' },
+        ]}
+        value={options.interpolation}
+        onChange={(value) => onOptionsChanged({ ...options, interpolation: value })}
+      />
+      <Select
+        label="Easing"
+        options={[
+          { label: 'Linear', value: 'LINEAR' },
+          { label: 'Ease in', value: 'EASE_IN' },
+          { label: 'Ease out', value: 'EASE_OUT' },
+          { label: 'Ease in/out', value: 'EASE_IN_OUT' },
+        ]}
+        value={typeof options.easing === 'string' ? options.easing : undefined}
+        onChange={(value) => onOptionsChanged({ ...options, easing: value })}
+      />
+      <Checkbox
+        label="Clamp"
+        isChecked={options.clamp ?? true}
+        onChange={(isChecked) => onOptionsChanged({ ...options, clamp: isChecked })}
+      />
       {options.space !== 'RGB' && (
-        <label>
-          Hue interpolation:
-          <select
-            className="ml-2 px-2 py-0.5 border-1 border-gray-200 rounded-md shadow-md"
-            value={options.hueInterpolationMode}
-            onChange={(e) =>
-              onOptionsChanged({
-                ...options,
-                hueInterpolationMode: e.target.value as typeof options.hueInterpolationMode,
-              })
-            }
-          >
-            <option value="CARTESIAN">Cartesian</option>
-            <option value="SHORTEST">Shortest</option>
-            <option value="LONGEST">Longest</option>
-            <option value="INCREASING">Increasing</option>
-            <option value="DECREASING">Decreasing</option>
-            <option value="RAW">Raw</option>
-          </select>
-        </label>
+        <Select
+          label="Hue interpolation"
+          options={[
+            { label: 'Cartesian', value: 'CARTESIAN' },
+            { label: 'Shortest', value: 'SHORTEST' },
+            { label: 'Longest', value: 'LONGEST' },
+            { label: 'Increasing', value: 'INCREASING' },
+            { label: 'Decreasing', value: 'DECREASING' },
+            { label: 'Raw', value: 'RAW' },
+          ]}
+          value={options.hueInterpolationMode}
+          onChange={(value) => onOptionsChanged({ ...options, hueInterpolationMode: value })}
+        />
       )}
-    </div>
+    </InputGroup>
   );
 }
