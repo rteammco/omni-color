@@ -2883,11 +2883,23 @@ describe('readability selection helpers', () => {
 
   it('selects the most readable text color from a swatch', () => {
     const background = new Color('#ffffff');
-    const swatch = new Color('#3b82f6').getColorSwatch({ extended: true, centerOn500: true });
 
-    const result = getMostReadableTextColorForBackground(background, getColorList(swatch));
+    const basicSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
+    const resultBasic = getMostReadableTextColorForBackground(
+      background,
+      getColorList(basicSwatch)
+    );
+    expect(resultBasic.equals(basicSwatch[900])).toBe(true);
 
-    expect(result.toHex()).toBe(swatch[950].toHex());
+    const extendedSwatch = new Color('#3b82f6').getColorSwatch({
+      extended: true,
+      centerOn500: true,
+    });
+    const resultExtended = getMostReadableTextColorForBackground(
+      background,
+      getColorList(extendedSwatch)
+    );
+    expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
   });
 
   it('selects the best background color for APCA scoring', () => {

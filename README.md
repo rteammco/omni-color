@@ -767,10 +767,10 @@ const background = new Color('#121212');
 const text = background.getMostReadableTextColor(['#ffffff', '#bbbbbb', '#00ffd0']);
 text.toHex();
 
-const swatchText = background.getMostReadableTextColor(
+const bestSwatchColor = background.getMostReadableTextColor(
   new Color('#2563eb').getColorSwatch({ extended: true })
 );
-swatchText.toHex();
+bestSwatchText.toHex();
 ```
 
 #### `getBestBackgroundColor(candidateBackgroundColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityComparisonOptions): Color`
@@ -786,10 +786,10 @@ const textColor = new Color('#ff7f50');
 const background = textColor.getBestBackgroundColor(['#0d0d0d', '#1c1c1c', '#2a2a2a']);
 background.toHex();
 
-const swatchBackground = textColor.getBestBackgroundColor(
+const bestSwatchBackground = textColor.getBestBackgroundColor(
   textColor.getColorSwatch({ extended: true })
 );
-swatchBackground.toHex();
+bestSwatchBackground.toHex();
 ```
 
 ### Types

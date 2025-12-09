@@ -92,14 +92,13 @@ import {
   getColorTemperature,
   getColorTemperatureString,
 } from './temperature';
-import type { IsColorDarkOptions } from './utils';
+import type { IsColorDarkOptions, ValidColorInputFormat } from './utils';
 import {
   areColorsEqual,
   getColorList,
   getColorRGBAFromInput,
   isColorDark,
   isColorOffWhite,
-  type ValidColorInputFormat,
 } from './utils';
 
 /**
@@ -205,10 +204,7 @@ export class Color {
     colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions
   ): Color[] {
-    return createColorGradient(
-      colors.map((c) => new Color(c)),
-      options
-    );
+    return createColorGradient(getColorList(colors), options);
   }
 
   /**
@@ -487,7 +483,7 @@ export class Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return mixColors([this, ...others.map((c) => new Color(c))], options);
+    return mixColors([this, ...getColorList(others)], options);
   }
 
   /**
@@ -512,7 +508,7 @@ export class Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors([this, ...others.map((c) => new Color(c))], options);
+    return averageColors([this, ...getColorList(others)], options);
   }
 
   /**

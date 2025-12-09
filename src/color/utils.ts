@@ -199,12 +199,10 @@ export function areColorsEqual(color1: Color, color2: Color): boolean {
 }
 
 function isColor(value: unknown): value is Color {
-  return Boolean(value) && typeof (value as Color).toHex === 'function';
+  return value instanceof Color;
 }
 
-export function getColorList(
-  candidates: readonly ValidColorInputFormat[] | ColorSwatch
-): Color[] {
+export function getColorList(candidates: readonly ValidColorInputFormat[] | ColorSwatch): Color[] {
   if (Array.isArray(candidates)) {
     return candidates.map((candidate) => (isColor(candidate) ? candidate : new Color(candidate)));
   }

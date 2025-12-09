@@ -752,11 +752,17 @@ describe('Color.getMostReadableTextColor', () => {
 
   it('returns the strongest readable color from a swatch', () => {
     const background = new Color('#f8fafc');
-    const swatch = new Color('#0ea5e9').getColorSwatch({ extended: true, centerOn500: true });
 
-    const result = background.getMostReadableTextColor(swatch);
+    const basicSwatch = new Color('#21352e').getColorSwatch({ centerOn500: true });
+    const resultBasic = background.getMostReadableTextColor(basicSwatch);
+    expect(resultBasic.equals(basicSwatch[900])).toBe(true);
 
-    expect(result.toHex()).toBe(swatch[950].toHex());
+    const extendedSwatch = new Color('#0ea5e9ff').getColorSwatch({
+      extended: true,
+      centerOn500: true,
+    });
+    const resultExtended = background.getMostReadableTextColor(extendedSwatch);
+    expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
   });
 });
 
@@ -870,11 +876,17 @@ describe('Color.getBestBackgroundColor', () => {
 
   it('selects the best background from a swatch', () => {
     const textColor = new Color('#111111');
-    const swatch = new Color('#eab308').getColorSwatch({ extended: true, centerOn500: true });
 
-    const result = textColor.getBestBackgroundColor(swatch);
+    const basicSwatch = new Color('#3e3623ff').getColorSwatch();
+    const resultBasic = textColor.getBestBackgroundColor(basicSwatch);
+    expect(resultBasic.equals(basicSwatch[100])).toBe(true);
 
-    expect(result.toHex()).toBe(swatch[50].toHex());
+    const extendedSwatch = new Color('#eab308').getColorSwatch({
+      extended: true,
+      centerOn500: true,
+    });
+    const resultExtended = textColor.getBestBackgroundColor(extendedSwatch);
+    expect(resultExtended.equals(extendedSwatch[50])).toBe(true);
   });
 });
 
