@@ -1,4 +1,6 @@
 import type { GenerateColorPaletteOptions } from '../../../../dist';
+import { InputGroup } from '../../components/inputs/InputGroup';
+import { NumberInput } from '../../components/inputs/NumberInput';
 
 interface Props {
   options: GenerateColorPaletteOptions;
@@ -8,116 +10,104 @@ interface Props {
 
 export function PaletteGenerationOptions({ options, onOptionsChanged, onReset }: Props) {
   return (
-    <div className="w-full flex flex-row justify-center items-center gap-2 flex-wrap">
+    <InputGroup onResetClicked={onReset}>
+      <NumberInput
+        label={
+          <span>
+            <u>Tinted neutrals</u> chroma factor
+          </span>
+        }
+        max={1}
+        min={0}
+        step={0.01}
+        value={options.neutralHarmonization?.tintChromaFactor}
+        onChange={(value) =>
+          onOptionsChanged({
+            ...options,
+            neutralHarmonization: {
+              ...options.neutralHarmonization,
+              tintChromaFactor: value,
+            },
+          })
+        }
+      />
+      <NumberInput
+        label={
+          <span>
+            <u>Tinted neutrals</u> max chroma
+          </span>
+        }
+        max={1}
+        min={0}
+        step={0.01}
+        value={options.neutralHarmonization?.maxTintChroma}
+        onChange={(value) =>
+          onOptionsChanged({
+            ...options,
+            neutralHarmonization: {
+              ...options.neutralHarmonization,
+              maxTintChroma: value,
+            },
+          })
+        }
+      />
+      <NumberInput
+        label={
+          <span>
+            <u>Semantic</u> hue pull
+          </span>
+        }
+        max={1}
+        min={0}
+        step={0.01}
+        value={options.semanticHarmonization?.huePull}
+        onChange={(value) =>
+          onOptionsChanged({
+            ...options,
+            semanticHarmonization: {
+              ...options.semanticHarmonization,
+              huePull: value,
+            },
+          })
+        }
+      />
       <label>
-        <u>Tinted neutrals</u> chroma factor:
-        <input
-          className="ml-2 px-2 py-0.5 w-20 border-1 border-gray-200 rounded-md shadow-md"
-          max={1}
-          min={0}
-          step={0.01}
-          type="number"
-          value={options.neutralHarmonization?.tintChromaFactor}
-          onChange={(e) =>
-            onOptionsChanged({
-              ...options,
-              neutralHarmonization: {
-                ...options.neutralHarmonization,
-                tintChromaFactor: Number(e.target.value),
-              },
-            })
-          }
-        />
+        <div className="flex flex-row items-center gap-2">
+          <u>Semantic</u> chroma range:
+          <NumberInput
+            max={1}
+            min={0}
+            step={0.01}
+            value={options.semanticHarmonization?.chromaRange?.[0]}
+            onChange={(value) =>
+              onOptionsChanged({
+                ...options,
+                semanticHarmonization: {
+                  ...options.semanticHarmonization,
+                  chromaRange: [value, options.semanticHarmonization?.chromaRange?.[1] ?? value],
+                },
+              })
+            }
+          />
+          -
+          <NumberInput
+            max={1}
+            min={0}
+            step={0.01}
+            value={options.semanticHarmonization?.chromaRange?.[1]}
+            onChange={(value) =>
+              onOptionsChanged({
+                ...options,
+                semanticHarmonization: {
+                  ...options.semanticHarmonization,
+                  chromaRange: [options.semanticHarmonization?.chromaRange?.[0] ?? value, value],
+                },
+              })
+            }
+          />
+        </div>
       </label>
-      &middot;
-      <label>
-        <u>Tinted neutrals</u> max chroma:
-        <input
-          className="ml-2 px-2 w-20 border-1 border-gray-200 rounded-md shadow-md"
-          max={1}
-          min={0}
-          step={0.01}
-          type="number"
-          value={options.neutralHarmonization?.maxTintChroma}
-          onChange={(e) =>
-            onOptionsChanged({
-              ...options,
-              neutralHarmonization: {
-                ...options.neutralHarmonization,
-                maxTintChroma: Number(e.target.value),
-              },
-            })
-          }
-        />
-      </label>
-      &middot;
-      <label>
-        <u>Semantic</u> hue pull:
-        <input
-          className="ml-2 px-2 py-0.5 w-20 border-1 border-gray-200 rounded-md shadow-md"
-          max={1}
-          min={0}
-          step={0.01}
-          type="number"
-          value={options.semanticHarmonization?.huePull}
-          onChange={(e) =>
-            onOptionsChanged({
-              ...options,
-              semanticHarmonization: {
-                ...options.semanticHarmonization,
-                huePull: Number(e.target.value),
-              },
-            })
-          }
-        />
-      </label>
-      <label>
-        <u>Semantic</u> chroma range:
-        <input
-          className="ml-2 mr-1 px-2 py-0.5 w-20 border-1 border-gray-200 rounded-md shadow-md"
-          max={1}
-          min={0}
-          step={0.01}
-          type="number"
-          value={options.semanticHarmonization?.chromaRange?.[0]}
-          onChange={(e) =>
-            onOptionsChanged({
-              ...options,
-              semanticHarmonization: {
-                ...options.semanticHarmonization,
-                chromaRange: [
-                  Number(e.target.value),
-                  options.semanticHarmonization?.chromaRange?.[1] ?? Number(e.target.value),
-                ],
-              },
-            })
-          }
-        />
-        -
-        <input
-          className="ml-1 px-2 py-0.5 w-20 border-1 border-gray-200 rounded-md shadow-md"
-          max={1}
-          min={0}
-          step={0.01}
-          type="number"
-          value={options.semanticHarmonization?.chromaRange?.[1]}
-          onChange={(e) =>
-            onOptionsChanged({
-              ...options,
-              semanticHarmonization: {
-                ...options.semanticHarmonization,
-                chromaRange: [
-                  options.semanticHarmonization?.chromaRange?.[0] ?? Number(e.target.value),
-                  Number(e.target.value),
-                ],
-              },
-            })
-          }
-        />
-      </label>
-      &middot;
-      <button onClick={onReset}>Reset</button>
-    </div>
+    </InputGroup>
   );
 }
 
