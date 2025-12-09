@@ -3,6 +3,9 @@ import { Color } from './color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.constants';
 import { toRGBA } from './conversions';
 import type { ColorFormat, ColorHex, ColorRGBA } from './formats';
+import type { ColorSwatch } from './swatch';
+
+export type ValidColorInputFormat = Color | ColorFormat | string;
 import { parseCSSColorFormatString } from './parse';
 import { getRandomColorRGBA } from './random';
 import { getColorFromTemperatureLabel, matchPartialColorTemperatureLabel } from './temperature';
@@ -193,4 +196,18 @@ export function areColorsEqual(color1: Color, color2: Color): boolean {
   const a2 = normalizeAlpha(c2.a ?? 1);
 
   return r1 === r2 && g1 === g2 && b1 === b2 && Math.abs(a1 - a2) <= ALPHA_EPSILON;
+}
+
+function isColor(value: unknown): value is Color {
+  return Boolean(value) && typeof (value as Color).toHex === 'function';
+}
+
+export function getColorList(
+  candidates: readonly ValidColorInputFormat[] | ColorSwatch
+): Color[] {
+  if (Array.isArray(candidates)) {
+    return candidates.map((candidate) => (isColor(candidate) ? candidate : new Color(candidate)));
+  }
+
+  return Object.values(candidates).filter(isColor);
 }

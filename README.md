@@ -754,11 +754,11 @@ new Color('#444').getTextReadabilityReport(new Color('#bbb'), { level: 'AA', siz
 new Color('#000000').isReadableAsTextColor('#ffffff'); // true
 ```
 
-#### `getMostReadableTextColor(candidateTextColors: Array<Color | ColorFormat | string>, options?: ReadabilityComparisonOptions): Color`
+#### `getMostReadableTextColor(candidateTextColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityComparisonOptions): Color`
 
 - <ins>Returns</ins> the candidate [`Color`](#types-color) with the strongest readability against the current color used as the background.
 - <ins>Inputs</ins>:
-  - `candidateTextColors` - one or more candidate text colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs.
+  - `candidateTextColors` - one or more candidate text colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), parsable color inputs, or a [`ColorSwatch`](#types-color-swatch) to choose from.
     - **Empty list of candidate colors will throw an exception.**
   - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs.
 
@@ -766,13 +766,18 @@ new Color('#000000').isReadableAsTextColor('#ffffff'); // true
 const background = new Color('#121212');
 const text = background.getMostReadableTextColor(['#ffffff', '#bbbbbb', '#00ffd0']);
 text.toHex();
+
+const swatchText = background.getMostReadableTextColor(
+  new Color('#2563eb').getColorSwatch({ extended: true })
+);
+swatchText.toHex();
 ```
 
-#### `getBestBackgroundColor(candidateBackgroundColors: Array<Color | ColorFormat | string>, options?: ReadabilityComparisonOptions): Color`
+#### `getBestBackgroundColor(candidateBackgroundColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityComparisonOptions): Color`
 
 - <ins>Returns</ins> the background [`Color`](#types-color) that maximizes readability for the current color used as text.
 - <ins>Inputs</ins>:
-  - `candidateBackgroundColors` - one or more candidate background colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs.
+  - `candidateBackgroundColors` - one or more candidate background colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), parsable color inputs, or a [`ColorSwatch`](#types-color-swatch) to choose from.
     - **Empty list of candidate colors will throw an exception.**
   - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs.
 
@@ -780,6 +785,11 @@ text.toHex();
 const textColor = new Color('#ff7f50');
 const background = textColor.getBestBackgroundColor(['#0d0d0d', '#1c1c1c', '#2a2a2a']);
 background.toHex();
+
+const swatchBackground = textColor.getBestBackgroundColor(
+  textColor.getColorSwatch({ extended: true })
+);
+swatchBackground.toHex();
 ```
 
 ### Types

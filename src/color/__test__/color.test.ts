@@ -749,6 +749,15 @@ describe('Color.getMostReadableTextColor', () => {
     const result = background.getMostReadableTextColor([navy, coral], { algorithm: 'apca' });
     expect(result.toHex()).toBe('#1b2a49');
   });
+
+  it('returns the strongest readable color from a swatch', () => {
+    const background = new Color('#f8fafc');
+    const swatch = new Color('#0ea5e9').getColorSwatch({ extended: true, centerOn500: true });
+
+    const result = background.getMostReadableTextColor(swatch);
+
+    expect(result.toHex()).toBe(swatch[950].toHex());
+  });
 });
 
 describe('Color.getTextReadabilityReport', () => {
@@ -857,6 +866,15 @@ describe('Color.getBestBackgroundColor', () => {
     const result = textColor.getBestBackgroundColor([midnight, navy, driftwood] as const);
 
     expect(result.toHex()).toBe(midnight.toHex());
+  });
+
+  it('selects the best background from a swatch', () => {
+    const textColor = new Color('#111111');
+    const swatch = new Color('#eab308').getColorSwatch({ extended: true, centerOn500: true });
+
+    const result = textColor.getBestBackgroundColor(swatch);
+
+    expect(result.toHex()).toBe(swatch[50].toHex());
   });
 });
 
