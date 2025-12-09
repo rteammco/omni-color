@@ -7,6 +7,7 @@ import {
   getWCAGContrastRatio,
   isTextReadable,
 } from '../readability';
+import { getColorList } from '../utils';
 
 describe('getWCAGContrastRatio', () => {
   it('red dark on #000000 alpha 1', () => {
@@ -2880,6 +2881,27 @@ describe('readability selection helpers', () => {
     expect(result.toHex()).toBe('#f0e9d2');
   });
 
+  it('selects the most readable text color from a swatch', () => {
+    const background = new Color('#ffffff');
+
+    const basicSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
+    const resultBasic = getMostReadableTextColorForBackground(
+      background,
+      getColorList(basicSwatch)
+    );
+    expect(resultBasic.equals(basicSwatch[900])).toBe(true);
+
+    const extendedSwatch = new Color('#3b82f6').getColorSwatch({
+      extended: true,
+      centerOn500: true,
+    });
+    const resultExtended = getMostReadableTextColorForBackground(
+      background,
+      getColorList(extendedSwatch)
+    );
+    expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
+  });
+
   it('selects the best background color for APCA scoring', () => {
     const textColor = new Color('#f4e4c0');
     const backgrounds = ['#101010', '#444444', '#ffffff'].map((bg) => new Color(bg));
@@ -2887,6 +2909,15 @@ describe('readability selection helpers', () => {
     const result = getBestBackgroundColorForText(textColor, backgrounds, { algorithm: 'APCA' });
 
     expect(result.toHex()).toBe('#101010');
+  });
+
+  it('selects the best background color from a swatch', () => {
+    const textColor = new Color('#111827');
+    const swatch = new Color('#fbbf24').getColorSwatch({ extended: true, centerOn500: true });
+
+    const result = getBestBackgroundColorForText(textColor, getColorList(swatch));
+
+    expect(result.toHex()).toBe(swatch[50].toHex());
   });
 
   it('selects the best background from readonly inputs', () => {

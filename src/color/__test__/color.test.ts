@@ -749,6 +749,21 @@ describe('Color.getMostReadableTextColor', () => {
     const result = background.getMostReadableTextColor([navy, coral], { algorithm: 'apca' });
     expect(result.toHex()).toBe('#1b2a49');
   });
+
+  it('returns the strongest readable color from a swatch', () => {
+    const background = new Color('#f8fafc');
+
+    const basicSwatch = new Color('#21352e').getColorSwatch({ centerOn500: true });
+    const resultBasic = background.getMostReadableTextColor(basicSwatch);
+    expect(resultBasic.equals(basicSwatch[900])).toBe(true);
+
+    const extendedSwatch = new Color('#0ea5e9ff').getColorSwatch({
+      extended: true,
+      centerOn500: true,
+    });
+    const resultExtended = background.getMostReadableTextColor(extendedSwatch);
+    expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
+  });
 });
 
 describe('Color.getTextReadabilityReport', () => {
@@ -857,6 +872,21 @@ describe('Color.getBestBackgroundColor', () => {
     const result = textColor.getBestBackgroundColor([midnight, navy, driftwood] as const);
 
     expect(result.toHex()).toBe(midnight.toHex());
+  });
+
+  it('selects the best background from a swatch', () => {
+    const textColor = new Color('#111111');
+
+    const basicSwatch = new Color('#3e3623ff').getColorSwatch();
+    const resultBasic = textColor.getBestBackgroundColor(basicSwatch);
+    expect(resultBasic.equals(basicSwatch[100])).toBe(true);
+
+    const extendedSwatch = new Color('#eab308').getColorSwatch({
+      extended: true,
+      centerOn500: true,
+    });
+    const resultExtended = textColor.getBestBackgroundColor(extendedSwatch);
+    expect(resultExtended.equals(extendedSwatch[50])).toBe(true);
   });
 });
 

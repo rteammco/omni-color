@@ -20,7 +20,6 @@ import type { DeltaEOptions } from './deltaE';
 import { getDeltaE } from './deltaE';
 import type {
   ColorCMYK,
-  ColorFormat,
   ColorHex,
   ColorHSL,
   ColorHSLA,
@@ -93,10 +92,14 @@ import {
   getColorTemperature,
   getColorTemperatureString,
 } from './temperature';
-import type { IsColorDarkOptions } from './utils';
-import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from './utils';
-
-type ValidColorInputFormat = Color | ColorFormat | string;
+import type { IsColorDarkOptions, ValidColorInputFormat } from './utils';
+import {
+  areColorsEqual,
+  getColorList,
+  getColorRGBAFromInput,
+  isColorDark,
+  isColorOffWhite,
+} from './utils';
 
 /**
  * The base omni-color object.
@@ -201,10 +204,7 @@ export class Color {
     colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions
   ): Color[] {
-    return createColorGradient(
-      colors.map((c) => new Color(c)),
-      options
-    );
+    return createColorGradient(getColorList(colors), options);
   }
 
   /**
@@ -483,7 +483,7 @@ export class Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return mixColors([this, ...others.map((c) => new Color(c))], options);
+    return mixColors([this, ...getColorList(others)], options);
   }
 
   /**
@@ -508,7 +508,7 @@ export class Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors([this, ...others.map((c) => new Color(c))], options);
+    return averageColors([this, ...getColorList(others)], options);
   }
 
   /**
@@ -879,19 +879,15 @@ export class Color {
   /**
    * Find the most readable text color against this color as a background.
    *
-   * @param textColors A non-empty list of {@link Color} or color input candidate text colors.
+   * @param textColors A non-empty list of {@link Color} or color input candidate text colors, or a {@link ColorSwatch} to pick from.
    * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
    * @returns The candidate color with the strongest readability against this color.
    */
   getMostReadableTextColor(
-    textColors: readonly ValidColorInputFormat[],
+    textColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityComparisonOptions
   ): Color {
-    return getMostReadableTextColorForBackground(
-      this,
-      textColors.map((c) => new Color(c)),
-      options
-    );
+    return getMostReadableTextColorForBackground(this, getColorList(textColors), options);
   }
 
   /**
@@ -917,19 +913,15 @@ export class Color {
   /**
    * Find the best background color for this color as foreground text.
    *
-   * @param backgroundColors A non-empty list of candidate background {@link Color}s or color inputs.
+   * @param backgroundColors A non-empty list of candidate background {@link Color}s or color inputs, or a {@link ColorSwatch} to pick from.
    * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
    * @returns The candidate background color that maximizes readability for this color.
    */
   getBestBackgroundColor(
-    backgroundColors: readonly ValidColorInputFormat[],
+    backgroundColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityComparisonOptions
   ): Color {
-    return getBestBackgroundColorForText(
-      this,
-      backgroundColors.map((c) => new Color(c)),
-      options
-    );
+    return getBestBackgroundColorForText(this, getColorList(backgroundColors), options);
   }
 
   /**
