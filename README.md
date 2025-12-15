@@ -77,7 +77,9 @@ _`static`_
 
 ```ts
 const daylight = Color.fromTemperature(6500);
-const cozy = Color.fromTemperature('Warm tungsten');
+daylight.toHex(); // '#fffefa'
+const cozy = Color.fromTemperature('Incandescent lamp');
+cozy.toHex(); // '#ffa757'
 ```
 
 ### Color Information and Utils
@@ -124,7 +126,7 @@ new Color('#ff0000').equals({ r: 0, g: 255, b: 0 }); // false
 ```ts
 new Color('#000000').isDark(); // true
 new Color('#ffffff').isDark(); // false
-new Color('#ff0000').isDark({ colorDarknessMode: 'YIQ' });
+new Color('#ff0000').isDark({ colorDarknessMode: 'YIQ' }); // true
 ```
 
 #### `isOffWhite(): boolean`
@@ -420,7 +422,9 @@ new Color('#ff7f50').grayscale().toHex(); // '#a8a8a8'
 ```ts
 const coral = new Color('#ff7f50');
 const mixed = coral.mix(['red', '#00ff00', new Color('blue')]);
+mixed.toHex(); // '#ffffff'
 const weightedMix = coral.mix([new Color()], { space: 'LCH', weights: [2, 1] });
+weightedMix.toHex(); // '#fffdd0'
 ```
 
 #### `blend(other: Color | ColorFormat | string, options?: BlendColorsOptions): Color`
@@ -434,8 +438,8 @@ const weightedMix = coral.mix([new Color()], { space: 'LCH', weights: [2, 1] });
     - `ratio` - the blend ratio between `0` and `1` (default is `0.5`).
 
 ```ts
-new Color('#ff0000').blend('blue', { space: 'HSL' });
-new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 });
+new Color('#ff0000').blend('blue', { space: 'HSL' }); // '#ff00ff'
+new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 }); // '#00ff40'
 ```
 
 #### `average(others: Array<Color | ColorFormat | string>, options?: AverageColorsOptions): Color`
@@ -449,7 +453,7 @@ new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 }
 
 ```ts
 const base = new Color('#ff0000');
-base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex();
+base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex(); // '#555555'
 ```
 
 ### Perceptual Difference (Delta E)
@@ -479,7 +483,7 @@ base.differenceFrom(new Color({ l: 70, c: 40, h: 210 }), { method: 'CIE94' }); /
 base.differenceFrom(new Color('#aa0000'), {
   method: 'CIE94',
   cie94Options: { kL: 2, kC: 1, kH: 1.5 },
-});
+}); // ~9.96
 ```
 
 ### Gradients and Color Scales
@@ -705,7 +709,7 @@ const palette = new Color('#ff7f50').getColorPalette('ANALOGOUS', {
   semanticHarmonization: { huePull: 0.35 },
   swatchOptions: { centerOn500: false },
 });
-palette.info[500].toHex();
+palette.info[500].toHex(); // '#9d40d4'
 ```
 
 ### Readability and Accessibility
@@ -741,6 +745,7 @@ new Color('#1a73e8').getReadabilityScore('#ffffff'); // e.g. 71.61
 
 ```ts
 new Color('#444').getTextReadabilityReport(new Color('#bbb'), { level: 'AA', size: 'LARGE' });
+// { contrastRatio: 5.07, requiredContrast: 3, isReadable: true, shortfall: 0 }
 ```
 
 #### `isReadableAsTextColor(background: Color | ColorFormat | string, options?: TextReadabilityOptions): boolean`
@@ -765,12 +770,12 @@ new Color('#000000').isReadableAsTextColor('#ffffff'); // true
 ```ts
 const background = new Color('#121212');
 const text = background.getMostReadableTextColor(['#ffffff', '#bbbbbb', '#00ffd0']);
-text.toHex();
+text.toHex(); // '#ffffff'
 
 const bestSwatchColor = background.getMostReadableTextColor(
   new Color('#2563eb').getColorSwatch({ extended: true })
 );
-bestSwatchText.toHex();
+bestSwatchColor.toHex(); // '#f5f8ff'
 ```
 
 #### `getBestBackgroundColor(candidateBackgroundColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityComparisonOptions): Color`
@@ -784,12 +789,12 @@ bestSwatchText.toHex();
 ```ts
 const textColor = new Color('#ff7f50');
 const background = textColor.getBestBackgroundColor(['#0d0d0d', '#1c1c1c', '#2a2a2a']);
-background.toHex();
+background.toHex(); // '#0d0d0d'
 
 const bestSwatchBackground = textColor.getBestBackgroundColor(
   textColor.getColorSwatch({ extended: true })
 );
-bestSwatchBackground.toHex();
+bestSwatchBackground.toHex(); // '#301308'
 ```
 
 ### Types
