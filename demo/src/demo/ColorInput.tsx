@@ -77,9 +77,9 @@ export function ColorInput({ color, onColorChanged }: Props) {
       <ColorInfoCard color={color} />
       <div className="text-left">
         <div className="font-semibold mb-1">Enter a color</div>
-        <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-row flex-wrap justify-center items-center gap-4">
           <input
-            className="container-shadow-color px-6 py-3 w-2xs flex-1 border-1 border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+            className="container-shadow-color px-3 sm:px-6 py-3 maw-2xs flex-1 border-1 border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow"
             placeholder="Enter a color"
             type="text"
             value={inputValue}
