@@ -1,16 +1,16 @@
 import { useMemo, useState } from 'react';
-import {
-  Color,
-  type AverageColorsOptions,
-  type BlendColorsOptions,
-  type MixColorsOptions,
-} from '../../../../dist';
+import { Color } from '../../../../dist';
 import { ColorBox } from '../../components/ColorBox';
 import { MixColorsOptionInputs } from './MixColorsOptionInputs';
 import { BlendColorsOptionInputs } from './BlendColorsOptionInputs';
 import { AverageColorsOptionInputs } from './AverageColorsOptionInputs';
 import { Card } from '../../components/Card';
 import { useIsDarkMode } from '../../components/utils';
+import {
+  DEFAULT_AVERAGE_COLORS_OPTIONS,
+  DEFAULT_BLEND_COLORS_OPTIONS,
+  DEFAULT_MIX_COLORS_OPTIONS,
+} from './colorCombinationDemo.consts';
 
 interface Props {
   color: Color;
@@ -19,20 +19,9 @@ interface Props {
 export function ColorCombinationDemo({ color }: Props) {
   const isDarkMode = useIsDarkMode();
 
-  const [mixOptions, setMixOptions] = useState<MixColorsOptions>({
-    space: 'LINEAR_RGB',
-    type: 'ADDITIVE',
-  });
-
-  const [blendOptions, setBlendOptions] = useState<BlendColorsOptions>({
-    mode: 'NORMAL',
-    space: 'RGB',
-    ratio: 0.5,
-  });
-
-  const [averageOptions, setAverageOptions] = useState<AverageColorsOptions>({
-    space: 'LINEAR_RGB',
-  });
+  const [mixOptions, setMixOptions] = useState(DEFAULT_MIX_COLORS_OPTIONS);
+  const [blendOptions, setBlendOptions] = useState(DEFAULT_BLEND_COLORS_OPTIONS);
+  const [averageOptions, setAverageOptions] = useState(DEFAULT_AVERAGE_COLORS_OPTIONS);
 
   const { red, green, blue } = useMemo(() => {
     return { red: new Color('red'), green: new Color('green'), blue: new Color('blue') };

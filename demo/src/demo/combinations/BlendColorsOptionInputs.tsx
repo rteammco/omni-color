@@ -2,6 +2,7 @@ import type { BlendColorsOptions } from '../../../../dist';
 import { InputGroup } from '../../components/inputs/InputGroup';
 import { NumberInput } from '../../components/inputs/NumberInput';
 import { Select } from '../../components/inputs/Select';
+import { DEFAULT_BLEND_COLORS_OPTIONS } from './colorCombinationDemo.consts';
 
 interface Props {
   blendOptions: BlendColorsOptions;
@@ -10,7 +11,7 @@ interface Props {
 
 export function BlendColorsOptionInputs({ blendOptions, onOptionsChanged }: Props) {
   return (
-    <InputGroup>
+    <InputGroup onResetClicked={() => onOptionsChanged(DEFAULT_BLEND_COLORS_OPTIONS)}>
       <Select
         label="Blend mode"
         options={[

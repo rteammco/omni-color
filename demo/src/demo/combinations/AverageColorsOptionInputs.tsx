@@ -1,6 +1,7 @@
 import type { AverageColorsOptions } from '../../../../dist';
 import { InputGroup } from '../../components/inputs/InputGroup';
 import { Select } from '../../components/inputs/Select';
+import { DEFAULT_AVERAGE_COLORS_OPTIONS } from './colorCombinationDemo.consts';
 
 interface Props {
   mixOptions: AverageColorsOptions;
@@ -9,7 +10,7 @@ interface Props {
 
 export function AverageColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
   return (
-    <InputGroup>
+    <InputGroup onResetClicked={() => onOptionsChanged(DEFAULT_AVERAGE_COLORS_OPTIONS)}>
       <Select
         label="Mix space"
         options={[{ label: 'Linear RGB', value: 'LINEAR_RGB' }, 'RGB', 'HSL', 'LCH', 'OKLCH']}

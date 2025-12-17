@@ -1,6 +1,7 @@
 import type { MixColorsOptions } from '../../../../dist';
 import { InputGroup } from '../../components/inputs/InputGroup';
 import { Select } from '../../components/inputs/Select';
+import { DEFAULT_MIX_COLORS_OPTIONS } from './colorCombinationDemo.consts';
 
 interface Props {
   mixOptions: MixColorsOptions;
@@ -9,7 +10,7 @@ interface Props {
 
 export function MixColorsOptionInputs({ mixOptions, onOptionsChanged }: Props) {
   return (
-    <InputGroup>
+    <InputGroup onResetClicked={() => onOptionsChanged(DEFAULT_MIX_COLORS_OPTIONS)}>
       <Select
         label="Mix type"
         options={[
