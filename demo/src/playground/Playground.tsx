@@ -77,10 +77,13 @@ export function Playground() {
               />
             </div>
             {codeConsoleOutputs && codeConsoleOutputs.length > 0 && (
-              <div className="flex flex-col items-center gap-3 mb-3">
-                <div className="flex flex-col items-start gap-0.5">
+              <div className="flex flex-col items-center gap-3 mb-3 w-full">
+                <div className="flex flex-col items-start gap-0.5 w-full">
                   {codeConsoleOutputs.map((output, index) => (
-                    <pre className="text-sm" key={index}>
+                    <pre
+                      className="text-sm whitespace-pre-wrap break-words text-left w-full"
+                      key={index}
+                    >
                       &gt; {output}
                     </pre>
                   ))}
