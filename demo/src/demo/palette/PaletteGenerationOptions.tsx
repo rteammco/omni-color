@@ -72,7 +72,7 @@ export function PaletteGenerationOptions({ options, onOptionsChanged, onReset }:
         }
       />
       <label>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row flex-wrap items-center gap-2">
           <u>Semantic</u> chroma range:
           <NumberInput
             max={1}
