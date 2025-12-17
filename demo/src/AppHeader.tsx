@@ -14,7 +14,7 @@ export function AppHeader({ pageDescription }: Props) {
       ) : (
         <>
           <h4 className="mb-8">A fast, powerful, and lightweight color library for TypeScript</h4>
-          <div className="flex flex-row gap-4 items-center justify-center">
+          <div className="flex flex-row gap-4 items-center justify-center flex-wrap">
             <Chip color="red" href={`#${DemoSectionIDs.PICK_COLOR}`} title="Parsing" />
             <Chip color="orange" href={`#${DemoSectionIDs.COLOR_INFO}`} title="Conversions" />
             <Chip color="yellow" href={`#${DemoSectionIDs.MANIPULATIONS}`} title="Manipulations" />

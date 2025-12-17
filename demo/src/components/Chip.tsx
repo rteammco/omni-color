@@ -22,8 +22,10 @@ interface Props {
 export function Chip({ color, href, title }: Props) {
   const content = (
     <div className="flex flex-row gap-3 items-center">
-      <div className={`${CHIP_COLOR_MAPPING[color ?? 'blue']} w-3 h-3 rounded-full`} />
-      {title}
+      <div
+        className={`${CHIP_COLOR_MAPPING[color ?? 'blue']} w-3 h-3 rounded-full flex-shrink-0`}
+      />
+      <span className="whitespace-nowrap">{title}</span>
     </div>
   );
 
