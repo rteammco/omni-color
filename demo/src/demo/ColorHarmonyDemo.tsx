@@ -6,7 +6,7 @@ import { Card } from '../components/Card';
 
 function ColorHarmonyRow({ colors }: { colors: Color[] }) {
   return (
-    <div className="flex flex-row gap-2 items-center">
+    <div className="flex flex-row flex-wrap gap-2 items-center">
       <ColorBox
         color={colors[0]}
         label={colors[0].getName().name}
