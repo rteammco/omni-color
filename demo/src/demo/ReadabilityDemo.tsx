@@ -32,7 +32,7 @@ export function ReadabilityDemo({ color }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <Card title="WCAG contrast ratio">
-        <div className="flex flex-row items-center gap-2 flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-2">
           {backgroundColors.map((bgColor) => (
             <ColorBox
               key={bgColor.toHex()}
@@ -45,7 +45,7 @@ export function ReadabilityDemo({ color }: Props) {
         </div>
       </Card>
       <Card title="APCA readability score">
-        <div className="flex flex-row items-center gap-2 flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-2">
           {backgroundColors.map((bgColor) => (
             <ColorBox
               key={bgColor.toHex()}
@@ -58,7 +58,7 @@ export function ReadabilityDemo({ color }: Props) {
         </div>
       </Card>
       <Card title="Most readable">
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center gap-2">
           <ColorBox
             color={bestBackgroundColor}
             label="on the best background"
