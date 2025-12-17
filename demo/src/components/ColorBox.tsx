@@ -39,9 +39,13 @@ export function ColorBox({
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
 
   const overlayContent = useMemo(() => {
+    const centeredClass = `flex justify-center items-center absolute w-full h-full ${
+      label ? 'pb-4' : ''
+    }`;
+
     if (overlayIcon) {
       return (
-        <div className="flex justify-center items-center">
+        <div className={centeredClass}>
           <Icon color={textColor} type={overlayIcon} />
         </div>
       );
@@ -52,20 +56,20 @@ export function ColorBox({
       const textStyle = { color: overlayColor?.toHex() ?? textColor };
       if (overlaySize === 'SMALL') {
         return (
-          <h6 className="text-center" style={textStyle}>
+          <h6 className={centeredClass} style={textStyle}>
             {text}
           </h6>
         );
       }
       return (
-        <h4 className="text-center font-bold" style={textStyle}>
+        <h4 className={`font-bold ${centeredClass}`} style={textStyle}>
           {text}
         </h4>
       );
     }
 
     return undefined;
-  }, [overlayColor, overlayIcon, overlaySize, overlayText, textColor]);
+  }, [label, overlayColor, overlayIcon, overlaySize, overlayText, textColor]);
 
   let widthClass = 'w-16';
   if (width === 'DOUBLE') {
@@ -81,12 +85,16 @@ export function ColorBox({
   return (
     <div
       style={{ backgroundColor, borderColor }}
-      className={`${widthClass} h-16 flex flex-col ${label ? 'justify-end' : 'justify-center'} ${
-        hideBorder ? 'border-0' : 'border'
-      } ${noBorderRadius ? 'rounded-none' : 'rounded-md'}`}
+      className={`${widthClass} relative h-16 flex flex-col ${
+        label ? 'justify-end' : 'justify-center'
+      } ${hideBorder ? 'border-0' : 'border'} ${noBorderRadius ? 'rounded-none' : 'rounded-md'}`}
     >
       {overlayContent}
-      {label && <div className={`py-1 text-xs ${textColorClass}`}>{label}</div>}
+      {label && (
+        <div className={`py-1 text-[8px] sm:text-xs truncate absolute w-full ${textColorClass}`}>
+          {label}
+        </div>
+      )}
     </div>
   );
 }
