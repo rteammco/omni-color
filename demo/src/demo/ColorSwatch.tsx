@@ -37,6 +37,7 @@ export function ColorSwatch(props: Props) {
                   color={swatch[stopValue]}
                   hideBorder
                   label={withLabels ? `${stopValue}` : undefined}
+                  labelResponsive
                   noBorderRadius
                   overlayIcon={stopValue === swatch.mainStop ? IconType.CHECK : undefined}
                   width="STRETCH"
@@ -48,6 +49,7 @@ export function ColorSwatch(props: Props) {
                   color={swatch[stopValue]}
                   hideBorder
                   label={withLabels ? `${stopValue}` : undefined}
+                  labelResponsive
                   noBorderRadius
                   overlayIcon={stopValue === swatch.mainStop ? IconType.CHECK : undefined}
                   width="STRETCH"

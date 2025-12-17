@@ -15,6 +15,7 @@ interface Props {
   color: Color;
   hideBorder?: boolean;
   label?: string;
+  labelResponsive?: boolean; // if `true`, the label text size adjusts based on the responsive mode (mostly for swatches)
   noBorderRadius?: boolean;
   overlayColor?: Color;
   overlayIcon?: IconType;
@@ -27,6 +28,7 @@ export function ColorBox({
   color,
   hideBorder,
   label,
+  labelResponsive,
   noBorderRadius,
   overlayColor,
   overlayIcon,
@@ -91,7 +93,11 @@ export function ColorBox({
     >
       {overlayContent}
       {label && (
-        <div className={`py-1 text-[8px] sm:text-xs truncate absolute w-full ${textColorClass}`}>
+        <div
+          className={`py-1 ${
+            labelResponsive ? 'text-[8px] sm:text-xs' : 'text-xs'
+          } truncate absolute w-full ${textColorClass}`}
+        >
           {label}
         </div>
       )}
