@@ -50,9 +50,12 @@ function InfoPill({
     >
       <div className="flex flex-row items-center gap-2">
         {icon && <Icon color={textColor} size={20} type={icon} />}
-        <span className={bold ? 'font-bold' : undefined} style={{ color: textColor }}>
+        <div
+          className={`${bold ? 'font-bold' : ''} whitespace-nowrap`}
+          style={{ color: textColor }}
+        >
           {children}
-        </span>
+        </div>
       </div>
     </div>
   );
@@ -69,18 +72,26 @@ function InfoBox({
 }) {
   const { backgroundColor, filledTextColor, titleColor } = useInfoContainerColors(color);
 
+  const contentParts = useMemo(() => {
+    const parts: React.ReactNode[] = [];
+    colorStrings.forEach((colorString, index) => {
+      parts.push(<span>{colorString}</span>);
+      if (index < colorStrings.length - 1) {
+        parts.push(<span>&middot;</span>);
+      }
+    });
+    return parts;
+  }, [colorStrings]);
+
   return (
     <div
       className="rounded-lg px-2 pb-1 w-full text-left"
       style={{ backgroundColor, color: filledTextColor, borderColor: filledTextColor }}
     >
       <span className={`text-xs font-mono font-semibold ${titleColor}`}>{title}</span>
-      <div className="text-sm flex flex-row gap-2">
-        {colorStrings.map((colorString, index) => (
-          <div key={`${colorString}-${index}`}>
-            <span>{colorString}</span>
-            {index < colorStrings.length - 1 && <span>&middot;</span>}
-          </div>
+      <div className="text-sm flex flex-row flex-wrap gap-x-2">
+        {contentParts.map((part, index) => (
+          <div key={index}>{part}</div>
         ))}
       </div>
     </div>
@@ -98,8 +109,8 @@ export function ColorInfoCard({ color, extended }: Props) {
 
   return (
     <Card backgroundColor={backgroundColor} borderColor={borderColor}>
-      <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center gap-2">
+      <div className="flex flex-row justify-between items-center flex-wrap gap-y-2">
+        <div className="flex flex-row items-center gap-2 flex-wrap">
           <InfoPill bold color={color}>
             {color.getNameAsString().toUpperCase()}
           </InfoPill>
@@ -109,7 +120,7 @@ export function ColorInfoCard({ color, extended }: Props) {
             </InfoPill>
           )}
         </div>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row items-center gap-2 flex-wrap gap-y-2">
           {extended && (
             <InfoPill color={color} variant="outlined">{`Alpha: ${color.getAlpha()}`}</InfoPill>
           )}
@@ -118,7 +129,7 @@ export function ColorInfoCard({ color, extended }: Props) {
         </div>
       </div>
       {extended && (
-        <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           <InfoBox color={color} colorStrings={[color.toHex(), color.toHex8()]} title="HEX" />
           <InfoBox
             color={color}
