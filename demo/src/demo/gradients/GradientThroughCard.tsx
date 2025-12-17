@@ -1,23 +1,18 @@
 import { useMemo, useState } from 'react';
-import { Color, type ColorGradientOptions } from '../../../../dist';
+import { Color } from '../../../../dist';
 import { Card } from '../../components/Card';
 import { ColorBox } from '../../components/ColorBox';
 import { GradientOptionInputs } from './GradientOptionInputs';
-import { DEFAULT_COLOR_GRADIENT_OPTIONS } from './gradientOptions.consts';
+import { DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS } from './gradientOptions.consts';
 
 const STOP_COLORS = ['Red', 'Green', 'Blue'] as const;
-
-const DEFAULT_NUM_STOPS = 6;
 
 interface Props {
   color: Color;
 }
 
 export function GradientThroughCard({ color }: Props) {
-  const [options, setOptions] = useState<ColorGradientOptions>({
-    ...DEFAULT_COLOR_GRADIENT_OPTIONS,
-    stops: DEFAULT_NUM_STOPS,
-  });
+  const [options, setOptions] = useState(DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS);
 
   const colorBoxes = useMemo(() => {
     const gradientStops = color.createGradientThrough(STOP_COLORS, options);
@@ -44,7 +39,11 @@ export function GradientThroughCard({ color }: Props) {
   return (
     <Card title="Gradient through red, green, and blue">
       <div className="flex flex-row gap-2 mb-4">{colorBoxes}</div>
-      <GradientOptionInputs options={options} onOptionsChanged={setOptions} />
+      <GradientOptionInputs
+        options={options}
+        onOptionsReset={() => setOptions(DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS)}
+        onOptionsChanged={setOptions}
+      />
     </Card>
   );
 }

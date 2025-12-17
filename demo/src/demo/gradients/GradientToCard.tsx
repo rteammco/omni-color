@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import { Color, type ColorGradientOptions } from '../../../../dist';
+import { Color } from '../../../../dist';
 import { Card } from '../../components/Card';
 import { ColorBox } from '../../components/ColorBox';
 import { GradientOptionInputs } from './GradientOptionInputs';
-import { DEFAULT_COLOR_GRADIENT_OPTIONS } from './gradientOptions.consts';
-
-const DEFAULT_NUM_STOPS = 5;
+import { DEFAULT_COLOR_GRADIENT_TO_OPTIONS } from './gradientOptions.consts';
 
 interface Props {
   color: Color;
@@ -13,12 +11,14 @@ interface Props {
 
 export function GradientToCard({ color }: Props) {
   const [targetColor, setTargetColor] = useState<Color>(new Color());
-  const [options, setOptions] = useState<ColorGradientOptions>({
-    ...DEFAULT_COLOR_GRADIENT_OPTIONS,
-    stops: DEFAULT_NUM_STOPS,
-  });
+  const [options, setOptions] = useState(DEFAULT_COLOR_GRADIENT_TO_OPTIONS);
 
   const gradientColors = color.createGradientTo(targetColor, options);
+
+  const handleOptionsReset = () => {
+    setOptions(DEFAULT_COLOR_GRADIENT_TO_OPTIONS);
+    setTargetColor(new Color());
+  };
 
   return (
     <Card title="Gradient to">
@@ -46,6 +46,7 @@ export function GradientToCard({ color }: Props) {
       <GradientOptionInputs
         options={options}
         onOptionsChanged={setOptions}
+        onOptionsReset={handleOptionsReset}
         onTargetColorChanged={setTargetColor}
       />
     </Card>

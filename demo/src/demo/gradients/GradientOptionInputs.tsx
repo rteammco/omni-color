@@ -3,7 +3,6 @@ import { Color, type ColorGradientOptions } from '../../../../dist';
 import { InputGroup } from '../../components/inputs/InputGroup';
 import { Select } from '../../components/inputs/Select';
 import { NumberInput } from '../../components/inputs/NumberInput';
-import { Checkbox } from '../../components/inputs/Checkbox';
 
 const TARGET_COLORS_NAMES = ['Red', 'Green', 'Blue', 'Black', 'White', 'Gray', 'Random'] as const;
 type TargetColorName = (typeof TARGET_COLORS_NAMES)[number];
@@ -11,10 +10,16 @@ type TargetColorName = (typeof TARGET_COLORS_NAMES)[number];
 interface Props {
   options: ColorGradientOptions;
   onOptionsChanged: (options: ColorGradientOptions) => void;
+  onOptionsReset: () => void;
   onTargetColorChanged?: (targetColor: Color) => void;
 }
 
-export function GradientOptionInputs({ options, onOptionsChanged, onTargetColorChanged }: Props) {
+export function GradientOptionInputs({
+  options,
+  onOptionsChanged,
+  onOptionsReset,
+  onTargetColorChanged,
+}: Props) {
   const [selectedTargetColorName, setSelectedTargetColorName] = useState<TargetColorName>('Random');
 
   const handleTargetColorNameChanged = (colorName: TargetColorName) => {
@@ -29,8 +34,13 @@ export function GradientOptionInputs({ options, onOptionsChanged, onTargetColorC
     }
   };
 
+  const handleOptionsReset = () => {
+    setSelectedTargetColorName('Random');
+    onOptionsReset();
+  };
+
   return (
-    <InputGroup>
+    <InputGroup onResetClicked={handleOptionsReset}>
       {onTargetColorChanged && (
         <Select
           label="Target color"
@@ -72,11 +82,6 @@ export function GradientOptionInputs({ options, onOptionsChanged, onTargetColorC
         ]}
         value={typeof options.easing === 'string' ? options.easing : undefined}
         onChange={(value) => onOptionsChanged({ ...options, easing: value })}
-      />
-      <Checkbox
-        label="Clamp"
-        isChecked={options.clamp ?? true}
-        onChange={(isChecked) => onOptionsChanged({ ...options, clamp: isChecked })}
       />
       {options.space !== 'RGB' && (
         <Select
