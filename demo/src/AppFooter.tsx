@@ -1,6 +1,6 @@
 export function AppFooter() {
   return (
-    <div className="w-full flex flex-row justify-center pt-8 pb-4 gap-12 border-t border-neutral-200">
+    <div className="w-full flex flex-row flex-wrap justify-center pt-8 pb-4 gap-12 border-t border-neutral-200">
       <div className="flex flex-col gap-1">
         <span className="mb-1 font-semibold text-neutral-500">omni-color</span>
         <a href="https://github.com/rteammco/omni-color/blob/main/README.md">API documentation</a>
