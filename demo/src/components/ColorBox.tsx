@@ -39,7 +39,7 @@ export function ColorBox({
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
 
   const overlayContent = useMemo(() => {
-    const centeredClass = `flex justify-center items-center absolute w-full h-full ${
+    const centeredClass = `flex justify-center items-center truncate absolute w-full h-full ${
       label ? 'pb-4' : ''
     }`;
 

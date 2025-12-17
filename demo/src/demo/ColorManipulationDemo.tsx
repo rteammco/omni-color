@@ -27,7 +27,7 @@ export function ColorManipulationDemo({ color }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <Card title="Adjust color">
-        <div className="flex flex-row gap-2 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-2 mb-4">
           <ColorBox
             color={color}
             label={color.toHex()}
@@ -36,11 +36,11 @@ export function ColorManipulationDemo({ color }: Props) {
             width="STRETCH"
           />
           <ColorBox
-            width="STRETCH"
-            overlayText="Brighten"
-            overlaySize="SMALL"
-            label={brightenedColor.toHex()}
             color={brightenedColor}
+            label={brightenedColor.toHex()}
+            overlaySize="SMALL"
+            overlayText="Brighten"
+            width="STRETCH"
           />
           <ColorBox
             color={darkenedColor}
@@ -81,12 +81,14 @@ export function ColorManipulationDemo({ color }: Props) {
               value={intensityPercentage}
               onChange={setIntensityPercentage}
             />
-            <div className="w-12 text-left">{intensityPercentage}%</div>
+            <div className="flex items-center w-12 flex-shrink-0 text-left">
+              {intensityPercentage}%
+            </div>
           </div>
         </InputGroup>
       </Card>
       <Card title="Spin hue">
-        <div className="flex flex-row gap-2 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
           <ColorBox
             color={color}
             label={color.toHex()}
@@ -112,7 +114,7 @@ export function ColorManipulationDemo({ color }: Props) {
               value={spinDegrees}
               onChange={setSpinDegrees}
             />
-            <div className="w-12 text-left">{spinDegrees}°</div>
+            <div className="flex items-center w-12 flex-shrink-0 text-left">{spinDegrees}°</div>
           </div>
         </InputGroup>
       </Card>
