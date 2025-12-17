@@ -1,5 +1,5 @@
 import { Color } from '../color/color';
-import { BLACK_HEX, WHITE_HEX } from '../color/color.constants';
+import { BLACK_HEX, WHITE_HEX } from '../color/color.consts';
 import { type ColorHarmony } from '../color/harmonies';
 import type { ColorSwatch, ColorSwatchOptions } from '../color/swatch';
 import { type CaseInsensitive, clampValue } from '../utils';

@@ -1,5 +1,5 @@
 import { Color } from '../color';
-import { CSS_COLOR_NAME_TO_HEX_MAP } from '../color.constants';
+import { CSS_COLOR_NAME_TO_HEX_MAP } from '../color.consts';
 import type {
   ColorCMYK,
   ColorHex,

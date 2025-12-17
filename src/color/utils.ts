@@ -1,6 +1,6 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
-import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.constants';
+import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.consts';
 import { toRGBA } from './conversions';
 import type { ColorFormat, ColorHex, ColorRGBA } from './formats';
 import type { ColorSwatch } from './swatch';
