@@ -7,7 +7,7 @@ export function PlaygroundPage() {
     <div className="p-6 w-full text-center">
       <AppHeader pageDescription="Code Playground" />
       <VSpace height={40} />
-      <Playground isFullPage />
+      <Playground />
     </div>
   );
 }

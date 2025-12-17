@@ -1,17 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CodeExecutionStatus, getRandomStarterCode, tryToRunCode } from './playgroundUtils';
 import { Color } from '../../../dist';
 import { ColorBox } from '../components/ColorBox';
-import { Icon } from '../components/Icon';
+import { Card } from '../components/Card';
 
-interface Props {
-  isFullPage?: boolean;
-}
-
-export function Playground({ isFullPage }: Props) {
+export function Playground() {
   const initialCode = useMemo(() => getRandomStarterCode(), []);
-
-  const isMountedRef = useRef(true);
 
   const [code, setCode] = useState(initialCode);
   const [returnedColor, setReturnedColor] = useState<Color | null>(null);
@@ -22,10 +16,6 @@ export function Playground({ isFullPage }: Props) {
 
   const executeCode = useCallback((newCode: string) => {
     tryToRunCode(newCode).then((res) => {
-      if (!isMountedRef.current) {
-        return;
-      }
-
       if (res.status === CodeExecutionStatus.SUCCESS) {
         setCodeErrorMessage(null);
         setReturnedColor(res.color ?? null);
@@ -55,51 +45,54 @@ export function Playground({ isFullPage }: Props) {
 
   useEffect(() => {
     executeCode(initialCode);
-    return () => {
-      isMountedRef.current = false;
-    };
   }, [executeCode, initialCode]);
 
   return (
     <div className="w-full flex flex-col items-center">
-      {!isFullPage && (
-        <h5 className="mb-3 flex flex-row items-center gap-2">
-          <span>Code playground</span>
-          <a href="./playground" target="_blank">
-            <Icon size={20} type={Icon.TYPE.ARROW_TOP_RIGHT_ON_SQUARE} />
-          </a>
-        </h5>
-      )}
-      <span className="mb-2">
-        You can experiment the <code>Color</code> object here. Return a <code>Color</code> or any
-        valid color format (e.g. a hex string) to see the color visualized.
-      </span>
-      <textarea
-        className={`px-4 py-2 w-full sm:w-xl md:w-2xl lg:w-4xl h-60 border-1 ${
-          codeErrorMessage ? 'border-red-500' : 'border-gray-200'
-        } rounded-md shadow-md font-mono text-sm`}
-        spellCheck={false}
-        value={code}
-        onChange={handleCodeChanged}
-      />
-      <div className="flex flex-row items-center text-sm text-red-500 h-6">{codeErrorMessage}</div>
-      <div className="flex flex-row items-center gap-3 mb-3">
-        <span>Your result:</span>
-        <ColorBox color={returnedColor ?? placeholderColor} width="DOUBLE" />
-      </div>
-      {codeConsoleOutputs && codeConsoleOutputs.length > 0 && (
-        <div className="flex flex-row items-center gap-3 mb-3">
-          <span>Console outputs:</span>
-          <div className="flex flex-col items-start gap-1">
-            {codeConsoleOutputs.map((output, index) => (
-              <pre className="text-sm" key={index}>
-                {output}
-              </pre>
-            ))}
-          </div>
+      <div className="w-full flex flex-col gap-4">
+        <div>
+          <textarea
+            className={`px-4 py-2 w-full h-60 border-1 ${
+              codeErrorMessage ? 'border-red-500' : 'border-gray-200'
+            } rounded-md shadow-md font-mono text-sm`}
+            spellCheck={false}
+            value={code}
+            onChange={handleCodeChanged}
+          />
+          {codeErrorMessage && (
+            <div className="flex flex-row items-center text-sm text-red-500 h-6">
+              {codeErrorMessage}
+            </div>
+          )}
         </div>
-      )}
-      <button onClick={handleResetOrInitCode}>Reset playground</button>
+        <Card title="Output">
+          <div className="flex flex-col gap-4">
+            <div className="w-full">
+              <ColorBox
+                color={returnedColor ?? placeholderColor}
+                label={returnedColor?.toHex()}
+                overlaySize="SMALL"
+                overlayText="Returned color"
+                width="STRETCH"
+              />
+            </div>
+            {codeConsoleOutputs && codeConsoleOutputs.length > 0 && (
+              <div className="flex flex-col items-center gap-3 mb-3">
+                <div className="flex flex-col items-start gap-0.5">
+                  {codeConsoleOutputs.map((output, index) => (
+                    <pre className="text-sm" key={index}>
+                      &gt; {output}
+                    </pre>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+      <button className="mt-4" onClick={handleResetOrInitCode}>
+        Reset playground
+      </button>
     </div>
   );
 }

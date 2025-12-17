@@ -84,14 +84,15 @@ export function getRandomStarterCode() {
 
   const resultColorMethod = getRandomElementFromArray(GET_RESULT_COLOR_EXAMPLES);
 
-  return `const color = new Color("${randomColorHex}");
-console.log("Color:", color);
+  return `// Return a \`Color\` or any valid color format (e.g. a hex string) to see the color visualized
+
+const color = new Color("${randomColorHex}");
+console.log("color:", color);
 
 const updated = color.${updateColorMethod.method}(${updateColorMethodArgs ?? ''});
-console.log("Updated:", updated);
+console.log("updated color:", updated);
 
 const result = updated.${resultColorMethod};
-console.log("Result:", result);
 return result; // rendered below if valid`;
 }
 
