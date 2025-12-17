@@ -38,7 +38,7 @@ export function GradientThroughCard({ color }: Props) {
 
   return (
     <Card title="Gradient through red, green, and blue">
-      <div className="flex flex-row gap-2 mb-4">{colorBoxes}</div>
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">{colorBoxes}</div>
       <GradientOptionInputs
         options={options}
         onOptionsReset={() => setOptions(DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS)}

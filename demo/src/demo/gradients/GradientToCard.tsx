@@ -22,7 +22,7 @@ export function GradientToCard({ color }: Props) {
 
   return (
     <Card title="Gradient to">
-      <div className="flex flex-row gap-2 mb-4">
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
         {gradientColors.map((color, index) => {
           const colorHex = color.toHex();
           let title: string | undefined;
@@ -33,7 +33,7 @@ export function GradientToCard({ color }: Props) {
           }
           return (
             <ColorBox
-              key={colorHex}
+              key={index}
               color={color}
               label={colorHex}
               overlaySize="SMALL"

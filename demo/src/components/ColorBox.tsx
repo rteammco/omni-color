@@ -79,7 +79,7 @@ export function ColorBox({
   } else if (width === 'NORMAL') {
     widthClass = 'w-16';
   } else if (width === 'STRETCH') {
-    widthClass = 'flex-1';
+    widthClass = 'w-full';
   }
 
   return (
