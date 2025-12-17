@@ -44,7 +44,7 @@ export function ColorCombinationDemo({ color }: Props) {
   return (
     <div className="w-full flex flex-col gap-4">
       <Card title="Mix">
-        <div className="flex flex-row gap-2 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-4">
           <ColorBox
             color={color}
             label={color.toHex()}
@@ -84,7 +84,7 @@ export function ColorCombinationDemo({ color }: Props) {
         <MixColorsOptionInputs mixOptions={mixOptions} onOptionsChanged={setMixOptions} />
       </Card>
       <Card title="Blend">
-        <div className="flex flex-row gap-2 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-4">
           <ColorBox
             color={color}
             label={color.toHex()}
@@ -117,14 +117,14 @@ export function ColorCombinationDemo({ color }: Props) {
             color={isDarkMode ? new Color('#00000000') : new Color('#ffffff00')}
             label="Not supported"
             overlaySize="SMALL"
-            overlayText="N/A"
+            overlayText="+RGB (N/A)"
             width="STRETCH"
           />
         </div>
         <BlendColorsOptionInputs blendOptions={blendOptions} onOptionsChanged={setBlendOptions} />
       </Card>
       <Card title="Average">
-        <div className="flex flex-row gap-2 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-4">
           <ColorBox
             color={color}
             label={color.toHex()}
