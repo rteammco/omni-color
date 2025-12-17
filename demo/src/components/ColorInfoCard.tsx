@@ -113,7 +113,7 @@ export function ColorInfoCard({ color, extended }: Props) {
           {extended && (
             <InfoPill color={color} variant="outlined">{`Alpha: ${color.getAlpha()}`}</InfoPill>
           )}
-          <InfoPill color={color}>{color.toHex8()}</InfoPill>
+          <InfoPill color={color}>{color.toHex()}</InfoPill>
           {extended && <InfoPill color={color}>{color.toHex8()}</InfoPill>}
         </div>
       </div>
