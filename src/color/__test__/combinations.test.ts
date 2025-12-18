@@ -78,8 +78,8 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
     const result = mixColors([red, green]);
-    // Pure Red + Pure Green sums to Pure Yellow in both sRGB and Linear RGB
-    expect(result.toHex()).toBe('#ffff00');
+    // LINEAR_RGB uses energy-preserving weights that mirror chroma-js lrgb interpolation.
+    expect(result.toHex()).toBe('#b4b400');
   });
 
   it('mixes colors additively in Linear RGB space (brighter mix)', () => {
@@ -112,7 +112,7 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = mixColors([red, blue], { weights: [1, -1] });
-    expect(result.toHex()).toBe('#ff00ff');
+    expect(result.toHex()).toBe('#b400b4');
   });
 
   it('mixes colors with alpha channel in RGB space', () => {
@@ -200,7 +200,7 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = mixColors([red, blue], { weights: [2] });
-    expect(result.toHex()).toBe('#ff00ff');
+    expect(result.toHex()).toBe('#b400b4');
   });
 
   it('ignores colors with zero weight', () => {
@@ -475,23 +475,14 @@ describe('LINEAR_RGB robustness', () => {
     const red = new Color('#ff0000'); // Linear (1, 0, 0)
     const blue = new Color('#0000ff'); // Linear (0, 0, 1)
 
-    // 75% Red, 25% Blue. Note: mixColors uses raw weights (additive), so we use 0.75/0.25 to act as average.
+    // 75% Red, 25% Blue. LINEAR_RGB mixing normalizes weights to preserve the intended ratio.
     const result = mixColors([red, blue], {
       space: 'LINEAR_RGB',
       weights: [0.75, 0.25],
     });
 
-    // Linear R: 0.75, G: 0, B: 0.25
-    // sRGB conversion:
-    // R: Linear(0.75) -> ~228 (0.89)
-    // B: Linear(0.25) -> ~137 (0.54)
-
-    const { r, g, b } = result.toRGBA();
-    expect(r).toBeGreaterThan(220);
-    expect(r).toBeLessThan(235);
-    expect(g).toBe(0);
-    expect(b).toBeGreaterThan(130);
-    expect(b).toBeLessThan(145);
+    expect(result.toHex()).toBe('#dd0080');
+    expect(result.toRGBA().a).toBe(1);
   });
 
   it('handles alpha blending linearly', () => {

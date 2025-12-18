@@ -988,6 +988,14 @@ describe('Color mixing and averaging', () => {
     expect(result.toHex()).toBe('#121212');
   });
 
+  it('mixes colors in LINEAR_RGB space by default', () => {
+    const base = new Color('#ff0000');
+    const result = base.mix(['#0000ff']);
+
+    expect(result.toHex()).toBe('#b400b4');
+    expect(result.toRGBA()).toEqual(new Color('#b400b4').toRGBA());
+  });
+
   it('mixes colors from readonly inputs', () => {
     const base = new Color('#123456');
     const others = ['#abcdef'] as const;
