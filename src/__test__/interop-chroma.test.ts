@@ -50,10 +50,36 @@ describe('Color interoperability with chroma-js', () => {
   });
 
   describe('mixing parity with chroma-js', () => {
-    // TODO: omni-color LINEAR_RGB mixing currently returns #ff00ff versus chroma-js #b400b4; enable once implementations align.
-    it.skip('matches LINEAR_RGB mixing output from chroma-js lrgb', () => {
+    it('matches LINEAR_RGB mixing output from chroma-js lrgb', () => {
       const omniLinear = new Color('#ff0000').mix(['#0000ff'], { space: 'LINEAR_RGB' });
       const chromaLinear = chroma.mix('#ff0000', '#0000ff', 0.5, 'lrgb');
+
+      expect(omniLinear.toHex()).toBe('#b400b4');
+      expect(omniLinear.toHex()).toBe(chromaLinear.hex().toLowerCase());
+      expect(omniLinear.toRGBA()).toEqual(chromaRGBArrayToObj(chromaLinear.rgba()));
+    });
+
+    it('aligns LINEAR_RGB weight handling with chroma-js lrgb interpolation', () => {
+      const omniLinear = new Color('#ff0000').mix(['#0000ff'], {
+        space: 'LINEAR_RGB',
+        weights: [3, 1],
+      });
+      const chromaLinear = chroma.mix('#ff0000', '#0000ff', 0.25, 'lrgb');
+
+      expect(omniLinear.toHex()).toBe(chromaLinear.hex().toLowerCase());
+      expect(omniLinear.toRGBA()).toEqual(chromaRGBArrayToObj(chromaLinear.rgba()));
+    });
+
+    it('matches chroma-js LINEAR_RGB averaging across multiple inputs', () => {
+      const omniLinear = new Color('#ff0000').mix(['#00ff00', '#0000ff'], {
+        space: 'LINEAR_RGB',
+        weights: [0.5, 0.25, 0.25],
+      });
+      const chromaLinear = chroma.average(['#ff0000', '#00ff00', '#0000ff'], 'lrgb', [
+        0.5,
+        0.25,
+        0.25,
+      ]);
 
       expect(omniLinear.toHex()).toBe(chromaLinear.hex().toLowerCase());
       expect(omniLinear.toRGBA()).toEqual(chromaRGBArrayToObj(chromaLinear.rgba()));

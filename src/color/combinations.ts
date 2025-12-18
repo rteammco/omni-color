@@ -70,10 +70,33 @@ function mixColorsAdditive(
   sumOfWeights: number
 ) {
   switch (space) {
+    case 'LINEAR_RGB': {
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let a = 0;
+      const normalizationFactor = sumOfWeights || 1;
+
+      colors.forEach((color, i) => {
+        const val: ColorRGBA = color.toRGBA();
+        const normalizedWeight = weights[i] / normalizationFactor;
+        r += Math.pow(val.r, 2) * normalizedWeight;
+        g += Math.pow(val.g, 2) * normalizedWeight;
+        b += Math.pow(val.b, 2) * normalizedWeight;
+        a += (val.a ?? 1) * normalizedWeight;
+      });
+      const result: ColorRGBA = {
+        r: Math.round(Math.sqrt(r)),
+        g: Math.round(Math.sqrt(g)),
+        b: Math.round(Math.sqrt(b)),
+        a: +clampValue(a, 0, 1).toFixed(3),
+      };
+      return new Color(result);
+    }
     case 'HSL':
     case 'LCH':
     case 'OKLCH':
-    case 'LINEAR_RGB': {
+    {
       let r = 0;
       let g = 0;
       let b = 0;
