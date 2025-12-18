@@ -3,16 +3,23 @@ import chroma from 'chroma-js';
 import type { ColorRGB, ColorRGBA } from '../index';
 import { Color } from '../index';
 
-function chromaRGBArrayToObj(values: number[]): ColorRGB | ColorRGBA {
+function chromaRGBArrayToObj(values: number[], rgbTolerance = 0): ColorRGB | ColorRGBA {
   if (values.length < 3) {
     throw new Error('Invalid RGB array from chroma-js');
   }
   return {
-    r: values[0],
-    g: values[1],
-    b: values[2],
+    r: rgbTolerance > 0 ? expect.closeTo(values[0], rgbTolerance) : values[0],
+    g: rgbTolerance > 0 ? expect.closeTo(values[1], rgbTolerance) : values[1],
+    b: rgbTolerance > 0 ? expect.closeTo(values[2], rgbTolerance) : values[2],
     a: values.length > 3 ? expect.closeTo(values[3], 2) : undefined,
   };
+}
+
+function expectSimilarRGBAValues(omniValues: ColorRGBA, chromaValues: number[], tolerance = 1) {
+  expect(Math.abs(omniValues.r - chromaValues[0])).toBeLessThanOrEqual(tolerance);
+  expect(Math.abs(omniValues.g - chromaValues[1])).toBeLessThanOrEqual(tolerance);
+  expect(Math.abs(omniValues.b - chromaValues[2])).toBeLessThanOrEqual(tolerance);
+  expect(omniValues.a ?? 1).toBeCloseTo(chromaValues[3] ?? 1, 2);
 }
 
 describe('Color interoperability with chroma-js', () => {
@@ -83,7 +90,9 @@ describe('Color interoperability with chroma-js', () => {
 
       const cyanCmyk = chroma('#00ffff').cmyk();
       const yellowCmyk = chroma('#ffff00').cmyk();
-      const averagedCmyk = cyanCmyk.map((channel, index) => 0.5 * channel + 0.5 * yellowCmyk[index]);
+      const averagedCmyk = cyanCmyk.map(
+        (channel, index) => 0.5 * channel + 0.5 * yellowCmyk[index]
+      );
       const [c, m, y, k] = averagedCmyk;
       const chromaSubtractiveApproximation = chroma.cmyk(c, m, y, k);
 
@@ -95,37 +104,43 @@ describe('Color interoperability with chroma-js', () => {
 
   describe('blend parity with chroma-js', () => {
     it('aligns RGB blend modes with chroma-js outputs', () => {
-      const multiplyBlend = new Color('#336699').blend(new Color('#ffcc00'), { mode: 'MULTIPLY', ratio: 1 });
+      const multiplyBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+        mode: 'MULTIPLY',
+        ratio: 1,
+      });
       const chromaMultiply = chroma.blend('#336699', '#ffcc00', 'multiply');
       expect(multiplyBlend.toRGBA()).toEqual(chromaRGBArrayToObj(chromaMultiply.rgba()));
 
-      const screenBlend = new Color('#336699').blend(new Color('#ffcc00'), { mode: 'SCREEN', ratio: 1 });
+      const screenBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+        mode: 'SCREEN',
+        ratio: 1,
+      });
       const chromaScreen = chroma.blend('#336699', '#ffcc00', 'screen');
       expect(screenBlend.toRGBA()).toEqual(chromaRGBArrayToObj(chromaScreen.rgba()));
 
-      const overlayBlend = new Color('#336699').blend(new Color('#ffcc00'), { mode: 'OVERLAY', ratio: 1 });
+      const overlayBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+        mode: 'OVERLAY',
+        ratio: 1,
+      });
       const chromaOverlay = chroma.blend('#336699', '#ffcc00', 'overlay');
       expect(overlayBlend.toRGBA()).toEqual(chromaRGBArrayToObj(chromaOverlay.rgba()));
 
-      const normalBlend = new Color('#336699').blend(new Color('#ffcc00'), { mode: 'NORMAL', ratio: 1 });
+      const normalBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+        mode: 'NORMAL',
+        ratio: 1,
+      });
       const chromaNormal = chroma.mix('#336699', '#ffcc00', 1, 'rgb');
       expect(normalBlend.toRGBA()).toEqual(chromaRGBArrayToObj(chromaNormal.rgba()));
     });
 
     it('matches blend modes for a secondary palette at partial ratios', () => {
-      const expectChannelNear = (omni: number, chromaChannel: number) =>
-        expect(Math.abs(omni - chromaChannel)).toBeLessThanOrEqual(1);
-
       const multiplyBlend = new Color('#112233')
         .blend(new Color('#ffaaff'), { mode: 'MULTIPLY', ratio: 0.4 })
         .toRGBA();
       const chromaMultiply = chroma
         .mix('#112233', chroma.blend('#112233', '#ffaaff', 'multiply').hex(), 0.4, 'rgb')
         .rgba();
-      expectChannelNear(multiplyBlend.r, chromaMultiply[0]);
-      expectChannelNear(multiplyBlend.g, chromaMultiply[1]);
-      expectChannelNear(multiplyBlend.b, chromaMultiply[2]);
-      expect(multiplyBlend.a ?? 1).toBeCloseTo(chromaMultiply[3] ?? 1, 2);
+      expectSimilarRGBAValues(multiplyBlend, chromaMultiply);
 
       const screenBlend = new Color('#112233')
         .blend(new Color('#ffaaff'), { mode: 'SCREEN', ratio: 0.4 })
@@ -133,10 +148,7 @@ describe('Color interoperability with chroma-js', () => {
       const chromaScreen = chroma
         .mix('#112233', chroma.blend('#112233', '#ffaaff', 'screen').hex(), 0.4, 'rgb')
         .rgba();
-      expectChannelNear(screenBlend.r, chromaScreen[0]);
-      expectChannelNear(screenBlend.g, chromaScreen[1]);
-      expectChannelNear(screenBlend.b, chromaScreen[2]);
-      expect(screenBlend.a ?? 1).toBeCloseTo(chromaScreen[3] ?? 1, 2);
+      expectSimilarRGBAValues(screenBlend, chromaScreen);
 
       const overlayBlend = new Color('#112233')
         .blend(new Color('#ffaaff'), { mode: 'OVERLAY', ratio: 0.4 })
@@ -144,43 +156,43 @@ describe('Color interoperability with chroma-js', () => {
       const chromaOverlay = chroma
         .mix('#112233', chroma.blend('#112233', '#ffaaff', 'overlay').hex(), 0.4, 'rgb')
         .rgba();
-      expectChannelNear(overlayBlend.r, chromaOverlay[0]);
-      expectChannelNear(overlayBlend.g, chromaOverlay[1]);
-      expectChannelNear(overlayBlend.b, chromaOverlay[2]);
-      expect(overlayBlend.a ?? 1).toBeCloseTo(chromaOverlay[3] ?? 1, 2);
+      expectSimilarRGBAValues(overlayBlend, chromaOverlay);
     });
 
     it('aligns blend modes for a high-contrast neutral and light pair', () => {
-      const expectChannelNear = (omni: number, chromaChannel: number) =>
-        expect(Math.abs(omni - chromaChannel)).toBeLessThanOrEqual(1);
-
-      const multiplyBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), { mode: 'MULTIPLY', ratio: 0.5 });
+      const multiplyBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), {
+        mode: 'MULTIPLY',
+        ratio: 0.5,
+      });
       const chromaMultiply = chroma
         .mix('#0f0f0f', chroma.blend('#0f0f0f', '#fefefe', 'multiply').hex(), 0.5, 'rgb')
         .rgba();
-      expectChannelNear(multiplyBlend.toRGBA().r, chromaMultiply[0]);
-      expectChannelNear(multiplyBlend.toRGBA().g, chromaMultiply[1]);
-      expectChannelNear(multiplyBlend.toRGBA().b, chromaMultiply[2]);
+      expectSimilarRGBAValues(multiplyBlend.toRGBA(), chromaMultiply);
 
-      const screenBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), { mode: 'SCREEN', ratio: 0.5 });
+      const screenBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), {
+        mode: 'SCREEN',
+        ratio: 0.5,
+      });
       const chromaScreen = chroma
         .mix('#0f0f0f', chroma.blend('#0f0f0f', '#fefefe', 'screen').hex(), 0.5, 'rgb')
         .rgba();
-      expectChannelNear(screenBlend.toRGBA().r, chromaScreen[0]);
-      expectChannelNear(screenBlend.toRGBA().g, chromaScreen[1]);
-      expectChannelNear(screenBlend.toRGBA().b, chromaScreen[2]);
+      expectSimilarRGBAValues(screenBlend.toRGBA(), chromaScreen);
 
-      const overlayBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), { mode: 'OVERLAY', ratio: 0.5 });
+      const overlayBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), {
+        mode: 'OVERLAY',
+        ratio: 0.5,
+      });
       const chromaOverlay = chroma
         .mix('#0f0f0f', chroma.blend('#0f0f0f', '#fefefe', 'overlay').hex(), 0.5, 'rgb')
         .rgba();
-      expectChannelNear(overlayBlend.toRGBA().r, chromaOverlay[0]);
-      expectChannelNear(overlayBlend.toRGBA().g, chromaOverlay[1]);
-      expectChannelNear(overlayBlend.toRGBA().b, chromaOverlay[2]);
+      expectSimilarRGBAValues(overlayBlend.toRGBA(), chromaOverlay);
     });
 
     it('preserves blend ratio weighting compared to chroma-js', () => {
-      const multiplyBlend = new Color('#336699').blend(new Color('#ffcc00'), { mode: 'MULTIPLY', ratio: 0.25 });
+      const multiplyBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+        mode: 'MULTIPLY',
+        ratio: 0.25,
+      });
       const chromaMultiply = chroma.blend('#336699', '#ffcc00', 'multiply');
       const chromaWeighted = chroma.mix('#336699', chromaMultiply.hex(), 0.25, 'rgb');
 
@@ -188,7 +200,10 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('preserves HSL hue interpolation relative to chroma-js mix', () => {
-      const hslBlend = new Color('#336699').blend(new Color('#ffcc00'), { space: 'HSL', ratio: 0.35 });
+      const hslBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+        space: 'HSL',
+        ratio: 0.35,
+      });
       const chromaHslBlend = chroma.mix('#336699', '#ffcc00', 0.35, 'hsl');
       const hslFromOmni = hslBlend.toHSL();
       const chromaHsl = chromaHslBlend.hsl();
@@ -226,11 +241,15 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('keeps alpha ratios consistent with chroma-js expectations', () => {
-      const omniAlphaBlend = new Color('rgba(51, 102, 153, 0.6)').blend(new Color('rgba(255, 204, 0, 0.3)'), {
-        mode: 'NORMAL',
-        ratio: 0.65,
-      }).toRGBA();
-      const chromaAlphaBlend = chroma.mix('rgba(51, 102, 153, 0.6)', 'rgba(255, 204, 0, 0.3)', 0.65, 'rgb').rgba();
+      const omniAlphaBlend = new Color('rgba(51, 102, 153, 0.6)')
+        .blend(new Color('rgba(255, 204, 0, 0.3)'), {
+          mode: 'NORMAL',
+          ratio: 0.65,
+        })
+        .toRGBA();
+      const chromaAlphaBlend = chroma
+        .mix('rgba(51, 102, 153, 0.6)', 'rgba(255, 204, 0, 0.3)', 0.65, 'rgb')
+        .rgba();
 
       expect(omniAlphaBlend).toEqual(chromaRGBArrayToObj(chromaAlphaBlend));
       expect(omniAlphaBlend.a).toBeCloseTo((1 - 0.65) * 0.6 + 0.65 * 0.3, 3);
