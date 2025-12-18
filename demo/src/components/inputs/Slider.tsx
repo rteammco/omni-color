@@ -12,6 +12,7 @@ export function Slider({ label, max, min, step, value, onChange }: Props) {
     <div className="flex flex-row flex-wrap align-center justify-center gap-2">
       {label && <div>{label}</div>}
       <input
+        className="lg:w-sm"
         max={max}
         min={min}
         step={step}
