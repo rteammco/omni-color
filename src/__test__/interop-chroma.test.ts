@@ -3,14 +3,14 @@ import chroma from 'chroma-js';
 import type { ColorRGB, ColorRGBA } from '../index';
 import { Color } from '../index';
 
-function chromaRGBArrayToObj(values: number[], rgbTolerance = 0): ColorRGB | ColorRGBA {
+function chromaRGBArrayToObj(values: number[]): ColorRGB | ColorRGBA {
   if (values.length < 3) {
     throw new Error('Invalid RGB array from chroma-js');
   }
   return {
-    r: rgbTolerance > 0 ? expect.closeTo(values[0], rgbTolerance) : values[0],
-    g: rgbTolerance > 0 ? expect.closeTo(values[1], rgbTolerance) : values[1],
-    b: rgbTolerance > 0 ? expect.closeTo(values[2], rgbTolerance) : values[2],
+    r: values[0],
+    g: values[1],
+    b: values[2],
     a: values.length > 3 ? expect.closeTo(values[3], 2) : undefined,
   };
 }
