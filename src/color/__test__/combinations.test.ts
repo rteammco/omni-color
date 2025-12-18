@@ -78,7 +78,6 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
     const result = mixColors([red, green]);
-    // LINEAR_RGB uses energy-preserving weights that mirror chroma-js lrgb interpolation.
     expect(result.toHex()).toBe('#b4b400');
   });
 
