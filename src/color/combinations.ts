@@ -619,7 +619,6 @@ function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonl
   let y = 0;
   let saturation = 0;
   let lightness = 0;
-  let alpha = 0;
   colors.forEach((color, i) => {
     const val: ColorHSLA = color.toHSLA();
     const weight = normalizedWeights[i];
@@ -628,15 +627,14 @@ function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonl
     y += Math.sin(rad) * weight;
     saturation += val.s * weight;
     lightness += val.l * weight;
-    alpha += (val.a ?? 1) * weight;
   });
   const hue = (Math.atan2(y, x) * 180) / Math.PI;
+  const alpha = mixAlphaChannel(colors, normalizedWeights);
   return new Color({
     h: Math.round((hue + 360) % 360),
     s: Math.round(saturation),
     l: Math.round(lightness),
-    a: +alpha.toFixed(3),
-  });
+  }).setAlpha(alpha);
 }
 
 function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
