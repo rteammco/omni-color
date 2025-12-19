@@ -445,6 +445,44 @@ describe('blendColors', () => {
     const result = blendColors(darkGray, red, { mode: 'OVERLAY', ratio: 1 });
     expect(result.toHex()).toBe('#800000');
   });
+
+  it('applies blend modes within HSL space', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const normal = blendColors(red, blue, { space: 'HSL', mode: 'NORMAL', ratio: 0.5 });
+    const multiply = blendColors(red, blue, { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 });
+    const screen = blendColors(red, blue, { space: 'HSL', mode: 'SCREEN', ratio: 0.5 });
+    const overlay = blendColors(red, blue, { space: 'HSL', mode: 'OVERLAY', ratio: 0.5 });
+
+    expect(normal.toHex()).toBe('#ff00ff');
+    expect(multiply.toHex()).toBe('#b900bf');
+    expect(screen.toHex()).toBe('#ff4640');
+    expect(overlay.toHex()).toBe('#ff0064');
+    expect(new Set([normal.toHex(), multiply.toHex(), screen.toHex(), overlay.toHex()]).size).toBe(4);
+  });
+
+  it('handles hue wrap-around for multiple HSL blend modes', () => {
+    const h1 = new Color({ h: 350, s: 100, l: 50 });
+    const h2 = new Color({ h: 10, s: 100, l: 50 });
+    const multiply = blendColors(h1, h2, { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 });
+    const screen = blendColors(h1, h2, { space: 'HSL', mode: 'SCREEN', ratio: 0.5 });
+    const overlay = blendColors(h1, h2, { space: 'HSL', mode: 'OVERLAY', ratio: 0.5 });
+
+    expect(multiply.toHex()).toBe('#bf003e');
+    expect(screen.toHex()).toBe('#ff5f40');
+    expect(overlay.toHex()).toBe('#ff0019');
+    expect(multiply.toHSL().h).toBeCloseTo(341, 0);
+    expect(overlay.toHSL().h).toBeCloseTo(354, 0);
+  });
+
+  it('preserves alpha handling when blending in HSL space', () => {
+    const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
+    const blue = new Color({ r: 0, g: 0, b: 255, a: 0.2 });
+    const result = blendColors(semiRed, blue, { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 });
+
+    expect(result.toHex()).toBe('#b900bf');
+    expect(result.toRGBA().a).toBe(0.35);
+  });
 });
 
 describe('LINEAR_RGB robustness', () => {
