@@ -56,9 +56,9 @@ _`static`_
 - <ins>Inputs</ins>:
   - `options` (optional) - customize how the color will be randomized with `RandomColorOptions`:
     - `alpha` - the alpha value of the random color (0-1). If not specified, it will default to 1 (opaque) unless `randomizeAlpha` is `true`.
-    - `randomizeAlpha` - if `true`, the alpha value of the generated color will be randomized (0-1). This option is ignored if an `alpha` value is explicitly provided.
-    - `anchorColor` - randomize within the specified hue / named color family ([`BaseColorName`](#types)).
-    - `paletteSuitable` - if `true`, the generated color will have moderate lightness and sufficient saturation to make them suitable for creating color palettes. This option will be ignored if `anchorColor` is `"Black"`, `"White"`, or `"Gray"`.
+    - `randomizeAlpha` - if `true`, the alpha value of the generated color will be randomized (0-1). This option is ignored if an `alpha` value is explicitly provided. Defaults to `false`.
+    - `anchorColor` - randomize within the specified hue / named color family ([`BaseColorName`](#types)). Defaults to no anchor, meaning the hue is chosen from the full range.
+    - `paletteSuitable` - if `true`, the generated color will have moderate lightness and sufficient saturation to make them suitable for creating color palettes. This option will be ignored if `anchorColor` is `"Black"`, `"White"`, or `"Gray"`. Defaults to `false`.
 
 ```ts
 const random = Color.random();
@@ -151,7 +151,7 @@ new Color('#ff0000').getTemperature(); // { temperature: 2655, label: 'Incandesc
 - <ins>Returns</ins> the color temperature formatted as a string in Kelvin, optionally including the label when the color is close to the Planckian locus.
 - <ins>Inputs</ins>:
   - `options` (optional) - `ColorTemperatureStringFormatOptions`:
-    - `formatNumber` - set to `true` to format the temperature value with locale separators.
+    - `formatNumber` - set to `true` to format the temperature value with locale separators. Defaults to `false` (unformatted number).
 
 ```ts
 new Color('#ffffff').getTemperatureAsString(); // '6504 K (cloudy sky)'
@@ -449,8 +449,8 @@ new Color('rgba(255, 127, 80, 0.5)').grayscale().toHex8(); // '#a8a8a880'
 - <ins>Inputs</ins>:
   - `others` - one or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to mix with this color.
   - `options` (optional) - `MixColorsOptions`:
-    - `space` - the mix space: `"LINEAR_RGB" | "RGB" | "HSL" | "LCH" | "OKLCH"`.
-    - `type` - the mix type: `"ADDITIVE" | "SUBTRACTIVE"`.
+    - `space` - the mix space: `"LINEAR_RGB" | "RGB" | "HSL" | "LCH" | "OKLCH"`. Defaults to `"LINEAR_RGB"`.
+    - `type` - the mix type: `"ADDITIVE" | "SUBTRACTIVE"`. Defaults to `"ADDITIVE"`.
     - `weights` - per-color weights for how much each color is weighted during mixing. Number of weights must match the number of colors being mixed (i.e. `others.length + 1`). Colors are weighted equally by default.
 
 ```ts
@@ -467,8 +467,8 @@ weightedMix.toHex(); // '#fffdd0'
 - <ins>Inputs</ins>:
   - `other` - the [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input to blend with.
   - `options` (optional) - `BlendColorsOptions`:
-    - `mode` - the blend mode: `"NORMAL" | "MULTIPLY" | "SCREEN" | "OVERLAY"`.
-    - `space` - the blend space: `"RGB" | "HSL"`.
+    - `mode` - the blend mode: `"NORMAL" | "MULTIPLY" | "SCREEN" | "OVERLAY"`. Defaults to `"NORMAL"`.
+    - `space` - the blend space: `"RGB" | "HSL"`. Defaults to `"RGB"`.
     - `ratio` - the blend ratio between `0` and `1` (default is `0.5`).
 
 ```ts
@@ -482,7 +482,7 @@ new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 }
 - <ins>Inputs</ins>:
   - `others` - one or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to average with this color.
   - `options` (optional) - `AverageColorsOptions`:
-    - `space` - the averaging space: `"LINEAR_RGB" | "RGB" | "HSL" | "LCH" | "OKLCH"`.
+    - `space` - the averaging space: `"LINEAR_RGB" | "RGB" | "HSL" | "LCH" | "OKLCH"`. Defaults to `"LINEAR_RGB"`.
     - `weights` - per-color weights for how much each color is weighted during averaging. Number of weights must match the number of colors being averaged (i.e. `others.length + 1`). Colors are weighted equally by default.
 
 ```ts
@@ -532,10 +532,10 @@ _`static`_
     - **Fewer than 2 color inputs will throw an exception.**
   - `options` (optional) - `ColorGradientOptions`:
     - `stops` - number of colors to return (anchors included, defaults to `5`).
-    - `space` - interpolation space: `"RGB" | "HSL" | "HSV" | "LCH" | "OKLCH"`.
+    - `space` - interpolation space: `"RGB" | "HSL" | "HSV" | "LCH" | "OKLCH"` (default is `"OKLCH"`).
     - `hueInterpolationMode` - strategy for hue interpolation in polar spaces: `"SHORTEST" | "LONGEST" | "INCREASING" | "DECREASING" | "RAW" | "CARTESIAN"` (default is `"SHORTEST"`).
-    - `interpolation` - `'LINEAR'` (segment-based) or `'BEZIER'` (uses anchors as control points).
-    - `easing` - `"LINEAR" | "EASE_IN" | "EASE_OUT" | "EASE_IN_OUT"` or a custom `(t) => number` easing function.
+    - `interpolation` - `'LINEAR'` (segment-based) or `'BEZIER'` (uses anchors as control points). Defaults to `'LINEAR'`.
+    - `easing` - `"LINEAR" | "EASE_IN" | "EASE_OUT" | "EASE_IN_OUT"` or a custom `(t) => number` easing function. Defaults to `"LINEAR"`.
     - `clamp` - keep intermediate stops inside the selected gamut (default `true`).
 
 ```ts
@@ -561,7 +561,7 @@ bezierGradient.map((color) => color.toHex());
 - <ins>Returns</ins> an array of new [`Color`](#types-color) instances interpolated through the provided anchors, ensuring every anchor is included as a stop.
 - <ins>Inputs</ins>:
   - `colors` - two or more [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color inputs to pass through.
-  - `options` (optional) - `ColorGradientOptions` (same as [`Color.createInterpolatedGradient`](#colorcreateinterpolatedgradientcolors-arraycolor--colorformat--string-options-colorgradientoptions-color)).
+  - `options` (optional) - `ColorGradientOptions` (same as [`Color.createInterpolatedGradient`](#colorcreateinterpolatedgradientcolors-arraycolor--colorformat--string-options-colorgradientoptions-color), inheriting defaults of `space: "OKLCH"`, `interpolation: "LINEAR"`, and `easing: "LINEAR"`).
 
 ```ts
 const throughGradient = Color.createGradientThrough(['#ff7f50', '#1a73e8', '#10b981'], {
@@ -576,7 +576,7 @@ throughGradient.map((color) => color.toHex());
 - <ins>Returns</ins> an array of new [`Color`](#types-color) instances interpolated from the current color to the target color.
 - <ins>Inputs</ins>:
   - `color` - the destination [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
-  - `options` (optional) - gradient options excluding `interpolation`, forwarded to [`Color.createInterpolatedGradient`](#colorcreateinterpolatedgradientcolors-arraycolor--colorformat--string-options-colorgradientoptions-color).
+  - `options` (optional) - gradient options excluding `interpolation`, forwarded to [`Color.createInterpolatedGradient`](#colorcreateinterpolatedgradientcolors-arraycolor--colorformat--string-options-colorgradientoptions-color); defaults still apply (`space: "OKLCH"`, `easing: "LINEAR"`).
 
 ```ts
 const [start, end] = new Color('#3b82f6').createGradientTo('#f472b6', { stops: 2 });
@@ -709,7 +709,7 @@ new Color('#ff7f50').getHarmonyColors('TRIADIC').map((color) => color.toHex());
 - <ins>Inputs</ins>:
   - `options` (optional) - `ColorSwatchOptions`:
     - `centerOn500` - force the original color onto the `500` stop instead of dynamically anchoring by lightness (default is `false`).
-    - `extended` - set to `true` to include midpoint stops `50`–`950` and return an [`ExtendedColorSwatch`](#types-extended-color-swatch).
+    - `extended` - set to `true` to include midpoint stops `50`–`950` and return an [`ExtendedColorSwatch`](#types-extended-color-swatch). Defaults to `false` (basic stops only).
 
 ```ts
 const green = new Color('green');
@@ -733,8 +733,8 @@ extendedSwatch[950].toHex(); // darkest
 - <ins>Inputs</ins>:
   - `harmony` (optional) - [`ColorHarmony`](#types-color-harmony) used to generate secondary colors (defaults to `'COMPLEMENTARY'`).
   - `options` (optional) - `GenerateColorPaletteOptions`:
-    - `neutralHarmonization` - `tintChromaFactor` (fraction of chroma applied to neutrals) and `maxTintChroma` cap.
-    - `semanticHarmonization` - `huePull` (blend semantic hues toward the base hue) and `chromaRange` bounds for semantic swatches.
+    - `neutralHarmonization` - `tintChromaFactor` (fraction of chroma applied to neutrals) and `maxTintChroma` cap. Defaults to `{ tintChromaFactor: 0.1, maxTintChroma: 0.04 }`.
+    - `semanticHarmonization` - `huePull` (blend semantic hues toward the base hue) and `chromaRange` bounds for semantic swatches. Defaults to `{ huePull: 0.1, chromaRange: [0.02, 0.25] }`.
     - `swatchOptions` - forwarded to swatch generation for every palette color; palettes center the source color on `500` by default, override `centerOn500` to opt into dynamic anchoring.
 
 ```ts
@@ -775,7 +775,7 @@ new Color('#1a73e8').getReadabilityScore('#ffffff'); // e.g. 71.61
 - <ins>Returns</ins> `{ contrastRatio, requiredContrast, isReadable, shortfall }` for WCAG levels `"AA" | "AAA"` and text sizes `"SMALL" | "LARGE"`.
 - <ins>Inputs</ins>:
   - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
-  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level (`"AA" | "AAA"`) and text size (`"SMALL" | "LARGE"`).
+  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level (`"AA" | "AAA"`) and text size (`"SMALL" | "LARGE"`). Defaults to `level: "AA"` and `size: "SMALL"`.
 
 ```ts
 new Color('#444').getTextReadabilityReport(new Color('#bbb'), { level: 'AA', size: 'LARGE' });
@@ -787,7 +787,7 @@ new Color('#444').getTextReadabilityReport(new Color('#bbb'), { level: 'AA', siz
 - <ins>Returns</ins> `true` if the color meets the specified WCAG contrast requirements against a background color.
 - <ins>Inputs</ins>:
   - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
-  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level and text size.
+  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level and text size. Defaults to `level: "AA"` and `size: "SMALL"`.
 
 ```ts
 new Color('#000000').isReadableAsTextColor('#ffffff'); // true
@@ -799,7 +799,7 @@ new Color('#000000').isReadableAsTextColor('#ffffff'); // true
 - <ins>Inputs</ins>:
   - `candidateTextColors` - one or more candidate text colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), parsable color inputs, or a [`ColorSwatch`](#types-color-swatch) to choose from.
     - **Empty list of candidate colors will throw an exception.**
-  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs.
+  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs. Defaults to `"WCAG"` contrast.
 
 ```ts
 const background = new Color('#121212');
@@ -818,7 +818,7 @@ bestSwatchColor.toHex(); // '#f5f8ff'
 - <ins>Inputs</ins>:
   - `candidateBackgroundColors` - one or more candidate background colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), parsable color inputs, or a [`ColorSwatch`](#types-color-swatch) to choose from.
     - **Empty list of candidate colors will throw an exception.**
-  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs.
+  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs. Defaults to `"WCAG"` contrast.
 
 ```ts
 const textColor = new Color('#ff7f50');
