@@ -1,4 +1,5 @@
 import type { GenerateColorPaletteOptions } from '../../../../dist';
+import { Checkbox } from '../../components/inputs/Checkbox';
 import { InputGroup } from '../../components/inputs/InputGroup';
 import { NumberInput } from '../../components/inputs/NumberInput';
 
@@ -107,6 +108,32 @@ export function PaletteGenerationOptions({ options, onOptionsChanged, onReset }:
           />
         </div>
       </label>
+      <Checkbox
+        isChecked={options.swatchOptions?.centerOn500}
+        label="Centered swatches"
+        onChange={(centerOn500) => {
+          onOptionsChanged({
+            ...options,
+            swatchOptions: {
+              ...options.swatchOptions,
+              centerOn500,
+            },
+          });
+        }}
+      />
+      <Checkbox
+        isChecked={options.swatchOptions?.extended}
+        label="Extended swatches"
+        onChange={(extended) => {
+          onOptionsChanged({
+            ...options,
+            swatchOptions: {
+              ...options.swatchOptions,
+              extended,
+            },
+          });
+        }}
+      />
     </InputGroup>
   );
 }

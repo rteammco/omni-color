@@ -14,6 +14,10 @@ const DEFAULT_GENERATE_COLOR_PALETTE_OPTIONS: GenerateColorPaletteOptions = {
     huePull: 0.1,
     chromaRange: [0.02, 0.25],
   },
+  swatchOptions: {
+    centerOn500: true,
+    extended: false,
+  },
 } as const;
 
 interface Props {
