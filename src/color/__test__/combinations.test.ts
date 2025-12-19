@@ -221,6 +221,83 @@ describe('mixColors', () => {
     expect(lchMix.toHex()).toBe('#dda581');
     expect(oklchMix.toHex()).toBe('#d2a993');
   });
+
+  it('mixes colors subtractively in RGB space using normalized absorption', () => {
+    const cyan = new Color('#00ffff');
+    const yellow = new Color('#ffff00');
+    const result = mixColors([cyan, yellow], { type: 'SUBTRACTIVE', space: 'RGB' });
+
+    expect(result.toHex()).toBe('#00ff00');
+    expect(result.toRGBA().a).toBe(1);
+  });
+
+  it('mixes colors subtractively in Linear RGB space and respects weight ratios', () => {
+    const green = new Color('#00ff00');
+    const blue = new Color('#0000ff');
+    const mixA = mixColors([green, blue], {
+      type: 'SUBTRACTIVE',
+      space: 'LINEAR_RGB',
+      weights: [2, 1],
+    });
+    const mixB = mixColors([green, blue], {
+      type: 'SUBTRACTIVE',
+      space: 'LINEAR_RGB',
+      weights: [200, 100],
+    });
+
+    expect(mixA.toHex()).toBe(mixB.toHex());
+  });
+
+  it('mixes colors subtractively in HSL space while handling hue wrap-around', () => {
+    const h1 = new Color({ h: 350, s: 100, l: 50 });
+    const h2 = new Color({ h: 10, s: 100, l: 50 });
+    const result = mixColors([h1, h2], { type: 'SUBTRACTIVE', space: 'HSL' });
+
+    expect(result.toHex()).toBe('#ff0000');
+    expect(result.toHSL().h).toBe(0);
+  });
+
+  it('mixes colors subtractively in LCH space with chroma-driven hue', () => {
+    const red = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+    const result = mixColors([red, blue], { type: 'SUBTRACTIVE', space: 'LCH' });
+
+    const { h, c } = result.toLCH();
+    expect(c).toBeGreaterThan(0);
+    const distanceFromGreen = Math.min(Math.abs(h - 120), Math.abs(h - 240));
+    expect(h > 270 || h < 90).toBe(true);
+    expect(distanceFromGreen).toBeGreaterThan(60);
+    const { r, g, b } = result.toRGBA();
+    expect(r).toBeGreaterThan(200);
+    expect(g).toBe(0);
+    expect(b).toBeGreaterThan(120);
+  });
+
+  it('mixes colors subtractively in OKLCH space with clamped lightness', () => {
+    const black = new Color('#000000');
+    const white = new Color('#ffffff');
+    const result = mixColors([black, white], { type: 'SUBTRACTIVE', space: 'OKLCH' });
+
+    expect(result.toHex()).toBe('#000000');
+    expect(result.toRGBA().a).toBe(1);
+  });
+
+  it('handles alpha when mixing subtractively', () => {
+    const yellow = new Color({ r: 255, g: 255, b: 0, a: 0.5 });
+    const magenta = new Color({ r: 255, g: 0, b: 255, a: 1 });
+    const result = mixColors([yellow, magenta], { type: 'SUBTRACTIVE', space: 'RGB' });
+
+    expect(result.toHex()).toBe('#ff0000');
+    expect(result.toRGBA().a).toBe(0.75);
+  });
+
+  it('defaults to Linear RGB subtractive mixing when type is subtractive but space omitted', () => {
+    const cyan = new Color('#00ffff');
+    const yellow = new Color('#ffff00');
+    const result = mixColors([cyan, yellow], { type: 'SUBTRACTIVE' });
+
+    expect(result.toHex()).toBe('#00ff00');
+  });
 });
 
 describe('averageColors', () => {
