@@ -393,6 +393,12 @@ describe('Color.brighten', () => {
     expect(labBrightened.toHex8()).toBe('#4cb0af59');
     expect(translucentTeal.toHex8()).toBe('#00808059');
   });
+
+  it('applies a custom LAB step scale when provided', () => {
+    const navy = new Color('#001f3f');
+    expect(navy.brighten({ space: 'LAB', amount: 25, labScale: 10 }).toHex()).toBe('#43567c');
+    expect(navy.toHex()).toBe('#001f3f');
+  });
 });
 
 describe('Color.darken', () => {
@@ -418,6 +424,13 @@ describe('Color.saturate', () => {
     expect(saturatedLch.toHex8()).toBe('#00868859');
     expect(translucentTeal.toHex8()).toBe('#00808059');
   });
+
+  it('supports a configurable LAB-like step scale for LCH saturation', () => {
+    const mutedTeal = new Color('hsl(190, 25%, 55%)');
+    const saturatedLch = mutedTeal.saturate({ space: 'LCH', amount: 40, labScale: 12 });
+    expect(saturatedLch.toHex()).toBe('#00b1dd');
+    expect(mutedTeal.toHex()).toBe('#709fa9');
+  });
 });
 
 describe('Color.desaturate', () => {
@@ -426,6 +439,16 @@ describe('Color.desaturate', () => {
     const desaturated = base.desaturate({ amount: 20 });
     expect(desaturated.toHex()).toBe('#7a99b8');
     expect(base.toHex()).toBe('#6699cc');
+  });
+
+  it('respects LAB-like scaling for LCH desaturation', () => {
+    const magenta = new Color('#ff00ff');
+    const defaultScale = magenta.desaturate({ space: 'LCH', amount: 30 });
+    const customScale = magenta.desaturate({ space: 'LCH', amount: 30, labScale: 8 });
+
+    expect(defaultScale.toHex()).toBe('#d06ccb');
+    expect(customScale.toHex()).toBe('#eb4be8');
+    expect(magenta.toHex()).toBe('#ff00ff');
   });
 });
 

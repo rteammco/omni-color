@@ -366,6 +366,7 @@ new Color('#ff0000').spin(180).toHex(); // '#00ffff'
   - `options` (optional) - ColorBrightnessOptions:
     - `amount` (optional) - a percentage-style amount by which to brighten the color (adjusts the selected space's L channel). Default is `10`.
     - `space` (optional) - the color space to use for the brightness increase calculation: `"HSL" | "LAB" | "LCH"`. Default is `"HSL"`.
+    - `labScale` (optional) - when using `"LAB"` or `"LCH"`, the per-step delta applied to the lightness channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
 new Color('#808080').brighten({ amount: 20 }).toHex(); // '#b3b3b3'
@@ -378,6 +379,7 @@ new Color('#808080').brighten({ amount: 20 }).toHex(); // '#b3b3b3'
   - `options` (optional) - ColorBrightnessOptions:
     - `amount` (optional) - a percentage-style amount by which to darken the color (adjusts the selected space's L channel). Default is `10`.
     - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LAB" | "LCH"`. Default is `"HSL"`.
+    - `labScale` (optional) - when using `"LAB"` or `"LCH"`, the per-step delta applied to the lightness channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
 new Color('#808080').darken({ amount: 20 }).toHex(); // '#4d4d4d'
@@ -390,6 +392,7 @@ new Color('#808080').darken({ amount: 20 }).toHex(); // '#4d4d4d'
   - `options` (optional) - ColorSaturationOptions:
     - `amount` (optional) - a percentage-style amount by which to saturate the color (adjusts the selected space's H channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
     - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LCH"`. Default is `"HSL"`.
+    - `labScale` (optional) - when using `"LCH"`, the per-step delta applied to the chroma channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
 new Color('hsl(200, 40%, 50%)').saturate({ amount: 20 }).toHSLString(); // 'hsl(200, 60%, 50%)'
@@ -402,6 +405,7 @@ new Color('hsl(200, 40%, 50%)').saturate({ amount: 20 }).toHSLString(); // 'hsl(
   - `options` (optional) - ColorSaturationOptions:
     - `amount` (optional) - a percentage-style amount by which to desaturate the color (adjusts the selected space's H channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
     - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LCH"`. Default is `"HSL"`.
+    - `labScale` (optional) - when using `"LCH"`, the per-step delta applied to the chroma channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
 new Color('hsl(200, 40%, 50%)').desaturate({ amount: 20 }).toHSLString(); // 'hsl(200, 20%, 50%)'
