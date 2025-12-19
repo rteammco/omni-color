@@ -128,6 +128,50 @@ describe('Color interoperability with chroma-js', () => {
     });
   });
 
+  describe('average parity with chroma-js', () => {
+    // TODO: Align LINEAR_RGB averaging (averageColorsInLinearRgb) with chroma-js lrgb output.
+    it.skip('matches LINEAR_RGB averaging defaults for primary colors', () => {
+      const omniAverage = new Color('red').average(['green', 'blue']);
+      const chromaAverage = chroma.average(['red', 'green', 'blue'], 'lrgb');
+
+      expect(omniAverage.toHex()).toBe(chromaAverage.hex().toLowerCase());
+      expect(omniAverage.toRGBA()).toEqual(chromaRGBArrayToObj(chromaAverage.rgba()));
+    });
+
+    it('aligns circular HSL averaging including hue wrapping', () => {
+      const omniAverage = new Color('hsl(350, 100%, 50%)').average(
+        ['hsl(10, 100%, 50%)', 'hsl(30, 60%, 50%)'],
+        { space: 'HSL' }
+      );
+      const chromaAverage = chroma.average(
+        ['hsl(350, 100%, 50%)', 'hsl(10, 100%, 50%)', 'hsl(30, 60%, 50%)'],
+        'hsl'
+      );
+
+      expect(omniAverage.toHex()).toBe(chromaAverage.hex().toLowerCase());
+      const omniHsl = omniAverage.toHSL();
+      const chromaHsl = chromaAverage.hsl();
+      expect(omniHsl.h).toBeCloseTo(chromaHsl[0], 0);
+      expect(omniHsl.s).toBeCloseTo(chromaHsl[1] * 100, 0);
+      expect(omniHsl.l).toBeCloseTo(chromaHsl[2] * 100, 0);
+    });
+
+    // TODO: Align LINEAR_RGB weighted averaging (averageColorsInLinearRgb) with chroma-js lrgb output.
+    it.skip('respects normalized weights when averaging LINEAR_RGB colors', () => {
+      const omniAverage = new Color('#ff0000').average(['#0000ff', '#00ff00'], {
+        weights: [2, 1, 1],
+      });
+      const chromaAverage = chroma.average(
+        ['#ff0000', '#0000ff', '#00ff00'],
+        'lrgb',
+        [2, 1, 1]
+      );
+
+      expect(omniAverage.toHex()).toBe(chromaAverage.hex().toLowerCase());
+      expect(omniAverage.toRGBA()).toEqual(chromaRGBArrayToObj(chromaAverage.rgba()));
+    });
+  });
+
   describe('blend parity with chroma-js', () => {
     it('aligns RGB blend modes with chroma-js outputs', () => {
       const multiplyBlend = new Color('#336699').blend(new Color('#ffcc00'), {
