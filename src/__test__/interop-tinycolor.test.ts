@@ -253,6 +253,84 @@ describe('Color interoperability with tinycolor2', () => {
     });
   });
 
+  describe('keeps YIQ darkness checks aligned with tinycolor when requested', () => {
+    it('matches tinycolor darkness and lightness classifications for YIQ inputs', () => {
+      const pureBlack = '#000';
+      expect(new Color(pureBlack).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(pureBlack).isDark()
+      );
+      expect(new Color(pureBlack).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(pureBlack).isLight()
+      );
+
+      const pureWhite = '#fff';
+      expect(new Color(pureWhite).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(pureWhite).isDark()
+      );
+      expect(new Color(pureWhite).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(pureWhite).isLight()
+      );
+
+      const middleGray = '#7f7f7f';
+      expect(new Color(middleGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(middleGray).isDark()
+      );
+      expect(new Color(middleGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(middleGray).isLight()
+      );
+
+      const darkerGray = '#808080';
+      expect(new Color(darkerGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(darkerGray).isDark()
+      );
+      expect(new Color(darkerGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(darkerGray).isLight()
+      );
+
+      const saturatedRed = '#ff0000';
+      expect(new Color(saturatedRed).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(saturatedRed).isDark()
+      );
+      expect(new Color(saturatedRed).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(saturatedRed).isLight()
+      );
+
+      const saturatedBlue = '#0000ff';
+      expect(new Color(saturatedBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(saturatedBlue).isDark()
+      );
+      expect(new Color(saturatedBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(saturatedBlue).isLight()
+      );
+
+      const saturatedGreen = '#00ff00';
+      expect(new Color(saturatedGreen).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(saturatedGreen).isDark()
+      );
+      expect(new Color(saturatedGreen).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(saturatedGreen).isLight()
+      );
+
+      const pastelBlue = '#a0c8ff';
+      expect(new Color(pastelBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(pastelBlue).isDark()
+      );
+      expect(new Color(pastelBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        !tinycolor(pastelBlue).isLight()
+      );
+    });
+
+    it('documents WCAG default divergence from tinycolor on borderline gray', () => {
+      const borderlineGray = '#7f7f7f';
+
+      expect(new Color(borderlineGray).isDark()).toBe(false);
+      expect(tinycolor(borderlineGray).isDark()).toBe(true);
+      expect(new Color(borderlineGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
+        tinycolor(borderlineGray).isDark()
+      );
+    });
+  });
+
   describe('matches tinycolor mixing defaults in RGB space', () => {
     it('aligns 50/50 mixes with tinycolor defaults', () => {
       const base = new Color('#ff0000');
