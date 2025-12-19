@@ -332,7 +332,7 @@ describe('averageColors', () => {
       space: 'HSL',
       weights: [1, 2],
     });
-    expect(result.toHex()).toBe('#80ff00');
+    expect(result.toHex()).toBe('#80c936');
   });
 
   it('defaults to Linear RGB averaging', () => {
@@ -374,10 +374,11 @@ describe('averageColors', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
     const result = averageColors([h1, h2], { space: 'HSL' });
-    expect(result.toHex()).toBe('#ff0000');
+    expect(result.toHex()).toBe('#fc0303');
+    expect(result.toHSL().h).toBe(0);
   });
 
-  it('returns a deterministic hue when opposing hues cancel out in HSL space', () => {
+  it('returns a neutral result when opposing saturated hues cancel out in HSL space', () => {
     const h1 = new Color({ h: 0, s: 100, l: 50 });
     const h2 = new Color({ h: 180, s: 100, l: 50 });
 
@@ -386,7 +387,21 @@ describe('averageColors', () => {
 
     expect(Number.isNaN(hsl.h)).toBe(false);
     expect(hsl.h).toBe(0);
-    expect(result.toHex()).toBe('#ff0000');
+    expect(hsl.s).toBe(0);
+    expect(result.toHex()).toBe('#808080');
+  });
+
+  it('minimizes saturation when averaging opposing low-saturation hues in HSL space', () => {
+    const warmGray = new Color({ h: 30, s: 40, l: 60 });
+    const coolGray = new Color({ h: 210, s: 40, l: 40 });
+
+    const result = averageColors([warmGray, coolGray], { space: 'HSL' });
+    const hsl = result.toHSL();
+
+    expect(hsl.h).toBe(0);
+    expect(hsl.s).toBeLessThanOrEqual(1);
+    expect(hsl.l).toBe(50);
+    expect(result.toHex()).toBe('#808080');
   });
 
   it('averages LCH hues correctly across 360 boundary', () => {
