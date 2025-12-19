@@ -22,6 +22,25 @@ function expectSimilarRGBAValues(omniValues: ColorRGBA, chromaValues: number[], 
   expect(omniValues.a ?? 1).toBeCloseTo(chromaValues[3] ?? 1, 2);
 }
 
+function compositeRgba(foreground: ColorRGBA, background: ColorRGBA): ColorRGBA {
+  const compositeAlpha = foreground.a + background.a * (1 - foreground.a);
+  if (compositeAlpha === 0) {
+    return { ...background, a: 0 };
+  }
+
+  const r =
+    (foreground.r * foreground.a + background.r * background.a * (1 - foreground.a)) /
+    compositeAlpha;
+  const g =
+    (foreground.g * foreground.a + background.g * background.a * (1 - foreground.a)) /
+    compositeAlpha;
+  const b =
+    (foreground.b * foreground.a + background.b * background.a * (1 - foreground.a)) /
+    compositeAlpha;
+
+  return { r, g, b, a: compositeAlpha };
+}
+
 describe('Color interoperability with chroma-js', () => {
   describe('parses and normalizes inputs the same way', () => {
     it('matches chroma-js hex and rgb outputs across formats', () => {
@@ -188,6 +207,116 @@ describe('Color interoperability with chroma-js', () => {
       wrappedOmniGradient.forEach((color, index) => {
         expectSimilarRGBAValues(color.toRGBA(), chroma(wrappedChromaGradient[index]).rgba(), 1);
       });
+    });
+  });
+
+  describe('readability and contrast interoperability', () => {
+    it('matches chroma-js contrast ratios for opaque colors', () => {
+      const foreground = new Color('#1a1a1a');
+      const background = new Color('#fafafa');
+
+      const omniContrast = foreground.getContrastRatio(background);
+      const chromaContrast = chroma.contrast('#1a1a1a', '#fafafa');
+
+      expect(omniContrast).toBeCloseTo(chromaContrast, 2);
+    });
+
+    it('composites transparent inputs before calculating contrast', () => {
+      const foreground = new Color('rgba(0, 0, 0, 0.5)');
+      const background = new Color('rgba(255, 255, 255, 0.6)');
+
+      const omniContrast = foreground.getContrastRatio(background);
+      const chromaDirectContrast = chroma.contrast(
+        'rgba(0, 0, 0, 0.5)',
+        'rgba(255, 255, 255, 0.6)'
+      );
+
+      const compositeForeground = compositeRgba(foreground.toRGBA(), background.toRGBA());
+      const compositeBackground = compositeRgba(background.toRGBA(), foreground.toRGBA());
+      const chromaCompositedContrast = chroma.contrast(
+        chroma.rgb(compositeForeground.r, compositeForeground.g, compositeForeground.b),
+        chroma.rgb(compositeBackground.r, compositeBackground.g, compositeBackground.b)
+      );
+
+      expect(omniContrast).toBeCloseTo(chromaCompositedContrast, 2);
+      expect(omniContrast).not.toBeCloseTo(chromaDirectContrast, 2);
+    });
+
+    it('selects the most readable text and background colors by chroma contrast', () => {
+      const background = new Color('#102542');
+      const textCandidates = ['#f8fafc', '#0f172a', '#f97316', '#16a34a'];
+
+      let bestTextCandidate = textCandidates[0];
+      let bestTextContrast = chroma.contrast(textCandidates[0], background.toHex());
+      textCandidates.slice(1).forEach((candidate) => {
+        const contrast = chroma.contrast(candidate, background.toHex());
+        if (contrast > bestTextContrast) {
+          bestTextContrast = contrast;
+          bestTextCandidate = candidate;
+        }
+      });
+
+      const mostReadableTextColor = background.getMostReadableTextColor(textCandidates).toHex();
+      expect(mostReadableTextColor).toBe(new Color(bestTextCandidate).toHex());
+
+      const textColor = new Color('#0b1221');
+      const backgroundCandidates = ['#f8fafc', '#111827', '#334155', '#e11d48'];
+
+      let bestBackgroundCandidate = backgroundCandidates[0];
+      let bestBackgroundContrast = chroma.contrast(textColor.toHex(), backgroundCandidates[0]);
+      backgroundCandidates.slice(1).forEach((candidate) => {
+        const contrast = chroma.contrast(textColor.toHex(), candidate);
+        if (contrast > bestBackgroundContrast) {
+          bestBackgroundContrast = contrast;
+          bestBackgroundCandidate = candidate;
+        }
+      });
+
+      const mostReadableBackgroundColor = textColor
+        .getBestBackgroundColor(backgroundCandidates)
+        .toHex();
+      expect(mostReadableBackgroundColor).toBe(new Color(bestBackgroundCandidate).toHex());
+    });
+
+    it('applies WCAG thresholds consistently across AA/AAA and text sizes', () => {
+      const background = new Color('#ffffff');
+      const midGray = new Color('#7a7a7a');
+      const darkGray = new Color('#555555');
+
+      const midGrayContrast = chroma.contrast(midGray.toHex(), background.toHex());
+      const darkGrayContrast = chroma.contrast(darkGray.toHex(), background.toHex());
+
+      const aaSmallReport = midGray.getTextReadabilityReport(background, {
+        level: 'AA',
+        size: 'SMALL',
+      });
+      expect(aaSmallReport.contrastRatio).toBeCloseTo(midGrayContrast, 2);
+      expect(aaSmallReport.requiredContrast).toBe(4.5);
+      expect(aaSmallReport.isReadable).toBe(false);
+
+      const aaLargeReport = midGray.getTextReadabilityReport(background, {
+        level: 'AA',
+        size: 'LARGE',
+      });
+      expect(aaLargeReport.contrastRatio).toBeCloseTo(midGrayContrast, 2);
+      expect(aaLargeReport.requiredContrast).toBe(3);
+      expect(aaLargeReport.isReadable).toBe(true);
+
+      const aaaSmallReport = darkGray.getTextReadabilityReport(background, {
+        level: 'AAA',
+        size: 'SMALL',
+      });
+      expect(aaaSmallReport.contrastRatio).toBeCloseTo(darkGrayContrast, 2);
+      expect(aaaSmallReport.requiredContrast).toBe(7);
+      expect(aaaSmallReport.isReadable).toBe(true);
+
+      const aaaLargeReport = midGray.getTextReadabilityReport(background, {
+        level: 'AAA',
+        size: 'LARGE',
+      });
+      expect(aaaLargeReport.contrastRatio).toBeCloseTo(midGrayContrast, 2);
+      expect(aaaLargeReport.requiredContrast).toBe(4.5);
+      expect(aaaLargeReport.isReadable).toBe(false);
     });
   });
 
