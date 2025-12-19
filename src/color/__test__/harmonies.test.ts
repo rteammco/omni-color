@@ -85,6 +85,13 @@ describe('getComplementaryColors', () => {
     }).map((c) => c.toHex());
     expect(ignore).toEqual(['#000000', '#000000']);
   });
+
+  it('preserves alpha when creating complements', () => {
+    const [base, complement] = getComplementaryColors(new Color('rgba(255, 0, 0, 0.4)'));
+    expect(base.toRGBA().a).toBeCloseTo(0.4, 5);
+    expect(complement.toRGBA().a).toBeCloseTo(0.4, 5);
+    expect(complement.toHex8()).toBe('#00ffff66');
+  });
 });
 
 describe('getSplitComplementaryColors', () => {
@@ -790,6 +797,18 @@ describe('getMonochromaticHarmonyColors', () => {
     expect(darkGray3.toHex()).toBe('#000000');
     expect(darkGray4.toHex()).toBe('#3d2929');
     expect(darkGray5.toHex()).toBe('#333333');
+  });
+
+  it('keeps alpha across monochromatic variants', () => {
+    const [base, lighter, darker, saturated, desaturated] = getMonochromaticHarmonyColors(
+      new Color('rgba(20, 40, 60, 0.25)')
+    );
+
+    expect(base.toRGBA().a).toBeCloseTo(0.25, 5);
+    expect(lighter.toRGBA().a).toBeCloseTo(0.25, 5);
+    expect(darker.toRGBA().a).toBeCloseTo(0.25, 5);
+    expect(saturated.toRGBA().a).toBeCloseTo(0.25, 5);
+    expect(desaturated.toRGBA().a).toBeCloseTo(0.25, 5);
   });
 });
 

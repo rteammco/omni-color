@@ -68,10 +68,10 @@ function normalizeLCH(lch: ColorLCH): ColorLCH {
 }
 
 export function spinColorHue(color: Color, degrees: number): Color {
-  const hsl = color.toHSL();
-  const rotatedHue = ((hsl.h + degrees) % 360 + 360) % 360;
-  hsl.h = rotatedHue;
-  return new Color(hsl);
+  const hsla = color.toHSLA();
+  const rotatedHue = ((hsla.h + degrees) % 360 + 360) % 360;
+  hsla.h = rotatedHue;
+  return new Color(hsla);
 }
 
 export function brightenColor(color: Color, options?: ColorBrightnessOptions): Color {

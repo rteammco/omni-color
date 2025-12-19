@@ -616,20 +616,23 @@ function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonl
   let y = 0;
   let saturation = 0;
   let lightness = 0;
+  let alpha = 0;
   colors.forEach((color, i) => {
-    const val: ColorHSL = color.toHSL();
+    const val: ColorHSLA = color.toHSLA();
     const weight = normalizedWeights[i];
     const rad = (val.h * Math.PI) / 180;
     x += Math.cos(rad) * weight;
     y += Math.sin(rad) * weight;
     saturation += val.s * weight;
     lightness += val.l * weight;
+    alpha += (val.a ?? 1) * weight;
   });
   const hue = (Math.atan2(y, x) * 180) / Math.PI;
   return new Color({
     h: Math.round((hue + 360) % 360),
     s: Math.round(saturation),
     l: Math.round(lightness),
+    a: +alpha.toFixed(3),
   });
 }
 
@@ -648,7 +651,12 @@ function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonl
     y += Math.sin(rad) * weight;
   });
   const hue = (Math.atan2(y, x) * 180) / Math.PI;
-  return new Color({ l: lightness, c: chroma, h: (hue + 360) % 360 });
+  const alpha = mixAlphaChannel(colors, normalizedWeights);
+  return new Color({
+    l: lightness,
+    c: chroma,
+    h: (hue + 360) % 360,
+  }).setAlpha(alpha);
 }
 
 function averageColorsInOklch(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
@@ -666,7 +674,12 @@ function averageColorsInOklch(colors: readonly Color[], normalizedWeights: reado
     y += Math.sin(rad) * weight;
   });
   const hue = (Math.atan2(y, x) * 180) / Math.PI;
-  return new Color({ l: lightness, c: chroma, h: (hue + 360) % 360 });
+  const alpha = mixAlphaChannel(colors, normalizedWeights);
+  return new Color({
+    l: lightness,
+    c: chroma,
+    h: (hue + 360) % 360,
+  }).setAlpha(alpha);
 }
 
 function averageColorsInLinearRgb(

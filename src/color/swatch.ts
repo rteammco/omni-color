@@ -131,7 +131,7 @@ function getMainStop(baseColor: Color, shouldCenterOn500: boolean): BasicColorSw
     return 500;
   }
 
-  const { l } = baseColor.toHSL();
+  const { l } = baseColor.toHSLA();
   const stopIndex = Math.round((1 - l / 100) * 8);
   const stop = (100 + stopIndex * 100) as BasicColorSwatchStop;
 
@@ -165,7 +165,7 @@ function createSwatch<Stop extends number>({
   stops: readonly Stop[];
   type: ColorSwatch['type'];
 }): ColorSwatch {
-  const { h: baseH, s: baseS, l: baseL } = baseColor.toHSL();
+  const { h: baseH, s: baseS, l: baseL, a: baseA } = baseColor.toHSLA();
 
   const swatchStops = stops.reduce<Record<number, Color>>((acc, stop) => {
     const delta = getSwatchStopDelta(stop, mainStop, deltas);
@@ -177,6 +177,7 @@ function createSwatch<Stop extends number>({
             h: baseH,
             s: getAdjustedSaturation(baseS, delta.saturationDelta),
             l: clampValue(baseL + delta.lightnessDelta, 0, 100),
+            a: baseA,
           });
 
     return acc;
