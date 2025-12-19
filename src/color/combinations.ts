@@ -651,19 +651,19 @@ function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonl
 
 function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
   let lightness = 0;
-  let chroma = 0;
-  let x = 0;
-  let y = 0;
+  let chromaX = 0;
+  let chromaY = 0;
   colors.forEach((color, i) => {
     const val: ColorLCH = color.toLCH();
     const weight = normalizedWeights[i];
     lightness += val.l * weight;
-    chroma += val.c * weight;
+    const weightedChroma = val.c * weight;
     const rad = (val.h * Math.PI) / 180;
-    x += Math.cos(rad) * weight;
-    y += Math.sin(rad) * weight;
+    chromaX += Math.cos(rad) * weightedChroma;
+    chromaY += Math.sin(rad) * weightedChroma;
   });
-  const hue = resolveAveragedHue(x, y);
+  const chroma = Math.hypot(chromaX, chromaY);
+  const hue = resolveAveragedHue(chromaX, chromaY);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
   return new Color({
     l: lightness,
@@ -674,19 +674,19 @@ function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonl
 
 function averageColorsInOklch(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
   let lightness = 0;
-  let chroma = 0;
-  let x = 0;
-  let y = 0;
+  let chromaX = 0;
+  let chromaY = 0;
   colors.forEach((color, i) => {
     const val: ColorOKLCH = color.toOKLCH();
     const weight = normalizedWeights[i];
     lightness += val.l * weight;
-    chroma += val.c * weight;
+    const weightedChroma = val.c * weight;
     const rad = (val.h * Math.PI) / 180;
-    x += Math.cos(rad) * weight;
-    y += Math.sin(rad) * weight;
+    chromaX += Math.cos(rad) * weightedChroma;
+    chromaY += Math.sin(rad) * weightedChroma;
   });
-  const hue = resolveAveragedHue(x, y);
+  const chroma = Math.hypot(chromaX, chromaY);
+  const hue = resolveAveragedHue(chromaX, chromaY);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
   return new Color({
     l: lightness,
