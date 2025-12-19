@@ -182,13 +182,16 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('lch(53.233%,104.576,40)')?.toHex()).toBe('#ff0000');
   });
 
+  it('clamps out-of-range channel values for supported CSS formats', () => {
+    expect(parseCSSColorFormatString('rgb(300,0,0)')?.toHex()).toBe('#ff0000');
+    expect(parseCSSColorFormatString('rgb(-1,0,0)')?.toHex()).toBe('#000000');
+    expect(parseCSSColorFormatString('rgba(0,0,0,2)')?.toHex8()).toBe('#000000ff');
+    expect(parseCSSColorFormatString('rgba(0,0,0,-0.1)')?.toHex8()).toBe('#00000000');
+    expect(parseCSSColorFormatString('hsl(400,50%,50%)')?.toHex()).toBe('#bf9540');
+    expect(parseCSSColorFormatString('hsla(0,0%,0%,200%)')?.toHex8()).toBe('#000000ff');
+  });
+
   it('returns null on invalid inputs', () => {
-    expect(parseCSSColorFormatString('rgb(300,0,0)')).toBeNull();
-    expect(parseCSSColorFormatString('rgb(-1,0,0)')).toBeNull();
-    expect(parseCSSColorFormatString('rgba(0,0,0,2)')).toBeNull();
-    expect(parseCSSColorFormatString('rgba(0,0,0,-0.1)')).toBeNull();
-    expect(parseCSSColorFormatString('hsl(400,50%,50%)')).toBeNull();
-    expect(parseCSSColorFormatString('hsla(0,0%,0%,200%)')).toBeNull();
     expect(parseCSSColorFormatString('hsva(0,0%,0%)')).toBeNull();
     expect(parseCSSColorFormatString('cmyk(0%,0%,0%)')).toBeNull();
     expect(parseCSSColorFormatString('cmyk(0%,0%,0%,101%)')).toBeNull();

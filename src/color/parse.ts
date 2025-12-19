@@ -1,3 +1,4 @@
+import { clampValue } from '../utils';
 import { Color } from './color';
 import type { ColorFormat } from './formats';
 
@@ -83,6 +84,15 @@ function parseAlphaValue(value: string): number {
   return +normalized.toFixed(3);
 }
 
+function clampAlpha(value: number): number {
+  return clampValue(value, 0, 1);
+}
+
+function normalizeHue(value: number): number {
+  const normalized = value % 360;
+  return normalized < 0 ? normalized + 360 : normalized;
+}
+
 function createColorOrNull(format: ColorFormat): Color | null {
   try {
     return new Color(format);
@@ -105,13 +115,15 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
 
-    const [r, g, b] = rgbParams.channels.map((value) => Math.round(parseRGBNumber(value)));
+    const [r, g, b] = rgbParams.channels
+      .map((value) => Math.round(parseRGBNumber(value)))
+      .map((value) => clampValue(value, 0, 255));
     if ([r, g, b].some((value) => isNaN(value))) {
       return null;
     }
 
     if (rgbParams.alpha !== undefined) {
-      const a = parseAlphaValue(rgbParams.alpha);
+      const a = clampAlpha(parseAlphaValue(rgbParams.alpha));
       if (isNaN(a)) {
         return null;
       }
@@ -132,8 +144,10 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
 
-    const [r, g, b] = rgbaParams.channels.map((value) => Math.round(parseRGBNumber(value)));
-    const a = parseAlphaValue(rgbaParams.alpha);
+    const [r, g, b] = rgbaParams.channels
+      .map((value) => Math.round(parseRGBNumber(value)))
+      .map((value) => clampValue(value, 0, 255));
+    const a = clampAlpha(parseAlphaValue(rgbaParams.alpha));
     if ([r, g, b, a].some((value) => isNaN(value))) {
       return null;
     }
@@ -152,15 +166,15 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, l] = [
-      Math.round(parseFloat(hslParams.channels[0])),
-      Math.round(parseNumberOrPercent(hslParams.channels[1], 100)),
-      Math.round(parseNumberOrPercent(hslParams.channels[2], 100)),
+      normalizeHue(Math.round(parseFloat(hslParams.channels[0]))),
+      clampValue(Math.round(parseNumberOrPercent(hslParams.channels[1], 100)), 0, 100),
+      clampValue(Math.round(parseNumberOrPercent(hslParams.channels[2], 100)), 0, 100),
     ];
     if ([h, s, l].some((value) => isNaN(value))) {
       return null;
     }
     if (hslParams.alpha !== undefined) {
-      const a = parseAlphaValue(hslParams.alpha);
+      const a = clampAlpha(parseAlphaValue(hslParams.alpha));
       if (isNaN(a)) {
         return null;
       }
@@ -181,11 +195,11 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, l] = [
-      Math.round(parseFloat(hslaParams.channels[0])),
-      Math.round(parseNumberOrPercent(hslaParams.channels[1], 100)),
-      Math.round(parseNumberOrPercent(hslaParams.channels[2], 100)),
+      normalizeHue(Math.round(parseFloat(hslaParams.channels[0]))),
+      clampValue(Math.round(parseNumberOrPercent(hslaParams.channels[1], 100)), 0, 100),
+      clampValue(Math.round(parseNumberOrPercent(hslaParams.channels[2], 100)), 0, 100),
     ];
-    const a = parseAlphaValue(hslaParams.alpha);
+    const a = clampAlpha(parseAlphaValue(hslaParams.alpha));
     if ([h, s, l, a].some((value) => isNaN(value))) {
       return null;
     }
@@ -204,15 +218,15 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, v] = [
-      Math.round(parseFloat(hsvParams.channels[0])),
-      Math.round(parseNumberOrPercent(hsvParams.channels[1], 100)),
-      Math.round(parseNumberOrPercent(hsvParams.channels[2], 100)),
+      normalizeHue(Math.round(parseFloat(hsvParams.channels[0]))),
+      clampValue(Math.round(parseNumberOrPercent(hsvParams.channels[1], 100)), 0, 100),
+      clampValue(Math.round(parseNumberOrPercent(hsvParams.channels[2], 100)), 0, 100),
     ];
     if ([h, s, v].some((value) => isNaN(value))) {
       return null;
     }
     if (hsvParams.alpha !== undefined) {
-      const a = parseAlphaValue(hsvParams.alpha);
+      const a = clampAlpha(parseAlphaValue(hsvParams.alpha));
       if (isNaN(a)) {
         return null;
       }
@@ -233,11 +247,11 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, v] = [
-      Math.round(parseFloat(hsvaParams.channels[0])),
-      Math.round(parseNumberOrPercent(hsvaParams.channels[1], 100)),
-      Math.round(parseNumberOrPercent(hsvaParams.channels[2], 100)),
+      normalizeHue(Math.round(parseFloat(hsvaParams.channels[0]))),
+      clampValue(Math.round(parseNumberOrPercent(hsvaParams.channels[1], 100)), 0, 100),
+      clampValue(Math.round(parseNumberOrPercent(hsvaParams.channels[2], 100)), 0, 100),
     ];
-    const a = parseAlphaValue(hsvaParams.alpha);
+    const a = clampAlpha(parseAlphaValue(hsvaParams.alpha));
     if ([h, s, v, a].some((value) => isNaN(value))) {
       return null;
     }

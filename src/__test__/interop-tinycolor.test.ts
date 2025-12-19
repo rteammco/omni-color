@@ -53,6 +53,46 @@ describe('Color interoperability with tinycolor2', () => {
       expect(hslString.toHex()).toBe(hslTiny.toHexString().toLowerCase());
       expect(hslString.toRGB()).toEqual(tinycolorRGBToObj(hslTiny.toRgb()));
     });
+
+    it('matches tinycolor outputs for shorthand, uppercase, percent, and clamped inputs', () => {
+      const shortHex = new Color('#abc');
+      const shortHexTiny = tinycolor('#abc');
+      expect(shortHex.toHex()).toBe(shortHexTiny.toHexString().toLowerCase());
+      expect(shortHex.toRGBA()).toMatchObject(tinycolorRGBToObj(shortHexTiny.toRgb()));
+
+      const uppercaseHex = new Color('#ABCDEF');
+      const uppercaseHexTiny = tinycolor('#ABCDEF');
+      expect(uppercaseHex.toHex()).toBe(uppercaseHexTiny.toHexString().toLowerCase());
+      expect(uppercaseHex.toRGBA()).toMatchObject(tinycolorRGBToObj(uppercaseHexTiny.toRgb()));
+
+      // CSS percentages clamp to 0–100%, while tinycolor wraps them.
+      const rgbPercent = new Color('rgb(120%, 50%, -10%)');
+      const rgbPercentTiny = tinycolor('rgb(120%, 50%, -10%)');
+      expect(rgbPercent.toHex()).toBe('#ff8000');
+      expect(rgbPercentTiny.toHexString().toLowerCase()).toBe('#338000');
+      expect(rgbPercent.toRGBA()).toEqual({ r: 255, g: 128, b: 0, a: 1 });
+      expect(rgbPercent.toRGBA()).not.toEqual(tinycolorRGBToObj(rgbPercentTiny.toRgb()));
+
+      const rgbaPercent = new Color('rgba(110%, 10%, 50%, 120%)');
+      const rgbaPercentTiny = tinycolor('rgba(110%, 10%, 50%, 120%)');
+      expect(rgbaPercent.toHex8()).toBe('#ff1a80ff');
+      expect(rgbaPercentTiny.toHex8String().toLowerCase()).toBe('#1a1a80ff');
+      expect(rgbaPercent.toRGBA()).toEqual({ r: 255, g: 26, b: 128, a: 1 });
+      expect(rgbaPercent.toRGBA()).not.toEqual(tinycolorRGBToObj(rgbaPercentTiny.toRgb()));
+
+      const hslClamped = new Color('hsl(370, 110%, -5%)');
+      const hslClampedTiny = tinycolor('hsl(370, 110%, -5%)');
+      expect(hslClamped.toHex()).toBe(hslClampedTiny.toHexString().toLowerCase());
+      expect(hslClamped.toRGBA()).toMatchObject(tinycolorRGBToObj(hslClampedTiny.toRgb()));
+
+      // Hue is normalized and saturation/alpha are clamped to CSS limits.
+      const hslaClamped = new Color('hsla(-15, 105%, 55%, 1.2)');
+      const hslaClampedTiny = tinycolor('hsla(-15, 105%, 55%, 1.2)');
+      expect(hslaClamped.toHex8()).toBe('#ff1a53ff');
+      expect(hslaClampedTiny.toHex8String().toLowerCase()).toBe('#ff1a1aff');
+      expect(hslaClamped.toRGBA()).toEqual({ r: 255, g: 26, b: 83, a: 1 });
+      expect(hslaClamped.toRGBA()).not.toEqual(tinycolorRGBToObj(hslaClampedTiny.toRgb()));
+    });
   });
 
   describe('handles alpha channels consistently', () => {
