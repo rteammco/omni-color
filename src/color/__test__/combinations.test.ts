@@ -377,6 +377,18 @@ describe('averageColors', () => {
     expect(result.toHex()).toBe('#ff0000');
   });
 
+  it('returns a deterministic hue when opposing hues cancel out in HSL space', () => {
+    const h1 = new Color({ h: 0, s: 100, l: 50 });
+    const h2 = new Color({ h: 180, s: 100, l: 50 });
+
+    const result = averageColors([h1, h2], { space: 'HSL' });
+    const hsl = result.toHSL();
+
+    expect(Number.isNaN(hsl.h)).toBe(false);
+    expect(hsl.h).toBe(0);
+    expect(result.toHex()).toBe('#ff0000');
+  });
+
   it('averages LCH hues correctly across 360 boundary', () => {
     const h1 = new Color({ l: 50, c: 50, h: 350 });
     const h2 = new Color({ l: 50, c: 50, h: 10 });
@@ -386,6 +398,17 @@ describe('averageColors', () => {
     expect(distTo0).toBeLessThan(10);
   });
 
+  it('returns a deterministic hue when opposing hues cancel out in LCH space', () => {
+    const h1 = new Color({ l: 60, c: 40, h: 0 });
+    const h2 = new Color({ l: 60, c: 40, h: 180 });
+
+    const result = averageColors([h1, h2], { space: 'LCH' });
+    const lch = result.toLCH();
+
+    expect(Number.isNaN(lch.h)).toBe(false);
+    expect(Math.min(lch.h, 360 - lch.h)).toBeLessThan(1);
+  });
+
   it('averages OKLCH hues correctly across 360 boundary', () => {
     const h1 = new Color({ l: 0.5, c: 0.1, h: 350 });
     const h2 = new Color({ l: 0.5, c: 0.1, h: 10 });
@@ -393,6 +416,17 @@ describe('averageColors', () => {
     const h = result.toOKLCH().h;
     const distTo0 = Math.min(h, 360 - h);
     expect(distTo0).toBeLessThan(10);
+  });
+
+  it('returns a deterministic hue when opposing hues cancel out in OKLCH space', () => {
+    const h1 = new Color({ l: 0.6, c: 0.05, h: 0 });
+    const h2 = new Color({ l: 0.6, c: 0.05, h: 180 });
+
+    const result = averageColors([h1, h2], { space: 'OKLCH' });
+    const oklch = result.toOKLCH();
+
+    expect(Number.isNaN(oklch.h)).toBe(false);
+    expect(Math.min(oklch.h, 360 - oklch.h)).toBeLessThan(1);
   });
 
   it('preserves alpha when averaging in HSL, LCH, and OKLCH spaces', () => {
