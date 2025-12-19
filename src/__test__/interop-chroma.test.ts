@@ -373,7 +373,7 @@ describe('Color interoperability with chroma-js', () => {
   });
 
   describe('average parity with chroma-js', () => {
-    it('aligns circular HSL averaging including hue wrapping', () => {
+    it('keeps circular HSL averaging close to chroma-js while weighting saturation', () => {
       const omniAverage = new Color('hsl(350, 100%, 50%)').average(
         ['hsl(10, 100%, 50%)', 'hsl(30, 60%, 50%)'],
         { space: 'HSL' }
