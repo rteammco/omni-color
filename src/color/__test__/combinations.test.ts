@@ -408,6 +408,26 @@ describe('averageColors', () => {
     expect(oklchAverage.toRGBA().a).toBeCloseTo(0.5, 5);
   });
 
+  it('averages alpha across all spaces using normalized weights', () => {
+    const lowAlphaRed = new Color({ r: 255, g: 0, b: 0, a: 0.25 });
+    const opaqueBlue = new Color({ r: 0, g: 0, b: 255, a: 1 });
+
+    const weights = [1, 3];
+    const expectedAlpha = 0.25 * 0.25 + 1 * 0.75;
+
+    const rgb = averageColors([lowAlphaRed, opaqueBlue], { space: 'RGB', weights });
+    const linearRgb = averageColors([lowAlphaRed, opaqueBlue], { space: 'LINEAR_RGB', weights });
+    const hsl = averageColors([lowAlphaRed, opaqueBlue], { space: 'HSL', weights });
+    const lch = averageColors([lowAlphaRed, opaqueBlue], { space: 'LCH', weights });
+    const oklch = averageColors([lowAlphaRed, opaqueBlue], { space: 'OKLCH', weights });
+
+    expect(rgb.toRGBA().a).toBeCloseTo(expectedAlpha, 3);
+    expect(linearRgb.toRGBA().a).toBeCloseTo(expectedAlpha, 3);
+    expect(hsl.toRGBA().a).toBeCloseTo(expectedAlpha, 3);
+    expect(lch.toRGBA().a).toBeCloseTo(expectedAlpha, 3);
+    expect(oklch.toRGBA().a).toBeCloseTo(expectedAlpha, 3);
+  });
+
   it('defaults to equal weights when weights length mismatches', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');

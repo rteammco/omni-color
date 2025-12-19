@@ -484,6 +484,7 @@ new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 }
   - `options` (optional) - `AverageColorsOptions`:
     - `space` - the averaging space: `"LINEAR_RGB" | "RGB" | "HSL" | "LCH" | "OKLCH"`. Defaults to `"LINEAR_RGB"`.
     - `weights` - per-color weights for how much each color is weighted during averaging. Number of weights must match the number of colors being averaged (i.e. `others.length + 1`). Colors are weighted equally by default.
+    - alpha channels are averaged using the same normalized weights provided for channel averaging.
 
 ```ts
 const base = new Color('#ff0000');
