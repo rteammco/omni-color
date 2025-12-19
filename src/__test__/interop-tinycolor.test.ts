@@ -75,6 +75,51 @@ function expectComponentArraysClose(
   });
 }
 
+function getHexesFromColors(colors: Color[]): string[] {
+  return colors.map((color) => color.toHex());
+}
+
+function getHexesFromTinyColors(colors: tinycolor.Instance[]): string[] {
+  return colors.map((color) => color.toHexString().toLowerCase());
+}
+
+function sortHexesByHue(hexes: string[]): string[] {
+  return hexes
+    .map((hex) => ({ hex: hex.toLowerCase(), hue: tinycolor(hex).toHsl().h ?? 0 }))
+    .sort((a, b) => a.hue - b.hue)
+    .map(({ hex }) => hex);
+}
+
+function expectHexArraysClose(omniHexes: string[], tinyHexes: string[], tolerance = 1) {
+  const omniSorted = sortHexesByHue(omniHexes);
+  const tinySorted = sortHexesByHue(tinyHexes);
+  expect(omniSorted).toHaveLength(tinySorted.length);
+
+  omniSorted.forEach((hex, index) => {
+    const omniRgb = tinycolor(hex).toRgb();
+    const tinyRgb = tinycolor(tinySorted[index]).toRgb();
+
+    expect(Math.abs(omniRgb.r - tinyRgb.r)).toBeLessThanOrEqual(tolerance);
+    expect(Math.abs(omniRgb.g - tinyRgb.g)).toBeLessThanOrEqual(tolerance);
+    expect(Math.abs(omniRgb.b - tinyRgb.b)).toBeLessThanOrEqual(tolerance);
+  });
+}
+
+function getHueSteps(hexes: string[]): number[] {
+  const hues = sortHexesByHue(hexes).map((hex) => tinycolor(hex).toHsl().h ?? 0);
+  const steps: number[] = [];
+
+  for (let index = 1; index < hues.length; index += 1) {
+    steps.push(Math.round(hues[index] - hues[index - 1]));
+  }
+
+  return steps;
+}
+
+function getLightnesses(hexes: string[]): number[] {
+  return hexes.map((hex) => tinycolor(hex).toHsl().l ?? 0);
+}
+
 describe('Color interoperability with tinycolor2', () => {
   describe('parses and normalizes common inputs', () => {
     it('matches tinycolor outputs for hex, named colors, and hsl strings', () => {
@@ -400,6 +445,71 @@ describe('Color interoperability with tinycolor2', () => {
         getNumericValuesFromString(color.toRGBAString()),
         getNumericValuesFromString(tiny.toRgbString())
       );
+    });
+  });
+
+  describe('keeps harmony helpers aligned with tinycolor where intended', () => {
+    const baseHex = '#3498db';
+    const baseColor = new Color(baseHex);
+    const tinyBase = tinycolor(baseHex);
+
+    it('tracks complement and triad variants within rounding tolerance', () => {
+      expectHexArraysClose(
+        getHexesFromColors(baseColor.getComplementaryColors()),
+        [baseHex, tinyBase.complement().toHexString()]
+      );
+
+      expectHexArraysClose(
+        getHexesFromColors(baseColor.getTriadicHarmonyColors()),
+        getHexesFromTinyColors(tinyBase.triad())
+      );
+    });
+
+    it('keeps analogous spreads evenly spaced instead of tinycolor’s tighter slices', () => {
+      const analogousHexes = getHexesFromColors(baseColor.getAnalogousHarmonyColors());
+      const tinyAnalogousHexes = getHexesFromTinyColors(tinyBase.analogous(5));
+
+      getHueSteps(analogousHexes).forEach((step) => {
+        expect(Math.abs(step - 30)).toBeLessThanOrEqual(1);
+      });
+
+      getHueSteps(tinyAnalogousHexes).forEach((step) => {
+        expect(step).toBeLessThanOrEqual(15);
+      });
+
+      expect(sortHexesByHue(analogousHexes)).not.toEqual(sortHexesByHue(tinyAnalogousHexes));
+    });
+
+    it('avoids tinycolor monochromatic wrap-around that drops to near-black', () => {
+      const monochromaticHexes = getHexesFromColors(baseColor.getMonochromaticHarmonyColors());
+      const tinyMonochromaticHexes = getHexesFromTinyColors(tinyBase.monochromatic(5));
+
+      const baseLightness = tinyBase.toHsl().l ?? 0;
+      const omniLightnesses = getLightnesses(monochromaticHexes);
+      const tinyLightnesses = getLightnesses(tinyMonochromaticHexes);
+
+      expect(Math.min(...omniLightnesses)).toBeGreaterThan(baseLightness - 0.25);
+      expect(Math.min(...tinyLightnesses)).toBeLessThan(Math.min(...omniLightnesses));
+
+      // Tinycolor cycles lightness upward after wrapping through black, while omni-color
+      // intentionally keeps the series centered around the base lightness without wrap-around.
+      expect(Math.max(...tinyLightnesses)).toBeCloseTo(baseLightness, 3);
+
+      expect(sortHexesByHue(monochromaticHexes)).not.toEqual(sortHexesByHue(tinyMonochromaticHexes));
+    });
+
+    it('retains rectangular tetrad spacing instead of tinycolor’s square polyad', () => {
+      const tetradHexes = getHexesFromColors(baseColor.getTetradicHarmonyColors());
+      const tinyTetradHexes = getHexesFromTinyColors(tinyBase.tetrad());
+
+      const tetradSteps = getHueSteps(tetradHexes);
+      expect(tetradSteps[0]).toBeCloseTo(60, 0);
+      expect(tetradSteps[1]).toBeCloseTo(120, 0);
+      expect(tetradSteps[2]).toBeCloseTo(60, 0);
+
+      getHueSteps(tinyTetradHexes).forEach((step) => {
+        expect(step).toBeCloseTo(90, 0);
+      });
     });
   });
 });
