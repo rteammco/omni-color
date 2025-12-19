@@ -16,10 +16,10 @@ export function ColorManipulationDemo({ color }: Props) {
   const [intensityPercentage, setIntensityPercentage] = useState(DEFAULT_INTENSITY_PERCENTAGE);
   const [spinDegrees, setSpinDegrees] = useState(DEFAULT_SPIN_DEGREES);
 
-  const brightenedColor = color.brighten(intensityPercentage);
-  const darkenedColor = color.darken(intensityPercentage);
-  const saturatedColor = color.saturate(intensityPercentage);
-  const desaturatedColor = color.desaturate(intensityPercentage);
+  const brightenedColor = color.brighten({ amount: intensityPercentage });
+  const darkenedColor = color.darken({ amount: intensityPercentage });
+  const saturatedColor = color.saturate({ amount: intensityPercentage });
+  const desaturatedColor = color.desaturate({ amount: intensityPercentage });
   const grayscaleColor = color.grayscale();
 
   const spunColor = color.spin(spinDegrees);
