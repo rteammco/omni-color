@@ -145,13 +145,7 @@ function isColorDarkYIQ(color: Color, threshold: number): boolean {
   return brightness < threshold;
 }
 
-/**
- * Checks if a color is dark based on the specified algorithm and threshold.
- *
- * @param color - The color to check.
- * @param options - Optional {@link IsColorDarkOptions} to control the algorithm and threshold.
- * @returns `true` if the color is considered dark, `false` otherwise.
- */
+// Checks if a color is dark based on the specified algorithm and threshold.
 export function isColorDark(color: Color, options: IsColorDarkOptions = {}): boolean {
   if (options.colorDarknessMode?.toUpperCase() === 'YIQ') {
     return isColorDarkYIQ(color, options.yiqThreshold ?? 128);
