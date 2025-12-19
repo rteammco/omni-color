@@ -24,6 +24,7 @@ import type {
   HueInterpolationMode,
 } from './color/gradients';
 import type { ColorHarmony, ColorHarmonyOptions, GrayscaleHandlingMode } from './color/harmonies';
+import type { ColorManipulationOptions, ColorManipulationSpace } from './color/manipulations';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
@@ -65,6 +66,8 @@ export {
   ColorLAB,
   ColorLCH,
   type ColorLightnessModifier,
+  ColorManipulationOptions,
+  ColorManipulationSpace,
   ColorNameAndLightness,
   ColorOKLCH,
   ColorPalette,

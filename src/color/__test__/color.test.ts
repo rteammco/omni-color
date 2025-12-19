@@ -382,6 +382,17 @@ describe('Color.brighten', () => {
     expect(brighter.toHex()).toBe('#999999');
     expect(base.toHex()).toBe('#808080');
   });
+
+  it('supports manipulation options and preserves alpha', () => {
+    const navy = new Color('#001f3f');
+    expect(navy.brighten({ space: 'LAB', amount: 25 }).toHex8()).toBe('#7688b0ff');
+    expect(navy.toHex()).toBe('#001f3f');
+
+    const translucentTeal = new Color('rgba(0, 128, 128, 0.35)');
+    const labBrightened = translucentTeal.brighten({ space: 'LAB' });
+    expect(labBrightened.toHex8()).toBe('#4cb0af59');
+    expect(translucentTeal.toHex8()).toBe('#00808059');
+  });
 });
 
 describe('Color.darken', () => {
@@ -399,6 +410,13 @@ describe('Color.saturate', () => {
     const saturated = base.saturate(20);
     expect(saturated.toHex()).toBe('#5299e0');
     expect(base.toHex()).toBe('#6699cc');
+  });
+
+  it('respects LCH options and keeps transparency intact', () => {
+    const translucentTeal = new Color('rgba(0, 128, 128, 0.35)');
+    const saturatedLch = translucentTeal.saturate({ space: 'LCH' });
+    expect(saturatedLch.toHex8()).toBe('#00868859');
+    expect(translucentTeal.toHex8()).toBe('#00808059');
   });
 });
 
