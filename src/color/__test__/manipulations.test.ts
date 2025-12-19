@@ -23,10 +23,16 @@ describe('spinColorHue', () => {
     expect(spinColorHue(new Color('#ff0000'), -420).toHex()).toBe('#ff00ff');
   });
 
-  it('floors fractional degree values', () => {
-    expect(spinColorHue(new Color('#ff0000'), 30.5).toHex()).toBe('#ff8000');
-    expect(spinColorHue(new Color('#ff0000'), 12.34).toHex()).toBe('#ff3300');
-    expect(spinColorHue(new Color('#ff0000'), -30.7).toHex()).toBe('#ff0084');
+  it('preserves fractional degree values without truncating', () => {
+    expect(spinColorHue(new Color('#ff0000'), 30.5).toHex()).toBe('#ff8200');
+    expect(spinColorHue(new Color('#ff0000'), 12.34).toHex()).toBe('#ff3400');
+    expect(spinColorHue(new Color('#ff0000'), -30.7).toHex()).toBe('#ff0082');
+  });
+
+  it('keeps hues in the expected range for negative fractional rotations', () => {
+    const rotated = spinColorHue(new Color('hsl(210, 70%, 60%)'), -420.25);
+    expect(rotated.toHex()).toBe('#52e098');
+    expect(rotated.toHSL().h).toBe(150);
   });
 
   it('works with different base colors', () => {

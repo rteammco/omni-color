@@ -373,6 +373,17 @@ describe('Color.spin', () => {
     expect(spunBackward.toHex()).toBe('#00ffff');
     expect(red.toHex()).toBe('#ff0000');
   });
+
+  it('supports fractional rotations without losing hue precision', () => {
+    const red = new Color('#ff0000');
+    const spunForward = red.spin(30.5);
+    const spunBackward = red.spin(-30.7);
+
+    expect(spunForward.toHex()).toBe('#ff8200');
+    expect(spunBackward.toHex()).toBe('#ff0082');
+    expect(spunBackward.toHSL().h).toBe(329);
+    expect(red.toHex()).toBe('#ff0000');
+  });
 });
 
 describe('Color.brighten', () => {
