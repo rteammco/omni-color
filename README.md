@@ -351,12 +351,15 @@ new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 
 #### `spin(degrees: number): Color`
 
-- <ins>Returns</ins> a new [`Color`](#types-color) with its hue rotated in HSL space (wraps at 0–360).
+- <ins>Returns</ins> a new [`Color`](#types-color) with its hue rotated in HSL space (wraps at 0–360). Hue rotations operate on an opaque HSL representation, so transparent inputs are returned with full opacity.
 - <ins>Inputs</ins>:
   - `degrees` - amount to rotate the hue by in degrees.
 
 ```ts
 new Color('#ff0000').spin(180).toHex(); // '#00ffff'
+new Color('#008080').spin(-90).toHex(); // '#408000'
+new Color('hsl(30, 80%, 60%)').spin(405).toHex(); // '#c2eb47'
+new Color('rgba(255, 0, 0, 0.35)').spin(60).toHex8(); // '#ffff00ff'
 ```
 
 #### `brighten(options?: ColorBrightnessOptions): Color`
@@ -369,7 +372,13 @@ new Color('#ff0000').spin(180).toHex(); // '#00ffff'
     - `labScale` (optional) - when using `"LAB"` or `"LCH"`, the per-step delta applied to the lightness channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
-new Color('#808080').brighten({ amount: 20 }).toHex(); // '#b3b3b3'
+const neutral = new Color('#808080');
+neutral.brighten().toHex(); // '#999999'
+neutral.brighten({ amount: 25 }).toHex(); // '#bfbfbf'
+neutral.brighten({ space: 'LAB', amount: 20 }).toHex(); // '#e1e1e1'
+new Color('rgba(0, 128, 128, 0.35)')
+  .brighten({ space: 'LCH', amount: 15, labScale: 10 })
+  .toHex8(); // '#43a8a759'
 ```
 
 #### `darken(options?: ColorBrightnessOptions): Color`
@@ -382,7 +391,11 @@ new Color('#808080').brighten({ amount: 20 }).toHex(); // '#b3b3b3'
     - `labScale` (optional) - when using `"LAB"` or `"LCH"`, the per-step delta applied to the lightness channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
-new Color('#808080').darken({ amount: 20 }).toHex(); // '#4d4d4d'
+const cornflower = new Color('#6699cc');
+cornflower.darken().toHex(); // '#4080bf'
+cornflower.darken({ amount: 30 }).toHex(); // '#264d73'
+cornflower.darken({ space: 'LAB', amount: 5 }).toHex(); // '#4d82b3'
+cornflower.darken({ space: 'LCH', amount: 15, labScale: 8 }).toHex(); // '#447aab'
 ```
 
 #### `saturate(options?: ColorSaturationOptions): Color`
@@ -390,12 +403,16 @@ new Color('#808080').darken({ amount: 20 }).toHex(); // '#4d4d4d'
 - <ins>Returns</ins> a new [`Color`](#types-color) with increased saturation. Alpha is preserved.
 - <ins>Inputs</ins>:
   - `options` (optional) - ColorSaturationOptions:
-    - `amount` (optional) - a percentage-style amount by which to saturate the color (adjusts the selected space's H channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
-    - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LCH"`. Default is `"HSL"`.
+    - `amount` (optional) - a percentage-style amount by which to saturate the color (adjusts the selected space's S channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
+    - `space` (optional) - the color space to use for the saturation change: `"HSL" | "LCH"`. Default is `"HSL"`.
     - `labScale` (optional) - when using `"LCH"`, the per-step delta applied to the chroma channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
-new Color('hsl(200, 40%, 50%)').saturate({ amount: 20 }).toHSLString(); // 'hsl(200, 60%, 50%)'
+const sky = new Color('hsl(200, 40%, 50%)');
+sky.saturate().toHSLString(); // 'hsl(200 50% 50%)'
+sky.saturate({ amount: 35 }).toHSLString(); // 'hsl(200 75% 50%)'
+sky.saturate({ space: 'LCH' }).toHex(); // '#0096cf'
+sky.saturate({ space: 'LCH', amount: 5, labScale: 8 }).toHex(); // '#3c92b9'
 ```
 
 #### `desaturate(options?: ColorSaturationOptions): Color`
@@ -403,12 +420,16 @@ new Color('hsl(200, 40%, 50%)').saturate({ amount: 20 }).toHSLString(); // 'hsl(
 - <ins>Returns</ins> a new [`Color`](#types-color) with decreased saturation. Alpha is preserved.
 - <ins>Inputs</ins>:
   - `options` (optional) - ColorSaturationOptions:
-    - `amount` (optional) - a percentage-style amount by which to desaturate the color (adjusts the selected space's H channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
-    - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LCH"`. Default is `"HSL"`.
+    - `amount` (optional) - a percentage-style amount by which to desaturate the color (adjusts the selected space's S channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
+    - `space` (optional) - the color space to use for the saturation decrease calculation: `"HSL" | "LCH"`. Default is `"HSL"`.
     - `labScale` (optional) - when using `"LCH"`, the per-step delta applied to the chroma channel. The actual change is `(amount / 10) * labScale`. Defaults to `18`.
 
 ```ts
-new Color('hsl(200, 40%, 50%)').desaturate({ amount: 20 }).toHSLString(); // 'hsl(200, 20%, 50%)'
+const sky = new Color('hsl(200, 40%, 50%)');
+sky.desaturate().toHSLString(); // 'hsl(200 30% 50%)'
+sky.desaturate({ amount: 15 }).toHSLString(); // 'hsl(200 25% 50%)'
+sky.desaturate({ space: 'LCH' }).toHex(); // '#7a8c97'
+sky.desaturate({ space: 'LCH', amount: 5, labScale: 8 }).toHex(); // '#5a90ad'
 ```
 
 #### `grayscale(): Color`
@@ -417,6 +438,7 @@ new Color('hsl(200, 40%, 50%)').desaturate({ amount: 20 }).toHSLString(); // 'hs
 
 ```ts
 new Color('#ff7f50').grayscale().toHex(); // '#a8a8a8'
+new Color('rgba(255, 127, 80, 0.5)').grayscale().toHex8(); // '#a8a8a880'
 ```
 
 ### Color Combinations
