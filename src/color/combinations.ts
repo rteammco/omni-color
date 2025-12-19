@@ -629,18 +629,18 @@ function resolveAveragedHue(x: number, y: number, fallbackHue = 0): number {
 function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
   let x = 0;
   let y = 0;
-  let saturation = 0;
   let lightness = 0;
   colors.forEach((color, i) => {
     const val: ColorHSLA = color.toHSLA();
     const weight = normalizedWeights[i];
+    const weightedSaturation = val.s * weight;
     const rad = (val.h * Math.PI) / 180;
-    x += Math.cos(rad) * weight;
-    y += Math.sin(rad) * weight;
-    saturation += val.s * weight;
+    x += Math.cos(rad) * weightedSaturation;
+    y += Math.sin(rad) * weightedSaturation;
     lightness += val.l * weight;
   });
   const hue = resolveAveragedHue(x, y);
+  const saturation = clampValue(Math.hypot(x, y), 0, 100);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
   return new Color({
     h: Math.round(hue),
