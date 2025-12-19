@@ -419,9 +419,10 @@ describe('averageColors', () => {
 
     const result = averageColors([h1, h2], { space: 'LCH' });
     const lch = result.toLCH();
+    const { r, g, b } = result.toRGBA();
 
-    expect(Number.isNaN(lch.h)).toBe(false);
-    expect(Math.min(lch.h, 360 - lch.h)).toBeLessThan(1);
+    expect(lch.c).toBeLessThan(1);
+    expect(Math.max(r, g, b) - Math.min(r, g, b)).toBeLessThanOrEqual(2);
   });
 
   it('averages OKLCH hues correctly across 360 boundary', () => {
@@ -440,8 +441,30 @@ describe('averageColors', () => {
     const result = averageColors([h1, h2], { space: 'OKLCH' });
     const oklch = result.toOKLCH();
 
+    expect(oklch.c).toBeLessThan(0.001);
     expect(Number.isNaN(oklch.h)).toBe(false);
-    expect(Math.min(oklch.h, 360 - oklch.h)).toBeLessThan(1);
+  });
+
+  it('keeps hue stable when chroma is negligible in LCH space', () => {
+    const saturated = new Color({ l: 60, c: 40, h: 0 });
+    const desaturatedOpponent = new Color({ l: 60, c: 39, h: 180 });
+
+    const result = averageColors([saturated, desaturatedOpponent], { space: 'LCH' });
+    const lch = result.toLCH();
+
+    expect(lch.c).toBeLessThan(1);
+    expect(Math.min(lch.h, 360 - lch.h)).toBeLessThan(30);
+  });
+
+  it('keeps hue stable when chroma is negligible in OKLCH space', () => {
+    const saturated = new Color({ l: 0.6, c: 0.05, h: 0 });
+    const desaturatedOpponent = new Color({ l: 0.6, c: 0.045, h: 180 });
+
+    const result = averageColors([saturated, desaturatedOpponent], { space: 'OKLCH' });
+    const oklch = result.toOKLCH();
+
+    expect(oklch.c).toBeLessThan(0.005);
+    expect(Math.min(oklch.h, 360 - oklch.h)).toBeLessThan(15);
   });
 
   it('preserves alpha when averaging in HSL, LCH, and OKLCH spaces', () => {
