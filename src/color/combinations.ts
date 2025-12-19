@@ -1,7 +1,7 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
 import { toCMYK } from './conversions';
-import type { ColorCMYK, ColorHSL, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
+import type { ColorCMYK, ColorHSL, ColorHSLA, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 
 export type MixType = 'ADDITIVE' | 'SUBTRACTIVE';
@@ -63,6 +63,11 @@ function mixColorsSubtractive(
   return new Color(result);
 }
 
+function normalizeHue(hue: number): number {
+  const result = hue % 360;
+  return result < 0 ? result + 360 : result;
+}
+
 function mixColorsAdditive(
   colors: readonly Color[],
   space: MixSpace,
@@ -93,29 +98,98 @@ function mixColorsAdditive(
       };
       return new Color(result);
     }
-    case 'HSL':
-    case 'LCH':
-    case 'OKLCH':
-    {
-      let r = 0;
-      let g = 0;
-      let b = 0;
-      let a = 0;
+    case 'HSL': {
+      const normalizationFactor = sumOfWeights || 1;
+      let x = 0;
+      let y = 0;
+      let saturation = 0;
+      let lightness = 0;
+      let alpha = 0;
+
       colors.forEach((color, i) => {
-        const val: ColorRGBA = color.toRGBA();
-        const weight = weights[i];
-        r += srgbChannelToLinear(val.r, 'SRGB') * weight;
-        g += srgbChannelToLinear(val.g, 'SRGB') * weight;
-        b += srgbChannelToLinear(val.b, 'SRGB') * weight;
-        a += (val.a ?? 1) * weight;
+        const val: ColorHSL = color.toHSL();
+        const normalizedWeight = weights[i] / normalizationFactor;
+        const hueRadians = (val.h * Math.PI) / 180;
+        const weightedSaturation = val.s * normalizedWeight;
+        x += Math.cos(hueRadians) * weightedSaturation;
+        y += Math.sin(hueRadians) * weightedSaturation;
+        saturation += val.s * normalizedWeight;
+        lightness += val.l * normalizedWeight;
+        alpha += (color.toRGBA().a ?? 1) * normalizedWeight;
       });
-      const result: ColorRGBA = {
-        r: Math.round(linearChannelToSrgb(r, 'SRGB')),
-        g: Math.round(linearChannelToSrgb(g, 'SRGB')),
-        b: Math.round(linearChannelToSrgb(b, 'SRGB')),
-        a: +clampValue(a / sumOfWeights, 0, 1).toFixed(3),
+
+      const hue = normalizeHue((Math.atan2(y, x) * 180) / Math.PI);
+      const result: ColorHSLA = {
+        h: Number.isNaN(hue) ? 0 : hue,
+        s: +clampValue(saturation, 0, 100).toFixed(3),
+        l: +clampValue(lightness, 0, 100).toFixed(3),
+        a: +clampValue(alpha, 0, 1).toFixed(3),
       };
       return new Color(result);
+    }
+    case 'LCH': {
+      const normalizationFactor = sumOfWeights || 1;
+      let lightness = 0;
+      let chromaX = 0;
+      let chromaY = 0;
+      let alpha = 0;
+
+      colors.forEach((color, i) => {
+        const val: ColorLCH = color.toLCH();
+        const normalizedWeight = weights[i] / normalizationFactor;
+        const hueRadians = (val.h * Math.PI) / 180;
+        const weightedChroma = val.c * normalizedWeight;
+
+        lightness += val.l * normalizedWeight;
+        chromaX += Math.cos(hueRadians) * weightedChroma;
+        chromaY += Math.sin(hueRadians) * weightedChroma;
+        alpha += (color.toRGBA().a ?? 1) * normalizedWeight;
+      });
+
+      const chroma = Math.sqrt(chromaX * chromaX + chromaY * chromaY);
+      const hue = normalizeHue((Math.atan2(chromaY, chromaX) * 180) / Math.PI);
+      const lchResult: ColorLCH = {
+        l: +clampValue(lightness, 0, 100).toFixed(3),
+        c: +Math.max(0, chroma).toFixed(3),
+        h: Number.isNaN(hue) ? 0 : hue,
+      };
+      const rgba = new Color(lchResult).toRGBA();
+      return new Color({
+        ...rgba,
+        a: +clampValue(alpha, 0, 1).toFixed(3),
+      });
+    }
+    case 'OKLCH': {
+      const normalizationFactor = sumOfWeights || 1;
+      let lightness = 0;
+      let chromaX = 0;
+      let chromaY = 0;
+      let alpha = 0;
+
+      colors.forEach((color, i) => {
+        const val: ColorOKLCH = color.toOKLCH();
+        const normalizedWeight = weights[i] / normalizationFactor;
+        const hueRadians = (val.h * Math.PI) / 180;
+        const weightedChroma = val.c * normalizedWeight;
+
+        lightness += val.l * normalizedWeight;
+        chromaX += Math.cos(hueRadians) * weightedChroma;
+        chromaY += Math.sin(hueRadians) * weightedChroma;
+        alpha += (color.toRGBA().a ?? 1) * normalizedWeight;
+      });
+
+      const chroma = Math.sqrt(chromaX * chromaX + chromaY * chromaY);
+      const hue = normalizeHue((Math.atan2(chromaY, chromaX) * 180) / Math.PI);
+      const oklchResult: ColorOKLCH = {
+        l: +clampValue(lightness, 0, 1).toFixed(6),
+        c: +Math.max(0, chroma).toFixed(6),
+        h: Number.isNaN(hue) ? 0 : hue,
+      };
+      const rgba = new Color(oklchResult).toRGBA();
+      return new Color({
+        ...rgba,
+        a: +clampValue(alpha, 0, 1).toFixed(3),
+      });
     }
     case 'RGB':
     default: {
