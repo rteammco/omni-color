@@ -210,6 +210,58 @@ describe('Color interoperability with chroma-js', () => {
     });
   });
 
+  describe('delta E parity with chroma-js', () => {
+    it('matches chroma-js deltaE for near-match, midrange, and high-contrast pairs', () => {
+      const nearMatchOmniDelta = new Color('#ededee').differenceFrom('#edeeed');
+      const nearMatchChromaDelta = chroma.deltaE('#ededee', '#edeeed');
+      expect(nearMatchOmniDelta).toBeCloseTo(nearMatchChromaDelta, 2);
+
+      const midrangeOmniDelta = new Color('#0f4c81').differenceFrom('#f97316');
+      const midrangeChromaDelta = chroma.deltaE('#0f4c81', '#f97316');
+      expect(midrangeOmniDelta).toBeCloseTo(midrangeChromaDelta, 2);
+
+      const highContrastOmniDelta = new Color('#000000').differenceFrom('#ffffff');
+      const highContrastChromaDelta = chroma.deltaE('#000000', '#ffffff');
+      expect(highContrastOmniDelta).toBeCloseTo(highContrastChromaDelta, 5);
+    });
+
+    it('honors CIE94 weighting factors comparable to chroma-js Kl/Kc/Kh inputs', () => {
+      const weightedOmniDelta = new Color('#ff6666').differenceFrom('#aa0000', {
+        method: 'CIE94',
+        cie94Options: { kL: 1.5, kC: 1, kH: 1 },
+      });
+      const weightedChromaDelta = chroma.deltaE('#ff6666', '#aa0000', 1.5, 1, 1);
+
+      expect(weightedOmniDelta).toBeCloseTo(weightedChromaDelta, 0);
+    });
+  });
+
+  describe('temperature parity with chroma-js', () => {
+    it('produces similar Kelvin-to-hex conversions for warm and cool temperatures', () => {
+      const warmKelvin = 3000;
+      const warmFromTemperature = Color.fromTemperature(warmKelvin);
+      const warmChromaTemperature = chroma.temperature(warmKelvin);
+      expect(warmFromTemperature.differenceFrom(warmChromaTemperature.hex())).toBeLessThan(2);
+
+      const coolKelvin = 9000;
+      const coolFromTemperature = Color.fromTemperature(coolKelvin);
+      const coolChromaTemperature = chroma.temperature(coolKelvin);
+      expect(coolFromTemperature.differenceFrom(coolChromaTemperature.hex())).toBeLessThan(2);
+    });
+
+    it('estimates correlated color temperature similarly for representative colors', () => {
+      const warmNeutralHex = '#ffdabb';
+      const warmNeutralOmni = new Color(warmNeutralHex).getTemperature().temperature;
+      const warmNeutralChroma = Math.round(chroma(warmNeutralHex).temperature());
+      expect(Math.abs(warmNeutralOmni - warmNeutralChroma)).toBeLessThan(120);
+
+      const coolNeutralHex = '#f3f2ff';
+      const coolNeutralOmni = new Color(coolNeutralHex).getTemperature().temperature;
+      const coolNeutralChroma = Math.round(chroma(coolNeutralHex).temperature());
+      expect(Math.abs(coolNeutralOmni - coolNeutralChroma)).toBeLessThan(50);
+    });
+  });
+
   describe('readability and contrast interoperability', () => {
     it('matches chroma-js contrast ratios for opaque colors', () => {
       const foreground = new Color('#1a1a1a');
