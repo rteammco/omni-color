@@ -1,8 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { DemoPage } from './pages/DemoPage.tsx';
-import { PlaygroundPage } from './pages/PlaygroundPage.tsx';
+import { DemoPage } from './pages/DemoPage';
+import { PlaygroundPage } from './pages/PlaygroundPage';
 
 import './index.css';
 

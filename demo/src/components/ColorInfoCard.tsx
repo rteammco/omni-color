@@ -10,8 +10,8 @@ const INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT = 25;
 function useInfoContainerColors(color: Color) {
   return useMemo(() => {
     const backgroundColorObj = color.isDark()
-      ? color.brighten(INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT)
-      : color.darken(INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT);
+      ? color.brighten({ amount: INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT })
+      : color.darken({ amount: INFO_CONTAINER_BRIGHTNESS_ADJUSTMENT });
 
     const backgroundColor = backgroundColorObj.toHex();
 

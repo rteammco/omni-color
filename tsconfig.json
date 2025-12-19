@@ -11,7 +11,8 @@
     "declaration": true,
     "declarationDir": "./dist",
     "outDir": "./dist",
-    "removeComments": false
+    "removeComments": false,
+    "jsx": "react-jsx"
   },
-  "include": ["./src"]
+  "include": ["./src", "./demo/src"]
 }
