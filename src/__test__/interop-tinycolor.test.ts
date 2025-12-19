@@ -331,6 +331,75 @@ describe('Color interoperability with tinycolor2', () => {
     });
   });
 
+  describe('aligns readability helpers where the algorithms overlap', () => {
+    it('matches tinycolor contrast ratios for common opaque pairs', () => {
+      const pairs: Array<[string, string]> = [
+        ['#000000', '#ffffff'],
+        ['#444444', '#bbbbbb'],
+        ['#777777', '#cccccc'],
+      ];
+
+      pairs.forEach(([foreground, background]) => {
+        const omniContrast = new Color(foreground).getContrastRatio(background);
+        const tinyContrast = tinycolor.readability(foreground, background);
+
+        expect(omniContrast).toBeCloseTo(tinyContrast, 2);
+      });
+    });
+
+    it('keeps readability reports aligned with tinycolor while documenting alpha handling differences', () => {
+      const opaqueForeground = '#1a1a1a';
+      const opaqueBackground = '#fafafa';
+
+      const opaqueReport = new Color(opaqueForeground).getTextReadabilityReport(opaqueBackground);
+      const tinyOpaqueReadable = tinycolor.isReadable(opaqueForeground, opaqueBackground, {
+        level: 'AA',
+        size: 'small',
+      });
+
+      expect(opaqueReport.contrastRatio).toBeCloseTo(
+        tinycolor.readability(opaqueForeground, opaqueBackground),
+        2
+      );
+      expect(opaqueReport.isReadable).toBe(tinyOpaqueReadable);
+
+      const semiTransparentForeground = 'rgba(0, 0, 0, 0.5)';
+      const semiTransparentBackground = '#ffffff';
+
+      const semiTransparentReport = new Color(semiTransparentForeground).getTextReadabilityReport(
+        semiTransparentBackground
+      );
+      const tinySemiReadable = tinycolor.isReadable(
+        semiTransparentForeground,
+        semiTransparentBackground,
+        {
+          level: 'AA',
+          size: 'small',
+        }
+      );
+
+      expect(tinySemiReadable).toBe(true);
+      expect(semiTransparentReport.isReadable).toBe(false);
+      expect(semiTransparentReport.contrastRatio).toBeLessThan(
+        tinycolor.readability(semiTransparentForeground, semiTransparentBackground)
+      );
+    });
+
+    it('picks the most readable candidate in agreement with tinycolor for light and dark backgrounds', () => {
+      const candidates = ['#000000', '#3366ff', '#ffcc00'];
+
+      const lightBackground = '#ffffff';
+      const omniLightChoice = new Color(lightBackground).getMostReadableTextColor(candidates);
+      const tinyLightChoice = tinycolor.mostReadable(lightBackground, candidates);
+      expect(omniLightChoice.toHex()).toBe(tinyLightChoice.toHexString().toLowerCase());
+
+      const darkBackground = '#111111';
+      const omniDarkChoice = new Color(darkBackground).getMostReadableTextColor(candidates);
+      const tinyDarkChoice = tinycolor.mostReadable(darkBackground, candidates);
+      expect(omniDarkChoice.toHex()).toBe(tinyDarkChoice.toHexString().toLowerCase());
+    });
+  });
+
   describe('matches tinycolor mixing defaults in RGB space', () => {
     it('aligns 50/50 mixes with tinycolor defaults', () => {
       const base = new Color('#ff0000');
