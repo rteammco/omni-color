@@ -390,9 +390,9 @@ describe('Color interoperability with tinycolor2', () => {
       );
       expectComponentArraysClose(
         getNumericValuesFromString(
-          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(hsva.v)}% / ${formatDecimal(
-            hsva.a
-          )})`
+          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(
+            hsva.v
+          )}% / ${formatDecimal(hsva.a)})`
         ),
         tinyHsvStringValues
       );

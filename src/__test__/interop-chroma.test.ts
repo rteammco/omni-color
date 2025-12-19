@@ -405,11 +405,7 @@ describe('Color interoperability with chroma-js', () => {
       const omniAverage = new Color('#ff0000').average(['#0000ff', '#00ff00'], {
         weights: [2, 1, 1],
       });
-      const chromaAverage = chroma.average(
-        ['#ff0000', '#0000ff', '#00ff00'],
-        'lrgb',
-        [2, 1, 1]
-      );
+      const chromaAverage = chroma.average(['#ff0000', '#0000ff', '#00ff00'], 'lrgb', [2, 1, 1]);
 
       expect(omniAverage.toHex()).toBe(chromaAverage.hex().toLowerCase());
       expect(omniAverage.toRGBA()).toEqual(chromaRGBArrayToObj(chromaAverage.rgba()));
