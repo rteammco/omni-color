@@ -65,8 +65,15 @@ describe('brightenColor', () => {
     expect(brightenColor(new Color('#000000')).toHex()).toBe('#1a1a1a');
   });
 
-  it('supports LAB adjustments', () => {
-    // TODO
+  it('supports LAB adjustments with configurable LAB-like scaling', () => {
+    const translucentTeal = new Color('rgba(0, 128, 128, 0.4)');
+    const defaultScale = brightenColor(translucentTeal, { space: 'LAB', amount: 30 });
+    const smallerScale = brightenColor(translucentTeal, { space: 'LAB', amount: 30, labScale: 12 });
+
+    expect(defaultScale.toHex()).toBe('#aeffff');
+    expect(defaultScale.toRGBA().a).toBeCloseTo(0.4, 5);
+    expect(smallerScale.toHex()).toBe('#81e2e1');
+    expect(smallerScale.toRGBA().a).toBeCloseTo(0.4, 5);
   });
 });
 
@@ -88,7 +95,14 @@ describe('darkenColor', () => {
   });
 
   it('accepts LAB options and clamps when approaching black', () => {
-    // TODO
+    expect(darkenColor(new Color('#ffffff'), { amount: 200, space: 'LAB' }).toHex()).toBe('#000000');
+    expect(darkenColor(new Color('#000000'), { amount: 25, space: 'LAB' }).toHex()).toBe('#000000');
+  });
+
+  it('scales LAB/LCH deltas using the provided labScale', () => {
+    const gray = new Color('#808080');
+    expect(darkenColor(gray, { space: 'LCH', amount: 20 }).toHex()).toBe('#2b2b2b');
+    expect(darkenColor(gray, { space: 'LCH', amount: 20, labScale: 10 }).toHex()).toBe('#4f4f4f');
   });
 });
 
@@ -111,8 +125,12 @@ describe('saturateColor', () => {
     expect(saturateColor(new Color('#4080bf')).toHex()).toBe('#3380cc');
   });
 
-  it('supports LCH saturation', () => {
-    // TODO
+  it('supports LCH saturation with adjustable LAB-like scaling', () => {
+    const mutedTeal = new Color('hsl(190, 25%, 55%)');
+    expect(saturateColor(mutedTeal, { space: 'LCH', amount: 40 }).toHex()).toBe('#00b8f7');
+    expect(saturateColor(mutedTeal, { space: 'LCH', amount: 40, labScale: 12 }).toHex()).toBe(
+      '#00b1dd'
+    );
   });
 });
 
@@ -129,8 +147,15 @@ describe('desaturateColor', () => {
     expect(desaturateColor(new Color('#6699cc')).toHex()).toBe('#7099c2');
   });
 
-  it('handles LCH desaturation with clamping and preserved alpha', () => {
-    // TODO
+  it('handles LCH desaturation with clamping, preserved alpha, and adjustable scaling', () => {
+    const translucentViolet = new Color('rgba(120, 80, 200, 0.5)');
+    const defaultDesaturation = desaturateColor(translucentViolet, { space: 'LCH', amount: 30 });
+    const smallerScale = desaturateColor(translucentViolet, { space: 'LCH', amount: 30, labScale: 8 });
+
+    expect(defaultDesaturation.toHex()).toBe('#6f637f');
+    expect(defaultDesaturation.toRGBA().a).toBeCloseTo(0.5, 5);
+    expect(smallerScale.toHex()).toBe('#7659a7');
+    expect(smallerScale.toRGBA().a).toBeCloseTo(0.5, 5);
   });
 });
 

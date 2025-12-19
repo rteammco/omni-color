@@ -7,6 +7,12 @@ export type ColorBrightnessSpace = 'HSL' | 'LAB' | 'LCH';
 export interface ColorBrightnessOptions {
   amount?: number;
   space?: ColorBrightnessSpace;
+  /**
+   * Per-step delta applied to the LAB/LCH lightness channel when `space` is `'LAB'` or `'LCH'`.
+   * The delta is calculated as `(amount / 10) * labScale`, so an `amount` of `10`
+   * applies one "step" of `labScale` lightness change.
+   */
+  labScale?: number;
 }
 
 export type ColorSaturationSpace = 'HSL' | 'LCH';
@@ -14,28 +20,41 @@ export type ColorSaturationSpace = 'HSL' | 'LCH';
 export interface ColorSaturationOptions {
   amount?: number;
   space?: ColorSaturationSpace;
+  /**
+   * Per-step delta applied to the LAB/LCH chroma channel when `space` is `'LCH'`.
+   * The delta is calculated as `(amount / 10) * labScale`, so an `amount` of `10`
+   * applies one "step" of `labScale` chroma change.
+   */
+  labScale?: number;
 }
 
 const DEFAULT_MANIPULATION_AMOUNT = 10;
-const CHROMA_LAB_K = 18; // TODO: this is just to match chroma.js scale value... rename and replace with option
+// Default LAB/LCH lightness or chroma delta applied per 10% step when using LAB-backed spaces.
+const DEFAULT_LAB_LIGHTNESS_DELTA_PER_STEP = 18;
 
-function getColorBrightnessOptions(
-  options?: ColorBrightnessOptions
-): Required<ColorBrightnessOptions> {
-  const { amount = DEFAULT_MANIPULATION_AMOUNT, space = 'HSL' } = options ?? {};
-  return { amount, space };
+function getColorBrightnessOptions(options?: ColorBrightnessOptions): Required<ColorBrightnessOptions> {
+  const {
+    amount = DEFAULT_MANIPULATION_AMOUNT,
+    space = 'HSL',
+    labScale = DEFAULT_LAB_LIGHTNESS_DELTA_PER_STEP,
+  } = options ?? {};
+  return { amount, space, labScale };
 }
 
 function getColorSaturationOptions(
   options?: ColorSaturationOptions
 ): Required<ColorSaturationOptions> {
-  const { amount = DEFAULT_MANIPULATION_AMOUNT, space = 'HSL' } = options ?? {};
-  return { amount, space };
+  const {
+    amount = DEFAULT_MANIPULATION_AMOUNT,
+    space = 'HSL',
+    labScale = DEFAULT_LAB_LIGHTNESS_DELTA_PER_STEP,
+  } = options ?? {};
+  return { amount, space, labScale };
 }
 
-function getLABLikeDelta(amount: number): number {
+function getLABLikeDelta(amount: number, labScale: number): number {
   const chromaStep = amount / 10;
-  return CHROMA_LAB_K * chromaStep;
+  return labScale * chromaStep;
 }
 
 function normalizeLCH(lch: ColorLCH): ColorLCH {
@@ -59,16 +78,16 @@ export function spinColorHue(color: Color, degrees: number): Color {
 }
 
 export function brightenColor(color: Color, options?: ColorBrightnessOptions): Color {
-  const { amount, space } = getColorBrightnessOptions(options);
+  const { amount, space, labScale } = getColorBrightnessOptions(options);
   switch (space) {
     case 'LAB': {
       const lab = color.toLAB();
-      const updatedL = clampValue(lab.l + getLABLikeDelta(amount), 0, 100);
+      const updatedL = clampValue(lab.l + getLABLikeDelta(amount, labScale), 0, 100);
       return new Color({ ...lab, l: updatedL }).setAlpha(color.getAlpha());
     }
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
-      const updatedL = clampValue(lch.l + getLABLikeDelta(amount), 0, 100);
+      const updatedL = clampValue(lch.l + getLABLikeDelta(amount, labScale), 0, 100);
       return new Color({ ...lch, l: updatedL }).setAlpha(color.getAlpha());
     }
     case 'HSL':
@@ -81,16 +100,16 @@ export function brightenColor(color: Color, options?: ColorBrightnessOptions): C
 }
 
 export function darkenColor(color: Color, options?: ColorBrightnessOptions): Color {
-  const { amount, space } = getColorBrightnessOptions(options);
+  const { amount, space, labScale } = getColorBrightnessOptions(options);
   switch (space) {
     case 'LAB': {
       const lab = color.toLAB();
-      const updatedL = clampValue(lab.l - getLABLikeDelta(amount), 0, 100);
+      const updatedL = clampValue(lab.l - getLABLikeDelta(amount, labScale), 0, 100);
       return new Color({ ...lab, l: updatedL }).setAlpha(color.getAlpha());
     }
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
-      const updatedL = clampValue(lch.l - getLABLikeDelta(amount), 0, 100);
+      const updatedL = clampValue(lch.l - getLABLikeDelta(amount, labScale), 0, 100);
       return new Color({ ...lch, l: updatedL }).setAlpha(color.getAlpha());
     }
     case 'HSL':
@@ -101,11 +120,11 @@ export function darkenColor(color: Color, options?: ColorBrightnessOptions): Col
 }
 
 export function saturateColor(color: Color, options?: ColorSaturationOptions): Color {
-  const { amount, space } = getColorSaturationOptions(options);
+  const { amount, space, labScale } = getColorSaturationOptions(options);
   switch (space) {
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
-      const updatedC = Math.max(0, lch.c + getLABLikeDelta(amount));
+      const updatedC = Math.max(0, lch.c + getLABLikeDelta(amount, labScale));
       return new Color({ ...lch, c: updatedC }).setAlpha(color.getAlpha());
     }
     case 'HSL':
@@ -118,11 +137,11 @@ export function saturateColor(color: Color, options?: ColorSaturationOptions): C
 }
 
 export function desaturateColor(color: Color, options?: ColorSaturationOptions): Color {
-  const { amount, space } = getColorSaturationOptions(options);
+  const { amount, space, labScale } = getColorSaturationOptions(options);
   switch (space) {
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
-      const updatedC = Math.max(0, lch.c - getLABLikeDelta(amount));
+      const updatedC = Math.max(0, lch.c - getLABLikeDelta(amount, labScale));
       return new Color({ ...lch, c: updatedC }).setAlpha(color.getAlpha());
     }
     case 'HSL':

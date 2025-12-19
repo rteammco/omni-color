@@ -404,8 +404,8 @@ export class Color {
   /**
    * Increase the lightness of the color.
    *
-   * @param options - Optional {@link ColorBrightnessOptions} to specify the amount and color space.
-   * By default, this brightens the color by 10% in HSL space.
+   * @param options - Optional {@link ColorBrightnessOptions} to specify the amount, color space,
+   * and the LAB/LCH step size (`labScale`). By default, this brightens the color by 10% in HSL space.
    *
    * @returns A new {@link Color} with the modified lightness.
    *
@@ -421,8 +421,8 @@ export class Color {
   /**
    * Decrease the lightness of the color.
    *
-   * @param options - Optional {@link ColorBrightnessOptions} to specify the amount and color space.
-   * By default, this darkens the color by 10% in HSL space.
+   * @param options - Optional {@link ColorBrightnessOptions} to specify the amount, color space,
+   * and the LAB/LCH step size (`labScale`). By default, this darkens the color by 10% in HSL space.
    *
    * @returns A new {@link Color} with the modified lightness.
    *
@@ -438,8 +438,8 @@ export class Color {
   /**
    * Increase the saturation of the color.
    *
-   * @param options - Optional {@link ColorSaturationOptions} to specify the amount and color space.
-   * By default, this saturates the color by 10% in HSL space.
+   * @param options - Optional {@link ColorSaturationOptions} to specify the amount, color space,
+   * and the LAB/LCH step size (`labScale`). By default, this saturates the color by 10% in HSL space.
    *
    * @returns A new {@link Color} with the modified saturation.
    *
@@ -456,8 +456,8 @@ export class Color {
   /**
    * Decrease the saturation of the color.
    *
-   * @param options - Optional {@link ColorSaturationOptions} to specify the amount and color space.
-   * By default, this desaturates the color by 10% in HSL space.
+   * @param options - Optional {@link ColorSaturationOptions} to specify the amount, color space,
+   * and the LAB/LCH step size (`labScale`). By default, this desaturates the color by 10% in HSL space.
    *
    * @returns A new {@link Color} with the modified saturation.
    *
