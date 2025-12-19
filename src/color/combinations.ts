@@ -266,26 +266,29 @@ function mixColorsAdditiveInLinearRgb(
   weights: readonly number[],
   sumOfWeights: number
 ): Color {
-  let r = 0;
-  let g = 0;
-  let b = 0;
-  let a = 0;
   const normalizationFactor = sumOfWeights || 1;
+  let rLinear = 0;
+  let gLinear = 0;
+  let bLinear = 0;
+  let alpha = 0;
 
   colors.forEach((color, i) => {
     const val: ColorRGBA = color.toRGBA();
     const normalizedWeight = weights[i] / normalizationFactor;
-    r += Math.pow(val.r, 2) * normalizedWeight;
-    g += Math.pow(val.g, 2) * normalizedWeight;
-    b += Math.pow(val.b, 2) * normalizedWeight;
-    a += (val.a ?? 1) * normalizedWeight;
+
+    rLinear += srgbChannelToLinear(val.r, 'SRGB') * normalizedWeight;
+    gLinear += srgbChannelToLinear(val.g, 'SRGB') * normalizedWeight;
+    bLinear += srgbChannelToLinear(val.b, 'SRGB') * normalizedWeight;
+    alpha += (val.a ?? 1) * weights[i];
   });
+
   const result: ColorRGBA = {
-    r: Math.round(Math.sqrt(r)),
-    g: Math.round(Math.sqrt(g)),
-    b: Math.round(Math.sqrt(b)),
-    a: +clampValue(a, 0, 1).toFixed(3),
+    r: Math.round(clampValue(linearChannelToSrgb(rLinear, 'SRGB'), 0, 255)),
+    g: Math.round(clampValue(linearChannelToSrgb(gLinear, 'SRGB'), 0, 255)),
+    b: Math.round(clampValue(linearChannelToSrgb(bLinear, 'SRGB'), 0, 255)),
+    a: +clampValue(alpha / normalizationFactor, 0, 1).toFixed(3),
   };
+
   return new Color(result);
 }
 

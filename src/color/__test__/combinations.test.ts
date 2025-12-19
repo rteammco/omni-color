@@ -79,7 +79,7 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
     const result = mixColors([red, green]);
-    expect(result.toHex()).toBe('#b4b400');
+    expect(result.toHex()).toBe('#bcbc00');
   });
 
   it('mixes colors additively in Linear RGB space (brighter mix)', () => {
@@ -112,7 +112,7 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = mixColors([red, blue], { weights: [1, -1] });
-    expect(result.toHex()).toBe('#b400b4');
+    expect(result.toHex()).toBe('#bc00bc');
   });
 
   it('mixes colors with alpha channel in RGB space', () => {
@@ -193,7 +193,7 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
     const result = mixColors([red, blue], { weights: [2] });
-    expect(result.toHex()).toBe('#b400b4');
+    expect(result.toHex()).toBe('#bc00bc');
   });
 
   it('ignores colors with zero weight', () => {
@@ -598,6 +598,18 @@ describe('LINEAR_RGB robustness', () => {
     expect(linearResult.toHex()).toBe('#bcbcbc'); // Lighter gray (physically correct)
   });
 
+  it('uses linear light addition for channels when mixing additively', () => {
+    const red = new Color('#ff0000');
+    const green = new Color('#00ff00');
+
+    const srgbMix = mixColors([red, green], { space: 'RGB', weights: [0.5, 0.5] });
+    const linearMix = mixColors([red, green], { space: 'LINEAR_RGB', weights: [0.5, 0.5] });
+
+    expect(srgbMix.toHex()).toBe('#808000');
+    expect(linearMix.toHex()).toBe('#bcbc00');
+    expect(linearMix.toHex()).not.toBe(srgbMix.toHex());
+  });
+
   it('handles weighted mixing correctly', () => {
     const red = new Color('#ff0000'); // Linear (1, 0, 0)
     const blue = new Color('#0000ff'); // Linear (0, 0, 1)
@@ -608,7 +620,7 @@ describe('LINEAR_RGB robustness', () => {
       weights: [0.75, 0.25],
     });
 
-    expect(result.toHex()).toBe('#dd0080');
+    expect(result.toHex()).toBe('#e10089');
     expect(result.toRGBA().a).toBe(1);
   });
 
