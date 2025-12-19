@@ -378,16 +378,27 @@ describe('Color.spin', () => {
 describe('Color.brighten', () => {
   it('lightens the color without mutating the original', () => {
     const base = new Color('#808080');
-    const brighter = base.brighten(10);
+    const brighter = base.brighten();
     expect(brighter.toHex()).toBe('#999999');
     expect(base.toHex()).toBe('#808080');
+  });
+
+  it('supports manipulation options and preserves alpha', () => {
+    const navy = new Color('#001f3f');
+    expect(navy.brighten({ space: 'LAB', amount: 25 }).toHex8()).toBe('#7688b0ff');
+    expect(navy.toHex()).toBe('#001f3f');
+
+    const translucentTeal = new Color('rgba(0, 128, 128, 0.35)');
+    const labBrightened = translucentTeal.brighten({ space: 'LAB' });
+    expect(labBrightened.toHex8()).toBe('#4cb0af59');
+    expect(translucentTeal.toHex8()).toBe('#00808059');
   });
 });
 
 describe('Color.darken', () => {
   it('darkens the color without mutating the original', () => {
     const base = new Color('#808080');
-    const darker = base.darken(10);
+    const darker = base.darken();
     expect(darker.toHex()).toBe('#666666');
     expect(base.toHex()).toBe('#808080');
   });
@@ -396,16 +407,23 @@ describe('Color.darken', () => {
 describe('Color.saturate', () => {
   it('increases saturation without mutating the original', () => {
     const base = new Color('#6699cc');
-    const saturated = base.saturate(20);
+    const saturated = base.saturate({ amount: 20 });
     expect(saturated.toHex()).toBe('#5299e0');
     expect(base.toHex()).toBe('#6699cc');
+  });
+
+  it('respects LCH options and keeps transparency intact', () => {
+    const translucentTeal = new Color('rgba(0, 128, 128, 0.35)');
+    const saturatedLch = translucentTeal.saturate({ space: 'LCH' });
+    expect(saturatedLch.toHex8()).toBe('#00868859');
+    expect(translucentTeal.toHex8()).toBe('#00808059');
   });
 });
 
 describe('Color.desaturate', () => {
   it('decreases saturation without mutating the original', () => {
     const base = new Color('#6699cc');
-    const desaturated = base.desaturate(20);
+    const desaturated = base.desaturate({ amount: 20 });
     expect(desaturated.toHex()).toBe('#7a99b8');
     expect(base.toHex()).toBe('#6699cc');
   });

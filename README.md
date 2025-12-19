@@ -359,44 +359,52 @@ new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 new Color('#ff0000').spin(180).toHex(); // '#00ffff'
 ```
 
-#### `brighten(percentage = 10): Color`
+#### `brighten(options?: ColorBrightnessOptions): Color`
 
-- <ins>Returns</ins> a new [`Color`](#types-color) with increased HSL lightness.
+- <ins>Returns</ins> a new [`Color`](#types-color) with increased lightness. Alpha is preserved.
 - <ins>Inputs</ins>:
-  - `percentage` (optional) - percent to raise lightness (default `10`).
+  - `options` (optional) - ColorBrightnessOptions:
+    - `amount` (optional) - a percentage-style amount by which to brighten the color (adjusts the selected space's L channel). Default is `10`.
+    - `space` (optional) - the color space to use for the brightness increase calculation: `"HSL" | "LAB" | "LCH"`. Default is `"HSL"`.
 
 ```ts
-new Color('#808080').brighten(20).toHex(); // '#b3b3b3'
+new Color('#808080').brighten({ amount: 20 }).toHex(); // '#b3b3b3'
 ```
 
-#### `darken(percentage = 10): Color`
+#### `darken(options?: ColorBrightnessOptions): Color`
 
-- <ins>Returns</ins> a new [`Color`](#types-color) with decreased HSL lightness.
+- <ins>Returns</ins> a new [`Color`](#types-color) with decreased lightness. Alpha is preserved.
 - <ins>Inputs</ins>:
-  - `percentage` (optional) - percent to lower lightness (default `10`).
+  - `options` (optional) - ColorBrightnessOptions:
+    - `amount` (optional) - a percentage-style amount by which to darken the color (adjusts the selected space's L channel). Default is `10`.
+    - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LAB" | "LCH"`. Default is `"HSL"`.
 
 ```ts
-new Color('#808080').darken(20).toHex(); // '#4d4d4d'
+new Color('#808080').darken({ amount: 20 }).toHex(); // '#4d4d4d'
 ```
 
-#### `saturate(percentage = 10): Color`
+#### `saturate(options?: ColorSaturationOptions): Color`
 
-- <ins>Returns</ins> a new [`Color`](#types-color) with increased HSL saturation.
+- <ins>Returns</ins> a new [`Color`](#types-color) with increased saturation. Alpha is preserved.
 - <ins>Inputs</ins>:
-  - `percentage` (optional) - percent to raise saturation (default `10`).
+  - `options` (optional) - ColorSaturationOptions:
+    - `amount` (optional) - a percentage-style amount by which to saturate the color (adjusts the selected space's H channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
+    - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LCH"`. Default is `"HSL"`.
 
 ```ts
-new Color('hsl(200, 40%, 50%)').saturate(20).toHSLString(); // 'hsl(200, 60%, 50%)'
+new Color('hsl(200, 40%, 50%)').saturate({ amount: 20 }).toHSLString(); // 'hsl(200, 60%, 50%)'
 ```
 
-#### `desaturate(percentage = 10): Color`
+#### `desaturate(options?: ColorSaturationOptions): Color`
 
-- <ins>Returns</ins> a new [`Color`](#types-color) with decreased HSL saturation.
+- <ins>Returns</ins> a new [`Color`](#types-color) with decreased saturation. Alpha is preserved.
 - <ins>Inputs</ins>:
-  - `percentage` (optional) - percent to lower saturation (default `10`).
+  - `options` (optional) - ColorSaturationOptions:
+    - `amount` (optional) - a percentage-style amount by which to desaturate the color (adjusts the selected space's H channel in `"HSL"` space, or C channel in `"LCH"` space). Default is `10`.
+    - `space` (optional) - the color space to use for the brightness decrease calculation: `"HSL" | "LCH"`. Default is `"HSL"`.
 
 ```ts
-new Color('hsl(200, 40%, 50%)').desaturate(20).toHSLString(); // 'hsl(200, 20%, 50%)'
+new Color('hsl(200, 40%, 50%)').desaturate({ amount: 20 }).toHSLString(); // 'hsl(200, 20%, 50%)'
 ```
 
 #### `grayscale(): Color`

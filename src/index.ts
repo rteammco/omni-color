@@ -24,6 +24,12 @@ import type {
   HueInterpolationMode,
 } from './color/gradients';
 import type { ColorHarmony, ColorHarmonyOptions, GrayscaleHandlingMode } from './color/harmonies';
+import type {
+  ColorBrightnessOptions,
+  ColorBrightnessSpace,
+  ColorSaturationOptions,
+  ColorSaturationSpace,
+} from './color/manipulations';
 import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
@@ -48,6 +54,8 @@ export {
   type BlendSpace,
   type CIE94Options,
   Color,
+  ColorBrightnessOptions,
+  type ColorBrightnessSpace,
   ColorCMYK,
   ColorDarknessMode,
   type ColorFormat,
@@ -70,6 +78,8 @@ export {
   ColorPalette,
   ColorRGB,
   ColorRGBA,
+  ColorSaturationOptions,
+  type ColorSaturationSpace,
   ColorSwatch,
   ColorSwatchOptions,
   ColorTemperatureAndLabel,

@@ -54,6 +54,7 @@ import {
   getTetradicHarmonyColors,
   getTriadicHarmonyColors,
 } from './harmonies';
+import type { ColorBrightnessOptions, ColorSaturationOptions } from './manipulations';
 import {
   brightenColor,
   colorToGrayscale,
@@ -403,7 +404,9 @@ export class Color {
   /**
    * Increase the lightness of the color.
    *
-   * @param percentage - Amount to increase in HSL lightness (default `10`).
+   * @param options - Optional {@link ColorBrightnessOptions} to specify the amount and color space.
+   * By default, this brightens the color by 10% in HSL space.
+   *
    * @returns A new {@link Color} with the modified lightness.
    *
    * @example
@@ -411,14 +414,16 @@ export class Color {
    * new Color('#808080').brighten(20).toHex(); // '#b3b3b3'
    * ```
    */
-  brighten(percentage?: number): Color {
-    return brightenColor(this, percentage);
+  brighten(options?: ColorBrightnessOptions): Color {
+    return brightenColor(this, options);
   }
 
   /**
    * Decrease the lightness of the color.
    *
-   * @param percentage - Amount to decrease in HSL lightness (default `10`).
+   * @param options - Optional {@link ColorBrightnessOptions} to specify the amount and color space.
+   * By default, this darkens the color by 10% in HSL space.
+   *
    * @returns A new {@link Color} with the modified lightness.
    *
    * @example
@@ -426,14 +431,16 @@ export class Color {
    * new Color('#808080').darken(20).toHex(); // '#4d4d4d'
    * ```
    */
-  darken(percentage?: number): Color {
-    return darkenColor(this, percentage);
+  darken(options?: ColorBrightnessOptions): Color {
+    return darkenColor(this, options);
   }
 
   /**
    * Increase the saturation of the color.
    *
-   * @param percentage - Amount to increase in HSL saturation (default `10`).
+   * @param options - Optional {@link ColorSaturationOptions} to specify the amount and color space.
+   * By default, this saturates the color by 10% in HSL space.
+   *
    * @returns A new {@link Color} with the modified saturation.
    *
    * @example
@@ -442,14 +449,16 @@ export class Color {
    * // 'hsl(0, 70%, 50%)'
    * ```
    */
-  saturate(percentage?: number): Color {
-    return saturateColor(this, percentage);
+  saturate(options?: ColorSaturationOptions): Color {
+    return saturateColor(this, options);
   }
 
   /**
    * Decrease the saturation of the color.
    *
-   * @param percentage - Amount to decrease in HSL saturation (default `10`).
+   * @param options - Optional {@link ColorSaturationOptions} to specify the amount and color space.
+   * By default, this desaturates the color by 10% in HSL space.
+   *
    * @returns A new {@link Color} with the modified saturation.
    *
    * @example
@@ -458,8 +467,8 @@ export class Color {
    * // 'hsl(0, 30%, 50%)'
    * ```
    */
-  desaturate(percentage?: number): Color {
-    return desaturateColor(this, percentage);
+  desaturate(options?: ColorSaturationOptions): Color {
+    return desaturateColor(this, options);
   }
 
   /**
