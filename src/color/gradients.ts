@@ -1,7 +1,7 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import type { Color } from './color';
-import { toRGB } from './conversions';
 import type { ColorHSL, ColorHSV, ColorLCH, ColorOKLCH, ColorRGB, ColorRGBA } from './formats';
+import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 
 export type ColorGradientSpace = 'RGB' | 'HSL' | 'HSV' | 'LCH' | 'OKLCH';
 export type ColorGradientInterpolation = 'LINEAR' | 'BEZIER';
@@ -60,6 +60,11 @@ const DEFAULT_SPACE: ColorGradientSpace = 'OKLCH';
 const DEFAULT_INTERPOLATION: ColorGradientInterpolation = 'LINEAR';
 const MAX_OKLCH_CHROMA = 0.5;
 const MAX_LCH_CHROMA = 150;
+const LAB_DELTA = 6 / 29;
+const LAB_DELTA_CUBED = LAB_DELTA ** 3;
+const LAB_F_LINEAR_COEFFICIENT = 1 / (3 * LAB_DELTA ** 2);
+const LAB_C_OFFSET = 4 / 29;
+const LAB_KAPPA = 116 * LAB_F_LINEAR_COEFFICIENT;
 
 /**
  * Keep hue values in [0, 360) to avoid discontinuities when wrapping around the
@@ -141,8 +146,109 @@ function interpolateBezierScalar(values: number[], t: number): number {
   return working[0];
 }
 
+function getUnroundedHSL(color: Color): ColorHSL {
+  const { r, g, b } = color.toRGB();
+  const rNorm = r / 255;
+  const gNorm = g / 255;
+  const bNorm = b / 255;
+
+  const max = Math.max(rNorm, gNorm, bNorm);
+  const min = Math.min(rNorm, gNorm, bNorm);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (max !== min) {
+    const delta = max - min;
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+    switch (max) {
+      case rNorm:
+        h = (gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0);
+        break;
+      case gNorm:
+        h = (bNorm - rNorm) / delta + 2;
+        break;
+      case bNorm:
+        h = (rNorm - gNorm) / delta + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return {
+    h: (h * 360 + 360) % 360,
+    s: s * 100,
+    l: l * 100,
+  };
+}
+
+function getUnroundedHSV(color: Color): ColorHSV {
+  const { r, g, b } = color.toRGB();
+  const rNorm = r / 255;
+  const gNorm = g / 255;
+  const bNorm = b / 255;
+
+  const max = Math.max(rNorm, gNorm, bNorm);
+  const min = Math.min(rNorm, gNorm, bNorm);
+  const delta = max - min;
+  let h = 0;
+  let s = 0;
+
+  if (delta !== 0) {
+    switch (max) {
+      case rNorm:
+        h = (gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0);
+        break;
+      case gNorm:
+        h = (bNorm - rNorm) / delta + 2;
+        break;
+      case bNorm:
+        h = (rNorm - gNorm) / delta + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  if (max !== 0) {
+    s = delta / max;
+  }
+
+  return {
+    h: (h * 360 + 360) % 360,
+    s: s * 100,
+    v: max * 100,
+  };
+}
+
+function getUnroundedLCH(color: Color): ColorLCH {
+  const { r, g, b } = color.toRGB();
+  const rLin = srgbChannelToLinear(r, 'SRGB');
+  const gLin = srgbChannelToLinear(g, 'SRGB');
+  const bLin = srgbChannelToLinear(b, 'SRGB');
+
+  let x = rLin * 0.4124 + gLin * 0.3576 + bLin * 0.1805;
+  let y = rLin * 0.2126 + gLin * 0.7152 + bLin * 0.0722;
+  let z = rLin * 0.0193 + gLin * 0.1192 + bLin * 0.9505;
+
+  x /= 0.95047;
+  y /= 1.0;
+  z /= 1.08883;
+
+  const fx = x > LAB_DELTA_CUBED ? Math.cbrt(x) : LAB_F_LINEAR_COEFFICIENT * x + LAB_C_OFFSET;
+  const fy = y > LAB_DELTA_CUBED ? Math.cbrt(y) : LAB_F_LINEAR_COEFFICIENT * y + LAB_C_OFFSET;
+  const fz = z > LAB_DELTA_CUBED ? Math.cbrt(z) : LAB_F_LINEAR_COEFFICIENT * z + LAB_C_OFFSET;
+
+  const l = 116 * fy - 16;
+  const a = 500 * (fx - fy);
+  const b2 = 200 * (fy - fz);
+  const c = Math.sqrt(a * a + b2 * b2);
+  const h = wrapHue((Math.atan2(b2, a) * 180) / Math.PI);
+
+  return { l, c, h };
+}
+
 function getHSLVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
-  const { h, s, l } = color.toHSL();
+  const { h, s, l } = getUnroundedHSL(color);
   if (isCartesian) {
     const rad = (h * Math.PI) / 180;
     return { values: [Math.cos(rad) * s, Math.sin(rad) * s, l], alpha };
@@ -151,7 +257,7 @@ function getHSLVector(color: Color, alpha: number, isCartesian: boolean): Interp
 }
 
 function getHSVVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
-  const { h, s, v } = color.toHSV();
+  const { h, s, v } = getUnroundedHSV(color);
   if (isCartesian) {
     const rad = (h * Math.PI) / 180;
     return { values: [Math.cos(rad) * s, Math.sin(rad) * s, v], alpha };
@@ -160,7 +266,7 @@ function getHSVVector(color: Color, alpha: number, isCartesian: boolean): Interp
 }
 
 function getLCHVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
-  const { l, c, h } = color.toLCH();
+  const { l, c, h } = getUnroundedLCH(color);
   if (isCartesian) {
     const rad = (h * Math.PI) / 180;
     return { values: [l, Math.cos(rad) * c, Math.sin(rad) * c], alpha };
@@ -286,6 +392,175 @@ function vectorToFormat(
   }
 }
 
+function hslToRgbUnrounded(color: ColorHSL): ColorRGB {
+  const h = (((color.h % 360) + 360) % 360) / 360;
+  const s = color.s / 100;
+  const l = color.l / 100;
+
+  if (s === 0) {
+    const channel = l * 255;
+    return { r: channel, g: channel, b: channel };
+  }
+
+  const t2 = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const t1 = 2 * l - t2;
+  const t3 = [h + 1 / 3, h, h - 1 / 3];
+  const channels = t3.map((t) => {
+    let temp = t;
+    if (temp < 0) {
+      temp += 1;
+    }
+    if (temp > 1) {
+      temp -= 1;
+    }
+    if (6 * temp < 1) {
+      return t1 + (t2 - t1) * 6 * temp;
+    }
+    if (2 * temp < 1) {
+      return t2;
+    }
+    if (3 * temp < 2) {
+      return t1 + (t2 - t1) * (2 / 3 - temp) * 6;
+    }
+    return t1;
+  });
+
+  return {
+    r: channels[0] * 255,
+    g: channels[1] * 255,
+    b: channels[2] * 255,
+  };
+}
+
+function hsvToRgbUnrounded(color: ColorHSV): ColorRGB {
+  const h = (((color.h % 360) + 360) % 360) / 60;
+  const s = color.s / 100;
+  const v = color.v / 100;
+  const c = v * s;
+  const x = c * (1 - Math.abs((h % 2) - 1));
+  const m = v - c;
+
+  let r1 = 0;
+  let g1 = 0;
+  let b1 = 0;
+  if (0 <= h && h < 1) {
+    r1 = c;
+    g1 = x;
+  } else if (1 <= h && h < 2) {
+    r1 = x;
+    g1 = c;
+  } else if (2 <= h && h < 3) {
+    g1 = c;
+    b1 = x;
+  } else if (3 <= h && h < 4) {
+    g1 = x;
+    b1 = c;
+  } else if (4 <= h && h < 5) {
+    r1 = x;
+    b1 = c;
+  } else {
+    r1 = c;
+    b1 = x;
+  }
+
+  return {
+    r: (r1 + m) * 255,
+    g: (g1 + m) * 255,
+    b: (b1 + m) * 255,
+  };
+}
+
+function lchToRgbUnrounded(color: ColorLCH): ColorRGB {
+  const hRad = (color.h * Math.PI) / 180;
+  const a = color.c * Math.cos(hRad);
+  const b = color.c * Math.sin(hRad);
+  const fy = (color.l + 16) / 116;
+  const fx = a / 500 + fy;
+  const fz = fy - b / 200;
+  const fx3 = fx ** 3;
+  const fy3 = fy ** 3;
+  const fz3 = fz ** 3;
+  let x = fx3 > LAB_DELTA_CUBED ? fx3 : (fx - LAB_C_OFFSET) / LAB_F_LINEAR_COEFFICIENT;
+  let y = fy3 > LAB_DELTA_CUBED ? fy3 : color.l / LAB_KAPPA;
+  let z = fz3 > LAB_DELTA_CUBED ? fz3 : (fz - LAB_C_OFFSET) / LAB_F_LINEAR_COEFFICIENT;
+  x *= 0.95047;
+  y *= 1.0;
+  z *= 1.08883;
+
+  const rLin = x * 3.2406 + y * -1.5372 + z * -0.4986;
+  const gLin = x * -0.9689 + y * 1.8758 + z * 0.0415;
+  const bLin = x * 0.0557 + y * -0.204 + z * 1.057;
+  return {
+    r: linearChannelToSrgb(rLin, 'SRGB'),
+    g: linearChannelToSrgb(gLin, 'SRGB'),
+    b: linearChannelToSrgb(bLin, 'SRGB'),
+  };
+}
+
+function oklchToRgbUnrounded(color: ColorOKLCH): ColorRGB {
+  const hRad = (color.h * Math.PI) / 180;
+  const a = color.c * Math.cos(hRad);
+  const b = color.c * Math.sin(hRad);
+  const l_ = color.l + 0.3963377774 * a + 0.2158037573 * b;
+  const m_ = color.l - 0.1055613458 * a - 0.0638541728 * b;
+  const s_ = color.l - 0.0894841775 * a - 1.291485548 * b;
+  const l = l_ ** 3;
+  const m = m_ ** 3;
+  const s = s_ ** 3;
+  const rLin = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+  const gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+  const bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
+  return {
+    r: linearChannelToSrgb(rLin, 'SRGB'),
+    g: linearChannelToSrgb(gLin, 'SRGB'),
+    b: linearChannelToSrgb(bLin, 'SRGB'),
+  };
+}
+
+function formatToRGB(
+  format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLCH,
+  space: ColorGradientSpace,
+  clamp: boolean
+): ColorRGB {
+  switch (space) {
+    case 'HSL': {
+      const { r, g, b } = hslToRgbUnrounded(format as ColorHSL);
+      return {
+        r: clamp ? clampValue(r, 0, 255) : r,
+        g: clamp ? clampValue(g, 0, 255) : g,
+        b: clamp ? clampValue(b, 0, 255) : b,
+      };
+    }
+    case 'HSV': {
+      const { r, g, b } = hsvToRgbUnrounded(format as ColorHSV);
+      return {
+        r: clamp ? clampValue(r, 0, 255) : r,
+        g: clamp ? clampValue(g, 0, 255) : g,
+        b: clamp ? clampValue(b, 0, 255) : b,
+      };
+    }
+    case 'LCH': {
+      const { r, g, b } = lchToRgbUnrounded(format as ColorLCH);
+      return {
+        r: clamp ? clampValue(r, 0, 255) : r,
+        g: clamp ? clampValue(g, 0, 255) : g,
+        b: clamp ? clampValue(b, 0, 255) : b,
+      };
+    }
+    case 'OKLCH': {
+      const { r, g, b } = oklchToRgbUnrounded(format as ColorOKLCH);
+      return {
+        r: clamp ? clampValue(r, 0, 255) : r,
+        g: clamp ? clampValue(g, 0, 255) : g,
+        b: clamp ? clampValue(b, 0, 255) : b,
+      };
+    }
+    case 'RGB':
+    default:
+      return format as ColorRGB;
+  }
+}
+
 function getStopCount(stops?: number): number {
   if (stops === undefined) {
     return DEFAULT_SCALE_STOPS;
@@ -329,7 +604,7 @@ function interpolateLinearStops({
       clamp,
       isCartesian
     );
-    results.push({ ...toRGB(format), a: +clampedAlpha.toFixed(3) });
+    results.push({ ...formatToRGB(format, space, clamp), a: +clampedAlpha.toFixed(3) });
   }
 
   return results;
@@ -365,7 +640,7 @@ function interpolateBezierStops({
       clamp,
       isCartesian
     );
-    results.push({ ...toRGB(format), a: +clampedAlpha.toFixed(3) });
+    results.push({ ...formatToRGB(format, space, clamp), a: +clampedAlpha.toFixed(3) });
   }
 
   return results;
@@ -461,6 +736,7 @@ export function createColorGradient(
     DEFAULT_INTERPOLATION) as ColorGradientInterpolation;
   const clamp = options.clamp ?? true;
   const easing = getEasingFunction(options.easing);
+  const isBezier = interpolation === 'BEZIER';
 
   // Determine Hue Interpolation Mode
   // Default to 'SHORTEST' for Polar spaces, 'CARTESIAN' (legacy) for RGB or if explicit.
@@ -469,7 +745,9 @@ export function createColorGradient(
   let hueMode = options.hueInterpolationMode?.toUpperCase() as HueInterpolationMode | undefined;
 
   if (!hueMode) {
-    if (space === 'RGB') {
+    if (isBezier && space === 'LCH') {
+      hueMode = 'CARTESIAN';
+    } else if (space === 'RGB') {
       hueMode = 'CARTESIAN';
     } else {
       hueMode = 'SHORTEST';

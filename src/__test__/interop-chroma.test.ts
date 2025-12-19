@@ -134,6 +134,63 @@ describe('Color interoperability with chroma-js', () => {
     });
   });
 
+  describe('gradient parity with chroma-js', () => {
+    it('matches linear LCH gradients for two-stop anchors', () => {
+      const twoStopOmniGradient = Color.createInterpolatedGradient(['#ff0000', '#0000ff'], {
+        space: 'LCH',
+        stops: 5,
+      });
+      const twoStopChromaGradient = chroma.scale(['#ff0000', '#0000ff']).mode('lch').colors(5);
+
+      twoStopOmniGradient.forEach((color, index) => {
+        expectSimilarRGBAValues(color.toRGBA(), chroma(twoStopChromaGradient[index]).rgba(), 1);
+      });
+    });
+
+    it('matches linear LCH gradients for three-stop anchors', () => {
+      const threeStopOmniGradient = Color.createInterpolatedGradient(
+        ['#ff0000', '#00ff00', '#0000ff'],
+        { space: 'LCH', stops: 7 }
+      );
+      const threeStopChromaGradient = chroma
+        .scale(['#ff0000', '#00ff00', '#0000ff'])
+        .mode('lch')
+        .colors(7);
+
+      expect(threeStopOmniGradient.map((color) => color.toHex())).toEqual(
+        threeStopChromaGradient.map((hex) => hex.toLowerCase())
+      );
+    });
+
+    it('matches LCH bezier gradients against chroma-js bezier scale', () => {
+      const bezierAnchors = ['#f43f5e', '#fbbf24', '#22d3ee'];
+      const bezierOmniGradient = Color.createInterpolatedGradient(bezierAnchors, {
+        interpolation: 'BEZIER',
+        space: 'LCH',
+        stops: 6,
+      });
+      const bezierChromaGradient = chroma.bezier(bezierAnchors).scale().mode('lch').colors(6);
+
+      expect(bezierOmniGradient.map((color) => color.toHex())).toEqual(
+        bezierChromaGradient.map((hex) => hex.toLowerCase())
+      );
+    });
+
+    it('wraps hues across 0° when using shortest-path HSL interpolation', () => {
+      const hueWrappedAnchors = ['hsl(350, 100%, 50%)', 'hsl(10, 100%, 50%)'];
+      const wrappedOmniGradient = Color.createInterpolatedGradient(hueWrappedAnchors, {
+        space: 'HSL',
+        stops: 5,
+        hueInterpolationMode: 'SHORTEST',
+      });
+      const wrappedChromaGradient = chroma.scale(hueWrappedAnchors).mode('hsl').colors(5);
+
+      wrappedOmniGradient.forEach((color, index) => {
+        expectSimilarRGBAValues(color.toRGBA(), chroma(wrappedChromaGradient[index]).rgba(), 1);
+      });
+    });
+  });
+
   describe('average parity with chroma-js', () => {
     // TODO: Align LINEAR_RGB averaging (averageColorsInLinearRgb) with chroma-js lrgb output.
     it.skip('matches LINEAR_RGB averaging defaults for primary colors', () => {
