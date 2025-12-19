@@ -75,11 +75,11 @@ describe('Color interoperability with chroma-js', () => {
         space: 'LINEAR_RGB',
         weights: [0.5, 0.25, 0.25],
       });
-      const chromaLinear = chroma.average(['#ff0000', '#00ff00', '#0000ff'], 'lrgb', [
-        0.5,
-        0.25,
-        0.25,
-      ]);
+      const chromaLinear = chroma.average(
+        ['#ff0000', '#00ff00', '#0000ff'],
+        'lrgb',
+        [0.5, 0.25, 0.25]
+      );
 
       expect(omniLinear.toHex()).toBe(chromaLinear.hex().toLowerCase());
       expect(omniLinear.toRGBA()).toEqual(chromaRGBArrayToObj(chromaLinear.rgba()));
@@ -109,7 +109,9 @@ describe('Color interoperability with chroma-js', () => {
 
       const cyanCmyk = chroma('#00ffff').cmyk();
       const yellowCmyk = chroma('#ffff00').cmyk();
-      const averagedCmyk = cyanCmyk.map((channel, index) => 0.5 * channel + 0.5 * yellowCmyk[index]);
+      const averagedCmyk = cyanCmyk.map(
+        (channel, index) => 0.5 * channel + 0.5 * yellowCmyk[index]
+      );
       const [c, m, y, k] = averagedCmyk;
       const chromaSubtractiveApproximation = chroma.cmyk(c, m, y, k);
 
@@ -170,9 +172,7 @@ describe('Color interoperability with chroma-js', () => {
       });
 
       it('brightens a translucent teal with the default amount', () => {
-        const omniRgba = new Color('rgba(0, 128, 128, 0.35)')
-          .brighten({ space: 'LAB' })
-          .toRGBA();
+        const omniRgba = new Color('rgba(0, 128, 128, 0.35)').brighten({ space: 'LAB' }).toRGBA();
         const chromaRgba = chroma('rgba(0, 128, 128, 0.35)').brighten().rgba();
         expect(omniRgba).toEqual(chromaRGBArrayToObj(chromaRgba));
       });
@@ -198,9 +198,7 @@ describe('Color interoperability with chroma-js', () => {
       });
 
       it('darkens a warm translucent yellow with the default delta', () => {
-        const omniRgba = new Color('rgba(255, 200, 0, 0.75)')
-          .darken({ space: 'LAB' })
-          .toRGBA();
+        const omniRgba = new Color('rgba(255, 200, 0, 0.75)').darken({ space: 'LAB' }).toRGBA();
         const chromaRgba = chroma('rgba(255, 200, 0, 0.75)').darken().rgba();
         expect(omniRgba).toEqual(chromaRGBArrayToObj(chromaRgba));
       });
@@ -228,9 +226,7 @@ describe('Color interoperability with chroma-js', () => {
       });
 
       it('saturates a translucent violet using the default amount', () => {
-        const omniRgba = new Color('rgba(120, 80, 200, 0.5)')
-          .saturate({ space: 'LCH' })
-          .toRGBA();
+        const omniRgba = new Color('rgba(120, 80, 200, 0.5)').saturate({ space: 'LCH' }).toRGBA();
         const chromaRgba = chroma('rgba(120, 80, 200, 0.5)').saturate().rgba();
         expect(omniRgba).toEqual(chromaRGBArrayToObj(chromaRgba));
       });

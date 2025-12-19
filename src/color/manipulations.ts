@@ -2,70 +2,43 @@ import { clampValue } from '../utils';
 import { Color } from './color';
 import type { ColorLCH } from './formats';
 
-export type ColorManipulationSpace = 'HSL' | 'LAB' | 'LCH';
+export type ColorBrightnessSpace = 'HSL' | 'LAB' | 'LCH';
 
-export interface ColorManipulationOptions {
+export interface ColorBrightnessOptions {
   amount?: number;
-  space?: ColorManipulationSpace;
+  space?: ColorBrightnessSpace;
 }
 
-type ManipulationInput = number | ColorManipulationOptions | undefined;
+export type ColorSaturationSpace = 'HSL' | 'LCH';
+
+export interface ColorSaturationOptions {
+  amount?: number;
+  space?: ColorSaturationSpace;
+}
 
 const DEFAULT_MANIPULATION_AMOUNT = 10;
-const CHROMA_LAB_K = 18;
+const CHROMA_LAB_K = 18; // TODO: this is just to match chroma.js scale value... rename and replace with option
 
-function isColorManipulationOptions(
-  value: ManipulationInput
-): value is ColorManipulationOptions {
-  return Boolean(value) && typeof value === 'object';
+function getColorBrightnessOptions(
+  options?: ColorBrightnessOptions
+): Required<ColorBrightnessOptions> {
+  const { amount = DEFAULT_MANIPULATION_AMOUNT, space = 'HSL' } = options ?? {};
+  return { amount, space };
 }
 
-function getNormalizedAmount(amount?: number): number {
-  if (typeof amount !== 'number') {
-    return DEFAULT_MANIPULATION_AMOUNT;
-  }
-  if (!Number.isFinite(amount)) {
-    return DEFAULT_MANIPULATION_AMOUNT;
-  }
-  return amount;
+function getColorSaturationOptions(
+  options?: ColorSaturationOptions
+): Required<ColorSaturationOptions> {
+  const { amount = DEFAULT_MANIPULATION_AMOUNT, space = 'HSL' } = options ?? {};
+  return { amount, space };
 }
 
-function normalizeManipulationOptions(
-  amountOrOptions?: ManipulationInput
-): { amount: number; space: ColorManipulationSpace } {
-  if (typeof amountOrOptions === 'number') {
-    return { amount: getNormalizedAmount(amountOrOptions), space: 'HSL' };
-  }
-
-  if (isColorManipulationOptions(amountOrOptions)) {
-    const { amount, space } = amountOrOptions;
-    const normalizedSpace: ColorManipulationSpace =
-      space === 'LAB' || space === 'LCH' ? space : 'HSL';
-
-    return {
-      amount: getNormalizedAmount(amount),
-      space: normalizedSpace,
-    };
-  }
-
-  return { amount: DEFAULT_MANIPULATION_AMOUNT, space: 'HSL' };
-}
-
-function getLabLikeDelta(amount: number): number {
+function getLABLikeDelta(amount: number): number {
   const chromaStep = amount / 10;
   return CHROMA_LAB_K * chromaStep;
 }
 
-function createColorWithAlpha(color: Color, format: ConstructorParameters<typeof Color>[0]): Color {
-  const alpha = color.getAlpha();
-  const updatedColor = new Color(format);
-  if (alpha === 1) {
-    return updatedColor;
-  }
-  return updatedColor.setAlpha(alpha);
-}
-
-function normalizeLch(lch: ColorLCH): ColorLCH {
+function normalizeLCH(lch: ColorLCH): ColorLCH {
   const sanitizedChroma = Math.abs(lch.c) < 0.01 ? 0 : lch.c;
   const sanitizedHue = Number.isFinite(lch.h) ? lch.h : 0;
   return {
@@ -85,64 +58,78 @@ export function spinColorHue(color: Color, degrees: number): Color {
   return new Color(hsl);
 }
 
-export function brightenColor(color: Color, amountOrOptions?: ManipulationInput): Color {
-  const { amount, space } = normalizeManipulationOptions(amountOrOptions);
-  if (space === 'HSL') {
-    const hsla = color.toHSLA();
-    hsla.l = clampValue(hsla.l + amount, 0, 100);
-    return new Color(hsla);
+export function brightenColor(color: Color, options?: ColorBrightnessOptions): Color {
+  const { amount, space } = getColorBrightnessOptions(options);
+  switch (space) {
+    case 'LAB': {
+      const lab = color.toLAB();
+      const updatedL = clampValue(lab.l + getLABLikeDelta(amount), 0, 100);
+      return new Color({ ...lab, l: updatedL }).setAlpha(color.getAlpha());
+    }
+    case 'LCH': {
+      const lch = normalizeLCH(color.toLCH());
+      const updatedL = clampValue(lch.l + getLABLikeDelta(amount), 0, 100);
+      return new Color({ ...lch, l: updatedL }).setAlpha(color.getAlpha());
+    }
+    case 'HSL':
+    default: {
+      const hsla = color.toHSLA();
+      hsla.l = clampValue(hsla.l + amount, 0, 100);
+      return new Color(hsla);
+    }
   }
-
-  if (space === 'LAB') {
-    const lab = color.toLAB();
-    const updatedL = clampValue(lab.l + getLabLikeDelta(amount), 0, 100);
-    return createColorWithAlpha(color, { ...lab, l: updatedL });
-  }
-
-  const lch = normalizeLch(color.toLCH());
-  const updatedL = clampValue(lch.l + getLabLikeDelta(amount), 0, 100);
-  return createColorWithAlpha(color, { ...lch, l: updatedL });
 }
 
-export function darkenColor(color: Color, amountOrOptions?: ManipulationInput): Color {
-  const { amount, space } = normalizeManipulationOptions(amountOrOptions);
-  if (space === 'HSL') {
-    return brightenColor(color, -amount);
+export function darkenColor(color: Color, options?: ColorBrightnessOptions): Color {
+  const { amount, space } = getColorBrightnessOptions(options);
+  switch (space) {
+    case 'LAB': {
+      const lab = color.toLAB();
+      const updatedL = clampValue(lab.l - getLABLikeDelta(amount), 0, 100);
+      return new Color({ ...lab, l: updatedL }).setAlpha(color.getAlpha());
+    }
+    case 'LCH': {
+      const lch = normalizeLCH(color.toLCH());
+      const updatedL = clampValue(lch.l - getLABLikeDelta(amount), 0, 100);
+      return new Color({ ...lch, l: updatedL }).setAlpha(color.getAlpha());
+    }
+    case 'HSL':
+    default: {
+      return brightenColor(color, { amount: -amount, space: 'HSL' });
+    }
   }
-
-  if (space === 'LAB') {
-    const lab = color.toLAB();
-    const updatedL = clampValue(lab.l - getLabLikeDelta(amount), 0, 100);
-    return createColorWithAlpha(color, { ...lab, l: updatedL });
-  }
-
-  const lch = normalizeLch(color.toLCH());
-  const updatedL = clampValue(lch.l - getLabLikeDelta(amount), 0, 100);
-  return createColorWithAlpha(color, { ...lch, l: updatedL });
 }
 
-export function saturateColor(color: Color, amountOrOptions?: ManipulationInput): Color {
-  const { amount, space } = normalizeManipulationOptions(amountOrOptions);
-  if (space === 'HSL') {
-    const hsla = color.toHSLA();
-    hsla.s = clampValue(hsla.s + amount, 0, 100);
-    return new Color(hsla);
+export function saturateColor(color: Color, options?: ColorSaturationOptions): Color {
+  const { amount, space } = getColorSaturationOptions(options);
+  switch (space) {
+    case 'LCH': {
+      const lch = normalizeLCH(color.toLCH());
+      const updatedC = Math.max(0, lch.c + getLABLikeDelta(amount));
+      return new Color({ ...lch, c: updatedC }).setAlpha(color.getAlpha());
+    }
+    case 'HSL':
+    default: {
+      const hsla = color.toHSLA();
+      hsla.s = clampValue(hsla.s + amount, 0, 100);
+      return new Color(hsla);
+    }
   }
-
-  const lch = normalizeLch(color.toLCH());
-  const updatedC = Math.max(0, lch.c + getLabLikeDelta(amount));
-  return createColorWithAlpha(color, { ...lch, c: updatedC });
 }
 
-export function desaturateColor(color: Color, amountOrOptions?: ManipulationInput): Color {
-  const { amount, space } = normalizeManipulationOptions(amountOrOptions);
-  if (space === 'HSL') {
-    return saturateColor(color, -amount);
+export function desaturateColor(color: Color, options?: ColorSaturationOptions): Color {
+  const { amount, space } = getColorSaturationOptions(options);
+  switch (space) {
+    case 'LCH': {
+      const lch = normalizeLCH(color.toLCH());
+      const updatedC = Math.max(0, lch.c - getLABLikeDelta(amount));
+      return new Color({ ...lch, c: updatedC }).setAlpha(color.getAlpha());
+    }
+    case 'HSL':
+    default: {
+      return saturateColor(color, { amount: -amount, space: 'HSL' });
+    }
   }
-
-  const lch = normalizeLch(color.toLCH());
-  const updatedC = Math.max(0, lch.c - getLabLikeDelta(amount));
-  return createColorWithAlpha(color, { ...lch, c: updatedC });
 }
 
 export function colorToGrayscale(color: Color): Color {
