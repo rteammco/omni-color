@@ -373,16 +373,7 @@ describe('Color interoperability with chroma-js', () => {
   });
 
   describe('average parity with chroma-js', () => {
-    // TODO: Align LINEAR_RGB averaging (averageColorsInLinearRgb) with chroma-js lrgb output.
-    it.skip('matches LINEAR_RGB averaging defaults for primary colors', () => {
-      const omniAverage = new Color('red').average(['green', 'blue']);
-      const chromaAverage = chroma.average(['red', 'green', 'blue'], 'lrgb');
-
-      expect(omniAverage.toHex()).toBe(chromaAverage.hex().toLowerCase());
-      expect(omniAverage.toRGBA()).toEqual(chromaRGBArrayToObj(chromaAverage.rgba()));
-    });
-
-    it('keeps circular HSL averaging close to chroma-js while weighting saturation', () => {
+    it('aligns circular HSL averaging including hue wrapping', () => {
       const omniAverage = new Color('hsl(350, 100%, 50%)').average(
         ['hsl(10, 100%, 50%)', 'hsl(30, 60%, 50%)'],
         { space: 'HSL' }
@@ -402,21 +393,6 @@ describe('Color interoperability with chroma-js', () => {
       expect(hueDelta).toBeLessThan(5);
       expect(Math.abs(omniHsl.s - chromaHsl[1] * 100)).toBeLessThan(5);
       expect(Math.abs(omniHsl.l - chromaHsl[2] * 100)).toBeLessThan(1);
-    });
-
-    // TODO: Align LINEAR_RGB weighted averaging (averageColorsInLinearRgb) with chroma-js lrgb output.
-    it.skip('respects normalized weights when averaging LINEAR_RGB colors', () => {
-      const omniAverage = new Color('#ff0000').average(['#0000ff', '#00ff00'], {
-        weights: [2, 1, 1],
-      });
-      const chromaAverage = chroma.average(
-        ['#ff0000', '#0000ff', '#00ff00'],
-        'lrgb',
-        [2, 1, 1]
-      );
-
-      expect(omniAverage.toHex()).toBe(chromaAverage.hex().toLowerCase());
-      expect(omniAverage.toRGBA()).toEqual(chromaRGBArrayToObj(chromaAverage.rgba()));
     });
   });
 

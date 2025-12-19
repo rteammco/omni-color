@@ -208,6 +208,49 @@ describe('Color interoperability with tinycolor2', () => {
     });
   });
 
+  describe('matches tinycolor mixing defaults in RGB space', () => {
+    it('aligns 50/50 mixes with tinycolor defaults', () => {
+      const base = new Color('#ff0000');
+      const other = '#0000ff';
+
+      const mixed = base.mix([other], { space: 'RGB', weights: [0.5, 0.5] });
+      const tinyMixed = tinycolor.mix(base.toHex(), other);
+
+      expect(mixed.toHex()).toBe(tinyMixed.toHexString().toLowerCase());
+      expectSimilarRGBAValues(mixed.toRGBA(), tinyMixed);
+    });
+
+    it('respects tinycolor weight ordering for asymmetric amounts', () => {
+      const base = '#ff0000';
+      const other = '#0000ff';
+
+      const mixed25 = new Color(base).mix([other], { space: 'RGB', weights: [0.75, 0.25] });
+      const tinyMixed25 = tinycolor.mix(base, other, 25);
+      expect(mixed25.toHex()).toBe(tinyMixed25.toHexString().toLowerCase());
+      expectSimilarRGBAValues(mixed25.toRGBA(), tinyMixed25);
+
+      const mixed75 = new Color(base).mix([other], { space: 'RGB', weights: [0.25, 0.75] });
+      const tinyMixed75 = tinycolor.mix(base, other, 75);
+      expect(mixed75.toHex()).toBe(tinyMixed75.toHexString().toLowerCase());
+      expectSimilarRGBAValues(mixed75.toRGBA(), tinyMixed75);
+    });
+
+    it('mixes rgba inputs consistently with tinycolor defaults', () => {
+      const base = 'rgba(255, 0, 0, 0.6)';
+      const other = 'rgba(0, 0, 255, 0.2)';
+
+      const mixed = new Color(base).mix([other], { space: 'RGB', weights: [0.5, 0.5] });
+      const tinyMixed = tinycolor.mix(base, other);
+      expect(mixed.toHex8()).toBe(tinyMixed.toHex8String().toLowerCase());
+      expectSimilarRGBAValues(mixed.toRGBA(), tinyMixed);
+
+      const skewed = new Color(base).mix([other], { space: 'RGB', weights: [0.75, 0.25] });
+      const tinySkewed = tinycolor.mix(base, other, 25);
+      expect(skewed.toHex8()).toBe(tinySkewed.toHex8String().toLowerCase());
+      expectSimilarRGBAValues(skewed.toRGBA(), tinySkewed);
+    });
+  });
+
   describe('aligns basic HSL manipulations', () => {
     it('lightens and darkens in step with tinycolor defaults', () => {
       const base = new Color('#556b2f');
@@ -240,6 +283,60 @@ describe('Color interoperability with tinycolor2', () => {
 
       expectSimilarRGBAValues(spun.toRGB(), spunTiny);
       expect(spun.getAlpha()).toBeCloseTo(spunTiny.getAlpha(), 5);
+    });
+
+    it('tracks tinycolor manipulation amounts while maintaining alpha', () => {
+      const opaqueBase = new Color('#4682b4');
+      const translucentBase = new Color('rgba(70, 130, 180, 0.42)');
+
+      const lightened = opaqueBase.brighten({ amount: 18 });
+      const darkened = opaqueBase.darken({ amount: 22 });
+      const saturated = opaqueBase.saturate({ amount: 35 });
+      const desaturated = opaqueBase.desaturate({ amount: 48 });
+      const grayscaled = opaqueBase.grayscale();
+      const spun = opaqueBase.spin(-75);
+
+      const tinyLightened = tinycolor('#4682b4').lighten(18);
+      const tinyDarkened = tinycolor('#4682b4').darken(22);
+      const tinySaturated = tinycolor('#4682b4').saturate(35);
+      const tinyDesaturated = tinycolor('#4682b4').desaturate(48);
+      const tinyGrayscaled = tinycolor('#4682b4').greyscale();
+      const tinySpun = tinycolor('#4682b4').spin(-75);
+
+      expectSimilarRGBAValues(lightened.toRGB(), tinyLightened);
+      expectSimilarRGBAValues(darkened.toRGB(), tinyDarkened);
+      expectSimilarRGBAValues(saturated.toRGB(), tinySaturated);
+      expectSimilarRGBAValues(desaturated.toRGB(), tinyDesaturated);
+      expectSimilarRGBAValues(grayscaled.toRGB(), tinyGrayscaled);
+      expectSimilarRGBAValues(spun.toRGB(), tinySpun);
+
+      const translucentLightened = translucentBase.brighten({ amount: 12 });
+      const translucentDarkened = translucentBase.darken({ amount: 14 });
+      const translucentSaturated = translucentBase.saturate({ amount: 20 });
+      const translucentDesaturated = translucentBase.desaturate({ amount: 26 });
+      const translucentGrayscaled = translucentBase.grayscale();
+      const translucentSpun = translucentBase.spin(40);
+
+      const tinyTranslucentLightened = tinycolor('rgba(70, 130, 180, 0.42)').lighten(12);
+      const tinyTranslucentDarkened = tinycolor('rgba(70, 130, 180, 0.42)').darken(14);
+      const tinyTranslucentSaturated = tinycolor('rgba(70, 130, 180, 0.42)').saturate(20);
+      const tinyTranslucentDesaturated = tinycolor('rgba(70, 130, 180, 0.42)').desaturate(26);
+      const tinyTranslucentGrayscaled = tinycolor('rgba(70, 130, 180, 0.42)').greyscale();
+      const tinyTranslucentSpun = tinycolor('rgba(70, 130, 180, 0.42)').spin(40);
+
+      expectSimilarRGBAValues(translucentLightened.toRGBA(), tinyTranslucentLightened);
+      expectSimilarRGBAValues(translucentDarkened.toRGBA(), tinyTranslucentDarkened);
+      expectSimilarRGBAValues(translucentSaturated.toRGBA(), tinyTranslucentSaturated);
+      expectSimilarRGBAValues(translucentDesaturated.toRGBA(), tinyTranslucentDesaturated);
+      expectSimilarRGBAValues(translucentGrayscaled.toRGBA(), tinyTranslucentGrayscaled);
+      expectSimilarRGBAValues(translucentSpun.toRGBA(), tinyTranslucentSpun);
+
+      expect(translucentLightened.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentDarkened.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentSaturated.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentDesaturated.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentGrayscaled.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentSpun.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
     });
   });
 
@@ -336,9 +433,9 @@ describe('Color interoperability with tinycolor2', () => {
       );
       expectComponentArraysClose(
         getNumericValuesFromString(
-          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(hsva.v)}% / ${formatDecimal(
-            hsva.a
-          )})`
+          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(
+            hsva.v
+          )}% / ${formatDecimal(hsva.a)})`
         ),
         tinyHsvStringValues
       );
