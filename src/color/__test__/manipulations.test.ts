@@ -90,6 +90,47 @@ describe('brightenColor', () => {
     expect(smallerScale.toHex()).toBe('#81e2e1');
     expect(smallerScale.toRGBA().a).toBeCloseTo(0.4, 5);
   });
+
+  it('honors fractional HSL adjustments when options are explicitly provided', () => {
+    const base = new Color('#123456');
+    const brightened = brightenColor(base, { amount: 7.5, space: 'HSL' });
+
+    expect(brightened.toHex()).toBe('#194674');
+    expect(brightened).not.toBe(base);
+    expect(base.toHex()).toBe('#123456');
+  });
+
+  it('applies LAB deltas scaled by labScale while keeping alpha intact', () => {
+    const base = new Color({ l: 50, a: 0, b: 0 }).setAlpha(0.8);
+    const brightened = brightenColor(base, { space: 'LAB', amount: 5, labScale: 10 });
+    const brightenedLAB = brightened.toLAB();
+
+    expect(brightenedLAB.l).toBeCloseTo(55.148, 3);
+    expect(brightened.toHex()).toBe('#848484');
+    expect(brightened.toRGBA().a).toBeCloseTo(0.8, 5);
+    expect(base.toHex()).toBe('#777777');
+  });
+
+  it('supports LCH adjustments with custom LAB-like scaling', () => {
+    const base = new Color({ l: 40, c: 20, h: 250 });
+    const brightened = brightenColor(base, { space: 'LCH', amount: 25, labScale: 8 });
+    const brightenedLCH = brightened.toLCH();
+
+    expect(brightened.toHex()).toBe('#6d96b1');
+    expect(brightenedLCH.l).toBeCloseTo(60.103, 3);
+    expect(brightenedLCH.c).toBeCloseTo(19.843, 3);
+    expect(brightenedLCH.h).toBeCloseTo(249.226, 3);
+  });
+
+  it('normalizes near-neutral inputs before brightening in LCH space', () => {
+    const gray = new Color('#808080');
+    const brightened = brightenColor(gray, { space: 'LCH', amount: 10 });
+    const lch = brightened.toLCH();
+
+    expect(lch.c).toBeLessThan(0.02);
+    expect(Number.isFinite(lch.h)).toBe(true);
+    expect(gray.toHex()).toBe('#808080');
+  });
 });
 
 describe('darkenColor', () => {
@@ -119,6 +160,34 @@ describe('darkenColor', () => {
     expect(darkenColor(gray, { space: 'LCH', amount: 20 }).toHex()).toBe('#2b2b2b');
     expect(darkenColor(gray, { space: 'LCH', amount: 20, labScale: 10 }).toHex()).toBe('#4f4f4f');
   });
+
+  it('handles fractional HSL adjustments without mutating the source color', () => {
+    const parchment = new Color('#f0eedd');
+    const darkened = darkenColor(parchment, { amount: 12.5 });
+
+    expect(darkened.toHex()).toBe('#dcd8af');
+    expect(parchment.toHex()).toBe('#f0eedd');
+  });
+
+  it('applies LAB deltas with custom scaling and preserves transparency', () => {
+    const base = new Color({ l: 45, a: -5, b: 15 }).setAlpha(0.65);
+    const darkened = darkenColor(base, { space: 'LAB', amount: 15, labScale: 5 });
+    const darkenedLAB = darkened.toLAB();
+
+    expect(darkenedLAB.l).toBeCloseTo(37.583, 3);
+    expect(darkened.toHex8()).toBe('#5a5a40a6');
+    expect(base.toHex8()).toBe('#6c6c51a6');
+  });
+
+  it('normalizes near-grayscale hues before darkening in LCH space', () => {
+    const gray = new Color('#808080');
+    const darkened = darkenColor(gray, { space: 'LCH', amount: 25 });
+    const lch = darkened.toLCH();
+
+    expect(lch.c).toBeLessThan(0.01);
+    expect(Number.isFinite(lch.h)).toBe(true);
+    expect(gray.toHex()).toBe('#808080');
+  });
 });
 
 describe('saturateColor', () => {
@@ -147,6 +216,35 @@ describe('saturateColor', () => {
       '#00b1dd'
     );
   });
+
+  it('returns a new color when the HSL delta is zero while keeping alpha', () => {
+    const base = new Color('rgba(170, 119, 51, 0.4)');
+    const saturated = saturateColor(base, { amount: 0, space: 'HSL' });
+
+    expect(saturated.toHex8()).toBe('#a9763266');
+    expect(base.toHex8()).toBe('#aa773366');
+    expect(saturated).not.toBe(base);
+  });
+
+  it('clamps LCH chroma to zero for large negative adjustments', () => {
+    const paleGreen = new Color({ l: 60, c: 5, h: 120 });
+    const saturated = saturateColor(paleGreen, { space: 'LCH', amount: -60 });
+    const saturatedLCH = saturated.toLCH();
+
+    expect(saturated.toHex()).toBe('#919191');
+    expect(saturatedLCH.c).toBeLessThan(0.02);
+    expect(Number.isFinite(saturatedLCH.h)).toBe(true);
+  });
+
+  it('scales LCH chroma shifts based on labScale', () => {
+    const base = new Color('hsl(200, 35%, 50%)');
+    const defaultScale = saturateColor(base, { space: 'LCH', amount: 30 });
+    const smallScale = saturateColor(base, { space: 'LCH', amount: 30, labScale: 8 });
+
+    expect(defaultScale.toHex()).toBe('#009dff');
+    expect(smallScale.toHex()).toBe('#0095d2');
+    expect(base.toHex()).toBe('#538eac');
+  });
 });
 
 describe('desaturateColor', () => {
@@ -172,6 +270,32 @@ describe('desaturateColor', () => {
     expect(smallerScale.toHex()).toBe('#7659a7');
     expect(smallerScale.toRGBA().a).toBeCloseTo(0.5, 5);
   });
+
+  it('clamps saturation to gray for extreme HSL reductions', () => {
+    const vividOrange = new Color('#ff8800');
+    const desaturated = desaturateColor(vividOrange, { amount: 200 });
+
+    expect(desaturated.toHex()).toBe('#808080');
+    expect(vividOrange.toHex()).toBe('#ff8800');
+  });
+
+  it('normalizes hue after chroma collapses in LCH space', () => {
+    const mutedCyan = new Color({ l: 55, c: 2, h: 180 });
+    const desaturated = desaturateColor(mutedCyan, { space: 'LCH', amount: 15 });
+    const desaturatedLCH = desaturated.toLCH();
+
+    expect(desaturated.toHex()).toBe('#848484');
+    expect(desaturatedLCH.c).toBeLessThan(0.02);
+    expect(Number.isFinite(desaturatedLCH.h)).toBe(true);
+  });
+
+  it('preserves alpha when desaturating translucent colors', () => {
+    const translucentBrown = new Color('rgba(120, 60, 30, 0.2)');
+    const desaturated = desaturateColor(translucentBrown, { amount: 20 });
+
+    expect(desaturated.toHex8()).toBe('#68402c33');
+    expect(translucentBrown.toHex8()).toBe('#783c1e33');
+  });
 });
 
 describe('colorToGrayscale', () => {
@@ -188,5 +312,14 @@ describe('colorToGrayscale', () => {
     expect(colorToGrayscale(black).toHex()).toBe('#000000');
     expect(white.toHex()).toBe('#ffffff');
     expect(black.toHex()).toBe('#000000');
+  });
+
+  it('preserves alpha while removing saturation', () => {
+    const translucentBlue = new Color('rgba(50, 100, 150, 0.25)');
+    const gray = colorToGrayscale(translucentBlue);
+
+    expect(gray.toHex()).toBe('#636363');
+    expect(gray.toRGBA().a).toBeCloseTo(0.25, 5);
+    expect(translucentBlue.toHex8()).toBe('#32649640');
   });
 });
