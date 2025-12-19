@@ -351,7 +351,7 @@ new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 
 #### `spin(degrees: number): Color`
 
-- <ins>Returns</ins> a new [`Color`](#types-color) with its hue rotated in HSL space (wraps at 0–360). Hue rotations operate on an opaque HSL representation, so transparent inputs are returned with full opacity.
+- <ins>Returns</ins> a new [`Color`](#types-color) with its hue rotated in HSL space (wraps at 0–360). Alpha is preserved.
 - <ins>Inputs</ins>:
   - `degrees` - amount to rotate the hue by in degrees.
 
@@ -359,7 +359,7 @@ new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
 new Color('#ff0000').spin(180).toHex(); // '#00ffff'
 new Color('#008080').spin(-90).toHex(); // '#408000'
 new Color('hsl(30, 80%, 60%)').spin(405).toHex(); // '#c2eb47'
-new Color('rgba(255, 0, 0, 0.35)').spin(60).toHex8(); // '#ffff00ff'
+new Color('rgba(255, 0, 0, 0.35)').spin(60).toHex8(); // '#ffff0059'
 ```
 
 #### `brighten(options?: ColorBrightnessOptions): Color`

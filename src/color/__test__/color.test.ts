@@ -384,6 +384,15 @@ describe('Color.spin', () => {
     expect(spunBackward.toHSL().h).toBe(329);
     expect(red.toHex()).toBe('#ff0000');
   });
+
+  it('preserves alpha when spinning hue', () => {
+    const translucentRed = new Color('rgba(255, 0, 0, 0.35)');
+    const spun = translucentRed.spin(60);
+
+    expect(spun.toHex8()).toBe('#ffff0059');
+    expect(spun.getAlpha()).toBeCloseTo(0.35, 5);
+    expect(translucentRed.getAlpha()).toBeCloseTo(0.35, 5);
+  });
 });
 
 describe('Color.brighten', () => {

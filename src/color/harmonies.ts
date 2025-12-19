@@ -1,6 +1,6 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import { Color } from './color';
-import type { ColorHSL } from './formats';
+import type { ColorHSLA } from './formats';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 
@@ -22,13 +22,13 @@ export interface ColorHarmonyOptions {
 // "spins" lightness around grayscale degrees, where 0 is black and 180 is white, and
 // everything in between is grayish. 180-360 loop back in the opposite direction.
 // This is meant to handle grayscale colors with 0 saturation where spinning on hue does nothing.
-function spinLightness(hsl: ColorHSL, degrees: number): Color {
+function spinLightness(hsla: ColorHSLA, degrees: number): Color {
   const normalized = ((degrees % 360) + 360) % 360;
   const distance = normalized > 180 ? 360 - normalized : normalized;
   const ratio = distance / 180;
-  const complementL = 100 - hsl.l;
-  const newL = clampValue(Math.round(hsl.l + (complementL - hsl.l) * ratio), 0, 100);
-  return new Color({ ...hsl, l: newL });
+  const complementL = 100 - hsla.l;
+  const newL = clampValue(Math.round(hsla.l + (complementL - hsla.l) * ratio), 0, 100);
+  return new Color({ ...hsla, l: newL });
 }
 
 function spinColorOnHueOrLightness(
@@ -36,11 +36,11 @@ function spinColorOnHueOrLightness(
   degrees: number,
   grayscaleHandlingMode: GrayscaleHandlingMode
 ): Color {
-  const hsl = color.toHSL();
-  if (hsl.s === 0) {
+  const hsla = color.toHSLA();
+  if (hsla.s === 0) {
     // If the color is grayscale (saturation 0), handle it based on the mode
     if (grayscaleHandlingMode === 'SPIN_LIGHTNESS') {
-      return spinLightness(hsl, degrees);
+      return spinLightness(hsla, degrees);
     }
     return color.clone(); // No change for grayscale in IGNORE mode (treating the operation as undefined)
   }
@@ -133,11 +133,11 @@ export function getAnalogousHarmonyColors(
 }
 
 export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Color, Color, Color] {
-  const hsl = color.toHSL();
-  const lighter = new Color({ ...hsl, l: clampValue(hsl.l + 20, 0, 100) });
-  const darker = new Color({ ...hsl, l: clampValue(hsl.l - 20, 0, 100) });
-  const saturated = new Color({ ...hsl, s: clampValue(hsl.s + 20, 0, 100) });
-  const desaturated = new Color({ ...hsl, s: clampValue(hsl.s - 20, 0, 100) });
+  const hsla = color.toHSLA();
+  const lighter = new Color({ ...hsla, l: clampValue(hsla.l + 20, 0, 100) });
+  const darker = new Color({ ...hsla, l: clampValue(hsla.l - 20, 0, 100) });
+  const saturated = new Color({ ...hsla, s: clampValue(hsla.s + 20, 0, 100) });
+  const desaturated = new Color({ ...hsla, s: clampValue(hsla.s - 20, 0, 100) });
   return [color.clone(), lighter, darker, saturated, desaturated];
 }
 

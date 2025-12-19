@@ -273,4 +273,17 @@ describe('getPaletteColorVariations', () => {
       expect(extendedSwatch[900].toHex()).toBe(baseSwatch[900].toHex());
     });
   });
+
+  describe('alpha preservation', () => {
+    it('keeps the base alpha for all generated stops', () => {
+      const baseColor = new Color('rgba(52, 152, 219, 0.4)');
+      const swatch = getColorSwatch(baseColor, { extended: true });
+
+      expect(swatch.mainStop).toBe(500);
+      expect(swatch[300].toRGBA().a).toBeCloseTo(0.4, 5);
+      expect(swatch[500].toRGBA().a).toBeCloseTo(0.4, 5);
+      expect(swatch[700].toRGBA().a).toBeCloseTo(0.4, 5);
+      expect(swatch[900].toRGBA().a).toBeCloseTo(0.4, 5);
+    });
+  });
 });

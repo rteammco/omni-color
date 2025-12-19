@@ -395,6 +395,19 @@ describe('averageColors', () => {
     expect(distTo0).toBeLessThan(10);
   });
 
+  it('preserves alpha when averaging in HSL, LCH, and OKLCH spaces', () => {
+    const translucentRed = new Color({ h: 0, s: 100, l: 50, a: 0.2 });
+    const translucentBlue = new Color({ h: 240, s: 100, l: 50, a: 0.8 });
+
+    const hslAverage = averageColors([translucentRed, translucentBlue], { space: 'HSL' });
+    const lchAverage = averageColors([translucentRed, translucentBlue], { space: 'LCH' });
+    const oklchAverage = averageColors([translucentRed, translucentBlue], { space: 'OKLCH' });
+
+    expect(hslAverage.toRGBA().a).toBeCloseTo(0.5, 5);
+    expect(lchAverage.toRGBA().a).toBeCloseTo(0.5, 5);
+    expect(oklchAverage.toRGBA().a).toBeCloseTo(0.5, 5);
+  });
+
   it('defaults to equal weights when weights length mismatches', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');

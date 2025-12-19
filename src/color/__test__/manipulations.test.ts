@@ -50,6 +50,15 @@ describe('spinColorHue', () => {
     expect(spun.toHex()).toBe('#00ff00');
     expect(red.toHex()).toBe('#ff0000');
   });
+
+  it('preserves alpha while rotating hue', () => {
+    const translucentRed = new Color('rgba(255, 0, 0, 0.42)');
+    const spun = spinColorHue(translucentRed, 60);
+
+    expect(spun.toHex8()).toBe('#ffff006b');
+    expect(spun.toRGBA().a).toBeCloseTo(0.42, 5);
+    expect(translucentRed.toRGBA().a).toBeCloseTo(0.42, 5);
+  });
 });
 
 describe('brightenColor', () => {
