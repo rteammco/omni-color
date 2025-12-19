@@ -614,6 +614,18 @@ export interface AverageColorsOptions {
   weights?: number[];
 }
 
+const ZERO_VECTOR_EPSILON = 1e-2;
+
+function resolveAveragedHue(x: number, y: number, fallbackHue = 0): number {
+  const magnitude = Math.hypot(x, y);
+  if (!Number.isFinite(magnitude) || magnitude < ZERO_VECTOR_EPSILON) {
+    return fallbackHue;
+  }
+
+  const normalizedHue = normalizeHue((Math.atan2(y, x) * 180) / Math.PI);
+  return Number.isNaN(normalizedHue) ? fallbackHue : normalizedHue;
+}
+
 function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
   let x = 0;
   let y = 0;
@@ -628,10 +640,10 @@ function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonl
     saturation += val.s * weight;
     lightness += val.l * weight;
   });
-  const hue = (Math.atan2(y, x) * 180) / Math.PI;
+  const hue = resolveAveragedHue(x, y);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
   return new Color({
-    h: Math.round((hue + 360) % 360),
+    h: Math.round(hue),
     s: Math.round(saturation),
     l: Math.round(lightness),
   }).setAlpha(alpha);
@@ -651,12 +663,12 @@ function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonl
     x += Math.cos(rad) * weight;
     y += Math.sin(rad) * weight;
   });
-  const hue = (Math.atan2(y, x) * 180) / Math.PI;
+  const hue = resolveAveragedHue(x, y);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
   return new Color({
     l: lightness,
     c: chroma,
-    h: (hue + 360) % 360,
+    h: hue,
   }).setAlpha(alpha);
 }
 
@@ -674,12 +686,12 @@ function averageColorsInOklch(colors: readonly Color[], normalizedWeights: reado
     x += Math.cos(rad) * weight;
     y += Math.sin(rad) * weight;
   });
-  const hue = (Math.atan2(y, x) * 180) / Math.PI;
+  const hue = resolveAveragedHue(x, y);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
   return new Color({
     l: lightness,
     c: chroma,
-    h: (hue + 360) % 360,
+    h: hue,
   }).setAlpha(alpha);
 }
 
