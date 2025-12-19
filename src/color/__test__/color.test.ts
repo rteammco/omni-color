@@ -419,6 +419,14 @@ describe('Color.brighten', () => {
     expect(navy.brighten({ space: 'LAB', amount: 25, labScale: 10 }).toHex()).toBe('#43567c');
     expect(navy.toHex()).toBe('#001f3f');
   });
+
+  it('respects fractional HSL adjustments when an options object is provided', () => {
+    const base = new Color('rgba(18, 52, 86, 0.4)');
+    const brightened = base.brighten({ amount: 7.5, space: 'HSL' });
+
+    expect(brightened.toHex8()).toBe('#19467466');
+    expect(base.toHex8()).toBe('#12345666');
+  });
 });
 
 describe('Color.darken', () => {
@@ -427,6 +435,15 @@ describe('Color.darken', () => {
     const darker = base.darken();
     expect(darker.toHex()).toBe('#666666');
     expect(base.toHex()).toBe('#808080');
+  });
+
+  it('darkens LAB colors with custom scaling while keeping alpha', () => {
+    const base = new Color({ l: 45, a: -5, b: 15 }).setAlpha(0.65);
+    const darker = base.darken({ space: 'LAB', amount: 15, labScale: 5 });
+
+    expect(darker.toHex8()).toBe('#5a5a40a6');
+    expect(darker.toLAB().l).toBeCloseTo(37.583, 3);
+    expect(base.toHex8()).toBe('#6c6c51a6');
   });
 });
 
@@ -451,6 +468,15 @@ describe('Color.saturate', () => {
     expect(saturatedLch.toHex()).toBe('#00b1dd');
     expect(mutedTeal.toHex()).toBe('#709fa9');
   });
+
+  it('returns a fresh instance when saturation change is zero', () => {
+    const base = new Color('rgba(170, 119, 51, 0.4)');
+    const saturated = base.saturate({ amount: 0 });
+
+    expect(saturated.toHex8()).toBe('#a9763266');
+    expect(saturated).not.toBe(base);
+    expect(base.toHex8()).toBe('#aa773366');
+  });
 });
 
 describe('Color.desaturate', () => {
@@ -469,6 +495,14 @@ describe('Color.desaturate', () => {
     expect(defaultScale.toHex()).toBe('#d06ccb');
     expect(customScale.toHex()).toBe('#eb4be8');
     expect(magenta.toHex()).toBe('#ff00ff');
+  });
+
+  it('clamps saturation to gray for very large reductions', () => {
+    const orange = new Color('#ff8800');
+    const gray = orange.desaturate({ amount: 200 });
+
+    expect(gray.toHex()).toBe('#808080');
+    expect(orange.toHex()).toBe('#ff8800');
   });
 });
 
