@@ -147,6 +147,65 @@ describe('Color interoperability with tinycolor2', () => {
       expect(rgba.toHex8()).toBe(rgbaTiny.toHex8String().toLowerCase());
       expect(rgba.toRGBA()).toEqual(tinycolorRGBToObj(rgbaTiny.toRgb()));
     });
+
+    it('updates alpha for opaque inputs while clamping more accurately than tinycolor', () => {
+      const hex = '#336699';
+
+      const inRange = new Color(hex).setAlpha(0.4);
+      const inRangeTiny = tinycolor(hex).setAlpha(0.4);
+      expect(inRange.getAlpha()).toBeCloseTo(inRangeTiny.getAlpha(), 3);
+      expect(inRange.toHex8()).toBe(inRangeTiny.toHex8String().toLowerCase());
+      expect(inRange.toRGBA()).toEqual(tinycolorRGBToObj(inRangeTiny.toRgb()));
+
+      const aboveRange = new Color(hex).setAlpha(1.25);
+      const aboveRangeTiny = tinycolor(hex).setAlpha(1.25);
+      expect(aboveRange.getAlpha()).toBeCloseTo(aboveRangeTiny.getAlpha(), 3);
+      expect(aboveRange.toHex8()).toBe(aboveRangeTiny.toHex8String().toLowerCase());
+      expect(aboveRange.toRGBA()).toMatchObject(tinycolorRGBToObj(aboveRangeTiny.toRgb()));
+
+      const belowRange = new Color(hex).setAlpha(-0.2);
+      const belowRangeTiny = tinycolor(hex).setAlpha(-0.2);
+      expect(belowRange.getAlpha()).toBe(0);
+      expect(belowRange.toHex8()).toBe('#33669900');
+      expect(belowRange.toRGBA()).toEqual({ r: 51, g: 102, b: 153, a: 0 });
+      expect(belowRangeTiny.getAlpha()).toBe(1);
+      expect(belowRangeTiny.toHex8String().toLowerCase()).toBe('#336699ff');
+      expect(belowRange.toHex8()).not.toBe(belowRangeTiny.toHex8String().toLowerCase());
+
+      const nonFinite = new Color(hex).setAlpha(Number.NaN);
+      const nonFiniteTiny = tinycolor(hex).setAlpha(Number.NaN);
+      expect(nonFinite.getAlpha()).toBe(1);
+      expect(nonFinite.toHex8()).toBe(nonFiniteTiny.toHex8String().toLowerCase());
+      expect(nonFinite.toRGBA()).toMatchObject(tinycolorRGBToObj(nonFiniteTiny.toRgb()));
+
+      const infinite = new Color(hex).setAlpha(Number.POSITIVE_INFINITY);
+      const infiniteTiny = tinycolor(hex).setAlpha(Number.POSITIVE_INFINITY);
+      expect(infinite.getAlpha()).toBe(1);
+      expect(infinite.toHex8()).toBe(infiniteTiny.toHex8String().toLowerCase());
+      expect(infinite.toRGBA()).toMatchObject(tinycolorRGBToObj(infiniteTiny.toRgb()));
+    });
+
+    it('adjusts alpha on transparent colors with clamping that mirrors valid tinycolor outputs', () => {
+      const base = 'rgba(120, 80, 200, 0.35)';
+
+      const inRange = new Color(base).setAlpha(0.6);
+      const inRangeTiny = tinycolor(base).setAlpha(0.6);
+      expect(inRange.getAlpha()).toBeCloseTo(inRangeTiny.getAlpha(), 3);
+      expect(inRange.toHex8()).toBe(inRangeTiny.toHex8String().toLowerCase());
+      expect(inRange.toRGBA()).toEqual(tinycolorRGBToObj(inRangeTiny.toRgb()));
+
+      const aboveRange = new Color(base).setAlpha(2.4);
+      const aboveRangeTiny = tinycolor(base).setAlpha(2.4);
+      expect(aboveRange.getAlpha()).toBeCloseTo(aboveRangeTiny.getAlpha(), 3);
+      expect(aboveRange.toHex8()).toBe(aboveRangeTiny.toHex8String().toLowerCase());
+      expect(aboveRange.toRGBA()).toMatchObject(tinycolorRGBToObj(aboveRangeTiny.toRgb()));
+
+      const nonFinite = new Color(base).setAlpha(Number.NEGATIVE_INFINITY);
+      const nonFiniteTiny = tinycolor(base).setAlpha(Number.NEGATIVE_INFINITY);
+      expect(nonFinite.getAlpha()).toBe(1);
+      expect(nonFinite.toHex8()).toBe(nonFiniteTiny.toHex8String().toLowerCase());
+      expect(nonFinite.toRGBA()).toMatchObject(tinycolorRGBToObj(nonFiniteTiny.toRgb()));
+    });
   });
 
   describe('aligns basic HSL manipulations', () => {
