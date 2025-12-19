@@ -241,6 +241,60 @@ describe('Color interoperability with tinycolor2', () => {
       expectSimilarRGBAValues(spun.toRGB(), spunTiny);
       expect(spun.getAlpha()).toBeCloseTo(spunTiny.getAlpha(), 5);
     });
+
+    it('tracks tinycolor manipulation amounts while maintaining alpha', () => {
+      const opaqueBase = new Color('#4682b4');
+      const translucentBase = new Color('rgba(70, 130, 180, 0.42)');
+
+      const lightened = opaqueBase.brighten({ amount: 18 });
+      const darkened = opaqueBase.darken({ amount: 22 });
+      const saturated = opaqueBase.saturate({ amount: 35 });
+      const desaturated = opaqueBase.desaturate({ amount: 48 });
+      const grayscaled = opaqueBase.grayscale();
+      const spun = opaqueBase.spin(-75);
+
+      const tinyLightened = tinycolor('#4682b4').lighten(18);
+      const tinyDarkened = tinycolor('#4682b4').darken(22);
+      const tinySaturated = tinycolor('#4682b4').saturate(35);
+      const tinyDesaturated = tinycolor('#4682b4').desaturate(48);
+      const tinyGrayscaled = tinycolor('#4682b4').greyscale();
+      const tinySpun = tinycolor('#4682b4').spin(-75);
+
+      expectSimilarRGBAValues(lightened.toRGB(), tinyLightened);
+      expectSimilarRGBAValues(darkened.toRGB(), tinyDarkened);
+      expectSimilarRGBAValues(saturated.toRGB(), tinySaturated);
+      expectSimilarRGBAValues(desaturated.toRGB(), tinyDesaturated);
+      expectSimilarRGBAValues(grayscaled.toRGB(), tinyGrayscaled);
+      expectSimilarRGBAValues(spun.toRGB(), tinySpun);
+
+      const translucentLightened = translucentBase.brighten({ amount: 12 });
+      const translucentDarkened = translucentBase.darken({ amount: 14 });
+      const translucentSaturated = translucentBase.saturate({ amount: 20 });
+      const translucentDesaturated = translucentBase.desaturate({ amount: 26 });
+      const translucentGrayscaled = translucentBase.grayscale();
+      const translucentSpun = translucentBase.spin(40);
+
+      const tinyTranslucentLightened = tinycolor('rgba(70, 130, 180, 0.42)').lighten(12);
+      const tinyTranslucentDarkened = tinycolor('rgba(70, 130, 180, 0.42)').darken(14);
+      const tinyTranslucentSaturated = tinycolor('rgba(70, 130, 180, 0.42)').saturate(20);
+      const tinyTranslucentDesaturated = tinycolor('rgba(70, 130, 180, 0.42)').desaturate(26);
+      const tinyTranslucentGrayscaled = tinycolor('rgba(70, 130, 180, 0.42)').greyscale();
+      const tinyTranslucentSpun = tinycolor('rgba(70, 130, 180, 0.42)').spin(40);
+
+      expectSimilarRGBAValues(translucentLightened.toRGBA(), tinyTranslucentLightened);
+      expectSimilarRGBAValues(translucentDarkened.toRGBA(), tinyTranslucentDarkened);
+      expectSimilarRGBAValues(translucentSaturated.toRGBA(), tinyTranslucentSaturated);
+      expectSimilarRGBAValues(translucentDesaturated.toRGBA(), tinyTranslucentDesaturated);
+      expectSimilarRGBAValues(translucentGrayscaled.toRGBA(), tinyTranslucentGrayscaled);
+      expectSimilarRGBAValues(translucentSpun.toRGBA(), tinyTranslucentSpun);
+
+      expect(translucentLightened.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentDarkened.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentSaturated.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentDesaturated.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentGrayscaled.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+      expect(translucentSpun.getAlpha()).toBeCloseTo(translucentBase.getAlpha(), 5);
+    });
   });
 
   describe('keeps HSL/HSV conversions closely aligned with tinycolor', () => {
