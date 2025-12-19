@@ -35,6 +35,46 @@ function expectSimilarRGBAValues(
   }
 }
 
+const formatDecimal = (value: number) => Number(value.toFixed(3));
+
+function expectRoundedMatch(omniValue: number, tinyValue: number, tolerance = 1) {
+  expect(Math.abs(omniValue - tinyValue)).toBeLessThanOrEqual(tolerance);
+}
+
+function getNumericValuesFromString(value: string): number[] {
+  return value.match(/-?\\d*\\.?\\d+/g)?.map(Number) ?? [];
+}
+
+function expectComponentArraysClose(
+  omniValues: number[],
+  tinyValues: number[],
+  tolerance = 1,
+  alphaTolerance = 0.02
+) {
+  const omniHasAlpha = omniValues.length > 3;
+  const tinyHasAlpha = tinyValues.length > 3;
+
+  const alignedTinyValues = (() => {
+    if (omniHasAlpha && !tinyHasAlpha) {
+      return [...tinyValues, 1];
+    }
+
+    if (!omniHasAlpha && tinyHasAlpha) {
+      return tinyValues.slice(0, omniValues.length);
+    }
+
+    return tinyValues;
+  })();
+
+  expect(omniValues.length).toBe(alignedTinyValues.length);
+
+  omniValues.forEach((component, index) => {
+    const componentTolerance =
+      omniHasAlpha && index === omniValues.length - 1 ? alphaTolerance : tolerance;
+    expect(Math.abs(component - alignedTinyValues[index])).toBeLessThanOrEqual(componentTolerance);
+  });
+}
+
 describe('Color interoperability with tinycolor2', () => {
   describe('parses and normalizes common inputs', () => {
     it('matches tinycolor outputs for hex, named colors, and hsl strings', () => {
@@ -141,6 +181,112 @@ describe('Color interoperability with tinycolor2', () => {
 
       expectSimilarRGBAValues(spun.toRGB(), spunTiny);
       expect(spun.getAlpha()).toBeCloseTo(spunTiny.getAlpha(), 5);
+    });
+  });
+
+  describe('keeps HSL/HSV conversions closely aligned with tinycolor', () => {
+    it('matches tinycolor HSL/HSV outputs for opaque colors', () => {
+      const color = new Color('#3498db');
+      const tiny = tinycolor('#3498db');
+
+      const hsl = color.toHSL();
+      const hsla = color.toHSLA();
+      const tinyHsl = tiny.toHsl();
+
+      expectRoundedMatch(hsl.h, tinyHsl.h);
+      expectRoundedMatch(hsl.s, tinyHsl.s * 100);
+      expectRoundedMatch(hsl.l, tinyHsl.l * 100);
+
+      expectRoundedMatch(hsla.h, tinyHsl.h);
+      expectRoundedMatch(hsla.s, tinyHsl.s * 100);
+      expectRoundedMatch(hsla.l, tinyHsl.l * 100);
+      expect(hsla.a).toBeCloseTo(tinyHsl.a ?? 1, 2);
+
+      const hsv = color.toHSV();
+      const hsva = color.toHSVA();
+      const tinyHsv = tiny.toHsv();
+
+      expectRoundedMatch(hsv.h, tinyHsv.h);
+      expectRoundedMatch(hsv.s, tinyHsv.s * 100);
+      expectRoundedMatch(hsv.v, tinyHsv.v * 100);
+
+      expectRoundedMatch(hsva.h, tinyHsv.h);
+      expectRoundedMatch(hsva.s, tinyHsv.s * 100);
+      expectRoundedMatch(hsva.v, tinyHsv.v * 100);
+      expect(hsva.a).toBeCloseTo(tinyHsv.a ?? 1, 2);
+
+      const tinyHslStringValues = getNumericValuesFromString(tiny.toHslString());
+      const tinyHsvStringValues = getNumericValuesFromString(tiny.toHsvString());
+
+      expectComponentArraysClose(
+        getNumericValuesFromString(color.toHSLString()),
+        tinyHslStringValues
+      );
+      expectComponentArraysClose(
+        getNumericValuesFromString(color.toHSLAString()),
+        tinyHslStringValues
+      );
+      expectComponentArraysClose(
+        getNumericValuesFromString(
+          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(hsva.v)}%)`
+        ),
+        tinyHsvStringValues
+      );
+      expectComponentArraysClose(
+        getNumericValuesFromString(color.toRGBAString()),
+        getNumericValuesFromString(tiny.toRgbString())
+      );
+    });
+
+    it('matches tinycolor HSL/HSV outputs for colors with alpha', () => {
+      const color = new Color('rgba(50, 100, 150, 0.42)');
+      const tiny = tinycolor('rgba(50, 100, 150, 0.42)');
+
+      const hsl = color.toHSL();
+      const hsla = color.toHSLA();
+      const tinyHsl = tiny.toHsl();
+
+      expectRoundedMatch(hsl.h, tinyHsl.h);
+      expectRoundedMatch(hsl.s, tinyHsl.s * 100);
+      expectRoundedMatch(hsl.l, tinyHsl.l * 100);
+
+      expectRoundedMatch(hsla.h, tinyHsl.h);
+      expectRoundedMatch(hsla.s, tinyHsl.s * 100);
+      expectRoundedMatch(hsla.l, tinyHsl.l * 100);
+      expect(hsla.a).toBeCloseTo(tinyHsl.a ?? 1, 2);
+
+      const hsv = color.toHSV();
+      const hsva = color.toHSVA();
+      const tinyHsv = tiny.toHsv();
+
+      expectRoundedMatch(hsv.h, tinyHsv.h);
+      expectRoundedMatch(hsv.s, tinyHsv.s * 100);
+      expectRoundedMatch(hsv.v, tinyHsv.v * 100);
+
+      expectRoundedMatch(hsva.h, tinyHsv.h);
+      expectRoundedMatch(hsva.s, tinyHsv.s * 100);
+      expectRoundedMatch(hsva.v, tinyHsv.v * 100);
+      expect(hsva.a).toBeCloseTo(tinyHsv.a ?? 1, 2);
+
+      const tinyHslStringValues = getNumericValuesFromString(tiny.toHslString());
+      const tinyHsvStringValues = getNumericValuesFromString(tiny.toHsvString());
+
+      expectComponentArraysClose(
+        getNumericValuesFromString(color.toHSLAString()),
+        tinyHslStringValues
+      );
+      expectComponentArraysClose(
+        getNumericValuesFromString(
+          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(hsva.v)}% / ${formatDecimal(
+            hsva.a
+          )})`
+        ),
+        tinyHsvStringValues
+      );
+      expectComponentArraysClose(
+        getNumericValuesFromString(color.toRGBAString()),
+        getNumericValuesFromString(tiny.toRgbString())
+      );
     });
   });
 });
