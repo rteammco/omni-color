@@ -444,6 +444,7 @@ weightedMix.toHex(); // '#fffdd0'
     - `mode` - the blend mode: `"NORMAL" | "MULTIPLY" | "SCREEN" | "OVERLAY"`.
     - `space` - the blend space: `"RGB" | "HSL"`.
     - `ratio` - the blend ratio between `0` and `1` (default is `0.5`).
+  - Blend modes are applied within the selected space, so `HSL` blending respects the chosen mode across hue, saturation, and lightness while preserving alpha.
 
 ```ts
 new Color('#ff0000').blend('blue', { space: 'HSL' }); // '#ff00ff'

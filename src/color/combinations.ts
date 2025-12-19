@@ -276,18 +276,71 @@ export interface BlendColorsOptions {
   ratio?: number; // amount of blend color over base (0 - 1)
 }
 
-function blendChannel(mode: BlendMode, base: number, blend: number): number {
+function blendNormalizedChannel(mode: BlendMode, base: number, blend: number): number {
   switch (mode) {
     case 'MULTIPLY':
-      return (base * blend) / 255;
+      return base * blend;
     case 'SCREEN':
-      return 255 - ((255 - base) * (255 - blend)) / 255;
+      return 1 - (1 - base) * (1 - blend);
     case 'OVERLAY':
-      return base < 128 ? (2 * base * blend) / 255 : 255 - (2 * (255 - base) * (255 - blend)) / 255;
+      return base < 0.5 ? 2 * base * blend : 1 - 2 * (1 - base) * (1 - blend);
     case 'NORMAL':
     default:
       return blend;
   }
+}
+
+function blendChannel(mode: BlendMode, base: number, blend: number): number {
+  const baseNormalized = base / 255;
+  const blendNormalized = blend / 255;
+  const resultNormalized = blendNormalizedChannel(mode, baseNormalized, blendNormalized);
+  return resultNormalized * 255;
+}
+
+function blendValueChannel({
+  mode,
+  base,
+  blend,
+  ratio,
+  maxValue,
+}: {
+  mode: BlendMode;
+  base: number;
+  blend: number;
+  ratio: number;
+  maxValue: number;
+}): number {
+  const baseNormalized = clampValue(base / maxValue, 0, 1);
+  const blendNormalized = clampValue(blend / maxValue, 0, 1);
+  const blendedNormalized = blendNormalizedChannel(mode, baseNormalized, blendNormalized);
+  const mixedNormalized = (1 - ratio) * baseNormalized + ratio * blendedNormalized;
+  return +clampValue(mixedNormalized * maxValue, 0, maxValue).toFixed(3);
+}
+
+function blendHue(mode: BlendMode, baseHue: number, blendHue: number, ratio: number): number {
+  const baseRadians = (normalizeHue(baseHue) * Math.PI) / 180;
+  const blendRadians = (normalizeHue(blendHue) * Math.PI) / 180;
+  const baseXNormalized = (Math.cos(baseRadians) + 1) / 2;
+  const baseYNormalized = (Math.sin(baseRadians) + 1) / 2;
+  const blendXNormalized = (Math.cos(blendRadians) + 1) / 2;
+  const blendYNormalized = (Math.sin(blendRadians) + 1) / 2;
+
+  const blendedX = blendNormalizedChannel(mode, baseXNormalized, blendXNormalized);
+  const blendedY = blendNormalizedChannel(mode, baseYNormalized, blendYNormalized);
+
+  const mixedXNormalized = (1 - ratio) * baseXNormalized + ratio * blendedX;
+  const mixedYNormalized = (1 - ratio) * baseYNormalized + ratio * blendedY;
+
+  const mixedX = mixedXNormalized * 2 - 1;
+  const mixedY = mixedYNormalized * 2 - 1;
+  const hue = normalizeHue((Math.atan2(mixedY, mixedX) * 180) / Math.PI);
+
+  return Number.isNaN(hue) ? normalizeHue(baseHue) : hue;
+}
+
+function blendAlphaChannel(baseAlpha: number, blendAlpha: number, ratio: number): number {
+  const mixedAlpha = (1 - ratio) * baseAlpha + ratio * blendAlpha;
+  return +clampValue(mixedAlpha, 0, 1).toFixed(3);
 }
 
 function blendColorsInRGBSpace(base: Color, blend: Color, mode: BlendMode, ratio: number): Color {
@@ -306,17 +359,37 @@ function blendColorsInRGBSpace(base: Color, blend: Color, mode: BlendMode, ratio
   return new Color(resultRGBA);
 }
 
-function blendColorsInHSLSpace(base: Color, blend: Color, ratio: number): Color {
-  const b = base.toHSL();
-  const a = blend.toHSL();
-  const delta = ((a.h - b.h + 540) % 360) - 180;
-  const h = (b.h + delta * ratio + 360) % 360;
-  const result: ColorHSL = {
+function blendColorsInHSLSpace(base: Color, blend: Color, mode: BlendMode, ratio: number): Color {
+  const baseHSL = base.toHSL();
+  const blendHSL = blend.toHSL();
+  const baseAlpha = base.toRGBA().a ?? 1;
+  const blendAlpha = blend.toRGBA().a ?? 1;
+
+  if (mode === 'NORMAL') {
+    const delta = ((blendHSL.h - baseHSL.h + 540) % 360) - 180;
+    const h = (baseHSL.h + delta * ratio + 360) % 360;
+    const s = (1 - ratio) * baseHSL.s + ratio * blendHSL.s;
+    const l = (1 - ratio) * baseHSL.l + ratio * blendHSL.l;
+
+    return new Color({
+      h,
+      s,
+      l,
+      a: blendAlphaChannel(baseAlpha, blendAlpha, ratio),
+    });
+  }
+
+  const h = blendHue(mode, baseHSL.h, blendHSL.h, ratio);
+  const s = blendValueChannel({ mode, base: baseHSL.s, blend: blendHSL.s, ratio, maxValue: 100 });
+  const l = blendValueChannel({ mode, base: baseHSL.l, blend: blendHSL.l, ratio, maxValue: 100 });
+  const a = blendAlphaChannel(baseAlpha, blendAlpha, ratio);
+
+  return new Color({
     h,
-    s: (1 - ratio) * b.s + ratio * a.s,
-    l: (1 - ratio) * b.l + ratio * a.l,
-  };
-  return new Color(result);
+    s,
+    l,
+    a,
+  });
 }
 
 export function blendColors(base: Color, blend: Color, options: BlendColorsOptions = {}): Color {
@@ -328,7 +401,7 @@ export function blendColors(base: Color, blend: Color, options: BlendColorsOptio
     return blendColorsInRGBSpace(base, blend, mode, ratio);
   }
 
-  return blendColorsInHSLSpace(base, blend, ratio);
+  return blendColorsInHSLSpace(base, blend, mode, ratio);
 }
 
 export interface AverageColorsOptions {
