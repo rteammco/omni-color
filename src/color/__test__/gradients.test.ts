@@ -45,13 +45,13 @@ describe('createColorGradient', () => {
 
     // Bezier curve in Polar space (hue unwound)
     expect(gradient.map((color) => color.toHex())).toEqual([
-      '#f43e5c',
-      '#f66e33',
-      '#22f33f',
-      '#20d3ee',
+      '#f43f5e',
+      '#f66f34',
+      '#24f340',
+      '#22d3ee',
     ]);
-    expect(gradient[0].toHex()).toBe('#f43e5c');
-    expect(gradient[gradient.length - 1].toHex()).toBe('#20d3ee');
+    expect(gradient[0].toHex()).toBe('#f43f5e');
+    expect(gradient[gradient.length - 1].toHex()).toBe('#22d3ee');
   });
 
   it('wraps hues smoothly across the 0°/360° boundary in polar spaces', () => {
@@ -62,7 +62,7 @@ describe('createColorGradient', () => {
 
     expect(gradient.map((color) => color.toHex())).toEqual([
       '#ff002b',
-      '#ff0015',
+      '#ff0016',
       '#ff0000',
       '#ff1500',
       '#ff2a00',
