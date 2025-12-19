@@ -69,10 +69,7 @@ function normalizeLCH(lch: ColorLCH): ColorLCH {
 
 export function spinColorHue(color: Color, degrees: number): Color {
   const hsl = color.toHSL();
-  let rotatedHue = Math.floor((hsl.h + degrees) % 360);
-  if (rotatedHue < 0) {
-    rotatedHue += 360; // ensure hue is always positive
-  }
+  const rotatedHue = ((hsl.h + degrees) % 360 + 360) % 360;
   hsl.h = rotatedHue;
   return new Color(hsl);
 }
