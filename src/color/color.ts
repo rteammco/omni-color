@@ -188,6 +188,8 @@ export class Color {
    *
    * @param colors - Array of {@link Color}s or color inputs to interpolate between.
    * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation style, hue interpolation mode, and stop count.
+   * Interpolation style is ignored when only two colors are provided.
+   *
    * @returns An array of new {@link Color}s representing the generated gradient.
    *
    * @example
@@ -525,6 +527,8 @@ export class Color {
    *
    * @param stops - Additional {@link Color}s or color inputs to interpolate through.
    * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, hue interpolation mode, and stop count.
+   * Interpolation style is ignored when only one other color is provided.
+   *
    * @returns An array of {@link Color}s representing the full gradient including this color and the provided stops.
    */
   createGradientThrough(
@@ -538,10 +542,15 @@ export class Color {
    * Generate a gradient between this color and a target color.
    *
    * @param target - The final color ({@link Color} or color input) for the gradient.
-   * @param options - Optional {@link ColorGradientOptions} for space, easing, interpolation, hue interpolation mode, and stop count.
+   * @param options - Optional {@link ColorGradientOptions} for space, easing, hue interpolation mode, and stop count.
+   * Interpolation style is ignored since there are only two colors being interpolated.
+   *
    * @returns An array of {@link Color}s beginning with this color and ending with `target`.
    */
-  createGradientTo(target: ValidColorInputFormat, options?: ColorGradientOptions): Color[] {
+  createGradientTo(
+    target: ValidColorInputFormat,
+    options?: Omit<ColorGradientOptions, 'interpolation'>
+  ): Color[] {
     return Color.createInterpolatedGradient([this, target], options);
   }
 

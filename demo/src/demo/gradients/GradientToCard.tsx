@@ -45,6 +45,7 @@ export function GradientToCard({ color }: Props) {
       </div>
       <GradientOptionInputs
         options={options}
+        showInterpolationOption={false}
         onOptionsChanged={setOptions}
         onOptionsReset={handleOptionsReset}
         onTargetColorChanged={setTargetColor}

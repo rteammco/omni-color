@@ -9,6 +9,7 @@ type TargetColorName = (typeof TARGET_COLORS_NAMES)[number];
 
 interface Props {
   options: ColorGradientOptions;
+  showInterpolationOption?: boolean; // true by default, but isn't needed for 2-color gradients (gradient to)
   onOptionsChanged: (options: ColorGradientOptions) => void;
   onOptionsReset: () => void;
   onTargetColorChanged?: (targetColor: Color) => void;
@@ -16,6 +17,7 @@ interface Props {
 
 export function GradientOptionInputs({
   options,
+  showInterpolationOption = true,
   onOptionsChanged,
   onOptionsReset,
   onTargetColorChanged,
@@ -63,15 +65,17 @@ export function GradientOptionInputs({
         value={options.space}
         onChange={(value) => onOptionsChanged({ ...options, space: value })}
       />
-      <Select
-        label="Interpolation"
-        options={[
-          { label: 'Linear', value: 'LINEAR' },
-          { label: 'Bezier', value: 'BEZIER' },
-        ]}
-        value={options.interpolation}
-        onChange={(value) => onOptionsChanged({ ...options, interpolation: value })}
-      />
+      {showInterpolationOption && (
+        <Select
+          label="Interpolation"
+          options={[
+            { label: 'Linear', value: 'LINEAR' },
+            { label: 'Bezier', value: 'BEZIER' },
+          ]}
+          value={options.interpolation}
+          onChange={(value) => onOptionsChanged({ ...options, interpolation: value })}
+        />
+      )}
       <Select
         label="Easing"
         options={[
