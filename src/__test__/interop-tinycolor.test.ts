@@ -21,7 +21,7 @@ function tinycolorRGBToObj(value: tinycolor.ColorFormats.RGBA): ColorRGB | Color
   };
 }
 
-function expectSimilarRGB(
+function expectSimilarRGBAValues(
   omniValues: ColorRGB | ColorRGBA,
   tiny: tinycolor.Instance,
   tolerance = 1
@@ -78,8 +78,8 @@ describe('Color interoperability with tinycolor2', () => {
       const tinyLightened = tinycolor('#556b2f').lighten();
       const tinyDarkened = tinycolor('#556b2f').darken();
 
-      expectSimilarRGB(lightened.toRGB(), tinyLightened);
-      expectSimilarRGB(darkened.toRGB(), tinyDarkened);
+      expectSimilarRGBAValues(lightened.toRGB(), tinyLightened);
+      expectSimilarRGBAValues(darkened.toRGB(), tinyDarkened);
     });
 
     it('keeps saturation adjustments aligned for straightforward cases', () => {
@@ -90,8 +90,8 @@ describe('Color interoperability with tinycolor2', () => {
       const tinySaturated = tinycolor('hsl(210, 30%, 50%)').saturate();
       const tinyDesaturated = tinycolor('hsl(210, 30%, 50%)').desaturate();
 
-      expectSimilarRGB(saturated.toRGB(), tinySaturated);
-      expectSimilarRGB(desaturated.toRGB(), tinyDesaturated);
+      expectSimilarRGBAValues(saturated.toRGB(), tinySaturated);
+      expectSimilarRGBAValues(desaturated.toRGB(), tinyDesaturated);
     });
 
     it('spins hue similarly when moving around the wheel', () => {
@@ -99,7 +99,7 @@ describe('Color interoperability with tinycolor2', () => {
       const spun = base.spin(120);
       const spunTiny = tinycolor('#ff4500').spin(120);
 
-      expectSimilarRGB(spun.toRGB(), spunTiny);
+      expectSimilarRGBAValues(spun.toRGB(), spunTiny);
       expect(spun.getAlpha()).toBeCloseTo(spunTiny.getAlpha(), 5);
     });
   });
