@@ -640,7 +640,9 @@ describe('blendColors', () => {
     expect(multiply.toHex()).toBe('#b900bf');
     expect(screen.toHex()).toBe('#ff4640');
     expect(overlay.toHex()).toBe('#ff0064');
-    expect(new Set([normal.toHex(), multiply.toHex(), screen.toHex(), overlay.toHex()]).size).toBe(4);
+    expect(new Set([normal.toHex(), multiply.toHex(), screen.toHex(), overlay.toHex()]).size).toBe(
+      4
+    );
   });
 
   it('handles hue wrap-around for multiple HSL blend modes', () => {

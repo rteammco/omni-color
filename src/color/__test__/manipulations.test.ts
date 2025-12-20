@@ -151,7 +151,9 @@ describe('darkenColor', () => {
   });
 
   it('accepts LAB options and clamps when approaching black', () => {
-    expect(darkenColor(new Color('#ffffff'), { amount: 200, space: 'LAB' }).toHex()).toBe('#000000');
+    expect(darkenColor(new Color('#ffffff'), { amount: 200, space: 'LAB' }).toHex()).toBe(
+      '#000000'
+    );
     expect(darkenColor(new Color('#000000'), { amount: 25, space: 'LAB' }).toHex()).toBe('#000000');
   });
 
@@ -263,7 +265,11 @@ describe('desaturateColor', () => {
   it('handles LCH desaturation with clamping, preserved alpha, and adjustable scaling', () => {
     const translucentViolet = new Color('rgba(120, 80, 200, 0.5)');
     const defaultDesaturation = desaturateColor(translucentViolet, { space: 'LCH', amount: 30 });
-    const smallerScale = desaturateColor(translucentViolet, { space: 'LCH', amount: 30, labScale: 8 });
+    const smallerScale = desaturateColor(translucentViolet, {
+      space: 'LCH',
+      amount: 30,
+      labScale: 8,
+    });
 
     expect(defaultDesaturation.toHex()).toBe('#6f637f');
     expect(defaultDesaturation.toRGBA().a).toBeCloseTo(0.5, 5);

@@ -644,10 +644,10 @@ describe('Color interoperability with tinycolor2', () => {
     const tinyBase = tinycolor(baseHex);
 
     it('tracks complement and triad variants within rounding tolerance', () => {
-      expectHexArraysClose(
-        getHexesFromColors(baseColor.getComplementaryColors()),
-        [baseHex, tinyBase.complement().toHexString()]
-      );
+      expectHexArraysClose(getHexesFromColors(baseColor.getComplementaryColors()), [
+        baseHex,
+        tinyBase.complement().toHexString(),
+      ]);
 
       expectHexArraysClose(
         getHexesFromColors(baseColor.getTriadicHarmonyColors()),
@@ -685,7 +685,9 @@ describe('Color interoperability with tinycolor2', () => {
       // intentionally keeps the series centered around the base lightness without wrap-around.
       expect(Math.max(...tinyLightnesses)).toBeCloseTo(baseLightness, 3);
 
-      expect(sortHexesByHue(monochromaticHexes)).not.toEqual(sortHexesByHue(tinyMonochromaticHexes));
+      expect(sortHexesByHue(monochromaticHexes)).not.toEqual(
+        sortHexesByHue(tinyMonochromaticHexes)
+      );
     });
 
     it('retains rectangular tetrad spacing instead of tinycolor’s square polyad', () => {

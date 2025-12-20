@@ -88,7 +88,10 @@ function mixSubtractiveHue(
   return Number.isNaN(hue) ? 0 : hue;
 }
 
-function mixColorsSubtractiveInRgb(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
+function mixColorsSubtractiveInRgb(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[]
+): Color {
   const rgbValues = colors.map((color) => color.toRGBA());
   const r = mixNormalizedChannel(
     rgbValues.map((value) => value.r),
@@ -115,11 +118,13 @@ function mixColorsSubtractiveInLinearRgb(
   colors: readonly Color[],
   normalizedWeights: readonly number[]
 ): Color {
-  const linearValues = colors.map((color) => color.toRGBA()).map((value) => ({
-    r: clampValue(srgbChannelToLinear(value.r, 'SRGB'), 0, 1),
-    g: clampValue(srgbChannelToLinear(value.g, 'SRGB'), 0, 1),
-    b: clampValue(srgbChannelToLinear(value.b, 'SRGB'), 0, 1),
-  }));
+  const linearValues = colors
+    .map((color) => color.toRGBA())
+    .map((value) => ({
+      r: clampValue(srgbChannelToLinear(value.r, 'SRGB'), 0, 1),
+      g: clampValue(srgbChannelToLinear(value.g, 'SRGB'), 0, 1),
+      b: clampValue(srgbChannelToLinear(value.b, 'SRGB'), 0, 1),
+    }));
 
   const rLinear = weightedGeometricMean(
     linearValues.map((value) => value.r),
@@ -142,7 +147,10 @@ function mixColorsSubtractiveInLinearRgb(
   return new Color({ r, g, b, a });
 }
 
-function mixColorsSubtractiveInHsl(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
+function mixColorsSubtractiveInHsl(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[]
+): Color {
   const hslValues = colors.map((color) => color.toHSL());
   const saturation = mixNormalizedChannel(
     hslValues.map((value) => value.s),
@@ -168,7 +176,10 @@ function mixColorsSubtractiveInHsl(colors: readonly Color[], normalizedWeights: 
   return new Color({ h: hue, s: saturation, l: lightness, a });
 }
 
-function mixColorsSubtractiveInLch(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
+function mixColorsSubtractiveInLch(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[]
+): Color {
   const lchValues = colors.map((color) => color.toLCH());
   const lightnessValues = lchValues.map((value) => value.l);
   const chromaValues = lchValues.map((value) => Math.max(0, value.c));
@@ -610,7 +621,7 @@ export interface AverageColorsOptions {
    * ```ts
    * { weights: [0.25, 0.25, 0.5] }
    * ```
-  */
+   */
   weights?: number[];
 }
 
@@ -672,7 +683,10 @@ function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonl
   }).setAlpha(alpha);
 }
 
-function averageColorsInOklch(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
+function averageColorsInOklch(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[]
+): Color {
   let lightness = 0;
   let chromaX = 0;
   let chromaY = 0;

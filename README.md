@@ -376,9 +376,7 @@ const neutral = new Color('#808080');
 neutral.brighten().toHex(); // '#999999'
 neutral.brighten({ amount: 25 }).toHex(); // '#bfbfbf'
 neutral.brighten({ space: 'LAB', amount: 20 }).toHex(); // '#e1e1e1'
-new Color('rgba(0, 128, 128, 0.35)')
-  .brighten({ space: 'LCH', amount: 15, labScale: 10 })
-  .toHex8(); // '#43a8a759'
+new Color('rgba(0, 128, 128, 0.35)').brighten({ space: 'LCH', amount: 15, labScale: 10 }).toHex8(); // '#43a8a759'
 ```
 
 #### `darken(options?: ColorBrightnessOptions): Color`
