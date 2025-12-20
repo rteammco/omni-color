@@ -612,6 +612,105 @@ describe('Color interoperability with chroma-js', () => {
     });
   });
 
+  describe('LAB/LCH conversions align with chroma-js', () => {
+    const labTolerance = 0.5;
+    const chromaTolerance = 0.5;
+    const hueTolerance = 1;
+
+    it('keeps LAB/LCH outputs aligned for #1a73e8', () => {
+      const omniColor = new Color('#1a73e8');
+      const chromaColor = chroma('#1a73e8');
+
+      const labFromOmni = omniColor.toLAB();
+      const chromaLab = chromaColor.lab();
+      expect(Math.abs(labFromOmni.l - chromaLab[0])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(labFromOmni.a - chromaLab[1])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(labFromOmni.b - chromaLab[2])).toBeLessThanOrEqual(labTolerance);
+
+      const lchFromOmni = omniColor.toLCH();
+      const chromaLch = chromaColor.lch();
+      expect(Math.abs(lchFromOmni.l - chromaLch[0])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(lchFromOmni.c - chromaLch[1])).toBeLessThanOrEqual(chromaTolerance);
+      const lchHueDelta = Math.min(
+        Math.abs(lchFromOmni.h - chromaLch[2]),
+        360 - Math.abs(lchFromOmni.h - chromaLch[2])
+      );
+      expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
+
+      const oklchFromOmni = omniColor.toOKLCH();
+      const chromaOklch = chromaColor.oklch();
+      expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
+      expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
+      const oklchHueDelta = Math.min(
+        Math.abs(oklchFromOmni.h - chromaOklch[2]),
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+      );
+      expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
+    });
+
+    it('keeps LAB/LCH outputs aligned for #f43f5e', () => {
+      const omniColor = new Color('#f43f5e');
+      const chromaColor = chroma('#f43f5e');
+
+      const labFromOmni = omniColor.toLAB();
+      const chromaLab = chromaColor.lab();
+      expect(Math.abs(labFromOmni.l - chromaLab[0])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(labFromOmni.a - chromaLab[1])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(labFromOmni.b - chromaLab[2])).toBeLessThanOrEqual(labTolerance);
+
+      const lchFromOmni = omniColor.toLCH();
+      const chromaLch = chromaColor.lch();
+      expect(Math.abs(lchFromOmni.l - chromaLch[0])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(lchFromOmni.c - chromaLch[1])).toBeLessThanOrEqual(chromaTolerance);
+      const lchHueDelta = Math.min(
+        Math.abs(lchFromOmni.h - chromaLch[2]),
+        360 - Math.abs(lchFromOmni.h - chromaLch[2])
+      );
+      expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
+
+      const oklchFromOmni = omniColor.toOKLCH();
+      const chromaOklch = chromaColor.oklch();
+      expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
+      expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
+      const oklchHueDelta = Math.min(
+        Math.abs(oklchFromOmni.h - chromaOklch[2]),
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+      );
+      expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
+    });
+
+    it('keeps LAB/LCH outputs aligned for #00aa88', () => {
+      const omniColor = new Color('#00aa88');
+      const chromaColor = chroma('#00aa88');
+
+      const labFromOmni = omniColor.toLAB();
+      const chromaLab = chromaColor.lab();
+      expect(Math.abs(labFromOmni.l - chromaLab[0])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(labFromOmni.a - chromaLab[1])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(labFromOmni.b - chromaLab[2])).toBeLessThanOrEqual(labTolerance);
+
+      const lchFromOmni = omniColor.toLCH();
+      const chromaLch = chromaColor.lch();
+      expect(Math.abs(lchFromOmni.l - chromaLch[0])).toBeLessThanOrEqual(labTolerance);
+      expect(Math.abs(lchFromOmni.c - chromaLch[1])).toBeLessThanOrEqual(chromaTolerance);
+      const lchHueDelta = Math.min(
+        Math.abs(lchFromOmni.h - chromaLch[2]),
+        360 - Math.abs(lchFromOmni.h - chromaLch[2])
+      );
+      expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
+
+      const oklchFromOmni = omniColor.toOKLCH();
+      const chromaOklch = chromaColor.oklch();
+      expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
+      expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
+      const oklchHueDelta = Math.min(
+        Math.abs(oklchFromOmni.h - chromaOklch[2]),
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+      );
+      expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
+    });
+  });
+
   describe('agrees on HSL and HSV math', () => {
     it('matches hue, saturation, and lightness/brightness values', () => {
       const vividOrange = new Color('#ff7f0e');
