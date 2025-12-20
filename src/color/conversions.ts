@@ -603,10 +603,18 @@ export function toLAB(color: ColorFormat): ColorLAB {
 
 export function toLCH(color: ColorFormat): ColorLCH {
   validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  if (formatType === 'LCH') {
+    return { ...value };
+  }
   return rgbToLCH(toRGB(color));
 }
 
 export function toOKLCH(color: ColorFormat): ColorOKLCH {
   validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  if (formatType === 'OKLCH') {
+    return { ...value };
+  }
   return rgbToOKLCH(toRGB(color));
 }
