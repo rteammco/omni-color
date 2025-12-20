@@ -75,6 +75,56 @@ describe('Color interoperability with chroma-js', () => {
     });
   });
 
+  describe('CMYK parity with chroma-js', () => {
+    it('keeps CMYK channels and string output aligned for representative hex inputs', () => {
+      const pastelBlue = new Color('#abcdef');
+      const pastelBlueChroma = chroma('#abcdef');
+      const pastelBlueCmyk = pastelBlue.toCMYK();
+      const pastelBlueChromaCmyk = pastelBlueChroma.cmyk();
+
+      expect(pastelBlueCmyk.c).toBeCloseTo(pastelBlueChromaCmyk[0] * 100, 0);
+      expect(pastelBlueCmyk.m).toBeCloseTo(pastelBlueChromaCmyk[1] * 100, 0);
+      expect(pastelBlueCmyk.y).toBeCloseTo(pastelBlueChromaCmyk[2] * 100, 0);
+      expect(pastelBlueCmyk.k).toBeCloseTo(pastelBlueChromaCmyk[3] * 100, 0);
+      const pastelBlueChromaCmykString = `device-cmyk(${Math.round(
+        pastelBlueChromaCmyk[0] * 100
+      )}% ${Math.round(pastelBlueChromaCmyk[1] * 100)}% ${Math.round(
+        pastelBlueChromaCmyk[2] * 100
+      )}% ${Math.round(pastelBlueChromaCmyk[3] * 100)}%)`;
+      expect(pastelBlue.toCMYKString()).toBe(pastelBlueChromaCmykString);
+
+      const warmYellow = new Color('#ffcc00');
+      const warmYellowChroma = chroma('#ffcc00');
+      const warmYellowCmyk = warmYellow.toCMYK();
+      const warmYellowChromaCmyk = warmYellowChroma.cmyk();
+
+      expect(warmYellowCmyk.c).toBeCloseTo(warmYellowChromaCmyk[0] * 100, 0);
+      expect(warmYellowCmyk.m).toBeCloseTo(warmYellowChromaCmyk[1] * 100, 0);
+      expect(warmYellowCmyk.y).toBeCloseTo(warmYellowChromaCmyk[2] * 100, 0);
+      expect(warmYellowCmyk.k).toBeCloseTo(warmYellowChromaCmyk[3] * 100, 0);
+      const warmYellowChromaCmykString = `device-cmyk(${Math.round(
+        warmYellowChromaCmyk[0] * 100
+      )}% ${Math.round(warmYellowChromaCmyk[1] * 100)}% ${Math.round(
+        warmYellowChromaCmyk[2] * 100
+      )}% ${Math.round(warmYellowChromaCmyk[3] * 100)}%)`;
+      expect(warmYellow.toCMYKString()).toBe(warmYellowChromaCmykString);
+    });
+
+    it('parses CMYK strings consistently when converting back to hex', () => {
+      const lightCmykString = 'cmyk(20%, 10%, 0%, 0%)';
+      const lightCmykColor = new Color(lightCmykString);
+      const chromaLightCmyk = chroma.cmyk(0.2, 0.1, 0, 0);
+      expect(lightCmykColor.toHex()).toBe(chromaLightCmyk.hex().toLowerCase());
+      expect(lightCmykColor.toHex8()).toBe(chromaLightCmyk.hex('rgba').toLowerCase());
+
+      const richCmykString = 'cmyk(5% 0% 60% 20%)';
+      const richCmykColor = new Color(richCmykString);
+      const chromaRichCmyk = chroma.cmyk(0.05, 0, 0.6, 0.2);
+      expect(richCmykColor.toHex()).toBe(chromaRichCmyk.hex().toLowerCase());
+      expect(richCmykColor.toHex8()).toBe(chromaRichCmyk.hex('rgba').toLowerCase());
+    });
+  });
+
   describe('mixing parity with chroma-js', () => {
     it('mixes LINEAR_RGB colors using sRGB companding (close to chroma-js lrgb)', () => {
       // chroma-js uses an lrgb approximation (gamma ≈ 2.2 power curve) instead of the sRGB
