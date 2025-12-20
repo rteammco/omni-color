@@ -32,7 +32,9 @@ const DEFAULT_MANIPULATION_AMOUNT = 10;
 // Default LAB/LCH lightness or chroma delta applied per 10% step when using LAB-backed spaces.
 const DEFAULT_LAB_LIGHTNESS_DELTA_PER_STEP = 18;
 
-function getColorBrightnessOptions(options?: ColorBrightnessOptions): Required<ColorBrightnessOptions> {
+function getColorBrightnessOptions(
+  options?: ColorBrightnessOptions
+): Required<ColorBrightnessOptions> {
   const {
     amount = DEFAULT_MANIPULATION_AMOUNT,
     space = 'HSL',
@@ -69,7 +71,7 @@ function normalizeLCH(lch: ColorLCH): ColorLCH {
 
 export function spinColorHue(color: Color, degrees: number): Color {
   const hsla = color.toHSLA();
-  const rotatedHue = ((hsla.h + degrees) % 360 + 360) % 360;
+  const rotatedHue = (((hsla.h + degrees) % 360) + 360) % 360;
   hsla.h = rotatedHue;
   return new Color(hsla);
 }
@@ -85,7 +87,7 @@ export function brightenColor(color: Color, options?: ColorBrightnessOptions): C
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
       const updatedL = clampValue(lch.l + getLABLikeDelta(amount, labScale), 0, 100);
-      return new Color({ ...lch, l: updatedL }).setAlpha(color.getAlpha());
+      return new Color({ ...lch, l: updatedL, format: 'LCH' }).setAlpha(color.getAlpha());
     }
     case 'HSL':
     default: {
@@ -107,7 +109,7 @@ export function darkenColor(color: Color, options?: ColorBrightnessOptions): Col
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
       const updatedL = clampValue(lch.l - getLABLikeDelta(amount, labScale), 0, 100);
-      return new Color({ ...lch, l: updatedL }).setAlpha(color.getAlpha());
+      return new Color({ ...lch, l: updatedL, format: 'LCH' }).setAlpha(color.getAlpha());
     }
     case 'HSL':
     default: {
@@ -122,7 +124,7 @@ export function saturateColor(color: Color, options?: ColorSaturationOptions): C
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
       const updatedC = Math.max(0, lch.c + getLABLikeDelta(amount, labScale));
-      return new Color({ ...lch, c: updatedC }).setAlpha(color.getAlpha());
+      return new Color({ ...lch, c: updatedC, format: 'LCH' }).setAlpha(color.getAlpha());
     }
     case 'HSL':
     default: {
@@ -139,7 +141,7 @@ export function desaturateColor(color: Color, options?: ColorSaturationOptions):
     case 'LCH': {
       const lch = normalizeLCH(color.toLCH());
       const updatedC = Math.max(0, lch.c - getLABLikeDelta(amount, labScale));
-      return new Color({ ...lch, c: updatedC }).setAlpha(color.getAlpha());
+      return new Color({ ...lch, c: updatedC, format: 'LCH' }).setAlpha(color.getAlpha());
     }
     case 'HSL':
     default: {
