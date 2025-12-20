@@ -32,7 +32,9 @@ const DEFAULT_MANIPULATION_AMOUNT = 10;
 // Default LAB/LCH lightness or chroma delta applied per 10% step when using LAB-backed spaces.
 const DEFAULT_LAB_LIGHTNESS_DELTA_PER_STEP = 18;
 
-function getColorBrightnessOptions(options?: ColorBrightnessOptions): Required<ColorBrightnessOptions> {
+function getColorBrightnessOptions(
+  options?: ColorBrightnessOptions
+): Required<ColorBrightnessOptions> {
   const {
     amount = DEFAULT_MANIPULATION_AMOUNT,
     space = 'HSL',
@@ -69,7 +71,7 @@ function normalizeLCH(lch: ColorLCH): ColorLCH {
 
 export function spinColorHue(color: Color, degrees: number): Color {
   const hsla = color.toHSLA();
-  const rotatedHue = ((hsla.h + degrees) % 360 + 360) % 360;
+  const rotatedHue = (((hsla.h + degrees) % 360) + 360) % 360;
   hsla.h = rotatedHue;
   return new Color(hsla);
 }

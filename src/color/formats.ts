@@ -1,3 +1,5 @@
+import type { CaseInsensitive } from '../utils';
+
 export type ColorHex = `#${string}`;
 
 export interface ColorRGB {
@@ -37,18 +39,18 @@ export interface ColorCMYK {
   k: number; // 0-100
 }
 
+export interface ColorLAB {
+  l: number; // 0-100
+  a: number; // unbounded
+  b: number; // unbounded
+}
+
 export interface ColorLCH {
   l: number; // 0-100
   c: number; // >=0
   h: number; // 0-360
   // Internal hint used for format disambiguation.
-  format?: 'LCH';
-}
-
-export interface ColorLAB {
-  l: number; // 0-100
-  a: number; // unbounded
-  b: number; // unbounded
+  format?: CaseInsensitive<'LCH'>;
 }
 
 export interface ColorOKLCH {
@@ -56,7 +58,7 @@ export interface ColorOKLCH {
   c: number; // >=0
   h: number; // 0-360
   // Internal hint used for format disambiguation.
-  format?: 'OKLCH';
+  format?: CaseInsensitive<'OKLCH'>;
 }
 
 export type ColorFormat =
@@ -140,14 +142,14 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
 
   if ('h' in color && 'l' in color && 'c' in color) {
     const { l, c, h } = color;
-    const formatHint = 'format' in color ? color.format : undefined;
-    const normalizedFormatHint = typeof formatHint === 'string' ? formatHint.toUpperCase() : undefined;
-    if (normalizedFormatHint === 'OKLCH') {
+    const formatHint = 'format' in color ? color.format?.toUpperCase() : undefined;
+
+    if (formatHint === 'OKLCH') {
       const oklch: ColorOKLCH = { l, c, h, format: 'OKLCH' };
       return { formatType: 'OKLCH', value: oklch };
     }
 
-    if (normalizedFormatHint === 'LCH') {
+    if (formatHint === 'LCH') {
       const lch: ColorLCH = { l, c, h, format: 'LCH' };
       return { formatType: 'LCH', value: lch };
     }
@@ -155,22 +157,22 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
     const isValidHue = h >= 0 && h <= 360;
     const isOklchLightness = l >= 0 && l <= 1;
     if (isOklchLightness && isValidHue) {
-      const oklch: ColorOKLCH = { l, c, h };
+      const oklch: ColorOKLCH = { l, c, h, format: 'OKLCH' };
       return { formatType: 'OKLCH', value: oklch };
     }
 
     const isLchLightness = l >= 0 && l <= 100;
     if (isLchLightness && isValidHue) {
-      const lch: ColorLCH = { l, c, h };
+      const lch: ColorLCH = { l, c, h, format: 'LCH' };
       return { formatType: 'LCH', value: lch };
     }
 
     if (l <= 1) {
-      const oklch: ColorOKLCH = { l, c, h };
+      const oklch: ColorOKLCH = { l, c, h, format: 'OKLCH' };
       return { formatType: 'OKLCH', value: oklch };
     }
 
-    const lch: ColorLCH = { l, c, h };
+    const lch: ColorLCH = { l, c, h, format: 'LCH' };
     return { formatType: 'LCH', value: lch };
   }
 

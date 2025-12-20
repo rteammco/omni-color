@@ -367,6 +367,7 @@ function rgbToLCH(color: ColorRGB): ColorLCH {
     l,
     c: +c.toFixed(3),
     h: +((h + 360) % 360).toFixed(3),
+    format: 'LCH',
   };
 }
 
@@ -404,6 +405,7 @@ function rgbToOKLCH(color: ColorRGB): ColorOKLCH {
     l: +L.toFixed(6),
     c: +C.toFixed(6),
     h: +((h + 360) % 360).toFixed(3),
+    format: 'OKLCH',
   };
 }
 
