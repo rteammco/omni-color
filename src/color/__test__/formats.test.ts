@@ -470,8 +470,13 @@ describe('getColorFormatType', () => {
 
   it('disambiguates lch and oklch based on expected ranges', () => {
     expect(getColorFormatType({ l: 0.5, c: 50, h: 120 })).toEqual({
-      formatType: 'LCH',
+      formatType: 'OKLCH',
       value: { l: 0.5, c: 50, h: 120 },
+    });
+
+    expect(getColorFormatType({ l: 0.5, c: 50, h: 120, format: 'LCH' })).toEqual({
+      formatType: 'LCH',
+      value: { l: 0.5, c: 50, h: 120, format: 'LCH' },
     });
 
     expect(getColorFormatType({ l: 0.5, c: 0.1, h: 120 })).toEqual({
@@ -487,6 +492,11 @@ describe('getColorFormatType', () => {
     expect(getColorFormatType({ l: 1.0001, c: 0.4, h: 90 })).toEqual({
       formatType: 'LCH',
       value: { l: 1.0001, c: 0.4, h: 90 },
+    });
+
+    expect(getColorFormatType({ l: 0.9, c: 0.7, h: 200, format: 'OKLCH' })).toEqual({
+      formatType: 'OKLCH',
+      value: { l: 0.9, c: 0.7, h: 200, format: 'OKLCH' },
     });
 
     expect(getColorFormatType({ l: 99.999, c: 0.6, h: 270 })).toEqual({

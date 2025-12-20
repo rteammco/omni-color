@@ -34,6 +34,10 @@ describe('conversions', () => {
       expect(toRGB({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0 });
     });
 
+    it('handles high-chroma OKLCH inputs without downgrading them to LCH', () => {
+      expect(toRGB({ l: 0.7, c: 0.7, h: 200 })).toEqual({ r: 0, g: 227, b: 255 });
+    });
+
     it('rounds RGB inputs to the nearest integers', () => {
       expect(toRGB({ r: 10.2, g: 20.7, b: 30.9 })).toEqual({ r: 10, g: 21, b: 31 });
       expect(toRGB({ r: 199.4, g: 200.5, b: 201.6 })).toEqual({ r: 199, g: 201, b: 202 });
@@ -520,6 +524,13 @@ describe('conversions', () => {
       expect(fromOKLCH.l).toBeCloseTo(0.627955, 6);
       expect(fromOKLCH.c).toBeCloseTo(0.257683, 6);
       expect(fromOKLCH.h).toBeCloseTo(29.234, 3);
+    });
+
+    it('roundtrips high-chroma OKLCH inputs through RGB without misclassification', () => {
+      const oklch = toOKLCH({ l: 0.7, c: 0.7, h: 200 });
+      expect(oklch.l).toBeCloseTo(0.839448, 6);
+      expect(oklch.c).toBeCloseTo(0.145421, 6);
+      expect(oklch.h).toBeCloseTo(210.478, 3);
     });
 
     it('handles white correctly', () => {
