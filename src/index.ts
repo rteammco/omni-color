@@ -1,7 +1,12 @@
 import { Color } from './color/color';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
 import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
-import type { CIE94Options, DeltaEMethod, DeltaEOptions } from './color/deltaE';
+import type {
+  CIE94Options,
+  CIEDE2000Options,
+  DeltaEMethod,
+  DeltaEOptions,
+} from './color/deltaE';
 import type { ColorFormat } from './color/formats';
 import {
   ColorCMYK,
@@ -53,6 +58,7 @@ export {
   type BlendMode,
   type BlendSpace,
   type CIE94Options,
+  type CIEDE2000Options,
   Color,
   ColorBrightnessOptions,
   type ColorBrightnessSpace,

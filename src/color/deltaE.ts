@@ -24,15 +24,43 @@ export interface CIE94Options {
 }
 
 /**
+ * Optional weighting factors for the CIEDE2000 Delta E calculation.
+ *
+ * These values tune the relative importance of lightness, chroma, and hue
+ * differences. When omitted, the standard defaults are used.
+ */
+export interface CIEDE2000Options {
+  /** Lightness weighting factor (k_L). Defaults to 1. */
+  kL?: number;
+  /** Chroma weighting factor (k_C). Defaults to 1. */
+  kC?: number;
+  /** Hue weighting factor (k_H). Defaults to 1. */
+  kH?: number;
+}
+
+/**
  * Options for Delta E calculations.
  *
  * Specify the `method` to select the formula. If `method` is `'CIE94'`,
- * pass `cie94Options` to customize weighting factors.
+ * pass `cie94Options` to customize weighting factors. For `'CIEDE2000'`,
+ * use `ciede2000Options` for similar weighting.
  */
-export interface DeltaEOptions {
-  method?: CaseInsensitive<DeltaEMethod>;
-  cie94Options?: CIE94Options;
-}
+export type DeltaEOptions =
+  | {
+      method?: CaseInsensitive<'CIEDE2000'>;
+      cie94Options?: never;
+      ciede2000Options?: CIEDE2000Options;
+    }
+  | {
+      method: CaseInsensitive<'CIE94'>;
+      cie94Options?: CIE94Options;
+      ciede2000Options?: never;
+    }
+  | {
+      method: CaseInsensitive<'CIE76'>;
+      cie94Options?: never;
+      ciede2000Options?: never;
+    };
 
 function deltaECIE76(colorA: Color, colorB: Color): number {
   const lab1 = colorA.toLAB();
@@ -68,7 +96,8 @@ function deltaECIE94(colorA: Color, colorB: Color, options: CIE94Options = {}): 
   return Math.sqrt(lTerm ** 2 + cTerm ** 2 + hTerm ** 2);
 }
 
-function deltaECIEDE2000(colorA: Color, colorB: Color): number {
+function deltaECIEDE2000(colorA: Color, colorB: Color, options: CIEDE2000Options = {}): number {
+  const { kL = 1, kC = 1, kH = 1 } = options;
   const lab1 = colorA.toLAB();
   const lab2 = colorB.toLAB();
 
@@ -135,9 +164,9 @@ function deltaECIEDE2000(colorA: Color, colorB: Color): number {
   const rC = 2 * Math.sqrt(cBarPrime ** 7 / (cBarPrime ** 7 + 25 ** 7));
   const rT = -rC * Math.sin((2 * deltaTheta * Math.PI) / 180);
 
-  const lTerm = deltaLPrime / sL;
-  const cTerm = deltaCPrime / sC;
-  const hTerm = deltaHPrime / sH;
+  const lTerm = deltaLPrime / (kL * sL);
+  const cTerm = deltaCPrime / (kC * sC);
+  const hTerm = deltaHPrime / (kH * sH);
 
   return Math.sqrt(lTerm ** 2 + cTerm ** 2 + hTerm ** 2 + rT * cTerm * hTerm);
 }
@@ -149,10 +178,12 @@ export function getDeltaE(colorA: Color, colorB: Color, options: DeltaEOptions =
     return deltaECIE76(colorA, colorB);
   }
   if (method === 'CIE94') {
-    return deltaECIE94(colorA, colorB, options.cie94Options);
+    const cie94Options = 'cie94Options' in options ? options.cie94Options : undefined;
+    return deltaECIE94(colorA, colorB, cie94Options);
   }
   if (method === 'CIEDE2000') {
-    return deltaECIEDE2000(colorA, colorB);
+    const ciede2000Options = 'ciede2000Options' in options ? options.ciede2000Options : undefined;
+    return deltaECIEDE2000(colorA, colorB, ciede2000Options);
   }
 
   throw new Error(`Unsupported Delta E method: ${method}`);

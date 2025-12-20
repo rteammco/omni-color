@@ -795,7 +795,7 @@ export class Color {
   /**
    * Get the Delta E (perceptual difference) between this color and another color.
    * Uses CIEDE2000 by default but supports additional calculation methods and
-   * configurable weighting for CIE94.
+   * configurable weighting for CIE94 and CIEDE2000.
    *
    * @param other The other {@link Color} or color input to compare against.
    * @param options Optional {@link DeltaEOptions} to control the calculation.
@@ -809,6 +809,10 @@ export class Color {
    * new Color('#ff6666').differenceFrom(new Color('#aa0000'), {
    *   method: 'CIE94',
    *   cie94Options: { kL: 2, kC: 1, kH: 1.5 },
+   * });
+   * new Color('#ff6666').differenceFrom(new Color('#aa0000'), {
+   *   method: 'CIEDE2000',
+   *   ciede2000Options: { kL: 2, kC: 1, kH: 1.5 },
    * });
    * ```
    */
