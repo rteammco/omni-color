@@ -12,7 +12,7 @@ import {
   toRGB,
   toRGBA,
 } from '../conversions';
-import type { ColorHex, ColorHSL, ColorLAB, ColorRGBA } from '../formats';
+import type { ColorHex, ColorHSL, ColorLAB, ColorLCH, ColorOKLCH, ColorRGBA } from '../formats';
 
 describe('conversions', () => {
   describe('toRGB', () => {
@@ -456,6 +456,13 @@ describe('conversions', () => {
       expect(fromOKLCH.h).toBeCloseTo(40, 3);
     });
 
+    it('returns a shallow copy for LCH input without normalizing hue', () => {
+      const original: ColorLCH = { l: 48.1234, c: 12.9876, h: 360, format: 'LCH' };
+      const result = toLCH(original);
+      expect(result).toEqual(original);
+      expect(result).not.toBe(original);
+    });
+
     it('handles zero chroma to produce grayscale', () => {
       const lch = toLCH('#808080');
       expect(lch.c).toBeCloseTo(0, 1);
@@ -526,8 +533,16 @@ describe('conversions', () => {
       expect(fromOKLCH.h).toBeCloseTo(29.234, 3);
     });
 
+    it('returns a shallow copy for OKLCH input without normalizing hue', () => {
+      const original: ColorOKLCH = { l: 0.789123, c: 0.456789, h: 360, format: 'OKLCH' };
+      const result = toOKLCH(original);
+      expect(result).toEqual(original);
+      expect(result).not.toBe(original);
+    });
+
     it('roundtrips high-chroma OKLCH inputs through RGB without misclassification', () => {
-      const oklch = toOKLCH({ l: 0.7, c: 0.7, h: 200 });
+      const rgb = toRGB({ l: 0.7, c: 0.7, h: 200 });
+      const oklch = toOKLCH(rgb);
       expect(oklch.l).toBeCloseTo(0.839448, 6);
       expect(oklch.c).toBeCloseTo(0.145421, 6);
       expect(oklch.h).toBeCloseTo(210.478, 3);
