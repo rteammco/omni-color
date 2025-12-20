@@ -616,13 +616,6 @@ describe('Color interoperability with chroma-js', () => {
     const labTolerance = 0.5;
     const chromaTolerance = 0.5;
     const hueTolerance = 1;
-    const chromaSupportsOKLCH = typeof chroma.oklch === 'function';
-
-    if (!chromaSupportsOKLCH) {
-      it('documents that chroma-js does not expose oklch()', () => {
-        expect(chromaSupportsOKLCH).toBe(false);
-      });
-    }
 
     it('keeps LAB/LCH outputs aligned for #1a73e8', () => {
       const omniColor = new Color('#1a73e8');
@@ -644,17 +637,15 @@ describe('Color interoperability with chroma-js', () => {
       );
       expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
 
-      if (chromaSupportsOKLCH) {
-        const oklchFromOmni = omniColor.toOKLCH();
-        const chromaOklch = chromaColor.oklch();
-        expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
-        expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
-        const oklchHueDelta = Math.min(
-          Math.abs(oklchFromOmni.h - chromaOklch[2]),
-          360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
-        );
-        expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
-      }
+      const oklchFromOmni = omniColor.toOKLCH();
+      const chromaOklch = chromaColor.oklch();
+      expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
+      expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
+      const oklchHueDelta = Math.min(
+        Math.abs(oklchFromOmni.h - chromaOklch[2]),
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+      );
+      expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
     });
 
     it('keeps LAB/LCH outputs aligned for #f43f5e', () => {
@@ -677,17 +668,15 @@ describe('Color interoperability with chroma-js', () => {
       );
       expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
 
-      if (chromaSupportsOKLCH) {
-        const oklchFromOmni = omniColor.toOKLCH();
-        const chromaOklch = chromaColor.oklch();
-        expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
-        expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
-        const oklchHueDelta = Math.min(
-          Math.abs(oklchFromOmni.h - chromaOklch[2]),
-          360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
-        );
-        expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
-      }
+      const oklchFromOmni = omniColor.toOKLCH();
+      const chromaOklch = chromaColor.oklch();
+      expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
+      expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
+      const oklchHueDelta = Math.min(
+        Math.abs(oklchFromOmni.h - chromaOklch[2]),
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+      );
+      expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
     });
 
     it('keeps LAB/LCH outputs aligned for #00aa88', () => {
@@ -710,17 +699,15 @@ describe('Color interoperability with chroma-js', () => {
       );
       expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
 
-      if (chromaSupportsOKLCH) {
-        const oklchFromOmni = omniColor.toOKLCH();
-        const chromaOklch = chromaColor.oklch();
-        expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
-        expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
-        const oklchHueDelta = Math.min(
-          Math.abs(oklchFromOmni.h - chromaOklch[2]),
-          360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
-        );
-        expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
-      }
+      const oklchFromOmni = omniColor.toOKLCH();
+      const chromaOklch = chromaColor.oklch();
+      expect(Math.abs(oklchFromOmni.l - chromaOklch[0])).toBeLessThanOrEqual(0.001);
+      expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
+      const oklchHueDelta = Math.min(
+        Math.abs(oklchFromOmni.h - chromaOklch[2]),
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+      );
+      expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
     });
   });
 
