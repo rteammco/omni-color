@@ -508,6 +508,10 @@ Delta E calculations measure how visually different two colors appear.
       - `kH` - hue weighting factor. Defaults to `1`.
       - `K1` - chroma scaling constant. Defaults to `0.045`.
       - `K2` - hue scaling constant. Defaults to `0.015`.
+    - `ciede2000Options` - optional inputs for the `"CIEDE2000"` algorithm only (does not apply to any other selected `method`), `CIEDE2000Options`:
+      - `kL` - lightness weighting factor. Defaults to `1`.
+      - `kC` - chroma weighting factor. Defaults to `1`.
+      - `kH` - hue weighting factor. Defaults to `1`.
 
 ```ts
 const base = new Color('#e63946');
@@ -519,6 +523,10 @@ base.differenceFrom(new Color('#aa0000'), {
   method: 'CIE94',
   cie94Options: { kL: 2, kC: 1, kH: 1.5 },
 }); // ~9.96
+base.differenceFrom(new Color('#aa0000'), {
+  method: 'CIEDE2000',
+  ciede2000Options: { kL: 2, kC: 1, kH: 1.5 },
+}); // ~15.27
 ```
 
 ### Gradients and Color Scales

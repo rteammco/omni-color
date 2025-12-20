@@ -81,24 +81,43 @@ describe('Delta E calculations', () => {
       );
     });
 
-    it('honors custom weighting factors for CIE94', () => {
-      const lighterRed = new Color('#ff6666');
-      const darkerRed = new Color('#aa0000');
+  it('honors custom weighting factors for CIE94', () => {
+    const lighterRed = new Color('#ff6666');
+    const darkerRed = new Color('#aa0000');
 
-      const defaultWeighting = getDeltaE(lighterRed, darkerRed, { method: 'CIE94' });
+    const defaultWeighting = getDeltaE(lighterRed, darkerRed, { method: 'CIE94' });
       const textilesWeighting = getDeltaE(lighterRed, darkerRed, {
         method: 'CIE94',
-        cie94Options: { kL: 2, kC: 1, kH: 1.5 },
-      });
-      expect(defaultWeighting).toBeGreaterThan(textilesWeighting);
-      expect(defaultWeighting).toBeCloseTo(29.175, 3);
-      expect(textilesWeighting).toBeCloseTo(15.172, 3);
+      cie94Options: { kL: 2, kC: 1, kH: 1.5 },
+    });
+    expect(defaultWeighting).toBeGreaterThan(textilesWeighting);
+    expect(defaultWeighting).toBeCloseTo(29.175, 3);
+    expect(textilesWeighting).toBeCloseTo(15.172, 3);
+  });
+
+  it('honors custom weighting factors for CIEDE2000', () => {
+    const lighterRed = new Color('#ff6666');
+    const darkerRed = new Color('#aa0000');
+
+    const defaultWeighting = getDeltaE(lighterRed, darkerRed, { method: 'CIEDE2000' });
+    const customWeighting = getDeltaE(lighterRed, darkerRed, {
+      method: 'CIEDE2000',
+      ciede2000Options: { kL: 2, kC: 1, kH: 1.5 },
+    });
+    const explicitDefaults = getDeltaE(lighterRed, darkerRed, {
+      method: 'CIEDE2000',
+      ciede2000Options: { kL: 1, kC: 1, kH: 1 },
     });
 
-    it('supports comparing colors from different input spaces', () => {
-      const red = new Color('#ff0000');
-      const green = new Color({ h: 120, s: 100, l: 50 });
-      const yellow = new Color({ l: 97.607, a: -15.578, b: 93.585 });
+    expect(defaultWeighting).toBeCloseTo(29.2788, 4);
+    expect(customWeighting).toBeCloseTo(15.2694, 4);
+    expect(explicitDefaults).toBeCloseTo(defaultWeighting, 12);
+  });
+
+  it('supports comparing colors from different input spaces', () => {
+    const red = new Color('#ff0000');
+    const green = new Color({ h: 120, s: 100, l: 50 });
+    const yellow = new Color({ l: 97.607, a: -15.578, b: 93.585 });
 
       expect(getDeltaE(red, green, { method: 'CIE76' })).toBeCloseTo(170.585, 2);
       expect(getDeltaE(red, yellow, { method: 'CIE94' })).toBeCloseTo(59.1667, 3);
