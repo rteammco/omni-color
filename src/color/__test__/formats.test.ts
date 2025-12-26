@@ -548,11 +548,9 @@ describe('getColorFormatType', () => {
       value: { l: 0.7, a: 0.1, b: 0.2, format: 'OKLAB' },
     });
 
-    expect(
-      getColorFormatType({ l: 0.7, a: 0.1, b: 0.2, format: 'LAB' } as any)
-    ).toEqual({
+    expect(getColorFormatType({ l: 0.7, a: 0.1, b: 0.2, format: 'LAB' })).toEqual({
       formatType: 'LAB',
-      value: { l: 0.7, a: 0.1, b: 0.2 },
+      value: { l: 0.7, a: 0.1, b: 0.2, format: 'LAB' },
     });
 
     expect(getColorFormatType({ l: 75, a: 20, b: -30 })).toEqual({

@@ -43,6 +43,8 @@ export interface ColorLAB {
   l: number; // 0-100
   a: number; // unbounded
   b: number; // unbounded
+  // Internal hint used for format disambiguation.
+  format?: CaseInsensitive<'LAB'>;
 }
 
 export interface ColorOKLAB {
@@ -198,7 +200,7 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
     }
 
     if (formatHint === 'LAB') {
-      const lab: ColorLAB = { l, a, b };
+      const lab: ColorLAB = { l, a, b, format: 'LAB' };
       return { formatType: 'LAB', value: lab };
     }
 
