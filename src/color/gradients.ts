@@ -1,9 +1,17 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import type { Color } from './color';
-import type { ColorHSL, ColorHSV, ColorLCH, ColorOKLCH, ColorRGB, ColorRGBA } from './formats';
+import type {
+  ColorHSL,
+  ColorHSV,
+  ColorLCH,
+  ColorOKLAB,
+  ColorOKLCH,
+  ColorRGB,
+  ColorRGBA,
+} from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 
-export type ColorGradientSpace = 'RGB' | 'HSL' | 'HSV' | 'LCH' | 'OKLCH';
+export type ColorGradientSpace = 'RGB' | 'HSL' | 'HSV' | 'LCH' | 'OKLAB' | 'OKLCH';
 export type ColorGradientInterpolation = 'LINEAR' | 'BEZIER';
 
 type ColorGradientEasingMode = 'LINEAR' | 'EASE_IN' | 'EASE_OUT' | 'EASE_IN_OUT';
@@ -283,6 +291,11 @@ function getOKLCHVector(color: Color, alpha: number, isCartesian: boolean): Inte
   return { values: [l, c, h], alpha };
 }
 
+function getOKLABVector(color: Color, alpha: number): InterpolatableColor {
+  const { l, a, b } = color.toOKLAB();
+  return { values: [l, a, b], alpha };
+}
+
 /**
  * Convert a color into an interpolatable vector for the target color space
  * while preserving alpha separately.
@@ -301,6 +314,8 @@ function colorToVector(
       return getHSVVector(color, alpha, isCartesian);
     case 'LCH':
       return getLCHVector(color, alpha, isCartesian);
+    case 'OKLAB':
+      return getOKLABVector(color, alpha);
     case 'OKLCH':
       return getOKLCHVector(color, alpha, isCartesian);
     case 'RGB':
@@ -316,7 +331,10 @@ function vectorToFormat(
   space: ColorGradientSpace,
   clamp: boolean,
   isCartesian: boolean
-): { format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLCH; alpha: number } {
+): {
+  format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLAB | ColorOKLCH;
+  alpha: number;
+} {
   const [first, second, third] = vector.values;
   const alpha = clamp ? clampValue(vector.alpha, 0, 1) : vector.alpha;
 
@@ -362,6 +380,10 @@ function vectorToFormat(
       const c = clamp ? clampValue(second, 0, MAX_LCH_CHROMA) : second;
       const hue = wrapHue(third);
       return { format: { l, c, h: hue }, alpha };
+    }
+    case 'OKLAB': {
+      const l = clamp ? clampValue(first, 0, 1) : first;
+      return { format: { l, a: second, b: third, format: 'OKLAB' }, alpha };
     }
     case 'OKLCH': {
       if (isCartesian) {
@@ -517,8 +539,28 @@ function oklchToRgbUnrounded(color: ColorOKLCH): ColorRGB {
   };
 }
 
+function oklabToRgbUnrounded(color: ColorOKLAB): ColorRGB {
+  const l_ = color.l + 0.3963377774 * color.a + 0.2158037573 * color.b;
+  const m_ = color.l - 0.1055613458 * color.a - 0.0638541728 * color.b;
+  const s_ = color.l - 0.0894841775 * color.a - 1.291485548 * color.b;
+
+  const l3 = l_ ** 3;
+  const m3 = m_ ** 3;
+  const s3 = s_ ** 3;
+
+  const rLin = 4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3;
+  const gLin = -1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3;
+  const bLin = -0.0041960863 * l3 - 0.7034186147 * m3 + 1.707614701 * s3;
+
+  return {
+    r: linearChannelToSrgb(rLin, 'SRGB'),
+    g: linearChannelToSrgb(gLin, 'SRGB'),
+    b: linearChannelToSrgb(bLin, 'SRGB'),
+  };
+}
+
 function formatToRGB(
-  format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLCH,
+  format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLAB | ColorOKLCH,
   space: ColorGradientSpace,
   clamp: boolean
 ): ColorRGB {
@@ -541,6 +583,14 @@ function formatToRGB(
     }
     case 'LCH': {
       const { r, g, b } = lchToRgbUnrounded(format as ColorLCH);
+      return {
+        r: clamp ? clampValue(r, 0, 255) : r,
+        g: clamp ? clampValue(g, 0, 255) : g,
+        b: clamp ? clampValue(b, 0, 255) : b,
+      };
+    }
+    case 'OKLAB': {
+      const { r, g, b } = oklabToRgbUnrounded(format as ColorOKLAB);
       return {
         r: clamp ? clampValue(r, 0, 255) : r,
         g: clamp ? clampValue(g, 0, 255) : g,

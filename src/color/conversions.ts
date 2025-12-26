@@ -8,6 +8,7 @@ import type {
   ColorHSVA,
   ColorLAB,
   ColorLCH,
+  ColorOKLAB,
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
@@ -305,6 +306,65 @@ function cmykToRGBA(color: ColorCMYK, alpha?: number): ColorRGBA {
   return rgbToRGBA(rgb, alpha);
 }
 
+function rgbToOKLabUnrounded(color: ColorRGB): ColorOKLAB {
+  const r = srgbChannelToLinear(color.r, 'SRGB');
+  const g = srgbChannelToLinear(color.g, 'SRGB');
+  const b = srgbChannelToLinear(color.b, 'SRGB');
+
+  const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+  const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+  const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+
+  const l_ = Math.cbrt(l);
+  const m_ = Math.cbrt(m);
+  const s_ = Math.cbrt(s);
+
+  const L = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_;
+  const a = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_;
+  const b2 = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_;
+
+  return { l: L, a, b: b2, format: 'OKLAB' };
+}
+
+function rgbToOKLAB(color: ColorRGB): ColorOKLAB {
+  const { l, a, b } = rgbToOKLabUnrounded(color);
+  return {
+    l: +l.toFixed(6),
+    a: +a.toFixed(6),
+    b: +b.toFixed(6),
+    format: 'OKLAB',
+  };
+}
+
+function oklabToRGB(color: ColorOKLAB): ColorRGB {
+  const l_ = color.l + 0.3963377774 * color.a + 0.2158037573 * color.b;
+  const m_ = color.l - 0.1055613458 * color.a - 0.0638541728 * color.b;
+  const s_ = color.l - 0.0894841775 * color.a - 1.291485548 * color.b;
+
+  const l = l_ ** 3;
+  const m = m_ ** 3;
+  const s = s_ ** 3;
+
+  const rLin = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+  const gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+  const bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
+
+  const r = linearChannelToSrgb(rLin, 'SRGB');
+  const g = linearChannelToSrgb(gLin, 'SRGB');
+  const b3 = linearChannelToSrgb(bLin, 'SRGB');
+
+  return {
+    r: Math.round(r),
+    g: Math.round(g),
+    b: Math.round(b3),
+  };
+}
+
+function oklabToRGBA(color: ColorOKLAB, alpha?: number): ColorRGBA {
+  const rgb = oklabToRGB(color);
+  return rgbToRGBA(rgb, alpha);
+}
+
 function rgbToLABUnrounded(color: ColorRGB): ColorLAB {
   const r = srgbChannelToLinear(color.r, 'SRGB');
   const g = srgbChannelToLinear(color.g, 'SRGB');
@@ -387,22 +447,11 @@ function lchToRGBA(color: ColorLCH, alpha?: number): ColorRGBA {
 }
 
 function rgbToOKLCH(color: ColorRGB): ColorOKLCH {
-  const r = srgbChannelToLinear(color.r, 'SRGB');
-  const g = srgbChannelToLinear(color.g, 'SRGB');
-  const b = srgbChannelToLinear(color.b, 'SRGB');
-  const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
-  const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
-  const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
-  const l_ = Math.cbrt(l);
-  const m_ = Math.cbrt(m);
-  const s_ = Math.cbrt(s);
-  const L = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_;
-  const a = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_;
-  const b2 = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_;
-  const C = Math.sqrt(a * a + b2 * b2);
-  const h = (Math.atan2(b2, a) * 180) / Math.PI;
+  const { l, a, b } = rgbToOKLabUnrounded(color);
+  const C = Math.sqrt(a * a + b * b);
+  const h = (Math.atan2(b, a) * 180) / Math.PI;
   return {
-    l: +L.toFixed(6),
+    l: +l.toFixed(6),
     c: +C.toFixed(6),
     h: +((h + 360) % 360).toFixed(3),
     format: 'OKLCH',
@@ -460,6 +509,8 @@ export function toRGB(color: ColorFormat): ColorRGB {
       return cmykToRGB(value);
     case 'LAB':
       return labToRGB(value);
+    case 'OKLAB':
+      return oklabToRGB(value);
     case 'LCH':
       return lchToRGB(value);
     case 'OKLCH':
@@ -492,6 +543,8 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
       return cmykToRGBA(value);
     case 'LAB':
       return rgbToRGBA(labToRGB(value));
+    case 'OKLAB':
+      return oklabToRGBA(value);
     case 'LCH':
       return lchToRGBA(value);
     case 'OKLCH':
@@ -525,6 +578,8 @@ export function toHex(color: ColorFormat): ColorHex {
       return rgbToHex(cmykToRGB(value));
     case 'LAB':
       return rgbToHex(labToRGB(value));
+    case 'OKLAB':
+      return rgbToHex(oklabToRGB(value));
     case 'LCH':
       return rgbToHex(lchToRGB(value));
     case 'OKLCH':
@@ -558,6 +613,8 @@ export function toHex8(color: ColorFormat): ColorHex {
       return rgbToHex8(cmykToRGB(value));
     case 'LAB':
       return rgbToHex8(labToRGB(value));
+    case 'OKLAB':
+      return rgbToHex8(oklabToRGB(value));
     case 'LCH':
       return rgbToHex8(lchToRGB(value));
     case 'OKLCH':
@@ -599,6 +656,15 @@ export function toLAB(color: ColorFormat): ColorLAB {
     return { ...value };
   }
   return rgbToLAB(toRGB(color));
+}
+
+export function toOKLAB(color: ColorFormat): ColorOKLAB {
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  if (formatType === 'OKLAB') {
+    return { ...value };
+  }
+  return rgbToOKLAB(toRGB(color));
 }
 
 export function toLCH(color: ColorFormat): ColorLCH {

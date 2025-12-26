@@ -7,6 +7,7 @@ import type {
   ColorHSVA,
   ColorLAB,
   ColorLCH,
+  ColorOKLAB,
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
@@ -78,6 +79,19 @@ function isValidLABColor(color: ColorLAB): boolean {
     typeof l === 'number' &&
     l >= 0 &&
     l <= 100 &&
+    typeof a === 'number' &&
+    Number.isFinite(a) &&
+    typeof b === 'number' &&
+    Number.isFinite(b)
+  );
+}
+
+function isValidOKLABColor(color: ColorOKLAB): boolean {
+  const { l, a, b } = color;
+  return (
+    typeof l === 'number' &&
+    l >= 0 &&
+    l <= 1 &&
     typeof a === 'number' &&
     Number.isFinite(a) &&
     typeof b === 'number' &&
@@ -167,6 +181,11 @@ export function validateColorOrThrow(color?: ColorFormat | null): void {
     case 'LAB':
       if (!isValidLABColor(value)) {
         throw new Error(`invalid LAB color: "${JSON.stringify(value)}"`);
+      }
+      break;
+    case 'OKLAB':
+      if (!isValidOKLABColor(value)) {
+        throw new Error(`invalid OKLAB color: "${JSON.stringify(value)}"`);
       }
       break;
     case 'LCH':

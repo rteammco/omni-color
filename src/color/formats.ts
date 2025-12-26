@@ -45,6 +45,14 @@ export interface ColorLAB {
   b: number; // unbounded
 }
 
+export interface ColorOKLAB {
+  l: number; // 0-1
+  a: number; // unbounded
+  b: number; // unbounded
+  // Internal hint used for format disambiguation.
+  format?: CaseInsensitive<'OKLAB'>;
+}
+
 export interface ColorLCH {
   l: number; // 0-100
   c: number; // >=0
@@ -71,6 +79,7 @@ export type ColorFormat =
   | ColorHSVA
   | ColorCMYK
   | ColorLAB
+  | ColorOKLAB
   | ColorLCH
   | ColorOKLCH;
 
@@ -85,6 +94,7 @@ type ColorFormatTypeAndValue =
   | { formatType: 'HSVA'; value: ColorHSVA }
   | { formatType: 'CMYK'; value: ColorCMYK }
   | { formatType: 'LAB'; value: ColorLAB }
+  | { formatType: 'OKLAB'; value: ColorOKLAB }
   | { formatType: 'LCH'; value: ColorLCH }
   | { formatType: 'OKLCH'; value: ColorOKLCH };
 
@@ -136,10 +146,6 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
       : { formatType: 'HSL', value: color };
   }
 
-  if ('l' in color && 'a' in color && 'b' in color) {
-    return { formatType: 'LAB', value: color };
-  }
-
   if ('h' in color && 'l' in color && 'c' in color) {
     const { l, c, h } = color;
     const formatHint = 'format' in color ? color.format?.toUpperCase() : undefined;
@@ -182,6 +188,30 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
       : { formatType: 'RGB', value: color };
   }
 
+  if ('l' in color && 'a' in color && 'b' in color) {
+    const { l, a, b } = color;
+    const formatHint = 'format' in color ? color.format?.toUpperCase() : undefined;
+
+    if (formatHint === 'OKLAB') {
+      const oklab: ColorOKLAB = { l, a, b, format: 'OKLAB' };
+      return { formatType: 'OKLAB', value: oklab };
+    }
+
+    if (formatHint === 'LAB') {
+      const lab: ColorLAB = { l, a, b };
+      return { formatType: 'LAB', value: lab };
+    }
+
+    const isOklabLightness = l >= 0 && l <= 1;
+    if (isOklabLightness) {
+      const oklab: ColorOKLAB = { l, a, b, format: 'OKLAB' };
+      return { formatType: 'OKLAB', value: oklab };
+    }
+
+    const lab: ColorLAB = { l, a, b };
+    return { formatType: 'LAB', value: lab };
+  }
+
   throw new Error(`unknown color format: "${JSON.stringify(color)}"`);
 }
 
@@ -215,6 +245,10 @@ export function cmykToString({ c, m, y, k }: ColorCMYK): string {
 
 export function labToString({ l, a, b }: ColorLAB): string {
   return `lab(${getDecimalString(l)}% ${getDecimalString(a)} ${getDecimalString(b)})`;
+}
+
+export function oklabToString({ l, a, b }: ColorOKLAB): string {
+  return `oklab(${getDecimalString(l, 6)} ${getDecimalString(a, 6)} ${getDecimalString(b, 6)})`;
 }
 
 export function lchToString({ l, c, h }: ColorLCH): string {

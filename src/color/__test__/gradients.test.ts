@@ -311,6 +311,18 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     expect(mid.toOKLCH().c).toBeGreaterThan(0.1);
   });
 
+  it('supports OKLAB space to avoid polar hue handling', () => {
+    const start = new Color('#ff0000');
+    const end = new Color('#0000ff');
+
+    const gradient = createColorGradient([start, end], { stops: 3, space: 'OKLAB' });
+    const mid = gradient[1].toOKLAB();
+
+    expect(mid.l).toBeCloseTo(0.539339, 6);
+    expect(mid.a).toBeCloseTo(0.095752, 6);
+    expect(mid.b).toBeCloseTo(-0.092635, 6);
+  });
+
   it('works with LCH space', () => {
     const gradient = createColorGradient([new Color('#ff0000'), new Color('#0000ff')], {
       stops: 3,
