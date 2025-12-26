@@ -10,7 +10,7 @@ export function AppHeader({ pageDescription }: Props) {
     <div>
       <h1 className="mb-6 font-semibold leading-none">
         <span className="relative inline-flex h-[1em] w-[1ch] align-baseline items-center justify-center">
-          <span aria-hidden className="absolute inset-0 flex items-center justify-center">
+          <span aria-hidden className="absolute inset-0 flex items-center justify-center pt-2.5">
             <span className="h-full w-full bg-[url('/favicon.svg')] bg-contain bg-no-repeat bg-center" />
           </span>
           <span className="text-transparent">o</span>
