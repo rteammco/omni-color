@@ -9,6 +9,7 @@ import type {
   ColorHSVA,
   ColorLAB,
   ColorLCH,
+  ColorOKLAB,
   ColorOKLCH,
   ColorRGB,
 } from '../formats';
@@ -31,6 +32,7 @@ const BASE_HSV: ColorHSV = { h: 0, s: 100, v: 100 };
 const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
 const BASE_LAB: ColorLAB = { l: 53.233, a: 80.109, b: 67.22 };
 const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
+const BASE_OKLAB: ColorOKLAB = { l: 0.627955, a: 0.224863, b: 0.125846, format: 'OKLAB' };
 const BASE_OKLCH: ColorOKLCH = { l: 0.627955, c: 0.257683, h: 29.234 };
 
 const HEX8_OPAQUE: ColorHex = '#ff0000ff';
@@ -56,6 +58,10 @@ function checkAllConversions(color: Color, alpha: number, hex8: ColorHex) {
   expect(lch.l).toBeCloseTo(BASE_LCH.l, 3);
   expect(lch.c).toBeCloseTo(BASE_LCH.c, 3);
   expect(lch.h).toBeCloseTo(BASE_LCH.h, 3);
+  const oklab = color.toOKLAB();
+  expect(oklab.l).toBeCloseTo(BASE_OKLAB.l, 6);
+  expect(oklab.a).toBeCloseTo(BASE_OKLAB.a, 6);
+  expect(oklab.b).toBeCloseTo(BASE_OKLAB.b, 6);
   const oklch = color.toOKLCH();
   expect(oklch.l).toBeCloseTo(BASE_OKLCH.l, 6);
   expect(oklch.c).toBeCloseTo(BASE_OKLCH.c, 6);
@@ -153,6 +159,11 @@ describe('Color constructor and conversion tests', () => {
 
   it('correctly initializes from and converts lch input', () => {
     const color = new Color(BASE_LCH);
+    checkAllConversions(color, 1, HEX8_OPAQUE);
+  });
+
+  it('correctly initializes from and converts oklab input', () => {
+    const color = new Color(BASE_OKLAB);
     checkAllConversions(color, 1, HEX8_OPAQUE);
   });
 
@@ -263,6 +274,7 @@ describe('Color.toXString methods', () => {
     expect(color.toCMYKString()).toBe('device-cmyk(0% 100% 100% 0%)');
     expect(color.toLABString()).toBe('lab(53.233% 80.109 67.22)');
     expect(color.toLCHString()).toBe('lch(53.233% 104.576 40)');
+    expect(color.toOKLABString()).toBe('oklab(0.627955 0.224863 0.125846)');
     expect(color.toOKLCHString()).toBe('oklch(0.627955 0.257683 29.234)');
   });
 });
@@ -634,6 +646,14 @@ describe('Color.getHarmonyColors', () => {
       '#1fff8f',
       '#8f1fff',
     ]);
+  });
+
+  it('supports harmonies from OKLAB inputs', () => {
+    const base = new Color({ ...BASE_OKLAB, format: 'OKLAB' });
+
+    const complementary = base.getHarmonyColors('COMPLEMENTARY');
+
+    expect(complementary.map((color) => color.toHex())).toEqual(['#ff0000', '#00ffff']);
   });
 });
 
@@ -1149,5 +1169,18 @@ describe('Color gradients', () => {
     const gradient = base.createGradientThrough(anchors, { stops: 3, space: 'RGB' });
 
     expect(gradient.map((color) => color.toHex())).toEqual(['#1d3557', '#2a9d8f', '#f4a261']);
+  });
+
+  it('supports OKLAB gradients to avoid polar hue unwinding', () => {
+    const start = new Color('#ff0000');
+    const end = new Color('#0000ff');
+
+    const gradient = start.createGradientTo(end, { stops: 3, space: 'OKLAB' });
+    const mid = gradient[1].toOKLAB();
+
+    expect(gradient).toHaveLength(3);
+    expect(mid.l).toBeCloseTo(0.539339, 6);
+    expect(mid.a).toBeCloseTo(0.095752, 6);
+    expect(mid.b).toBeCloseTo(-0.092635, 6);
   });
 });

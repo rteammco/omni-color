@@ -8,11 +8,20 @@ import {
   toHSVA,
   toLAB,
   toLCH,
+  toOKLAB,
   toOKLCH,
   toRGB,
   toRGBA,
 } from '../conversions';
-import type { ColorHex, ColorHSL, ColorLAB, ColorLCH, ColorOKLCH, ColorRGBA } from '../formats';
+import type {
+  ColorHex,
+  ColorHSL,
+  ColorLAB,
+  ColorLCH,
+  ColorOKLAB,
+  ColorOKLCH,
+  ColorRGBA,
+} from '../formats';
 
 describe('conversions', () => {
   describe('toRGB', () => {
@@ -32,6 +41,11 @@ describe('conversions', () => {
       expect(toRGB({ l: 53.233, a: 80.109, b: 67.22 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ l: 0.627955, a: 0.224863, b: 0.125846 })).toEqual({
+        r: 255,
+        g: 0,
+        b: 0,
+      });
     });
 
     it('handles high-chroma OKLCH inputs without downgrading them to LCH', () => {
@@ -558,6 +572,59 @@ describe('conversions', () => {
       const black = toOKLCH('#000000');
       expect(black.l).toBeCloseTo(0, 6);
       expect(black.c).toBeCloseTo(0, 6);
+    });
+  });
+
+  describe('toOKLAB', () => {
+    const expected: ColorOKLAB = { l: 0.627955, a: 0.224863, b: 0.125846, format: 'OKLAB' };
+
+    it('converts all inputs to OKLAB', () => {
+      const fromHex = toOKLAB('#ff0000');
+      const fromHex8 = toOKLAB('#ff0000ff');
+      const fromRGB = toOKLAB({ r: 255, g: 0, b: 0 });
+      const fromRGBA = toOKLAB({ r: 255, g: 0, b: 0, a: 0.5 });
+      const fromHSL = toOKLAB({ h: 0, s: 100, l: 50 });
+      const fromHSLA = toOKLAB({ h: 0, s: 100, l: 50, a: 0.5 });
+      const fromHSV = toOKLAB({ h: 0, s: 100, v: 100 });
+      const fromHSVA = toOKLAB({ h: 0, s: 100, v: 100, a: 0.5 });
+      const fromCMYK = toOKLAB({ c: 0, m: 100, y: 100, k: 0 });
+      const fromLCH = toOKLAB({ l: 53.233, c: 104.576, h: 40 });
+      const fromOKLCH = toOKLAB({ l: 0.627955, c: 0.257683, h: 29.234 });
+
+      [
+        fromHex,
+        fromHex8,
+        fromRGB,
+        fromRGBA,
+        fromHSL,
+        fromHSLA,
+        fromHSV,
+        fromHSVA,
+        fromCMYK,
+        fromLCH,
+        fromOKLCH,
+      ].forEach((value) => {
+        expect(value.l).toBeCloseTo(expected.l, 6);
+        expect(value.a).toBeCloseTo(expected.a, 6);
+        expect(value.b).toBeCloseTo(expected.b, 6);
+      });
+    });
+
+    it('returns a shallow copy for OKLAB input', () => {
+      const original: ColorOKLAB = { l: 0.8, a: 0.1, b: -0.2, format: 'OKLAB' };
+      const result = toOKLAB(original);
+      expect(result).not.toBe(original);
+      expect(result).toEqual(original);
+    });
+
+    it('round trips through RGB without drift', () => {
+      const source: ColorOKLAB = { l: 0.45, a: -0.1, b: 0.05, format: 'OKLAB' };
+      const rgb = toRGB(source);
+      const roundTripped = toOKLAB(rgb);
+
+      expect(roundTripped.l).toBeCloseTo(source.l, 2);
+      expect(roundTripped.a).toBeCloseTo(source.a, 3);
+      expect(roundTripped.b).toBeCloseTo(source.b, 3);
     });
   });
 

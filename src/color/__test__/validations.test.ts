@@ -210,6 +210,29 @@ describe('validateColorOrThrow LAB format', () => {
   });
 });
 
+describe('validateColorOrThrow OKLAB format', () => {
+  it('accepts valid OKLAB objects', () => {
+    expect(() => validateColorOrThrow({ l: 0, a: 0, b: 0 })).not.toThrow();
+    expect(() => validateColorOrThrow({ l: 1, a: -0.5, b: 0.5 })).not.toThrow();
+    expect(() => validateColorOrThrow({ l: 0.5, a: 0.1, b: -0.1, format: 'oklab' })).not.toThrow();
+  });
+
+  it('rejects invalid OKLAB objects', () => {
+    expect(() => validateColorOrThrow({ l: -0.1, a: 0, b: 0, format: 'OKLAB' })).toThrow(
+      /invalid OKLAB color/
+    );
+    expect(() => validateColorOrThrow({ l: 1.1, a: 0, b: 0, format: 'OKLAB' })).toThrow(
+      /invalid OKLAB color/
+    );
+    expect(() => validateColorOrThrow({ l: 0.5, a: Infinity, b: 0, format: 'OKLAB' })).toThrow(
+      /invalid OKLAB color/
+    );
+    expect(() => validateColorOrThrow({ l: 0.5, a: 0, b: NaN, format: 'OKLAB' } as any)).toThrow(
+      /invalid OKLAB color/
+    );
+  });
+});
+
 describe('validateColorOrThrow LCH format', () => {
   it('accepts valid LCH objects', () => {
     expect(() => validateColorOrThrow({ l: 0, c: 0, h: 0 })).not.toThrow();

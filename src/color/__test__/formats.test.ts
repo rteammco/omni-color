@@ -6,6 +6,7 @@ import {
   hslToString,
   labToString,
   lchToString,
+  oklabToString,
   oklchToString,
   rgbaToString,
   rgbToString,
@@ -342,6 +343,32 @@ describe('lchToString', () => {
   });
 });
 
+describe('oklabToString', () => {
+  it('generates oklab strings', () => {
+    const black = new Color('#000000');
+    expect(oklabToString(black.toOKLAB())).toBe('oklab(0 0 0)');
+    expect(black.toOKLABString()).toBe('oklab(0 0 0)');
+
+    const white = new Color('#ffffff');
+    expect(oklabToString(white.toOKLAB())).toBe('oklab(1 0 0)');
+    expect(white.toOKLABString()).toBe('oklab(1 0 0)');
+
+    const gray = new Color('#808080');
+    expect(oklabToString(gray.toOKLAB())).toBe('oklab(0.599871 0 0)');
+    expect(gray.toOKLABString()).toBe('oklab(0.599871 0 0)');
+
+    const red = new Color('#ff0000');
+    expect(oklabToString(red.toOKLAB())).toBe('oklab(0.627955 0.224863 0.125846)');
+    expect(red.toOKLABString()).toBe('oklab(0.627955 0.224863 0.125846)');
+  });
+
+  it('rounds oklab components to six decimals', () => {
+    expect(oklabToString({ l: 0.123456789, a: 0.987654321, b: 0.111213141 })).toBe(
+      'oklab(0.123457 0.987654 0.111213)'
+    );
+  });
+});
+
 describe('oklchToString', () => {
   it('generates oklch strings', () => {
     const black = new Color('#000000');
@@ -457,6 +484,16 @@ describe('getColorFormatType', () => {
       value: { l: 50, a: 10, b: -20 },
     });
 
+    expect(getColorFormatType({ l: 0.6, a: 0.2, b: -0.1 })).toEqual({
+      formatType: 'OKLAB',
+      value: { l: 0.6, a: 0.2, b: -0.1, format: 'OKLAB' },
+    });
+
+    expect(getColorFormatType({ l: 0.6, a: 0.2, b: -0.1, format: 'OKLAB' })).toEqual({
+      formatType: 'OKLAB',
+      value: { l: 0.6, a: 0.2, b: -0.1, format: 'OKLAB' },
+    });
+
     expect(getColorFormatType({ l: 50, c: 20, h: 100 })).toEqual({
       formatType: 'LCH',
       value: { l: 50, c: 20, h: 100, format: 'LCH' },
@@ -502,6 +539,23 @@ describe('getColorFormatType', () => {
     expect(getColorFormatType({ l: 99.999, c: 0.6, h: 270 })).toEqual({
       formatType: 'LCH',
       value: { l: 99.999, c: 0.6, h: 270, format: 'LCH' },
+    });
+  });
+
+  it('disambiguates lab and oklab based on expected ranges', () => {
+    expect(getColorFormatType({ l: 0.7, a: 0.1, b: 0.2 })).toEqual({
+      formatType: 'OKLAB',
+      value: { l: 0.7, a: 0.1, b: 0.2, format: 'OKLAB' },
+    });
+
+    expect(getColorFormatType({ l: 0.7, a: 0.1, b: 0.2, format: 'LAB' })).toEqual({
+      formatType: 'LAB',
+      value: { l: 0.7, a: 0.1, b: 0.2, format: 'LAB' },
+    });
+
+    expect(getColorFormatType({ l: 75, a: 20, b: -30 })).toEqual({
+      formatType: 'LAB',
+      value: { l: 75, a: 20, b: -30 },
     });
   });
 

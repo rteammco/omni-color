@@ -13,6 +13,7 @@ import {
   toHSVA,
   toLAB,
   toLCH,
+  toOKLAB,
   toOKLCH,
   toRGB,
 } from './conversions';
@@ -27,6 +28,7 @@ import type {
   ColorHSVA,
   ColorLAB,
   ColorLCH,
+  ColorOKLAB,
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
@@ -37,6 +39,7 @@ import {
   hslToString,
   labToString,
   lchToString,
+  oklabToString,
   oklchToString,
   rgbaToString,
   rgbToString,
@@ -347,6 +350,20 @@ export class Color {
    */
   toLCHString(): string {
     return lchToString(this.toLCH());
+  }
+
+  /**
+   * Get the color as a {@link ColorOKLAB} `{ l, a, b }` object.
+   */
+  toOKLAB(): ColorOKLAB {
+    return toOKLAB(this.color);
+  }
+
+  /**
+   * Get the color as a CSS `oklab(l a b)` string.
+   */
+  toOKLABString(): string {
+    return oklabToString(this.toOKLAB());
   }
 
   /**
