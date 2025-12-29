@@ -132,7 +132,10 @@ export default defineConfig({
       renderer: prerenderRenderer,
       postProcess(renderedRoute: { route: string; [key: string]: unknown }) {
         const normalizedBase = basePath.replace(/\/$/, '');
-        if (renderedRoute.route === normalizedBase || renderedRoute.route === `${normalizedBase}/`) {
+        if (
+          renderedRoute.route === normalizedBase ||
+          renderedRoute.route === `${normalizedBase}/`
+        ) {
           renderedRoute.route = '/';
         } else if (renderedRoute.route.startsWith(`${normalizedBase}/`)) {
           renderedRoute.route = renderedRoute.route.slice(normalizedBase.length) || '/';
