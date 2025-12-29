@@ -16,7 +16,7 @@ export function DemoPage() {
         <VSpace height={40} />
         <SectionContainer
           description="You can experiment with the Color object here"
-          openSectionInNewTabLink="./playground"
+          openSectionInNewTabLink="/omni-color/playground"
           sectionID={DemoSectionIDs.PLAYGROUND}
           title="Code playground"
         >
