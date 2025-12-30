@@ -315,6 +315,22 @@ new Color('#00b7eb').toLAB(); // { l: 69.373, a: -20.411, b: -36.677 }
 new Color('#00b7eb').toLABString(); // 'lab(69.373% -20.411 -36.677)'
 ```
 
+#### `toOKLAB(): { l: number; a: number; b: number }`
+
+- <ins>Returns</ins> a [`ColorOKLAB`](#types-color-oklab) object (OKLAB values).
+
+```ts
+new Color('#ff0000').toOKLAB(); // { l: 0.627955, a: 0.224863, b: 0.125846 }
+```
+
+#### `toOKLABString(): string`
+
+- <ins>Returns</ins> a CSS `"oklab(l a b)"` string.
+
+```ts
+new Color('#ff0000').toOKLABString(); // 'oklab(0.627955 0.224863 0.125846)'
+```
+
 #### `toLCH(): { l: number; c: number; h: number }`
 
 - <ins>Returns</ins> a [`ColorLCH`](#types-color-lch) object (CIELCh values).
@@ -852,6 +868,7 @@ bestSwatchBackground.toHex(); // '#301308'
   - <span id="types-color-hsva">`ColorHSVA`</span> - same as [`ColorHSV`](#types-color-hsv) but with an alpha channel. `{ h: number; s: number; v: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `v` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
   - <span id="types-color-cmyk">`ColorCMYK`</span> - cyan, magenta, yellow, and key (black) channels. `{ c: number; m: number; y: number; k: number }` where `c`, `m`, `y`, and `k` are numbers between 0 and 100 (percentages).
   - <span id="types-color-lab">`ColorLAB`</span> - CIELAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 100 (lightness), and `a` and `b` are numbers typically between -128 and 127 (color-opponent dimensions).
+  - <span id="types-color-oklab">`ColorOKLAB`</span> - OKLAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 1 (lightness), and `a` and `b` are numbers typically between -0.4 and 0.4 (color-opponent dimensions).
   - <span id="types-color-lch">`ColorLCH`</span> - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).
   - <span id="types-color-oklch">`ColorOKLCH`</span> - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
 - <span id="types-color-temperature-label">`ColorTemperatureLabel`</span> - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
