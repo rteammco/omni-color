@@ -32,13 +32,11 @@ export function DemoPage() {
   return (
     <>
       <PageHead
-        description="Explore omni-color color utilities, gradients, and palettes with live previews and interactive demos."
+        description="Explore omni-color color utilities, gradients, harmonies, and palettes with live previews and interactive demos."
         path="/"
-        title="omni-color demo | High-precision color utilities"
+        title="omni-color | Interactive Demo"
       />
-      <StructuredData
-        data={pageStructuredData}
-      />
+      <StructuredData data={pageStructuredData} />
       <div className="w-full p-6 text-center">
         <div className="max-w-7xl justify-self-center">
           <AppHeader />

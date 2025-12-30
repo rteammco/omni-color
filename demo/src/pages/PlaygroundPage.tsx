@@ -28,13 +28,11 @@ export function PlaygroundPage() {
   return (
     <>
       <PageHead
-        description="Run omni-color TypeScript snippets in the browser to explore conversions, palettes, and color math interactively."
+        description="Run omni-color JavaScript snippets in the browser to explore conversions, palettes, and color math interactively."
         path="/playground"
-        title="omni-color playground | Prototype color ideas"
+        title="omni-color | Code Playground"
       />
-      <StructuredData
-        data={pageStructuredData}
-      />
+      <StructuredData data={pageStructuredData} />
       <div className="p-6 w-full text-center">
         <AppHeader pageDescription="Code Playground" />
         <VSpace height={40} />
