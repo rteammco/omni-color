@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { AppFooter } from '../AppFooter';
 import { AppHeader } from '../AppHeader';
 import { SectionContainer } from '../components/SectionContainer';
@@ -5,8 +7,8 @@ import { DemoSectionIDs } from '../components/utils';
 import { VSpace } from '../components/VSpace';
 import { ColorDemo } from '../demo/ColorDemo';
 import { Playground } from '../playground/Playground';
+import { PageHead } from '../seo/PageHead';
 import { StructuredData } from '../seo/StructuredData';
-import { useMemo } from 'react';
 
 export function DemoPage() {
   const pageStructuredData = useMemo(
@@ -29,6 +31,11 @@ export function DemoPage() {
 
   return (
     <>
+      <PageHead
+        description="Explore omni-color color utilities, gradients, and palettes with live previews and interactive demos."
+        path="/"
+        title="omni-color demo | High-precision color utilities"
+      />
       <StructuredData
         data={pageStructuredData}
       />
