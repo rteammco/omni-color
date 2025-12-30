@@ -104,14 +104,12 @@ export function ColorInput({ color, onColorChanged }: Props) {
           <button onClick={() => handlePresetColorSelected('light blue')}>light blue</button>
           <button onClick={() => handlePresetColorSelected('#6c18b9')}>#6c18b9</button>
           <button onClick={() => handlePresetColorSelected('#e6a13799')}>#e6a13799</button>
-          <button onClick={() => handlePresetColorSelected('rgb(232, 243, 17)')}>
-            rgb(232, 243, 17)
+          <button onClick={() => handlePresetColorSelected('rgb(232 243 17)')}>rgb(232 243 17)</button>
+          <button onClick={() => handlePresetColorSelected('hsla(335 49% 37% / 0.75)')}>
+            hsla(335 49% 37% / 0.75)
           </button>
-          <button onClick={() => handlePresetColorSelected('hsla(335, 49%, 37%, 0.75)')}>
-            hsla(335, 49%, 37%, 0.75)
-          </button>
-          <button onClick={() => handlePresetColorSelected('cmyk(0%, 0%, 0%, 100%)')}>
-            cmyk(0%, 0%, 0%, 100%)
+          <button onClick={() => handlePresetColorSelected('cmyk(0% 0% 0% 100%)')}>
+            cmyk(0% 0% 0% 100%)
           </button>
           <button onClick={() => handlePresetColorSelected('oklch(0.35 0 89.5)')}>
             oklch(0.35 0 89.5)
@@ -121,6 +119,12 @@ export function ColorInput({ color, onColorChanged }: Props) {
             fluorescent lamp
           </button>
           <button onClick={() => handlePresetColorSelected('blue sky')}>blue sky</button>
+          <button onClick={() => handlePresetColorSelected('rgba(255 115 55 / 0.65)')}>
+            rgba(255 115 55 / 0.65)
+          </button>
+          <button onClick={() => handlePresetColorSelected('hsv(170 65% 80%)')}>hsv(170 65% 80%)</button>
+          <button onClick={() => handlePresetColorSelected('lch(82% 60 40)')}>lch(82% 60 40)</button>
+          <button onClick={() => handlePresetColorSelected('lab(65 15 -42)')}>lab(65 15 -42)</button>
         </div>
       </div>
       <div>
