@@ -32,6 +32,16 @@ export interface ColorHSVA extends ColorHSV {
   a: number; // 0-1
 }
 
+export interface ColorHWB {
+  h: number; // 0-360
+  w: number; // 0-100
+  b: number; // 0-100
+}
+
+export interface ColorHWBA extends ColorHWB {
+  a: number; // 0-1
+}
+
 export interface ColorCMYK {
   c: number; // 0-100
   m: number; // 0-100
@@ -79,6 +89,8 @@ export type ColorFormat =
   | ColorHSLA
   | ColorHSV
   | ColorHSVA
+  | ColorHWB
+  | ColorHWBA
   | ColorCMYK
   | ColorLAB
   | ColorOKLAB
@@ -94,6 +106,8 @@ type ColorFormatTypeAndValue =
   | { formatType: 'HSLA'; value: ColorHSLA }
   | { formatType: 'HSV'; value: ColorHSV }
   | { formatType: 'HSVA'; value: ColorHSVA }
+  | { formatType: 'HWB'; value: ColorHWB }
+  | { formatType: 'HWBA'; value: ColorHWBA }
   | { formatType: 'CMYK'; value: ColorCMYK }
   | { formatType: 'LAB'; value: ColorLAB }
   | { formatType: 'OKLAB'; value: ColorOKLAB }
@@ -146,6 +160,12 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
     return 'a' in color
       ? { formatType: 'HSLA', value: color }
       : { formatType: 'HSL', value: color };
+  }
+
+  if ('h' in color && 'w' in color && 'b' in color) {
+    return 'a' in color
+      ? { formatType: 'HWBA', value: color }
+      : { formatType: 'HWB', value: color };
   }
 
   if ('h' in color && 'l' in color && 'c' in color) {
@@ -237,6 +257,14 @@ export function hslaToString({ h, s, l, a }: ColorHSLA): string {
   return `hsl(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(
     l
   )}% / ${getDecimalString(a)})`;
+}
+
+export function hwbToString(color: ColorHWB | ColorHWBA): string {
+  const alpha = 'a' in color ? color.a : undefined;
+  const base = `hwb(${getDecimalString(color.h)} ${getDecimalString(
+    color.w
+  )}% ${getDecimalString(color.b)}%`;
+  return alpha === undefined ? `${base})` : `${base} / ${getDecimalString(alpha)})`;
 }
 
 export function cmykToString({ c, m, y, k }: ColorCMYK): string {

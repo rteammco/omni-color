@@ -283,6 +283,38 @@ new Color('#1e90ff').toHSV(); // { h: 210, s: 88, v: 100 }
 new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
 ```
 
+#### `toHWB(): { h: number; w: number; b: number }`
+
+- <ins>Returns</ins> a [`ColorHWB`](#types-color-hwb) object with hue 0–360 and whiteness/blackness 0–100.
+
+```ts
+new Color('#808080').toHWB(); // { h: 0, w: 50, b: 50 }
+```
+
+#### `toHWBString(): string`
+
+- <ins>Returns</ins> a CSS `"hwb(h w% b% / a)"` string.
+
+```ts
+new Color('rgba(26, 102, 179, 0.25)').toHWBString(); // 'hwb(210 10% 30% / 0.25)'
+```
+
+#### `toHWBA(): { h: number; w: number; b: number; a: number }`
+
+- <ins>Returns</ins> a [`ColorHWBA`](#types-color-hwba) object with hue 0–360, whiteness/blackness 0–100, and alpha 0–1.
+
+```ts
+new Color('rgba(26, 102, 179, 0.25)').toHWBA(); // { h: 210, w: 10, b: 30, a: 0.25 }
+```
+
+#### `toHWBAString(): string`
+
+- <ins>Returns</ins> a CSS `"hwb(h w% b% / a)"` string including the alpha channel even when fully opaque.
+
+```ts
+new Color('#1a66b3cc').toHWBAString(); // 'hwb(210 10% 30% / 0.8)'
+```
+
 #### `toCMYK(): { c: number; m: number; y: number; k: number }`
 
 - <ins>Returns</ins> a [`ColorCMYK`](#types-color-cmyk) object with channel values 0–100.
@@ -850,6 +882,8 @@ bestSwatchBackground.toHex(); // '#301308'
   - <span id="types-color-hsla">`ColorHSLA`</span> - same as [`ColorHSL`](#types-color-hsl) but with an alpha channel. `{ h: number; s: number; l: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `l` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
   - <span id="types-color-hsv">`ColorHSV`</span> - hue, saturation, and value channels. `{ h: number; s: number; v: number }` where `h` is a number between 0 and 360 (degrees), and `s` and `v` are numbers between 0 and 100 (percentages).
   - <span id="types-color-hsva">`ColorHSVA`</span> - same as [`ColorHSV`](#types-color-hsv) but with an alpha channel. `{ h: number; s: number; v: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `v` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
+  - <span id="types-color-hwb">`ColorHWB`</span> - hue, whiteness, and blackness channels. `{ h: number; w: number; b: number }` where `h` is a number between 0 and 360 (degrees), and `w` and `b` are numbers between 0 and 100 (percentages).
+  - <span id="types-color-hwba">`ColorHWBA`</span> - same as [`ColorHWB`](#types-color-hwb) but with an alpha channel. `{ h: number; w: number; b: number; a: number }` where `h` is a number between 0 and 360 (degrees), `w` and `b` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
   - <span id="types-color-cmyk">`ColorCMYK`</span> - cyan, magenta, yellow, and key (black) channels. `{ c: number; m: number; y: number; k: number }` where `c`, `m`, `y`, and `k` are numbers between 0 and 100 (percentages).
   - <span id="types-color-lab">`ColorLAB`</span> - CIELAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 100 (lightness), and `a` and `b` are numbers typically between -128 and 127 (color-opponent dimensions).
   - <span id="types-color-lch">`ColorLCH`</span> - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).

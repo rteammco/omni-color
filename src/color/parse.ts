@@ -8,6 +8,7 @@ const MATCH_HSL_STRING_REGEX = /^hsl\((.+)\)$/;
 const MATCH_HSLA_STRING_REGEX = /^hsla\((.+)\)$/;
 const MATCH_HSV_STRING_REGEX = /^hsv\((.+)\)$/;
 const MATCH_HSVA_STRING_REGEX = /^hsva\((.+)\)$/;
+const MATCH_HWB_STRING_REGEX = /^hwb\((.+)\)$/;
 const MATCH_CMYK_STRING_REGEX = /^cmyk\((.+)\)$/;
 const MATCH_LAB_STRING_REGEX = /^lab\((.+)\)$/;
 const MATCH_LCH_STRING_REGEX = /^lch\((.+)\)$/;
@@ -256,6 +257,35 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
     return createColorOrNull({ h, s, v, a });
+  }
+
+  const hwbMatch = str.match(MATCH_HWB_STRING_REGEX);
+  if (hwbMatch) {
+    const hwbParams = splitColorFunctionParams(hwbMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!hwbParams) {
+      return null;
+    }
+
+    const [h, w, b] = [
+      normalizeHue(Math.round(parseFloat(hwbParams.channels[0]))),
+      clampValue(Math.round(parseNumberOrPercent(hwbParams.channels[1], 100)), 0, 100),
+      clampValue(Math.round(parseNumberOrPercent(hwbParams.channels[2], 100)), 0, 100),
+    ];
+    if ([h, w, b].some((value) => isNaN(value))) {
+      return null;
+    }
+    if (hwbParams.alpha !== undefined) {
+      const a = clampAlpha(parseAlphaValue(hwbParams.alpha));
+      if (isNaN(a)) {
+        return null;
+      }
+      return createColorOrNull({ h, w, b, a });
+    }
+    return createColorOrNull({ h, w, b });
   }
 
   const cmykMatch = str.match(MATCH_CMYK_STRING_REGEX);
