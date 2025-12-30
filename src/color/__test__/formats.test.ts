@@ -4,6 +4,7 @@ import {
   getColorFormatType,
   hslaToString,
   hslToString,
+  hwbToString,
   labToString,
   lchToString,
   oklabToString,
@@ -201,6 +202,41 @@ describe('hslaToString', () => {
   it('rounds hsla components to three decimals', () => {
     expect(hslaToString({ h: 123.4567, s: 50.5555, l: 10.1234, a: 0.98765 })).toBe(
       'hsl(123.457 50.556% 10.123% / 0.988)'
+    );
+  });
+});
+
+describe('hwbToString', () => {
+  it('generates hwb strings', () => {
+    const black = new Color('#000000');
+    expect(hwbToString(black.toHWB())).toBe('hwb(0 0% 100%)');
+    expect(black.toHWBString()).toBe('hwb(0 0% 100%)');
+    expect(black.toHWBAString()).toBe('hwb(0 0% 100% / 1)');
+
+    const white = new Color('#ffffffff');
+    expect(hwbToString(white.toHWB())).toBe('hwb(0 100% 0%)');
+    expect(white.toHWBString()).toBe('hwb(0 100% 0%)');
+    expect(white.toHWBAString()).toBe('hwb(0 100% 0% / 1)');
+
+    const gray = new Color('#80808080');
+    expect(hwbToString(gray.toHWB())).toBe('hwb(0 50% 50%)');
+    expect(gray.toHWBString()).toBe('hwb(0 50% 50%)');
+    expect(gray.toHWBAString()).toBe('hwb(0 50% 50% / 0.502)');
+
+    const green = new Color('#00ff00');
+    expect(hwbToString(green.toHWB())).toBe('hwb(120 0% 0%)');
+    expect(green.toHWBString()).toBe('hwb(120 0% 0%)');
+    expect(green.toHWBAString()).toBe('hwb(120 0% 0% / 1)');
+
+    const custom = new Color('#abc123d6');
+    expect(hwbToString(custom.toHWB())).toBe('hwb(68 14% 24%)');
+    expect(custom.toHWBString()).toBe('hwb(68 14% 24%)');
+    expect(custom.toHWBAString()).toBe('hwb(68 14% 24% / 0.839)');
+  });
+
+  it('rounds hwb components to three decimals', () => {
+    expect(hwbToString({ h: 123.4567, w: 12.3456, b: 65.4321 })).toBe(
+      'hwb(123.457 12.346% 65.432%)'
     );
   });
 });
@@ -462,6 +498,16 @@ describe('getColorFormatType', () => {
     expect(getColorFormatType({ h: 10, s: 20, l: 30, a: 0.5 })).toEqual({
       formatType: 'HSLA',
       value: { h: 10, s: 20, l: 30, a: 0.5 },
+    });
+
+    expect(getColorFormatType({ h: 10, w: 20, b: 30 })).toEqual({
+      formatType: 'HWB',
+      value: { h: 10, w: 20, b: 30 },
+    });
+
+    expect(getColorFormatType({ h: 10, w: 20, b: 30, a: 0.5 })).toEqual({
+      formatType: 'HWBA',
+      value: { h: 10, w: 20, b: 30, a: 0.5 },
     });
 
     expect(getColorFormatType({ h: 10, s: 20, v: 30 })).toEqual({

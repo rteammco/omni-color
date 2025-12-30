@@ -122,6 +122,14 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('hsva(240,100%,100%,0%)')?.toHex8()).toBe('#0000ff00');
   });
 
+  it('parses HWB inputs', () => {
+    expect(parseCSSColorFormatString('hwb(0 0% 0%)')?.toHex()).toBe('#ff0000');
+    expect(parseCSSColorFormatString('hwb(120 40% 20%)')?.toHex()).toBe('#66cc66');
+    expect(parseCSSColorFormatString('hwb(210 10% 30% / 0.25)')?.toHex8()).toBe('#1a66b340');
+    expect(parseCSSColorFormatString('hwb(210 10% 30% 25%)')?.toHex8()).toBe('#1a66b340');
+    expect(parseCSSColorFormatString('hwb(480 0% 0%)')?.toHex()).toBe('#00ff00');
+  });
+
   it('parses flexible HSL and HSV inputs', () => {
     expect(parseCSSColorFormatString('hsl(180 100% 50%)')?.toHex()).toBe('#00ffff');
     expect(parseCSSColorFormatString('hsl(180 100% 50% / 0.25)')?.toHex8()).toBe('#00ffff40');
@@ -201,6 +209,7 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('lch(50% 30)')).toBeNull();
     expect(parseCSSColorFormatString('oklch(1.1 0 0)')).toBeNull();
     expect(parseCSSColorFormatString('oklch(-0.1 0 0)')).toBeNull();
+    expect(parseCSSColorFormatString('hwb(0 0%)')).toBeNull();
     expect(parseCSSColorFormatString('foo(1,2,3)')).toBeNull();
   });
 });

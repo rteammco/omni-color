@@ -11,6 +11,8 @@ import {
   toHSLA,
   toHSV,
   toHSVA,
+  toHWB,
+  toHWBA,
   toLAB,
   toLCH,
   toOKLAB,
@@ -26,6 +28,8 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorHWB,
+  ColorHWBA,
   ColorLAB,
   ColorLCH,
   ColorOKLAB,
@@ -37,6 +41,8 @@ import {
   cmykToString,
   hslaToString,
   hslToString,
+  hwbaToString,
+  hwbToString,
   labToString,
   lchToString,
   oklabToString,
@@ -292,6 +298,35 @@ export class Color {
    */
   toHSLAString(): string {
     return hslaToString(this.toHSLA());
+  }
+
+  /**
+   * Get the color as a {@link ColorHWB} `{ h, w, b }` object where `h` is 0–360 and `w`
+   * and `b` are 0–100.
+   */
+  toHWB(): ColorHWB {
+    return toHWB(this.color);
+  }
+
+  /**
+   * Get the color as a CSS `hwb(h w% b%)` string.
+   */
+  toHWBString(): string {
+    return hwbToString(this.toHWB());
+  }
+
+  /**
+   * Get the color as a {@link ColorHWBA} `{ h, w, b, a }` object.
+   */
+  toHWBA(): ColorHWBA {
+    return toHWBA(this.color);
+  }
+
+  /**
+   * Get the color as a CSS `hwb(h w% b% / a)` string (always including alpha).
+   */
+  toHWBAString(): string {
+    return hwbaToString(this.toHWBA());
   }
 
   /**
