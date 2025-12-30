@@ -259,12 +259,16 @@ export function hslaToString({ h, s, l, a }: ColorHSLA): string {
   )}% / ${getDecimalString(a)})`;
 }
 
-export function hwbToString(color: ColorHWB | ColorHWBA): string {
-  const alpha = 'a' in color ? color.a : undefined;
-  const base = `hwb(${getDecimalString(color.h)} ${getDecimalString(
-    color.w
-  )}% ${getDecimalString(color.b)}%`;
-  return alpha === undefined ? `${base})` : `${base} / ${getDecimalString(alpha)})`;
+export function hwbToString(color: ColorHWB): string {
+  return `hwb(${getDecimalString(color.h)} ${getDecimalString(color.w)}% ${getDecimalString(
+    color.b
+  )}%)`;
+}
+
+export function hwbaToString(color: ColorHWBA): string {
+  return `hwb(${getDecimalString(color.h)} ${getDecimalString(color.w)}% ${getDecimalString(
+    color.b
+  )}% / ${getDecimalString(color.a)})`;
 }
 
 export function cmykToString({ c, m, y, k }: ColorCMYK): string {

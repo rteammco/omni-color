@@ -220,7 +220,7 @@ describe('hwbToString', () => {
 
     const gray = new Color('#80808080');
     expect(hwbToString(gray.toHWB())).toBe('hwb(0 50% 50%)');
-    expect(gray.toHWBString()).toBe('hwb(0 50% 50% / 0.502)');
+    expect(gray.toHWBString()).toBe('hwb(0 50% 50%)');
     expect(gray.toHWBAString()).toBe('hwb(0 50% 50% / 0.502)');
 
     const green = new Color('#00ff00');
@@ -230,7 +230,7 @@ describe('hwbToString', () => {
 
     const custom = new Color('#abc123d6');
     expect(hwbToString(custom.toHWB())).toBe('hwb(68 14% 24%)');
-    expect(custom.toHWBString()).toBe('hwb(68 14% 24% / 0.839)');
+    expect(custom.toHWBString()).toBe('hwb(68 14% 24%)');
     expect(custom.toHWBAString()).toBe('hwb(68 14% 24% / 0.839)');
   });
 

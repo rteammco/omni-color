@@ -41,6 +41,7 @@ import {
   cmykToString,
   hslaToString,
   hslToString,
+  hwbaToString,
   hwbToString,
   labToString,
   lchToString,
@@ -311,12 +312,7 @@ export class Color {
    * Get the color as a CSS `hwb(h w% b%)` string.
    */
   toHWBString(): string {
-    const hwba = this.toHWBA();
-    if (hwba.a === 1) {
-      const { h, w, b } = hwba;
-      return hwbToString({ h, w, b });
-    }
-    return hwbToString(hwba);
+    return hwbToString(this.toHWB());
   }
 
   /**
@@ -330,7 +326,7 @@ export class Color {
    * Get the color as a CSS `hwb(h w% b% / a)` string (always including alpha).
    */
   toHWBAString(): string {
-    return hwbToString(this.toHWBA());
+    return hwbaToString(this.toHWBA());
   }
 
   /**
