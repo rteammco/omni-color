@@ -1,6 +1,7 @@
 import { Color } from '../color';
 import {
   cmykToString,
+  colorToString,
   getColorFormatType,
   hslaToString,
   hslToString,
@@ -202,6 +203,22 @@ describe('hslaToString', () => {
   it('rounds hsla components to three decimals', () => {
     expect(hslaToString({ h: 123.4567, s: 50.5555, l: 10.1234, a: 0.98765 })).toBe(
       'hsl(123.457 50.556% 10.123% / 0.988)'
+    );
+  });
+});
+
+describe('colorToString', () => {
+  it('generates color() strings in different spaces', () => {
+    const opaque = new Color('#336699');
+    const translucent = new Color('#336699cc');
+
+    expect(colorToString(opaque.toRGBA())).toBe('color(srgb 0.2 0.4 0.6)');
+    expect(colorToString(translucent.toRGBA())).toBe('color(srgb 0.2 0.4 0.6 / 0.8)');
+    expect(colorToString(translucent.toRGBA(), { space: 'display-p3' })).toBe(
+      'color(display-p3 0.249851 0.39524 0.584034 / 0.8)'
+    );
+    expect(colorToString(opaque.toRGBA(), { space: 'rec2020' })).toBe(
+      'color(rec2020 0.250128 0.336705 0.537794)'
     );
   });
 });

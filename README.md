@@ -36,6 +36,7 @@ _`constructor`_
 - <ins>Returns</ins> a new [`Color`](#types-color) instance of the specified color input.
 - <ins>Inputs</ins>:
   - `color` (optional) - an existing [`Color`](#types-color), any valid [`ColorFormat`](#types-color-format), a named CSS color, or any parsable color format (e.g. `"rgb(0,255,255)"`) including partial or exact matches of a [`ColorTemperatureLabel`](#types-color-temperature-label).
+    - Supports modern CSS Color 4/5 syntax including `hwb()`, `lab()`, `lch()`, `oklch()`, and `color()` for the `srgb`, `display-p3`, and `rec2020` color spaces.
     - No input or passing in `null`/`undefined` generates a random color.
     - **Invalid inputs throw an exception.**
 
@@ -393,6 +394,21 @@ new Color('#00b7eb').toOKLCH(); // { l: 0.727148, c: 0.140767, h: 227.27 }
 
 ```ts
 new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
+```
+
+#### `toColorString(options?: ColorStringOptions): string`
+
+- <ins>Returns</ins> a CSS `"color(space r g b / a)"` string in the requested color space.
+- <ins>Inputs</ins>:
+  - `options` (optional) - `ColorStringOptions`:
+    - `space` (optional) - target color space for the `color()` string: [`ColorSpace`](#types-color-space). Defaults to `"SRGB"`.
+
+```ts
+new Color('#ff000080').toColorString(); // 'color(srgb 1 0 0 / 0.5)'
+new Color('#ff000080').toColorString({ space: 'DISPLAY-P3' });
+// 'color(display-p3 0.917488 0.200287 0.138561 / 0.5)'
+new Color('#336699').toColorString({ space: 'rec2020' });
+// 'color(rec2020 0.250128 0.336705 0.537794)'
 ```
 
 ### Color Manipulations
@@ -905,6 +921,7 @@ bestSwatchBackground.toHex(); // '#301308'
   - <span id="types-color-oklab">`ColorOKLAB`</span> - OKLAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 1 (lightness), and `a` and `b` are numbers typically between -0.4 and 0.4 (color-opponent dimensions).
   - <span id="types-color-lch">`ColorLCH`</span> - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).
   - <span id="types-color-oklch">`ColorOKLCH`</span> - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
+- <span id="types-color-space">`ColorSpace`</span> - supported color spaces for `color()` output: `"SRGB" | "DISPLAY-P3" | "REC2020"`.
 - <span id="types-color-temperature-label">`ColorTemperatureLabel`</span> - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
 - <span id="types-base-color-swatch">`BaseColorSwatch`</span> - a swatch representing shades of the same color from 100 to 900 `{ 100: number; 200 number; ... 900: number }` where `100` is the lightest shade and `900` is the darkest shade.
 - <span id="types-extended-color-swatch">`ExtendedColorSwatch`</span> - same as a [`ColorSwatch`](#types-color-swatch) but includes half-shades at 50, 100, 150, ..., 950. It is a superset of [`ColorSwatch`](#types-color-swatch).
