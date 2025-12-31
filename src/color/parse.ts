@@ -1,5 +1,10 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
+import {
+  type ColorSpaceValues,
+  convertColorSpaceValuesToRGB,
+  parseColorSpace,
+} from './colorSpaces';
 import type { ColorFormat } from './formats';
 
 const MATCH_RGB_STRING_REGEX = /^rgb\((.+)\)$/;
@@ -8,10 +13,12 @@ const MATCH_HSL_STRING_REGEX = /^hsl\((.+)\)$/;
 const MATCH_HSLA_STRING_REGEX = /^hsla\((.+)\)$/;
 const MATCH_HSV_STRING_REGEX = /^hsv\((.+)\)$/;
 const MATCH_HSVA_STRING_REGEX = /^hsva\((.+)\)$/;
+const MATCH_HWB_STRING_REGEX = /^hwb\((.+)\)$/;
 const MATCH_CMYK_STRING_REGEX = /^cmyk\((.+)\)$/;
 const MATCH_LAB_STRING_REGEX = /^lab\((.+)\)$/;
 const MATCH_LCH_STRING_REGEX = /^lch\((.+)\)$/;
 const MATCH_OKLCH_STRING_REGEX = /^oklch\((.+)\)$/;
+const MATCH_COLOR_FUNCTION_REGEX = /^color\((.+)\)$/;
 
 interface SplitColorParamsOptions {
   allowAlpha?: boolean;
@@ -103,6 +110,53 @@ function createColorOrNull(format: ColorFormat): Color | null {
 
 export function parseCSSColorFormatString(colorFormatString: string): Color | null {
   const str = colorFormatString.trim().toLowerCase();
+
+  const colorFunctionMatch = str.match(MATCH_COLOR_FUNCTION_REGEX);
+  if (colorFunctionMatch) {
+    const params = colorFunctionMatch[1].trim();
+    const separatorIndex = params.search(/[\s,]/);
+    if (separatorIndex === -1) {
+      return null;
+    }
+
+    const colorSpaceName = parseColorSpace(params.slice(0, separatorIndex));
+    if (!colorSpaceName) {
+      return null;
+    }
+
+    const channelSection = params
+      .slice(separatorIndex)
+      .trim()
+      .replace(/^[,\s]+/, '');
+    const colorParams = splitColorFunctionParams(channelSection, {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!colorParams) {
+      return null;
+    }
+
+    const [r, g, b] = colorParams.channels.map((channel) =>
+      clampValue(parseNumberOrPercent(channel, 1), 0, 1)
+    );
+    if ([r, g, b].some((value) => isNaN(value))) {
+      return null;
+    }
+
+    const colorSpaceValues: ColorSpaceValues = { r, g, b };
+    const rgb = convertColorSpaceValuesToRGB(colorSpaceValues, colorSpaceName);
+
+    if (colorParams.alpha !== undefined) {
+      const a = clampAlpha(parseAlphaValue(colorParams.alpha));
+      if (isNaN(a)) {
+        return null;
+      }
+      return createColorOrNull({ ...rgb, a });
+    }
+
+    return createColorOrNull(rgb);
+  }
 
   const rgbMatch = str.match(MATCH_RGB_STRING_REGEX);
   if (rgbMatch) {
@@ -256,6 +310,35 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
     return createColorOrNull({ h, s, v, a });
+  }
+
+  const hwbMatch = str.match(MATCH_HWB_STRING_REGEX);
+  if (hwbMatch) {
+    const hwbParams = splitColorFunctionParams(hwbMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!hwbParams) {
+      return null;
+    }
+
+    const [h, w, b] = [
+      normalizeHue(Math.round(parseFloat(hwbParams.channels[0]))),
+      clampValue(Math.round(parseNumberOrPercent(hwbParams.channels[1], 100)), 0, 100),
+      clampValue(Math.round(parseNumberOrPercent(hwbParams.channels[2], 100)), 0, 100),
+    ];
+    if ([h, w, b].some((value) => isNaN(value))) {
+      return null;
+    }
+    if (hwbParams.alpha !== undefined) {
+      const a = clampAlpha(parseAlphaValue(hwbParams.alpha));
+      if (isNaN(a)) {
+        return null;
+      }
+      return createColorOrNull({ h, w, b, a });
+    }
+    return createColorOrNull({ h, w, b });
   }
 
   const cmykMatch = str.match(MATCH_CMYK_STRING_REGEX);

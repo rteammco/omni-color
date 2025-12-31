@@ -7,6 +7,8 @@ import {
   toHSLA,
   toHSV,
   toHSVA,
+  toHWB,
+  toHWBA,
   toLAB,
   toLCH,
   toOKLAB,
@@ -17,6 +19,8 @@ import {
 import type {
   ColorHex,
   ColorHSL,
+  ColorHWB,
+  ColorHWBA,
   ColorLAB,
   ColorLCH,
   ColorOKLAB,
@@ -53,6 +57,9 @@ describe('conversions', () => {
       expect(toRGB({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ h: 0, s: 100, v: 100 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ h: 0, w: 0, b: 0 })).toEqual({ r: 255, g: 0, b: 0 });
+      expect(toRGB({ h: 120, w: 40, b: 20 })).toEqual({ r: 102, g: 204, b: 102 });
+      expect(toRGB({ h: 200, w: 80, b: 40, a: 0.25 })).toEqual({ r: 170, g: 170, b: 170 });
       expect(toRGB({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ l: 53.233, a: 80.109, b: 67.22 })).toEqual({ r: 255, g: 0, b: 0 });
       expect(toRGB({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0 });
@@ -101,6 +108,7 @@ describe('conversions', () => {
       expect(toRGBA({ r: 255, g: 0, b: 0 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ h: 0, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ h: 0, s: 100, v: 100 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(toRGBA({ h: 0, w: 0, b: 0 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ l: 53.233, a: 80.109, b: 67.22 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
       expect(toRGBA({ l: 53.233, c: 104.576, h: 40 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
@@ -146,6 +154,9 @@ describe('conversions', () => {
       expect(fromHSVA.g).toBe(0);
       expect(fromHSVA.b).toBe(0);
       expect(fromHSVA.a).toBeCloseTo(0.5, 3);
+
+      const fromHWBA = toRGBA({ h: 200, w: 80, b: 40, a: 0.25 });
+      expect(fromHWBA).toEqual({ r: 170, g: 170, b: 170, a: 0.25 });
     });
 
     it('#RGBA converts to hex8 and back', () => {
@@ -175,6 +186,8 @@ describe('conversions', () => {
       expect(toHex({ h: 0, s: 100, l: 50, a: 0.5 })).toBe('#ff0000');
       expect(toHex({ h: 0, s: 100, v: 100 })).toBe('#ff0000');
       expect(toHex({ h: 0, s: 100, v: 100, a: 0.5 })).toBe('#ff0000');
+      expect(toHex({ h: 0, w: 0, b: 0 })).toBe('#ff0000');
+      expect(toHex({ h: 120, w: 40, b: 20, a: 0.5 })).toBe('#66cc66');
       expect(toHex({ c: 0, m: 100, y: 100, k: 0 })).toBe('#ff0000');
       expect(toHex({ l: 53.233, a: 80.109, b: 67.22 })).toBe('#ff0000');
       expect(toHex({ l: 53.233, c: 104.576, h: 40 })).toBe('#ff0000');
@@ -198,6 +211,7 @@ describe('conversions', () => {
       expect(toHex8({ r: 255, g: 0, b: 0 })).toBe('#ff0000ff');
       expect(toHex8({ h: 0, s: 100, l: 50 })).toBe('#ff0000ff');
       expect(toHex8({ h: 0, s: 100, v: 100 })).toBe('#ff0000ff');
+      expect(toHex8({ h: 0, w: 0, b: 0 })).toBe('#ff0000ff');
       expect(toHex8({ c: 0, m: 100, y: 100, k: 0 })).toBe('#ff0000ff');
       expect(toHex8({ l: 53.233, a: 80.109, b: 67.22 })).toBe('#ff0000ff');
       expect(toHex8({ l: 53.233, c: 104.576, h: 40 })).toBe('#ff0000ff');
@@ -210,6 +224,7 @@ describe('conversions', () => {
       expect(toHex8({ r: 255, g: 0, b: 0, a: 0.5 })).toBe('#ff000080');
       expect(toHex8({ h: 0, s: 100, l: 50, a: 0.5 })).toBe('#ff000080');
       expect(toHex8({ h: 0, s: 100, v: 100, a: 0.5 })).toBe('#ff000080');
+      expect(toHex8({ h: 0, w: 0, b: 0, a: 0.5 })).toBe('#ff000080');
     });
 
     it('handles fully transparent alpha', () => {
@@ -370,6 +385,57 @@ describe('conversions', () => {
 
     it('throws on invalid alpha', () => {
       expect(() => toHSVA({ h: 0, s: 100, v: 100, a: 2 })).toThrow();
+    });
+  });
+
+  describe('toHWB', () => {
+    it('converts all inputs to HWB', () => {
+      const expected: ColorHWB = { h: 0, w: 0, b: 0 };
+      expect(toHWB('#ff0000')).toEqual(expected);
+      expect(toHWB('#ff0000ff')).toEqual(expected);
+      expect(toHWB({ r: 255, g: 0, b: 0 })).toEqual(expected);
+      expect(toHWB({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual(expected);
+      expect(toHWB({ h: 0, s: 100, l: 50 })).toEqual(expected);
+      expect(toHWB({ h: 0, s: 100, v: 100 })).toEqual(expected);
+      expect(toHWB({ c: 0, m: 100, y: 100, k: 0 })).toEqual(expected);
+      expect(toHWB({ l: 53.233, c: 104.576, h: 40 })).toEqual(expected);
+      expect(toHWB({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual(expected);
+    });
+
+    it('converts grayscale and arbitrary colors', () => {
+      expect(toHWB('#808080')).toEqual({ h: 0, w: 50, b: 50 });
+      expect(toHWB('#123456')).toEqual({ h: 210, w: 7, b: 66 });
+    });
+  });
+
+  describe('toHWBA', () => {
+    it('converts all inputs to HWBA', () => {
+      const expected: ColorHWBA = { h: 0, w: 0, b: 0, a: 1 };
+      expect(toHWBA('#ff0000')).toEqual(expected);
+      expect(toHWBA('#ff0000ff')).toEqual(expected);
+      expect(toHWBA({ r: 255, g: 0, b: 0 })).toEqual(expected);
+      expect(toHWBA({ h: 0, s: 100, l: 50 })).toEqual(expected);
+      expect(toHWBA({ h: 0, s: 100, v: 100 })).toEqual(expected);
+      expect(toHWBA({ c: 0, m: 100, y: 100, k: 0 })).toEqual(expected);
+      expect(toHWBA({ l: 53.233, c: 104.576, h: 40 })).toEqual(expected);
+      expect(toHWBA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual(expected);
+    });
+
+    it('preserves alpha where available', () => {
+      const hwba = toHWBA('#ff000080');
+      expect(hwba.h).toBe(0);
+      expect(hwba.w).toBe(0);
+      expect(hwba.b).toBe(0);
+      expect(hwba.a).toBeCloseTo(0.502, 3);
+
+      expect(toHWBA({ h: 200, w: 80, b: 40, a: 0.25 })).toEqual({
+        h: 200,
+        w: 80,
+        b: 40,
+        a: 0.25,
+      });
+
+      expect(toHWBA('#123456cc')).toEqual({ h: 210, w: 7, b: 66, a: 0.8 });
     });
   });
 

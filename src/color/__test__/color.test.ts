@@ -7,6 +7,7 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorHWB,
   ColorLAB,
   ColorLCH,
   ColorOKLAB,
@@ -29,6 +30,7 @@ const BASE_HEX: ColorHex = '#ff0000';
 const BASE_RGB: ColorRGB = { r: 255, g: 0, b: 0 };
 const BASE_HSL: ColorHSL = { h: 0, s: 100, l: 50 };
 const BASE_HSV: ColorHSV = { h: 0, s: 100, v: 100 };
+const BASE_HWB: ColorHWB = { h: 0, w: 0, b: 0 };
 const BASE_CMYK: ColorCMYK = { c: 0, m: 100, y: 100, k: 0 };
 const BASE_LAB: ColorLAB = { l: 53.233, a: 80.109, b: 67.22 };
 const BASE_LCH: ColorLCH = { l: 53.233, c: 104.576, h: 40 };
@@ -49,6 +51,8 @@ function checkAllConversions(color: Color, alpha: number, hex8: ColorHex) {
   expect(color.toHSLA()).toEqual({ ...BASE_HSL, a: alpha });
   expect(color.toHSV()).toEqual(BASE_HSV);
   expect(color.toHSVA()).toEqual({ ...BASE_HSV, a: alpha });
+  expect(color.toHWB()).toEqual(BASE_HWB);
+  expect(color.toHWBA()).toEqual({ ...BASE_HWB, a: alpha });
   expect(color.toCMYK()).toEqual(BASE_CMYK);
   const lab = color.toLAB();
   expect(lab.l).toBeCloseTo(BASE_LAB.l, 3);
@@ -271,11 +275,20 @@ describe('Color.toXString methods', () => {
     expect(color.toRGBAString()).toBe('rgb(255 0 0 / 0.5)');
     expect(color.toHSLString()).toBe('hsl(0 100% 50%)');
     expect(color.toHSLAString()).toBe('hsl(0 100% 50% / 0.5)');
+    expect(color.toHWBString()).toBe('hwb(0 0% 0%)');
+    expect(color.toHWBAString()).toBe('hwb(0 0% 0% / 0.5)');
     expect(color.toCMYKString()).toBe('device-cmyk(0% 100% 100% 0%)');
     expect(color.toLABString()).toBe('lab(53.233% 80.109 67.22)');
     expect(color.toLCHString()).toBe('lch(53.233% 104.576 40)');
     expect(color.toOKLABString()).toBe('oklab(0.627955 0.224863 0.125846)');
     expect(color.toOKLCHString()).toBe('oklch(0.627955 0.257683 29.234)');
+    expect(color.toColorString()).toBe('color(srgb 1 0 0 / 0.5)');
+    expect(color.toColorString({ space: 'display-p3' })).toBe(
+      'color(display-p3 0.917488 0.200287 0.138561 / 0.5)'
+    );
+    expect(color.toColorString({ space: 'REC2020' })).toBe(
+      'color(rec2020 0.791977 0.230976 0.073761 / 0.5)'
+    );
   });
 });
 

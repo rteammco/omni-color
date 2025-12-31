@@ -1,8 +1,18 @@
-import type { ColorPalette, GenerateColorPaletteOptions } from '../palette/palette';
-import { generateColorPaletteFromBaseColor } from '../palette/palette';
+import {
+  type ColorPalette,
+  generateColorPaletteFromBaseColor,
+  type GenerateColorPaletteOptions,
+} from '../palette/palette';
 import { type CaseInsensitive, clampValue } from '../utils';
-import type { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './combinations';
-import { averageColors, blendColors, mixColors } from './combinations';
+import type { ColorStringOptions } from './colorSpaces';
+import {
+  averageColors,
+  type AverageColorsOptions,
+  blendColors,
+  type BlendColorsOptions,
+  mixColors,
+  type MixColorsOptions,
+} from './combinations';
 import {
   toCMYK,
   toHex,
@@ -11,32 +21,36 @@ import {
   toHSLA,
   toHSV,
   toHSVA,
+  toHWB,
+  toHWBA,
   toLAB,
   toLCH,
   toOKLAB,
   toOKLCH,
   toRGB,
 } from './conversions';
-import type { DeltaEOptions } from './deltaE';
-import { getDeltaE } from './deltaE';
-import type {
-  ColorCMYK,
-  ColorHex,
-  ColorHSL,
-  ColorHSLA,
-  ColorHSV,
-  ColorHSVA,
-  ColorLAB,
-  ColorLCH,
-  ColorOKLAB,
-  ColorOKLCH,
-  ColorRGB,
-  ColorRGBA,
-} from './formats';
+import { type DeltaEOptions, getDeltaE } from './deltaE';
 import {
   cmykToString,
+  type ColorCMYK,
+  type ColorHex,
+  type ColorHSL,
+  type ColorHSLA,
+  type ColorHSV,
+  type ColorHSVA,
+  type ColorHWB,
+  type ColorHWBA,
+  type ColorLAB,
+  type ColorLCH,
+  type ColorOKLAB,
+  type ColorOKLCH,
+  type ColorRGB,
+  type ColorRGBA,
+  colorToString,
   hslaToString,
   hslToString,
+  hwbaToString,
+  hwbToString,
   labToString,
   lchToString,
   oklabToString,
@@ -44,10 +58,10 @@ import {
   rgbaToString,
   rgbToString,
 } from './formats';
-import type { ColorGradientOptions } from './gradients';
-import { createColorGradient } from './gradients';
-import type { ColorHarmony, ColorHarmonyOptions } from './harmonies';
+import { type ColorGradientOptions, createColorGradient } from './gradients';
 import {
+  type ColorHarmony,
+  type ColorHarmonyOptions,
   getAnalogousHarmonyColors,
   getComplementaryColors,
   getHarmonyColors,
@@ -57,24 +71,18 @@ import {
   getTetradicHarmonyColors,
   getTriadicHarmonyColors,
 } from './harmonies';
-import type { ColorBrightnessOptions, ColorSaturationOptions } from './manipulations';
 import {
   brightenColor,
+  type ColorBrightnessOptions,
+  type ColorSaturationOptions,
   colorToGrayscale,
   darkenColor,
   desaturateColor,
   saturateColor,
   spinColorHue,
 } from './manipulations';
-import type { ColorNameAndLightness } from './names';
-import { getBaseColorName } from './names';
-import type { RandomColorOptions } from './random';
-import { getRandomColorRGBA } from './random';
-import type {
-  ReadabilityComparisonOptions,
-  TextReadabilityOptions,
-  TextReadabilityReport,
-} from './readability';
+import { type ColorNameAndLightness, getBaseColorName } from './names';
+import { getRandomColorRGBA, type RandomColorOptions } from './random';
 import {
   getAPCAReadabilityScore,
   getBestBackgroundColorForText,
@@ -82,27 +90,33 @@ import {
   getTextReadabilityReport,
   getWCAGContrastRatio,
   isTextReadable,
+  type ReadabilityComparisonOptions,
+  type TextReadabilityOptions,
+  type TextReadabilityReport,
 } from './readability';
-import type { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './swatch';
-import { getColorSwatch } from './swatch';
-import type {
-  ColorTemperatureAndLabel,
-  ColorTemperatureLabel,
-  ColorTemperatureStringFormatOptions,
-} from './temperature';
 import {
+  type ColorSwatch,
+  type ColorSwatchOptions,
+  type ExtendedColorSwatch,
+  getColorSwatch,
+} from './swatch';
+import {
+  type ColorTemperatureAndLabel,
+  type ColorTemperatureLabel,
+  type ColorTemperatureStringFormatOptions,
   getColorFromTemperature,
   getColorFromTemperatureLabel,
   getColorTemperature,
   getColorTemperatureString,
 } from './temperature';
-import type { IsColorDarkOptions, ValidColorInputFormat } from './utils';
 import {
   areColorsEqual,
   getColorList,
   getColorRGBAFromInput,
   isColorDark,
+  type IsColorDarkOptions,
   isColorOffWhite,
+  type ValidColorInputFormat,
 } from './utils';
 
 /**
@@ -295,6 +309,35 @@ export class Color {
   }
 
   /**
+   * Get the color as a {@link ColorHWB} `{ h, w, b }` object where `h` is 0–360 and `w`
+   * and `b` are 0–100.
+   */
+  toHWB(): ColorHWB {
+    return toHWB(this.color);
+  }
+
+  /**
+   * Get the color as a CSS `hwb(h w% b%)` string.
+   */
+  toHWBString(): string {
+    return hwbToString(this.toHWB());
+  }
+
+  /**
+   * Get the color as a {@link ColorHWBA} `{ h, w, b, a }` object.
+   */
+  toHWBA(): ColorHWBA {
+    return toHWBA(this.color);
+  }
+
+  /**
+   * Get the color as a CSS `hwb(h w% b% / a)` string (always including alpha).
+   */
+  toHWBAString(): string {
+    return hwbaToString(this.toHWBA());
+  }
+
+  /**
    * Get the color as a {@link ColorHSV} `{ h, s, v }` object where `h` is 0–360 and `s`
    * and `v` are 0–100.
    */
@@ -378,6 +421,13 @@ export class Color {
    */
   toOKLCHString(): string {
     return oklchToString(this.toOKLCH());
+  }
+
+  /**
+   * Get the color as a CSS `color()` string in the chosen color space (`srgb`, `display-p3`, or `rec2020`).
+   */
+  toColorString(options?: ColorStringOptions): string {
+    return colorToString(this.toRGBA(), options);
   }
 
   /**

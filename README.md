@@ -36,6 +36,7 @@ _`constructor`_
 - <ins>Returns</ins> a new [`Color`](#types-color) instance of the specified color input.
 - <ins>Inputs</ins>:
   - `color` (optional) - an existing [`Color`](#types-color), any valid [`ColorFormat`](#types-color-format), a named CSS color, or any parsable color format (e.g. `"rgb(0,255,255)"`) including partial or exact matches of a [`ColorTemperatureLabel`](#types-color-temperature-label).
+    - Supports modern CSS Color 4/5 syntax including `hwb()`, `lab()`, `lch()`, `oklch()`, and `color()` for the `srgb`, `display-p3`, and `rec2020` color spaces.
     - No input or passing in `null`/`undefined` generates a random color.
     - **Invalid inputs throw an exception.**
 
@@ -283,6 +284,38 @@ new Color('#1e90ff').toHSV(); // { h: 210, s: 88, v: 100 }
 new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
 ```
 
+#### `toHWB(): { h: number; w: number; b: number }`
+
+- <ins>Returns</ins> a [`ColorHWB`](#types-color-hwb) object with hue 0–360 and whiteness/blackness 0–100.
+
+```ts
+new Color('#808080').toHWB(); // { h: 0, w: 50, b: 50 }
+```
+
+#### `toHWBString(): string`
+
+- <ins>Returns</ins> a CSS `"hwb(h w% b% / a)"` string.
+
+```ts
+new Color('rgba(26, 102, 179, 0.25)').toHWBString(); // 'hwb(210 10% 30% / 0.25)'
+```
+
+#### `toHWBA(): { h: number; w: number; b: number; a: number }`
+
+- <ins>Returns</ins> a [`ColorHWBA`](#types-color-hwba) object with hue 0–360, whiteness/blackness 0–100, and alpha 0–1.
+
+```ts
+new Color('rgba(26, 102, 179, 0.25)').toHWBA(); // { h: 210, w: 10, b: 30, a: 0.25 }
+```
+
+#### `toHWBAString(): string`
+
+- <ins>Returns</ins> a CSS `"hwb(h w% b% / a)"` string including the alpha channel even when fully opaque.
+
+```ts
+new Color('#1a66b3cc').toHWBAString(); // 'hwb(210 10% 30% / 0.8)'
+```
+
 #### `toCMYK(): { c: number; m: number; y: number; k: number }`
 
 - <ins>Returns</ins> a [`ColorCMYK`](#types-color-cmyk) object with channel values 0–100.
@@ -361,6 +394,21 @@ new Color('#00b7eb').toOKLCH(); // { l: 0.727148, c: 0.140767, h: 227.27 }
 
 ```ts
 new Color('#00b7eb').toOKLCHString(); // 'oklch(0.727148 0.140767 227.27)'
+```
+
+#### `toColorString(options?: ColorStringOptions): string`
+
+- <ins>Returns</ins> a CSS `"color(space r g b / a)"` string in the requested color space.
+- <ins>Inputs</ins>:
+  - `options` (optional) - `ColorStringOptions`:
+    - `space` (optional) - target color space for the `color()` string: [`ColorSpace`](#types-color-space). Defaults to `"SRGB"`.
+
+```ts
+new Color('#ff000080').toColorString(); // 'color(srgb 1 0 0 / 0.5)'
+new Color('#ff000080').toColorString({ space: 'DISPLAY-P3' });
+// 'color(display-p3 0.917488 0.200287 0.138561 / 0.5)'
+new Color('#336699').toColorString({ space: 'rec2020' });
+// 'color(rec2020 0.250128 0.336705 0.537794)'
 ```
 
 ### Color Manipulations
@@ -866,11 +914,14 @@ bestSwatchBackground.toHex(); // '#301308'
   - <span id="types-color-hsla">`ColorHSLA`</span> - same as [`ColorHSL`](#types-color-hsl) but with an alpha channel. `{ h: number; s: number; l: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `l` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
   - <span id="types-color-hsv">`ColorHSV`</span> - hue, saturation, and value channels. `{ h: number; s: number; v: number }` where `h` is a number between 0 and 360 (degrees), and `s` and `v` are numbers between 0 and 100 (percentages).
   - <span id="types-color-hsva">`ColorHSVA`</span> - same as [`ColorHSV`](#types-color-hsv) but with an alpha channel. `{ h: number; s: number; v: number; a: number }` where `h` is a number between 0 and 360 (degrees), `s` and `v` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
+  - <span id="types-color-hwb">`ColorHWB`</span> - hue, whiteness, and blackness channels. `{ h: number; w: number; b: number }` where `h` is a number between 0 and 360 (degrees), and `w` and `b` are numbers between 0 and 100 (percentages).
+  - <span id="types-color-hwba">`ColorHWBA`</span> - same as [`ColorHWB`](#types-color-hwb) but with an alpha channel. `{ h: number; w: number; b: number; a: number }` where `h` is a number between 0 and 360 (degrees), `w` and `b` are numbers between 0 and 100 (percentages), and `a` is a number between 0 and 1.
   - <span id="types-color-cmyk">`ColorCMYK`</span> - cyan, magenta, yellow, and key (black) channels. `{ c: number; m: number; y: number; k: number }` where `c`, `m`, `y`, and `k` are numbers between 0 and 100 (percentages).
   - <span id="types-color-lab">`ColorLAB`</span> - CIELAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 100 (lightness), and `a` and `b` are numbers typically between -128 and 127 (color-opponent dimensions).
   - <span id="types-color-oklab">`ColorOKLAB`</span> - OKLAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 1 (lightness), and `a` and `b` are numbers typically between -0.4 and 0.4 (color-opponent dimensions).
   - <span id="types-color-lch">`ColorLCH`</span> - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).
   - <span id="types-color-oklch">`ColorOKLCH`</span> - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
+- <span id="types-color-space">`ColorSpace`</span> - supported color spaces for `color()` output: `"SRGB" | "DISPLAY-P3" | "REC2020"`.
 - <span id="types-color-temperature-label">`ColorTemperatureLabel`</span> - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
 - <span id="types-base-color-swatch">`BaseColorSwatch`</span> - a swatch representing shades of the same color from 100 to 900 `{ 100: number; 200 number; ... 900: number }` where `100` is the lightest shade and `900` is the darkest shade.
 - <span id="types-extended-color-swatch">`ExtendedColorSwatch`</span> - same as a [`ColorSwatch`](#types-color-swatch) but includes half-shades at 50, 100, 150, ..., 950. It is a superset of [`ColorSwatch`](#types-color-swatch).

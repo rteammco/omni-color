@@ -7,6 +7,8 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorHWB,
+  ColorHWBA,
   ColorLAB,
   ColorLCH,
   ColorOKLAB,
@@ -238,6 +240,11 @@ function rgbaToHSVA(color: ColorRGBA): ColorHSVA {
   return { ...hsv, a: color.a };
 }
 
+function rgbaToHWBA(color: ColorRGBA): ColorHWBA {
+  const hwb = rgbToHWB(color);
+  return { ...hwb, a: color.a };
+}
+
 function hsvToRGB(color: ColorHSV): ColorRGB {
   const h = (((color.h % 360) + 360) % 360) / 60;
   const s = color.s / 100;
@@ -277,6 +284,67 @@ function hsvToRGB(color: ColorHSV): ColorRGB {
 function hsvToRGBA(color: ColorHSV, alpha?: number): ColorRGBA {
   const rgb = hsvToRGB(color);
   return rgbToRGBA(rgb, alpha);
+}
+
+function rgbToHWB(color: ColorRGB): ColorHWB {
+  const hsv = rgbToHSV(color);
+  const maxChannel = Math.max(color.r, color.g, color.b);
+  const minChannel = Math.min(color.r, color.g, color.b);
+  const whiteness = Math.round((minChannel / 255) * 100);
+  const blackness = Math.round((1 - maxChannel / 255) * 100);
+  return { h: hsv.h, w: whiteness, b: blackness };
+}
+
+function hwbToRGB(color: ColorHWB): ColorRGB {
+  const hue = (((color.h % 360) + 360) % 360) / 360;
+  const whiteness = color.w / 100;
+  const blackness = color.b / 100;
+  const sum = whiteness + blackness;
+
+  if (sum >= 1) {
+    const gray = whiteness / sum;
+    const channel = Math.round(gray * 255);
+    return { r: channel, g: channel, b: channel };
+  }
+
+  const hPrime = hue * 6;
+  const x = 1 - Math.abs((hPrime % 2) - 1);
+  let r1 = 0;
+  let g1 = 0;
+  let b1 = 0;
+
+  if (0 <= hPrime && hPrime < 1) {
+    r1 = 1;
+    g1 = x;
+  } else if (1 <= hPrime && hPrime < 2) {
+    r1 = x;
+    g1 = 1;
+  } else if (2 <= hPrime && hPrime < 3) {
+    g1 = 1;
+    b1 = x;
+  } else if (3 <= hPrime && hPrime < 4) {
+    g1 = x;
+    b1 = 1;
+  } else if (4 <= hPrime && hPrime < 5) {
+    r1 = x;
+    b1 = 1;
+  } else {
+    r1 = 1;
+    b1 = x;
+  }
+
+  const scale = 1 - sum;
+  return {
+    r: Math.round((r1 * scale + whiteness) * 255),
+    g: Math.round((g1 * scale + whiteness) * 255),
+    b: Math.round((b1 * scale + whiteness) * 255),
+  };
+}
+
+function hwbToRGBA(color: ColorHWB, alpha?: number): ColorRGBA {
+  const rgb = hwbToRGB(color);
+  const resolvedAlpha = (color as ColorHWBA).a ?? alpha;
+  return rgbToRGBA(rgb, resolvedAlpha);
 }
 
 function rgbToCMYK(color: ColorRGB): ColorCMYK {
@@ -517,6 +585,10 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
       return hsvToRGBA(value);
     case 'HSVA':
       return hsvaToRGBA(value);
+    case 'HWB':
+      return hwbToRGBA(value);
+    case 'HWBA':
+      return hwbToRGBA(value);
     case 'CMYK':
       return cmykToRGBA(value);
     case 'LAB':
@@ -552,6 +624,10 @@ export function toHex(color: ColorFormat): ColorHex {
       return rgbToHex(hsvToRGB(value));
     case 'HSVA':
       return rgbaToHex(hsvaToRGBA(value));
+    case 'HWB':
+      return rgbToHex(hwbToRGB(value));
+    case 'HWBA':
+      return rgbaToHex(hwbToRGBA(value));
     case 'CMYK':
       return rgbToHex(cmykToRGB(value));
     case 'LAB':
@@ -587,6 +663,10 @@ export function toHex8(color: ColorFormat): ColorHex {
       return rgbToHex8(hsvToRGB(value));
     case 'HSVA':
       return rgbaToHex8(hsvaToRGBA(value));
+    case 'HWB':
+      return rgbToHex8(hwbToRGB(value));
+    case 'HWBA':
+      return rgbaToHex8(hwbToRGBA(value));
     case 'CMYK':
       return rgbToHex8(cmykToRGB(value));
     case 'LAB':
@@ -622,6 +702,31 @@ export function toHSV(color: ColorFormat): ColorHSV {
 export function toHSVA(color: ColorFormat): ColorHSVA {
   validateColorOrThrow(color);
   return rgbaToHSVA(toRGBA(color));
+}
+
+export function toHWB(color: ColorFormat): ColorHWB {
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  if (formatType === 'HWB') {
+    return { ...value };
+  }
+  if (formatType === 'HWBA') {
+    const { h, w, b } = value;
+    return { h, w, b };
+  }
+  return rgbToHWB(toRGB(color));
+}
+
+export function toHWBA(color: ColorFormat): ColorHWBA {
+  validateColorOrThrow(color);
+  const { formatType, value } = getColorFormatType(color);
+  if (formatType === 'HWBA') {
+    return { ...value };
+  }
+  if (formatType === 'HWB') {
+    return { ...value, a: 1 };
+  }
+  return rgbaToHWBA(toRGBA(color));
 }
 
 export function toCMYK(color: ColorFormat): ColorCMYK {

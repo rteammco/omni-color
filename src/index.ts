@@ -1,15 +1,18 @@
 import { Color } from './color/color';
+import type { ColorSpace, ColorStringOptions } from './color/colorSpaces';
 import type { BlendMode, BlendSpace, MixSpace, MixType } from './color/combinations';
 import { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from './color/combinations';
 import type { CIE94Options, CIEDE2000Options, DeltaEMethod, DeltaEOptions } from './color/deltaE';
-import type { ColorFormat } from './color/formats';
 import {
   ColorCMYK,
+  type ColorFormat,
   ColorHex,
   ColorHSL,
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorHWB,
+  ColorHWBA,
   ColorLAB,
   ColorLCH,
   ColorOKLAB,
@@ -72,6 +75,8 @@ export {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorHWB,
+  ColorHWBA,
   ColorLAB,
   ColorLCH,
   type ColorLightnessModifier,
@@ -83,6 +88,8 @@ export {
   ColorRGBA,
   ColorSaturationOptions,
   type ColorSaturationSpace,
+  type ColorSpace,
+  type ColorStringOptions,
   ColorSwatch,
   ColorSwatchOptions,
   ColorTemperatureAndLabel,

@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
+
 import { AppHeader } from '../AppHeader';
 import { VSpace } from '../components/VSpace';
 import { Playground } from '../playground/Playground';
+import { PageHead } from '../seo/PageHead';
 import { StructuredData } from '../seo/StructuredData';
-import { useMemo } from 'react';
 
 export function PlaygroundPage() {
   const pageStructuredData = useMemo(
@@ -25,9 +27,12 @@ export function PlaygroundPage() {
 
   return (
     <>
-      <StructuredData
-        data={pageStructuredData}
+      <PageHead
+        description="Run omni-color JavaScript snippets in the browser to explore conversions, palettes, and color math interactively."
+        path="/playground"
+        title="omni-color | Code Playground"
       />
+      <StructuredData data={pageStructuredData} />
       <div className="p-6 w-full text-center">
         <AppHeader pageDescription="Code Playground" />
         <VSpace height={40} />

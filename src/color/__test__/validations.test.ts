@@ -176,6 +176,40 @@ describe('validateColorOrThrow HSVA format', () => {
   });
 });
 
+describe('validateColorOrThrow HWB format', () => {
+  it('accepts valid HWB objects including decimals and high totals', () => {
+    expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0 })).not.toThrow();
+    expect(() => validateColorOrThrow({ h: 360, w: 100, b: 100 })).not.toThrow();
+    expect(() => validateColorOrThrow({ h: 120.5, w: 40.4, b: 20.2 })).not.toThrow();
+  });
+
+  it('rejects invalid HWB objects', () => {
+    expect(() => validateColorOrThrow({ h: -1, w: 0, b: 0 })).toThrow(/invalid HWB color/);
+    expect(() => validateColorOrThrow({ h: 361, w: 0, b: 0 })).toThrow(/invalid HWB color/);
+    expect(() => validateColorOrThrow({ h: 0, w: -1, b: 0 })).toThrow(/invalid HWB color/);
+    expect(() => validateColorOrThrow({ h: 0, w: 0, b: -1 })).toThrow(/invalid HWB color/);
+    expect(() => validateColorOrThrow({ h: 0, w: 101, b: 0 })).toThrow(/invalid HWB color/);
+    expect(() => validateColorOrThrow({ h: 0, w: 0, b: 101 })).toThrow(/invalid HWB color/);
+    expect(() => validateColorOrThrow({ h: '0' as any, w: 0, b: 0 })).toThrow(/invalid HWB color/);
+  });
+});
+
+describe('validateColorOrThrow HWBA format', () => {
+  it('accepts valid HWBA objects', () => {
+    expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0, a: 0.5 })).not.toThrow();
+    expect(() => validateColorOrThrow({ h: 200.5, w: 40.5, b: 20.5, a: 1 })).not.toThrow();
+  });
+
+  it('rejects invalid HWBA objects', () => {
+    expect(() => validateColorOrThrow({ h: -1, w: 0, b: 0, a: 0.5 })).toThrow(/invalid HWBA color/);
+    expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0, a: -0.1 })).toThrow(/invalid HWBA color/);
+    expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0, a: 1.1 })).toThrow(/invalid HWBA color/);
+    expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0, a: '0.5' as any })).toThrow(
+      /invalid HWBA color/
+    );
+  });
+});
+
 describe('validateColorOrThrow CMYK format', () => {
   it('accepts valid CMYK objects including decimals', () => {
     expect(() => validateColorOrThrow({ c: 0, m: 0, y: 0, k: 0 })).not.toThrow();

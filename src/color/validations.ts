@@ -5,6 +5,8 @@ import type {
   ColorHSLA,
   ColorHSV,
   ColorHSVA,
+  ColorHWB,
+  ColorHWBA,
   ColorLAB,
   ColorLCH,
   ColorOKLAB,
@@ -65,6 +67,19 @@ function isValidHSVColor(color: ColorHSV): boolean {
 
 function isValidHSVAColor(color: ColorHSVA): boolean {
   return isValidHSVColor(color) && isValidAlphaValue(color.a);
+}
+
+function isValidHWBColor(color: ColorHWB): boolean {
+  const { h, w, b } = color;
+  return (
+    isValueInRangeInclusive(h, 0, 360) &&
+    isValueInRangeInclusive(w, 0, 100) &&
+    isValueInRangeInclusive(b, 0, 100)
+  );
+}
+
+function isValidHWBAColor(color: ColorHWBA): boolean {
+  return isValidHWBColor(color) && isValidAlphaValue(color.a);
 }
 
 function isValidCMYKColor(color: ColorCMYK): boolean {
@@ -171,6 +186,16 @@ export function validateColorOrThrow(color?: ColorFormat | null): void {
     case 'HSVA':
       if (!isValidHSVAColor(value)) {
         throw new Error(`invalid HSVA color: "${JSON.stringify(value)}"`);
+      }
+      break;
+    case 'HWB':
+      if (!isValidHWBColor(value)) {
+        throw new Error(`invalid HWB color: "${JSON.stringify(value)}"`);
+      }
+      break;
+    case 'HWBA':
+      if (!isValidHWBAColor(value)) {
+        throw new Error(`invalid HWBA color: "${JSON.stringify(value)}"`);
       }
       break;
     case 'CMYK':
