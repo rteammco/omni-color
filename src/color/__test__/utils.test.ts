@@ -46,26 +46,32 @@ describe('areColorsEqual', () => {
     ];
 
     const baseRgba = base.toRGBA();
+    const baseRgb = base.toRGB();
 
     const [hslColor, hsvColor, labColor, lchColor, oklchColor, hexColor] = formats;
 
-    expect(hslColor.toRGBA()).toEqual(baseRgba);
+    expect(hslColor.toRGB()).toEqual(baseRgb);
+    expect(hslColor.toRGBA().a).toBeCloseTo(baseRgba.a, 5);
     expect(areColorsEqual(hslColor, base)).toBe(true);
     expect(hslColor.toHex()).toBe('#2689d6');
 
-    expect(hsvColor.toRGBA()).toEqual(baseRgba);
+    expect(hsvColor.toRGB()).toEqual(baseRgb);
+    expect(hsvColor.toRGBA().a).toBeCloseTo(baseRgba.a, 5);
     expect(areColorsEqual(hsvColor, base)).toBe(true);
     expect(hsvColor.toHex()).toBe('#2689d6');
 
-    expect(labColor.toRGBA()).toEqual(baseRgba);
+    expect(labColor.toRGB()).toEqual(baseRgb);
+    expect(labColor.toRGBA().a).toBeCloseTo(baseRgba.a, 5);
     expect(areColorsEqual(labColor, base)).toBe(true);
     expect(labColor.toHex()).toBe('#2689d6');
 
-    expect(lchColor.toRGBA()).toEqual(baseRgba);
+    expect(lchColor.toRGB()).toEqual(baseRgb);
+    expect(lchColor.toRGBA().a).toBeCloseTo(baseRgba.a, 5);
     expect(areColorsEqual(lchColor, base)).toBe(true);
     expect(lchColor.toHex()).toBe('#2689d6');
 
-    expect(oklchColor.toRGBA()).toEqual(baseRgba);
+    expect(oklchColor.toRGB()).toEqual(baseRgb);
+    expect(oklchColor.toRGBA().a).toBeCloseTo(baseRgba.a, 5);
     expect(areColorsEqual(oklchColor, base)).toBe(true);
     expect(oklchColor.toHex()).toBe('#2689d6');
 

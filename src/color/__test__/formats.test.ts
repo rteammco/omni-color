@@ -116,8 +116,8 @@ describe('hslToString', () => {
     expect(white.toHSLString()).toBe('hsl(0 0% 100%)');
 
     const gray = new Color('#808080');
-    expect(hslToString(gray.toHSL())).toBe('hsl(0 0% 50%)');
-    expect(gray.toHSLString()).toBe('hsl(0 0% 50%)');
+    expect(hslToString(gray.toHSL())).toBe('hsl(0 0% 50.196%)');
+    expect(gray.toHSLString()).toBe('hsl(0 0% 50.196%)');
 
     const red = new Color('#ff0000');
     expect(hslToString(red.toHSL())).toBe('hsl(0 100% 50%)');
@@ -144,8 +144,8 @@ describe('hslToString', () => {
     expect(magenta.toHSLString()).toBe('hsl(300 100% 50%)');
 
     const custom = new Color('#abc123');
-    expect(hslToString(custom.toHSL())).toBe('hsl(68 69% 45%)');
-    expect(custom.toHSLString()).toBe('hsl(68 69% 45%)');
+    expect(hslToString(custom.toHSL())).toBe('hsl(68.354 69.298% 44.706%)');
+    expect(custom.toHSLString()).toBe('hsl(68.354 69.298% 44.706%)');
   });
 
   it('rounds component values to three decimals', () => {
@@ -166,8 +166,8 @@ describe('hslaToString', () => {
     expect(opaqueWhite.toHSLAString()).toBe('hsl(0 0% 100% / 1)');
 
     const gray = new Color('#80808080');
-    expect(hslaToString(gray.toHSLA())).toBe('hsl(0 0% 50% / 0.502)');
-    expect(gray.toHSLAString()).toBe('hsl(0 0% 50% / 0.502)');
+    expect(hslaToString(gray.toHSLA())).toBe('hsl(0 0% 50.196% / 0.502)');
+    expect(gray.toHSLAString()).toBe('hsl(0 0% 50.196% / 0.502)');
 
     const red = new Color('#ff000080');
     expect(hslaToString(red.toHSLA())).toBe('hsl(0 100% 50% / 0.502)');
@@ -194,8 +194,8 @@ describe('hslaToString', () => {
     expect(magenta.toHSLAString()).toBe('hsl(300 100% 50% / 0.6)');
 
     const custom = new Color('#abc123d6');
-    expect(hslaToString(custom.toHSLA())).toBe('hsl(68 69% 45% / 0.839)');
-    expect(custom.toHSLAString()).toBe('hsl(68 69% 45% / 0.839)');
+    expect(hslaToString(custom.toHSLA())).toBe('hsl(68.354 69.298% 44.706% / 0.839)');
+    expect(custom.toHSLAString()).toBe('hsl(68.354 69.298% 44.706% / 0.839)');
   });
 
   it('rounds hsla components to three decimals', () => {

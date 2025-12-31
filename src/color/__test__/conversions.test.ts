@@ -13,6 +13,7 @@ import {
   toRGB,
   toRGBA,
 } from '../conversions';
+import { Color } from '../color';
 import type {
   ColorHex,
   ColorHSL,
@@ -22,6 +23,21 @@ import type {
   ColorOKLCH,
   ColorRGBA,
 } from '../formats';
+
+function expectHSLToBeClose(actual: ColorHSL, expected: ColorHSL): void {
+  expect(actual.h).toBeCloseTo(expected.h, 0);
+  expect(actual.s).toBeCloseTo(expected.s, 0);
+  expect(actual.l).toBeCloseTo(expected.l, 0);
+}
+
+function expectHSVToBeClose(
+  actual: { h: number; s: number; v: number },
+  expected: { h: number; s: number; v: number }
+): void {
+  expect(actual.h).toBeCloseTo(expected.h, 0);
+  expect(actual.s).toBeCloseTo(expected.s, 0);
+  expect(actual.v).toBeCloseTo(expected.v, 0);
+}
 
 describe('conversions', () => {
   describe('toRGB', () => {
@@ -91,11 +107,11 @@ describe('conversions', () => {
       expect(toRGBA({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ r: 255, g: 0, b: 0, a: 1 });
     });
 
-    it('returns rounded channel values for RGBA input', () => {
+    it('preserves fractional RGBA input', () => {
       expect(toRGBA({ r: 199.4, g: 200.5, b: 201.6, a: 0.25 })).toEqual({
-        r: 199,
-        g: 201,
-        b: 202,
+        r: 199.4,
+        g: 200.5,
+        b: 201.6,
         a: 0.25,
       });
     });
@@ -207,25 +223,29 @@ describe('conversions', () => {
 
   describe('toHSL', () => {
     it('converts all inputs to HSL', () => {
-      expect(toHSL('#ff0000')).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL('#ff0000ff')).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ r: 255, g: 0, b: 0 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ h: 0, s: 100, l: 50 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, l: 50 });
-      expect(toHSL({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL('#ff0000'), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL('#ff0000ff'), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ r: 255, g: 0, b: 0 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ r: 255, g: 0, b: 0, a: 0.5 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ h: 0, s: 100, l: 50 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ h: 0, s: 100, l: 50, a: 0.5 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ h: 0, s: 100, v: 100 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ h: 0, s: 100, v: 100, a: 0.5 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ c: 0, m: 100, y: 100, k: 0 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ l: 53.233, c: 104.576, h: 40 }), { h: 0, s: 100, l: 50 });
+      expectHSLToBeClose(toHSL({ l: 0.627955, c: 0.257683, h: 29.234 }), {
+        h: 0,
+        s: 100,
+        l: 50,
+      });
     });
 
     it('converts grayscale correctly', () => {
-      expect(toHSL('#808080')).toEqual({ h: 0, s: 0, l: 50 });
+      expectHSLToBeClose(toHSL('#808080'), { h: 0, s: 0, l: 50 });
     });
 
     it('converts arbitrary colors', () => {
-      expect(toHSL('#123456')).toEqual({ h: 210, s: 65, l: 20 });
+      expectHSLToBeClose(toHSL('#123456'), { h: 210, s: 65, l: 20 });
     });
   });
 
@@ -248,27 +268,27 @@ describe('conversions', () => {
 
     it('preserves alpha where available', () => {
       const fromHex8 = toHSLA('#ff000080');
-      expect(fromHex8.h).toBe(0);
-      expect(fromHex8.s).toBe(100);
-      expect(fromHex8.l).toBe(50);
+      expect(fromHex8.h).toBeCloseTo(0, 0);
+      expect(fromHex8.s).toBeCloseTo(100, 0);
+      expect(fromHex8.l).toBeCloseTo(50, 0);
       expect(fromHex8.a).toBeCloseTo(0.502, 3);
 
       const fromRGBA = toHSLA({ r: 255, g: 0, b: 0, a: 0.5 });
-      expect(fromRGBA.h).toBe(0);
-      expect(fromRGBA.s).toBe(100);
-      expect(fromRGBA.l).toBe(50);
+      expect(fromRGBA.h).toBeCloseTo(0, 0);
+      expect(fromRGBA.s).toBeCloseTo(100, 0);
+      expect(fromRGBA.l).toBeCloseTo(50, 0);
       expect(fromRGBA.a).toBeCloseTo(0.5, 3);
 
       const fromHSLA = toHSLA({ h: 0, s: 100, l: 50, a: 0.5 });
-      expect(fromHSLA.h).toBe(0);
-      expect(fromHSLA.s).toBe(100);
-      expect(fromHSLA.l).toBe(50);
+      expect(fromHSLA.h).toBeCloseTo(0, 0);
+      expect(fromHSLA.s).toBeCloseTo(100, 0);
+      expect(fromHSLA.l).toBeCloseTo(50, 0);
       expect(fromHSLA.a).toBeCloseTo(0.5, 3);
 
       const fromHSVA = toHSLA({ h: 0, s: 100, v: 100, a: 0.5 });
-      expect(fromHSVA.h).toBe(0);
-      expect(fromHSVA.s).toBe(100);
-      expect(fromHSVA.l).toBe(50);
+      expect(fromHSVA.h).toBeCloseTo(0, 0);
+      expect(fromHSVA.s).toBeCloseTo(100, 0);
+      expect(fromHSVA.l).toBeCloseTo(50, 0);
       expect(fromHSVA.a).toBeCloseTo(0.5, 3);
     });
 
@@ -279,25 +299,29 @@ describe('conversions', () => {
 
   describe('toHSV', () => {
     it('converts all inputs to HSV', () => {
-      expect(toHSV('#ff0000')).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV('#ff0000ff')).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ r: 255, g: 0, b: 0 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ r: 255, g: 0, b: 0, a: 0.5 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ h: 0, s: 100, l: 50 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ h: 0, s: 100, l: 50, a: 0.5 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ h: 0, s: 100, v: 100 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ h: 0, s: 100, v: 100, a: 0.5 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ c: 0, m: 100, y: 100, k: 0 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ l: 53.233, c: 104.576, h: 40 })).toEqual({ h: 0, s: 100, v: 100 });
-      expect(toHSV({ l: 0.627955, c: 0.257683, h: 29.234 })).toEqual({ h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV('#ff0000'), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV('#ff0000ff'), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ r: 255, g: 0, b: 0 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ r: 255, g: 0, b: 0, a: 0.5 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ h: 0, s: 100, l: 50 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ h: 0, s: 100, l: 50, a: 0.5 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ h: 0, s: 100, v: 100 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ h: 0, s: 100, v: 100, a: 0.5 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ c: 0, m: 100, y: 100, k: 0 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ l: 53.233, c: 104.576, h: 40 }), { h: 0, s: 100, v: 100 });
+      expectHSVToBeClose(toHSV({ l: 0.627955, c: 0.257683, h: 29.234 }), {
+        h: 0,
+        s: 100,
+        v: 100,
+      });
     });
 
     it('converts arbitrary colors', () => {
-      expect(toHSV('#123456')).toEqual({ h: 210, s: 79, v: 34 });
+      expectHSVToBeClose(toHSV('#123456'), { h: 210, s: 79, v: 34 });
     });
 
     it('converts black correctly', () => {
-      expect(toHSV('#000000')).toEqual({ h: 0, s: 0, v: 0 });
+      expectHSVToBeClose(toHSV('#000000'), { h: 0, s: 0, v: 0 });
     });
   });
 
@@ -320,27 +344,27 @@ describe('conversions', () => {
 
     it('preserves alpha where available', () => {
       const fromHex8 = toHSVA('#ff000080');
-      expect(fromHex8.h).toBe(0);
-      expect(fromHex8.s).toBe(100);
-      expect(fromHex8.v).toBe(100);
+      expect(fromHex8.h).toBeCloseTo(0, 0);
+      expect(fromHex8.s).toBeCloseTo(100, 0);
+      expect(fromHex8.v).toBeCloseTo(100, 0);
       expect(fromHex8.a).toBeCloseTo(0.502, 3);
 
       const fromRGBA = toHSVA({ r: 255, g: 0, b: 0, a: 0.5 });
-      expect(fromRGBA.h).toBe(0);
-      expect(fromRGBA.s).toBe(100);
-      expect(fromRGBA.v).toBe(100);
+      expect(fromRGBA.h).toBeCloseTo(0, 0);
+      expect(fromRGBA.s).toBeCloseTo(100, 0);
+      expect(fromRGBA.v).toBeCloseTo(100, 0);
       expect(fromRGBA.a).toBeCloseTo(0.5, 3);
 
       const fromHSLA = toHSVA({ h: 0, s: 100, l: 50, a: 0.5 });
-      expect(fromHSLA.h).toBe(0);
-      expect(fromHSLA.s).toBe(100);
-      expect(fromHSLA.v).toBe(100);
+      expect(fromHSLA.h).toBeCloseTo(0, 0);
+      expect(fromHSLA.s).toBeCloseTo(100, 0);
+      expect(fromHSLA.v).toBeCloseTo(100, 0);
       expect(fromHSLA.a).toBeCloseTo(0.5, 3);
 
       const fromHSVA = toHSVA({ h: 0, s: 100, v: 100, a: 0.5 });
-      expect(fromHSVA.h).toBe(0);
-      expect(fromHSVA.s).toBe(100);
-      expect(fromHSVA.v).toBe(100);
+      expect(fromHSVA.h).toBeCloseTo(0, 0);
+      expect(fromHSVA.s).toBeCloseTo(100, 0);
+      expect(fromHSVA.v).toBeCloseTo(100, 0);
       expect(fromHSVA.a).toBeCloseTo(0.5, 3);
     });
 
@@ -715,6 +739,38 @@ describe('conversions', () => {
       expect(Math.abs(rgb2.r - rgbStart2.r)).toBeLessThanOrEqual(3);
       expect(Math.abs(rgb2.g - rgbStart2.g)).toBeLessThanOrEqual(3);
       expect(Math.abs(rgb2.b - rgbStart2.b)).toBeLessThanOrEqual(3);
+    });
+  });
+
+  describe('precision regressions', () => {
+    const assertWithin = (value: number, expected: number, tolerance: number) => {
+      expect(Math.abs(value - expected)).toBeLessThanOrEqual(tolerance);
+    };
+
+    it('maintains low-saturation HSL inputs through round-trips', () => {
+      const input = 'hsl(143, 10%, 5%)';
+      const color = new Color(input);
+      const roundTripped = new Color(color.toHSLString()).toHSL();
+
+      assertWithin(roundTripped.h, 143, 1);
+      assertWithin(roundTripped.s, 10, 1);
+      assertWithin(roundTripped.l, 5, 0.5);
+    });
+
+    it('avoids hue drift for near-grayscale values', () => {
+      const cases: Array<{ h: number; s: number; l: number }> = [
+        { h: 40, s: 4, l: 88 },
+        { h: 275, s: 2, l: 42 },
+        { h: 200, s: 6, l: 15 },
+      ];
+
+      cases.forEach(({ h, s, l }) => {
+        const color = new Color(`hsl(${h}, ${s}%, ${l}%)`);
+        const roundTripped = new Color(color.toHSLString()).toHSL();
+
+        assertWithin(roundTripped.h, h, 1);
+        assertWithin(roundTripped.s, s, 1);
+      });
     });
   });
 });

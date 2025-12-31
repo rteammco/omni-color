@@ -96,38 +96,41 @@ function getLightnessModifier(l: number): ColorLightnessModifier {
 
 export function getBaseColorName(color: Color): ColorNameAndLightness {
   const { h, s, l } = color.toHSL();
+  const hue = Math.round(h);
+  const saturation = Math.round(s);
+  const lightness = Math.round(l);
 
-  if (l < BLACK_MIN_LIGHTNESS_THRESHOLD) {
+  if (lightness < BLACK_MIN_LIGHTNESS_THRESHOLD) {
     return {
       name: BASE_COLOR_NAME_OPTIONS.BLACK,
       lightness: COLOR_LIGHTNESS_MODIFIER_OPTIONS.NORMAL,
     };
   }
 
-  if (l > WHITE_MAX_LIGHTNESS_THRESHOLD) {
+  if (lightness > WHITE_MAX_LIGHTNESS_THRESHOLD) {
     return {
       name: BASE_COLOR_NAME_OPTIONS.WHITE,
       lightness: COLOR_LIGHTNESS_MODIFIER_OPTIONS.NORMAL,
     };
   }
 
-  if (s < GRAYSCALE_MIN_SATURATION_THRESHOLD) {
-    if (l < BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION) {
+  if (saturation < GRAYSCALE_MIN_SATURATION_THRESHOLD) {
+    if (lightness < BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION) {
       return {
         name: BASE_COLOR_NAME_OPTIONS.BLACK,
         lightness: COLOR_LIGHTNESS_MODIFIER_OPTIONS.NORMAL,
       };
     }
-    if (l > WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION) {
+    if (lightness > WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION) {
       return {
         name: BASE_COLOR_NAME_OPTIONS.WHITE,
         lightness: COLOR_LIGHTNESS_MODIFIER_OPTIONS.NORMAL,
       };
     }
-    return { name: BASE_COLOR_NAME_OPTIONS.GRAY, lightness: getLightnessModifier(l) };
+    return { name: BASE_COLOR_NAME_OPTIONS.GRAY, lightness: getLightnessModifier(lightness) };
   }
 
-  const name = getColorNameByHue(h);
-  const lightness = getLightnessModifier(l);
-  return { name, lightness };
+  const name = getColorNameByHue(hue);
+  const lightnessModifier = getLightnessModifier(lightness);
+  return { name, lightness: lightnessModifier };
 }

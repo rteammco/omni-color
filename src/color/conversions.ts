@@ -15,6 +15,7 @@ import type {
 } from './formats';
 import { getColorFormatType } from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
+import { clampValue } from '../utils';
 import { validateColorOrThrow } from './validations';
 
 const LAB_DELTA = 6 / 29; // = 0.20689655
@@ -23,21 +24,30 @@ const LAB_F_LINEAR_COEFFICIENT = 1 / (3 * LAB_DELTA ** 2); // = 7.78703704
 const LAB_KAPPA = 116 * LAB_F_LINEAR_COEFFICIENT; // = 903.29629664
 const LAB_C_OFFSET = 4 / 29; // = 0.13793103 (16 / 116)
 
-function roundRGBChannels(color: ColorRGB): ColorRGB {
+function clampRGBChannels(color: ColorRGB): ColorRGB {
   return {
-    r: Math.round(color.r),
-    g: Math.round(color.g),
-    b: Math.round(color.b),
+    r: clampValue(color.r, 0, 255),
+    g: clampValue(color.g, 0, 255),
+    b: clampValue(color.b, 0, 255),
+  };
+}
+
+function roundRGBChannels(color: ColorRGB): ColorRGB {
+  const clamped = clampRGBChannels(color);
+  return {
+    r: Math.round(clamped.r),
+    g: Math.round(clamped.g),
+    b: Math.round(clamped.b),
   };
 }
 
 function rgbToRGBA(color: ColorRGB, alpha?: number): ColorRGBA {
-  const { r, g, b } = roundRGBChannels(color);
+  const { r, g, b } = clampRGBChannels(color);
   return alpha === undefined ? { r, g, b, a: 1 } : { r, g, b, a: alpha };
 }
 
 function rgbaToRGB(color: ColorRGBA): ColorRGB {
-  return roundRGBChannels(color);
+  return clampRGBChannels(color);
 }
 
 function hexOrHex8ToRGBA(hex: ColorHex): ColorRGBA {
@@ -79,14 +89,14 @@ function numToHex(value: number): string {
 }
 
 function rgbaToHex8(color: ColorRGBA): ColorHex {
-  const { r, g, b } = roundRGBChannels(color);
+  const rounded = roundRGBChannels(color);
   const alphaHex = numToHex(Math.round((color.a ?? 1) * 255));
-  return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}${alphaHex}`.toLowerCase() as ColorHex;
+  return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(rounded.b)}${alphaHex}`.toLowerCase() as ColorHex;
 }
 
 function rgbaToHex(color: ColorRGBA): ColorHex {
-  const { r, g, b } = roundRGBChannels(color);
-  return `#${numToHex(r)}${numToHex(g)}${numToHex(b)}`.toLowerCase() as ColorHex;
+  const rounded = roundRGBChannels(color);
+  return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(rounded.b)}`.toLowerCase() as ColorHex;
 }
 
 function rgbToHex(color: ColorRGB): ColorHex {
@@ -98,7 +108,7 @@ function rgbToHex8(color: ColorRGB): ColorHex {
 }
 
 function rgbToHSL(color: ColorRGB): ColorHSL {
-  const { r, g, b } = color;
+  const { r, g, b } = clampRGBChannels(color);
   const rNorm = r / 255;
   const gNorm = g / 255;
   const bNorm = b / 255;
@@ -127,9 +137,9 @@ function rgbToHSL(color: ColorRGB): ColorHSL {
   }
 
   return {
-    h: Math.round(h * 360),
-    s: Math.round(s * 100),
-    l: Math.round(l * 100),
+    h: ((h * 360) % 360 + 360) % 360,
+    s: s * 100,
+    l: l * 100,
   };
 }
 
@@ -178,9 +188,9 @@ function hslToRGB(color: ColorHSL): ColorRGB {
   }
 
   return {
-    r: Math.round((r1 + m) * 255),
-    g: Math.round((g1 + m) * 255),
-    b: Math.round((b1 + m) * 255),
+    r: (r1 + m) * 255,
+    g: (g1 + m) * 255,
+    b: (b1 + m) * 255,
   };
 }
 
@@ -197,9 +207,10 @@ function hsvaToRGBA(color: ColorHSVA): ColorRGBA {
 }
 
 function rgbToHSV(color: ColorRGB): ColorHSV {
-  const r = color.r / 255;
-  const g = color.g / 255;
-  const b = color.b / 255;
+  const clamped = clampRGBChannels(color);
+  const r = clamped.r / 255;
+  const g = clamped.g / 255;
+  const b = clamped.b / 255;
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const d = max - min;
@@ -221,9 +232,9 @@ function rgbToHSV(color: ColorRGB): ColorHSV {
   const s = max === 0 ? 0 : d / max;
   const v = max;
   return {
-    h: Math.round(h * 360),
-    s: Math.round(s * 100),
-    v: Math.round(v * 100),
+    h: ((h * 360) % 360 + 360) % 360,
+    s: s * 100,
+    v: v * 100,
   };
 }
 
@@ -262,9 +273,9 @@ function hsvToRGB(color: ColorHSV): ColorRGB {
     b1 = x;
   }
   return {
-    r: Math.round((r1 + m) * 255),
-    g: Math.round((g1 + m) * 255),
-    b: Math.round((b1 + m) * 255),
+    r: (r1 + m) * 255,
+    g: (g1 + m) * 255,
+    b: (b1 + m) * 255,
   };
 }
 
@@ -488,36 +499,8 @@ function oklchToRGBA(color: ColorOKLCH, alpha?: number): ColorRGBA {
 
 export function toRGB(color: ColorFormat): ColorRGB {
   validateColorOrThrow(color);
-  const { formatType, value } = getColorFormatType(color);
-  switch (formatType) {
-    case 'HEX':
-    case 'HEX8':
-      return hexOrHex8ToRGB(value);
-    case 'RGB':
-      return roundRGBChannels(value);
-    case 'RGBA':
-      return rgbaToRGB(value);
-    case 'HSL':
-      return hslToRGB(value);
-    case 'HSLA':
-      return rgbaToRGB(hslaToRGBA(value));
-    case 'HSV':
-      return hsvToRGB(value);
-    case 'HSVA':
-      return rgbaToRGB(hsvaToRGBA(value));
-    case 'CMYK':
-      return cmykToRGB(value);
-    case 'LAB':
-      return labToRGB(value);
-    case 'OKLAB':
-      return oklabToRGB(value);
-    case 'LCH':
-      return lchToRGB(value);
-    case 'OKLCH':
-      return oklchToRGB(value);
-    default:
-      throw new Error(`unknown color format: ${formatType}`);
-  }
+  const rgba = toRGBA(color);
+  return roundRGBChannels(rgba);
 }
 
 export function toRGBA(color: ColorFormat): ColorRGBA {
@@ -530,7 +513,7 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
     case 'RGB':
       return rgbToRGBA(value);
     case 'RGBA':
-      return { ...roundRGBChannels(value), a: value.a ?? 1 };
+      return { ...rgbToRGBA(value), a: value.a ?? 1 };
     case 'HSL':
       return rgbToRGBA(hslToRGB(value));
     case 'HSLA':
@@ -626,7 +609,8 @@ export function toHex8(color: ColorFormat): ColorHex {
 
 export function toHSL(color: ColorFormat): ColorHSL {
   validateColorOrThrow(color);
-  return rgbToHSL(toRGB(color));
+  const { r, g, b } = toRGBA(color);
+  return rgbToHSL({ r, g, b });
 }
 
 export function toHSLA(color: ColorFormat): ColorHSLA {
@@ -636,7 +620,8 @@ export function toHSLA(color: ColorFormat): ColorHSLA {
 
 export function toHSV(color: ColorFormat): ColorHSV {
   validateColorOrThrow(color);
-  return rgbToHSV(toRGB(color));
+  const { r, g, b } = toRGBA(color);
+  return rgbToHSV({ r, g, b });
 }
 
 export function toHSVA(color: ColorFormat): ColorHSVA {
