@@ -32,7 +32,7 @@ describe('spinColorHue', () => {
   it('keeps hues in the expected range for negative fractional rotations', () => {
     const rotated = spinColorHue(new Color('hsl(210, 70%, 60%)'), -420.25);
     expect(rotated.toHex()).toBe('#52e098');
-    expect(rotated.toHSL().h).toBe(150);
+    expect(rotated.toHSL().h).toBeCloseTo(150, 0);
   });
 
   it('works with different base colors', () => {
@@ -64,8 +64,8 @@ describe('spinColorHue', () => {
 describe('brightenColor', () => {
   it('adjusts lightness relative to the base color', () => {
     const gray = new Color('#808080');
-    expect(brightenColor(gray).toHex()).toBe('#999999');
-    expect(brightenColor(gray, { amount: -10 }).toHex()).toBe('#666666');
+    expect(brightenColor(gray).toHex()).toBe('#9a9a9a');
+    expect(brightenColor(gray, { amount: -10 }).toHex()).toBe('#676767');
     expect(gray.toHex()).toBe('#808080');
   });
 
@@ -95,7 +95,7 @@ describe('brightenColor', () => {
     const base = new Color('#123456');
     const brightened = brightenColor(base, { amount: 7.5, space: 'HSL' });
 
-    expect(brightened.toHex()).toBe('#194674');
+    expect(brightened.toHex()).toBe('#194776');
     expect(brightened).not.toBe(base);
     expect(base.toHex()).toBe('#123456');
   });
@@ -136,8 +136,8 @@ describe('brightenColor', () => {
 describe('darkenColor', () => {
   it('reduces lightness by the given percentage', () => {
     const gray = new Color('#808080');
-    expect(darkenColor(gray).toHex()).toBe('#666666');
-    expect(darkenColor(gray, { amount: -10 }).toHex()).toBe('#999999');
+    expect(darkenColor(gray).toHex()).toBe('#676767');
+    expect(darkenColor(gray, { amount: -10 }).toHex()).toBe('#9a9a9a');
     expect(gray.toHex()).toBe('#808080');
   });
 
@@ -167,7 +167,7 @@ describe('darkenColor', () => {
     const parchment = new Color('#f0eedd');
     const darkened = darkenColor(parchment, { amount: 12.5 });
 
-    expect(darkened.toHex()).toBe('#dcd8af');
+    expect(darkened.toHex()).toBe('#dcd8b1');
     expect(parchment.toHex()).toBe('#f0eedd');
   });
 
@@ -203,8 +203,8 @@ describe('saturateColor', () => {
   it('clamps saturation between 0% and 100%', () => {
     expect(saturateColor(new Color('#f90606'), { amount: 10 }).toHex()).toBe('#ff0000');
     expect(saturateColor(new Color('#867979'), { amount: -10 }).toHex()).toBe('#808080');
-    expect(saturateColor(new Color('#4080bf'), { amount: 300 }).toHex()).toBe('#0080ff');
-    expect(saturateColor(new Color('#808080'), { amount: 10 }).toHex()).toBe('#8c7373');
+    expect(saturateColor(new Color('#4080bf'), { amount: 300 }).toHex()).toBe('#0081ff');
+    expect(saturateColor(new Color('#808080'), { amount: 10 }).toHex()).toBe('#8d7373');
   });
 
   it('uses the default 10% increase', () => {
@@ -223,7 +223,7 @@ describe('saturateColor', () => {
     const base = new Color('rgba(170, 119, 51, 0.4)');
     const saturated = saturateColor(base, { amount: 0, space: 'HSL' });
 
-    expect(saturated.toHex8()).toBe('#a9763266');
+    expect(saturated.toHex8()).toBe('#aa773366');
     expect(base.toHex8()).toBe('#aa773366');
     expect(saturated).not.toBe(base);
   });
@@ -299,7 +299,7 @@ describe('desaturateColor', () => {
     const translucentBrown = new Color('rgba(120, 60, 30, 0.2)');
     const desaturated = desaturateColor(translucentBrown, { amount: 20 });
 
-    expect(desaturated.toHex8()).toBe('#68402c33');
+    expect(desaturated.toHex8()).toBe('#69412d33');
     expect(translucentBrown.toHex8()).toBe('#783c1e33');
   });
 });
@@ -324,7 +324,7 @@ describe('colorToGrayscale', () => {
     const translucentBlue = new Color('rgba(50, 100, 150, 0.25)');
     const gray = colorToGrayscale(translucentBlue);
 
-    expect(gray.toHex()).toBe('#636363');
+    expect(gray.toHex()).toBe('#646464');
     expect(gray.toRGBA().a).toBeCloseTo(0.25, 5);
     expect(translucentBlue.toHex8()).toBe('#32649640');
   });

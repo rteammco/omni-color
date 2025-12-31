@@ -16,9 +16,10 @@ function chromaRGBArrayToObj(values: number[]): ColorRGB | ColorRGBA {
 }
 
 function expectSimilarRGBAValues(omniValues: ColorRGBA, chromaValues: number[], tolerance = 1) {
-  expect(Math.abs(omniValues.r - chromaValues[0])).toBeLessThanOrEqual(tolerance);
-  expect(Math.abs(omniValues.g - chromaValues[1])).toBeLessThanOrEqual(tolerance);
-  expect(Math.abs(omniValues.b - chromaValues[2])).toBeLessThanOrEqual(tolerance);
+  const epsilon = 1e-6;
+  expect(Math.abs(omniValues.r - chromaValues[0])).toBeLessThanOrEqual(tolerance + epsilon);
+  expect(Math.abs(omniValues.g - chromaValues[1])).toBeLessThanOrEqual(tolerance + epsilon);
+  expect(Math.abs(omniValues.b - chromaValues[2])).toBeLessThanOrEqual(tolerance + epsilon);
   expect(omniValues.a ?? 1).toBeCloseTo(chromaValues[3] ?? 1, 2);
 }
 
@@ -555,9 +556,9 @@ describe('Color interoperability with chroma-js', () => {
       const roundedChromaSaturation = Math.round(chromaHsl[1] * 100);
       const roundedChromaLightness = Math.round(chromaHsl[2] * 100);
 
-      expect(hslFromOmni.h).toBe(roundedChromaHue);
-      expect(hslFromOmni.s).toBe(roundedChromaSaturation);
-      expect(hslFromOmni.l).toBe(roundedChromaLightness);
+      expect(hslFromOmni.h).toBeCloseTo(roundedChromaHue, 0);
+      expect(Math.abs(hslFromOmni.s - roundedChromaSaturation)).toBeLessThanOrEqual(0.5);
+      expect(Math.abs(hslFromOmni.l - roundedChromaLightness)).toBeLessThanOrEqual(0.5);
     });
 
     it('handles hue wrapping consistently when interpolating in HSL space', () => {

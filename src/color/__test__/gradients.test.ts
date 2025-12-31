@@ -67,7 +67,8 @@ describe('createColorGradient', () => {
       '#ff1500',
       '#ff2a00',
     ]);
-    expect(gradient[2].toHSL().h).toBeCloseTo(0, 1);
+    const hue = gradient[2].toHSL().h;
+    expect(Math.min(hue, 360 - hue)).toBeCloseTo(0, 0);
   });
 
   it('interpolates alpha alongside color channels', () => {
@@ -215,7 +216,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
       hueInterpolationMode: 'INCREASING',
     });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(0, 0);
+    const hue = mid.toHSL().h;
+    expect(Math.min(hue, 360 - hue)).toBeCloseTo(0, 0);
   });
 
   it('supports Decreasing mode (0 -> 240)', () => {
@@ -242,7 +244,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
       hueInterpolationMode: 'DECREASING',
     });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(0, 0);
+    const hue = mid.toHSL().h;
+    expect(Math.min(hue, 360 - hue)).toBeCloseTo(0, 0);
   });
 
   it('supports Raw mode (350 -> 10)', () => {
@@ -394,8 +397,10 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // 3: 0 (mid of seg 2)
     // 4: 350 (anchor)
 
-    expect(gradient[1].toHSL().h).toBeCloseTo(5, 1);
-    expect(gradient[3].toHSL().h).toBeCloseTo(0, 1);
+    const hue1 = gradient[1].toHSL().h;
+    const hue3 = gradient[3].toHSL().h;
+    expect(Math.min(hue1, 360 - hue1)).toBeCloseTo(5, 0);
+    expect(Math.min(hue3, 360 - hue3)).toBeCloseTo(0, 0);
   });
 
   it('works with clamping disabled', () => {

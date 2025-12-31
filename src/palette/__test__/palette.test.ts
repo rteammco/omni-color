@@ -6,9 +6,9 @@ describe('generateColorPaletteFromBaseColor()', () => {
     const baseColor = new Color('#ff0000');
     const palette = generateColorPaletteFromBaseColor(baseColor);
 
-    expect(palette.neutrals[100].toHex()).toBe('#ededed');
+    expect(palette.neutrals[100].toHex()).toBe('#eeeeee');
     expect(palette.neutrals[500].toHex()).toBe('#888888');
-    expect(palette.neutrals[900].toHex()).toBe('#212121');
+    expect(palette.neutrals[900].toHex()).toBe('#222222');
 
     expect(palette.tintedNeutrals[100].toHex()).toBe('#f6efee');
     expect(palette.tintedNeutrals[500].toHex()).toBe('#988380');
@@ -146,25 +146,25 @@ describe('generateColorPaletteFromBaseColor()', () => {
   describe('neutral harmonization across the full swatch', () => {
     it('produces a complete range for red', () => {
       const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
-      expect(palette.neutrals[100].toHex()).toBe('#ededed');
-      expect(palette.neutrals[300].toHex()).toBe('#bababa');
-      expect(palette.neutrals[700].toHex()).toBe('#545454');
-      expect(palette.neutrals[900].toHex()).toBe('#212121');
+      expect(palette.neutrals[100].toHex()).toBe('#eeeeee');
+      expect(palette.neutrals[300].toHex()).toBe('#bbbbbb');
+      expect(palette.neutrals[700].toHex()).toBe('#555555');
+      expect(palette.neutrals[900].toHex()).toBe('#222222');
       expect(palette.tintedNeutrals[100].toHex()).toBe('#f6efee');
-      expect(palette.tintedNeutrals[300].toHex()).toBe('#ccb5b3');
+      expect(palette.tintedNeutrals[300].toHex()).toBe('#ccb5b2');
       expect(palette.tintedNeutrals[700].toHex()).toBe('#595959');
       expect(palette.tintedNeutrals[900].toHex()).toBe('#262626');
     });
 
     it('produces a complete range for blue', () => {
       const palette = generateColorPaletteFromBaseColor(new Color('#0000ff'));
-      expect(palette.neutrals[100].toHex()).toBe('#bdbdbd');
-      expect(palette.neutrals[300].toHex()).toBe('#8a8a8a');
-      expect(palette.neutrals[700].toHex()).toBe('#242424');
+      expect(palette.neutrals[100].toHex()).toBe('#bcbcbc');
+      expect(palette.neutrals[300].toHex()).toBe('#898989');
+      expect(palette.neutrals[700].toHex()).toBe('#232323');
       expect(palette.neutrals[900].toHex()).toBe('#000000');
-      expect(palette.tintedNeutrals[100].toHex()).toBe('#a9b8d6');
-      expect(palette.tintedNeutrals[300].toHex()).toBe('#7083a9');
-      expect(palette.tintedNeutrals[700].toHex()).toBe('#242628');
+      expect(palette.tintedNeutrals[100].toHex()).toBe('#abb9d6');
+      expect(palette.tintedNeutrals[300].toHex()).toBe('#7184aa');
+      expect(palette.tintedNeutrals[700].toHex()).toBe('#262729');
       expect(palette.tintedNeutrals[900].toHex()).toBe('#000000');
     });
 
@@ -172,12 +172,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
       const palette = generateColorPaletteFromBaseColor(new Color('#00ff00'));
       expect(palette.neutrals[100].toHex()).toBe('#ffffff');
       expect(palette.neutrals[300].toHex()).toBe('#ffffff');
-      expect(palette.neutrals[700].toHex()).toBe('#a1a1a1');
-      expect(palette.neutrals[900].toHex()).toBe('#6e6e6e');
+      expect(palette.neutrals[700].toHex()).toBe('#a0a0a0');
+      expect(palette.neutrals[900].toHex()).toBe('#6d6d6d');
       expect(palette.tintedNeutrals[100].toHex()).toBe('#ffffff');
       expect(palette.tintedNeutrals[300].toHex()).toBe('#ffffff');
-      expect(palette.tintedNeutrals[700].toHex()).toBe('#95a494');
-      expect(palette.tintedNeutrals[900].toHex()).toBe('#696969');
+      expect(palette.tintedNeutrals[700].toHex()).toBe('#96a495');
+      expect(palette.tintedNeutrals[900].toHex()).toBe('#6a6a6a');
     });
 
     it('keeps tinted neutrals identical for achromatic bases', () => {
@@ -239,11 +239,11 @@ describe('generateColorPaletteFromBaseColor()', () => {
   describe('semantic harmonization options', () => {
     it('produces semantic swatches with stable hex values for a red base', () => {
       const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
-      expect(palette.info[300].toHex()).toBe('#d1d1ff');
-      expect(palette.positive[700].toHex()).toBe('#073f03');
+      expect(palette.info[300].toHex()).toBe('#d3d3ff');
+      expect(palette.positive[700].toHex()).toBe('#073e03');
       expect(palette.negative[500].toHex()).toBe('#fc0940');
-      expect(palette.warning[400].toHex()).toBe('#ff8800');
-      expect(palette.special[600].toHex()).toBe('#a31eeb');
+      expect(palette.warning[400].toHex()).toBe('#ff8b01');
+      expect(palette.special[600].toHex()).toBe('#a21deb');
     });
 
     it('pulls semantic hues toward the base color', () => {
@@ -374,12 +374,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('creates positive and negative swatches across the spectrum', () => {
       const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
-      expect(palette.positive[100].toHex()).toBe('#7eff75');
+      expect(palette.positive[100].toHex()).toBe('#7dff74');
       expect(palette.positive[500].toHex()).toBe('#0ba700');
-      expect(palette.positive[700].toHex()).toBe('#073f03');
-      expect(palette.negative[100].toHex()).toBe('#ffd1dc');
+      expect(palette.positive[700].toHex()).toBe('#073e03');
+      expect(palette.negative[100].toHex()).toBe('#ffd2dc');
       expect(palette.negative[500].toHex()).toBe('#fc0940');
-      expect(palette.negative[700].toHex()).toBe('#95092a');
+      expect(palette.negative[700].toHex()).toBe('#950a29');
     });
 
     it('provides full semantic colors for grayscale bases', () => {

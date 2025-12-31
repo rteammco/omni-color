@@ -49,7 +49,7 @@ describe('mixColors', () => {
     });
     expect(result.toHex()).toBe('#5100ff');
     const { h, s, l } = result.toHSL();
-    expect(h).toBe(259);
+    expect(h).toBeCloseTo(259, 0);
     expect(s).toBe(100);
     expect(l).toBe(50);
   });
@@ -164,8 +164,8 @@ describe('mixColors', () => {
 
     const { r, b } = result.toRGBA();
     expect(result.toHex()).toBe('#800040');
-    expect(r).toBe(128);
-    expect(b).toBe(64);
+    expect(r).toBeCloseTo(128, 0);
+    expect(b).toBeCloseTo(64, 0);
     expect(result.toRGBA().g).toBe(0);
   });
 

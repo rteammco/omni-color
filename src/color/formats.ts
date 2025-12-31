@@ -5,9 +5,9 @@ import { convertRGBToColorSpaceValues, resolveColorSpace } from './colorSpaces';
 export type ColorHex = `#${string}`;
 
 export interface ColorRGB {
-  r: number; // 0-255
-  g: number; // 0-255
-  b: number; // 0-255
+  r: number; // 0-255 (fractional values allowed internally)
+  g: number; // 0-255 (fractional values allowed internally)
+  b: number; // 0-255 (fractional values allowed internally)
 }
 
 export interface ColorRGBA extends ColorRGB {

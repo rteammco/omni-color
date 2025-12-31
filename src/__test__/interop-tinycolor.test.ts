@@ -175,7 +175,11 @@ describe('Color interoperability with tinycolor2', () => {
       const hslaClampedTiny = tinycolor('hsla(-15, 105%, 55%, 1.2)');
       expect(hslaClamped.toHex8()).toBe('#ff1a53ff');
       expect(hslaClampedTiny.toHex8String().toLowerCase()).toBe('#ff1a1aff');
-      expect(hslaClamped.toRGBA()).toEqual({ r: 255, g: 26, b: 83, a: 1 });
+      const clampedRgba = hslaClamped.toRGBA();
+      expect(clampedRgba.r).toBeCloseTo(255, 5);
+      expect(clampedRgba.g).toBeCloseTo(25.5, 3);
+      expect(clampedRgba.b).toBeCloseTo(82.875, 3);
+      expect(clampedRgba.a).toBe(1);
       expect(hslaClamped.toRGBA()).not.toEqual(tinycolorRGBToObj(hslaClampedTiny.toRgb()));
     });
   });

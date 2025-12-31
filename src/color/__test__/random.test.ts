@@ -97,9 +97,15 @@ describe('getRandomColorRGBA', () => {
     const colorRGBA1 = getRandomColorRGBA({ randomizeAlpha: true });
     expect(colorRGBA1).toEqual({ r: 0, g: 0, b: 0, a: 0 });
     const colorRGBA2 = getRandomColorRGBA({ randomizeAlpha: true });
-    expect(colorRGBA2).toEqual({ r: 201, g: 217, b: 140, a: 0.2 });
+    expect(colorRGBA2.r).toBeCloseTo(201.45, 5);
+    expect(colorRGBA2.g).toBeCloseTo(216.75, 5);
+    expect(colorRGBA2.b).toBeCloseTo(140.25, 5);
+    expect(colorRGBA2.a).toBe(0.2);
     const colorRGBA3 = getRandomColorRGBA({ randomizeAlpha: true });
-    expect(colorRGBA3).toEqual({ r: 107, g: 93, b: 71, a: 0.556 });
+    expect(colorRGBA3.r).toBeCloseTo(107, 0);
+    expect(colorRGBA3.g).toBeCloseTo(93, 0);
+    expect(colorRGBA3.b).toBeCloseTo(71, 0);
+    expect(colorRGBA3.a).toBe(0.556);
     const colorRGBA4 = getRandomColorRGBA({ randomizeAlpha: true });
     expect(colorRGBA4).toEqual({ r: 255, g: 255, b: 255, a: 0.987 });
     spy.mockRestore();

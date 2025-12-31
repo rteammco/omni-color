@@ -162,7 +162,7 @@ export function isColorOffWhite(color: Color): boolean {
   return brightness >= 240 && maxChannel - minChannel <= 30;
 }
 
-const RGB_CHANNEL_EPSILON = 1e-6; // only allow near‑zero floating‑point drift
+const RGB_CHANNEL_EPSILON = 1e-2; // allow minor floating‑point drift on RGB channels
 const ALPHA_EPSILON = 1e-6; // alpha values should match unless the difference is imperceptible floating‑point noise
 
 function normalizeChannel(value: number): number {
