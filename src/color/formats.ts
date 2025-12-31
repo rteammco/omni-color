@@ -1,4 +1,6 @@
 import type { CaseInsensitive } from '../utils';
+import type { ColorStringOptions } from './colorSpaces';
+import { convertRGBToColorSpaceValues, resolveColorSpace } from './colorSpaces';
 
 export type ColorHex = `#${string}`;
 
@@ -239,6 +241,24 @@ export function getColorFormatType(color: ColorFormat): ColorFormatTypeAndValue 
 
 function getDecimalString(value: number, digits = 3): number {
   return +value.toFixed(digits);
+}
+
+function formatColorFunctionChannel(value: number): number {
+  return getDecimalString(value, 6);
+}
+
+export function colorToString(color: ColorRGBA, options?: ColorStringOptions): string {
+  const space = resolveColorSpace(options?.space);
+  const values = convertRGBToColorSpaceValues(color, space);
+  const base = `${formatColorFunctionChannel(values.r)} ${formatColorFunctionChannel(
+    values.g
+  )} ${formatColorFunctionChannel(values.b)}`;
+
+  if (color.a !== undefined && color.a < 1) {
+    return `color(${space.toLowerCase()} ${base} / ${getDecimalString(color.a)})`;
+  }
+
+  return `color(${space.toLowerCase()} ${base})`;
 }
 
 export function rgbToString({ r, g, b }: ColorRGB): string {

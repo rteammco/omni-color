@@ -282,6 +282,13 @@ describe('Color.toXString methods', () => {
     expect(color.toLCHString()).toBe('lch(53.233% 104.576 40)');
     expect(color.toOKLABString()).toBe('oklab(0.627955 0.224863 0.125846)');
     expect(color.toOKLCHString()).toBe('oklch(0.627955 0.257683 29.234)');
+    expect(color.toColorString()).toBe('color(srgb 1 0 0 / 0.5)');
+    expect(color.toColorString({ space: 'display-p3' })).toBe(
+      'color(display-p3 0.917488 0.200287 0.138561 / 0.5)'
+    );
+    expect(color.toColorString({ space: 'REC2020' })).toBe(
+      'color(rec2020 0.791977 0.230976 0.073761 / 0.5)'
+    );
   });
 });
 
