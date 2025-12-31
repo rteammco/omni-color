@@ -54,7 +54,10 @@ const REC2020_ALPHA = 1.09929682680944;
 const REC2020_BETA = 0.018053968510807;
 const REC2020_GAMMA = 0.45;
 
-function multiply3x3(matrix: readonly number[][], vector: readonly number[]): [number, number, number] {
+function multiply3x3(
+  matrix: readonly number[][],
+  vector: readonly number[]
+): [number, number, number] {
   const [x, y, z] = vector;
   return [
     matrix[0][0] * x + matrix[0][1] * y + matrix[0][2] * z,
@@ -125,7 +128,10 @@ export function resolveColorSpace(space?: CaseInsensitive<ColorSpace>): ColorSpa
   return parseColorSpace(space ?? 'SRGB') ?? 'SRGB';
 }
 
-export function convertColorSpaceValuesToRGB(values: ColorSpaceValues, space: ColorSpace): ColorRGB {
+export function convertColorSpaceValuesToRGB(
+  values: ColorSpaceValues,
+  space: ColorSpace
+): ColorRGB {
   const linear = [
     decodeColorSpaceChannel(values.r, space),
     decodeColorSpaceChannel(values.g, space),
@@ -133,7 +139,9 @@ export function convertColorSpaceValuesToRGB(values: ColorSpaceValues, space: Co
   ] as const;
 
   const srgbLinear =
-    space === 'SRGB' ? linear : multiply3x3(XYZ_TO_SRGB_MATRIX, multiply3x3(getSpaceToXYZMatrix(space), linear));
+    space === 'SRGB'
+      ? linear
+      : multiply3x3(XYZ_TO_SRGB_MATRIX, multiply3x3(getSpaceToXYZMatrix(space), linear));
 
   return {
     r: Math.round(clampValue(linearChannelToSrgb(srgbLinear[0], 'SRGB'), 0, 255)),
@@ -150,7 +158,9 @@ export function convertRGBToColorSpaceValues(rgb: ColorRGB, space: ColorSpace): 
   ] as const;
 
   const targetLinear =
-    space === 'SRGB' ? srgbLinear : multiply3x3(getXYZToSpaceMatrix(space), multiply3x3(SRGB_TO_XYZ_MATRIX, srgbLinear));
+    space === 'SRGB'
+      ? srgbLinear
+      : multiply3x3(getXYZToSpaceMatrix(space), multiply3x3(SRGB_TO_XYZ_MATRIX, srgbLinear));
 
   return {
     r: encodeColorSpaceChannel(targetLinear[0], space),

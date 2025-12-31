@@ -1,6 +1,10 @@
 import { clampValue } from '../utils';
 import { Color } from './color';
-import { type ColorSpaceValues, convertColorSpaceValuesToRGB, parseColorSpace } from './colorSpaces';
+import {
+  type ColorSpaceValues,
+  convertColorSpaceValuesToRGB,
+  parseColorSpace,
+} from './colorSpaces';
 import type { ColorFormat } from './formats';
 
 const MATCH_RGB_STRING_REGEX = /^rgb\((.+)\)$/;
@@ -120,7 +124,10 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
 
-    const channelSection = params.slice(separatorIndex).trim().replace(/^[,\s]+/, '');
+    const channelSection = params
+      .slice(separatorIndex)
+      .trim()
+      .replace(/^[,\s]+/, '');
     const colorParams = splitColorFunctionParams(channelSection, {
       expectedChannels: 3,
       allowAlpha: true,

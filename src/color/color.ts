@@ -29,7 +29,7 @@ import {
   toOKLCH,
   toRGB,
 } from './conversions';
-import { type DeltaEOptions,getDeltaE } from './deltaE';
+import { type DeltaEOptions, getDeltaE } from './deltaE';
 import {
   cmykToString,
   type ColorCMYK,
@@ -58,7 +58,7 @@ import {
   rgbaToString,
   rgbToString,
 } from './formats';
-import { type ColorGradientOptions,createColorGradient } from './gradients';
+import { type ColorGradientOptions, createColorGradient } from './gradients';
 import {
   type ColorHarmony,
   type ColorHarmonyOptions,
@@ -81,7 +81,7 @@ import {
   saturateColor,
   spinColorHue,
 } from './manipulations';
-import { type ColorNameAndLightness,getBaseColorName } from './names';
+import { type ColorNameAndLightness, getBaseColorName } from './names';
 import { getRandomColorRGBA, type RandomColorOptions } from './random';
 import {
   getAPCAReadabilityScore,
