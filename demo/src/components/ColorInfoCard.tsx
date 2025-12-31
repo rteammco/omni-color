@@ -129,7 +129,7 @@ export function ColorInfoCard({ color, extended }: Props) {
         </div>
       </div>
       {extended && (
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 items-start">
           <InfoBox color={color} colorStrings={[color.toHex(), color.toHex8()]} title="HEX" />
           <InfoBox
             color={color}
@@ -148,6 +148,15 @@ export function ColorInfoCard({ color, extended }: Props) {
           <InfoBox color={color} colorStrings={[color.toOKLCHString()]} title="OKLCH" />
           <InfoBox color={color} colorStrings={[color.toHWBString()]} title="HWB" />
           <InfoBox color={color} colorStrings={[color.toHWBAString()]} title="HWBA" />
+          <InfoBox
+            color={color}
+            colorStrings={[
+              color.toColorString({ space: 'SRGB' }),
+              color.toColorString({ space: 'DISPLAY-P3' }),
+              color.toColorString({ space: 'REC2020' }),
+            ]}
+            title="color()"
+          />
         </div>
       )}
     </Card>
