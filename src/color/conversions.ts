@@ -1,3 +1,4 @@
+import { clampValue } from '../utils';
 import type {
   ColorCMYK,
   ColorFormat,
@@ -15,7 +16,6 @@ import type {
 } from './formats';
 import { getColorFormatType } from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
-import { clampValue } from '../utils';
 import { validateColorOrThrow } from './validations';
 
 const LAB_DELTA = 6 / 29; // = 0.20689655
@@ -44,10 +44,6 @@ function roundRGBChannels(color: ColorRGB): ColorRGB {
 function rgbToRGBA(color: ColorRGB, alpha?: number): ColorRGBA {
   const { r, g, b } = clampRGBChannels(color);
   return alpha === undefined ? { r, g, b, a: 1 } : { r, g, b, a: alpha };
-}
-
-function rgbaToRGB(color: ColorRGBA): ColorRGB {
-  return clampRGBChannels(color);
 }
 
 function hexOrHex8ToRGBA(hex: ColorHex): ColorRGBA {
@@ -79,11 +75,6 @@ function hexOrHex8ToRGBA(hex: ColorHex): ColorRGBA {
   return { r, g, b, a: a ?? 1 };
 }
 
-function hexOrHex8ToRGB(hex: ColorHex): ColorRGB {
-  const { r, g, b } = hexOrHex8ToRGBA(hex);
-  return { r, g, b };
-}
-
 function numToHex(value: number): string {
   return Math.round(value).toString(16).padStart(2, '0');
 }
@@ -91,12 +82,16 @@ function numToHex(value: number): string {
 function rgbaToHex8(color: ColorRGBA): ColorHex {
   const rounded = roundRGBChannels(color);
   const alphaHex = numToHex(Math.round((color.a ?? 1) * 255));
-  return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(rounded.b)}${alphaHex}`.toLowerCase() as ColorHex;
+  return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(
+    rounded.b
+  )}${alphaHex}`.toLowerCase() as ColorHex;
 }
 
 function rgbaToHex(color: ColorRGBA): ColorHex {
   const rounded = roundRGBChannels(color);
-  return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(rounded.b)}`.toLowerCase() as ColorHex;
+  return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(
+    rounded.b
+  )}`.toLowerCase() as ColorHex;
 }
 
 function rgbToHex(color: ColorRGB): ColorHex {
@@ -137,7 +132,7 @@ function rgbToHSL(color: ColorRGB): ColorHSL {
   }
 
   return {
-    h: ((h * 360) % 360 + 360) % 360,
+    h: (((h * 360) % 360) + 360) % 360,
     s: s * 100,
     l: l * 100,
   };
@@ -232,7 +227,7 @@ function rgbToHSV(color: ColorRGB): ColorHSV {
   const s = max === 0 ? 0 : d / max;
   const v = max;
   return {
-    h: ((h * 360) % 360 + 360) % 360,
+    h: (((h * 360) % 360) + 360) % 360,
     s: s * 100,
     v: v * 100,
   };

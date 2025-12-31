@@ -93,7 +93,7 @@ describe('getRandomColorRGBA', () => {
       .mockReturnValueOnce(0.123) // h
       .mockReturnValueOnce(0.23456) // s
       .mockReturnValueOnce(0.999) // l
-    .mockReturnValueOnce(0.987); // a
+      .mockReturnValueOnce(0.987); // a
     const colorRGBA1 = getRandomColorRGBA({ randomizeAlpha: true });
     expect(colorRGBA1).toEqual({ r: 0, g: 0, b: 0, a: 0 });
     const colorRGBA2 = getRandomColorRGBA({ randomizeAlpha: true });

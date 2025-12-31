@@ -39,13 +39,13 @@ describe('getComplementaryColors', () => {
     expect(yellowOrig.toHex()).toBe('#d3e204');
     expect(yellowComp.toHex()).toBe('#1304e2');
 
-  const [greenOrig, greenComp] = getComplementaryColors(new Color('#29cc53'));
-  expect(greenOrig.toHex()).toBe('#29cc53');
-  expect(greenComp.toHex()).toBe('#cc29a2');
+    const [greenOrig, greenComp] = getComplementaryColors(new Color('#29cc53'));
+    expect(greenOrig.toHex()).toBe('#29cc53');
+    expect(greenComp.toHex()).toBe('#cc29a2');
 
-const [pinkOrig, pinkComp] = getComplementaryColors(new Color('#811242'));
-expect(pinkOrig.toHex()).toBe('#811242');
-expect(pinkComp.toHex()).toBe('#128151');
+    const [pinkOrig, pinkComp] = getComplementaryColors(new Color('#811242'));
+    expect(pinkOrig.toHex()).toBe('#811242');
+    expect(pinkComp.toHex()).toBe('#128151');
 
     const [brandRedOrig, brandRedComp] = getComplementaryColors(new Color('#de0d14'));
     expect(brandRedOrig.toHex()).toBe('#de0d14');
@@ -130,8 +130,8 @@ describe('getSplitComplementaryColors', () => {
     const [yellowOrig, yellowComp2, yellowComp3] = getSplitComplementaryColors(
       new Color('#d3e204')
     );
-expect(yellowOrig.toHex()).toBe('#d3e204');
-expect(yellowComp2.toHex()).toBe('#8204e2');
+    expect(yellowOrig.toHex()).toBe('#d3e204');
+    expect(yellowComp2.toHex()).toBe('#8204e2');
     expect(yellowComp3.toHex()).toBe('#0464e2');
 
     const [greenOrig, greenComp2, greenComp3] = getSplitComplementaryColors(new Color('#29cc53'));
@@ -227,9 +227,9 @@ describe('getTriadicHarmonyColors', () => {
     expect(brandBlueTriad2.toHex()).toBe('#35752e');
     expect(brandBlueTriad3.toHex()).toBe('#752e35');
 
-const [yellowOrig, yellowTriad2, yellowTriad3] = getTriadicHarmonyColors(new Color('#d3e204'));
-expect(yellowOrig.toHex()).toBe('#d3e204');
-expect(yellowTriad2.toHex()).toBe('#e204d3');
+    const [yellowOrig, yellowTriad2, yellowTriad3] = getTriadicHarmonyColors(new Color('#d3e204'));
+    expect(yellowOrig.toHex()).toBe('#d3e204');
+    expect(yellowTriad2.toHex()).toBe('#e204d3');
     expect(yellowTriad3.toHex()).toBe('#04d3e2');
 
     const [greenOrig, greenTriad2, greenTriad3] = getTriadicHarmonyColors(new Color('#29cc53'));
@@ -336,11 +336,11 @@ describe('getSquareHarmonyColors', () => {
     expect(yellow3.toHex()).toBe('#1304e2');
     expect(yellow4.toHex()).toBe('#e20464');
 
-const [green1, green2b, green3b, green4b] = getSquareHarmonyColors(new Color('#29cc53'));
-expect(green1.toHex()).toBe('#29cc53');
-expect(green2b.toHex()).toBe('#2950cc');
-expect(green3b.toHex()).toBe('#cc29a2');
-expect(green4b.toHex()).toBe('#cca429');
+    const [green1, green2b, green3b, green4b] = getSquareHarmonyColors(new Color('#29cc53'));
+    expect(green1.toHex()).toBe('#29cc53');
+    expect(green2b.toHex()).toBe('#2950cc');
+    expect(green3b.toHex()).toBe('#cc29a2');
+    expect(green4b.toHex()).toBe('#cca429');
 
     const [pink1, pink2, pink3, pink4] = getSquareHarmonyColors(new Color('#811242'));
     expect(pink1.toHex()).toBe('#811242');
@@ -434,31 +434,31 @@ describe('getTetradicHarmonyColors', () => {
     expect(purple3.toHex()).toBe('#7dfc6f');
     expect(purple4.toHex()).toBe('#6ffcee');
 
-  const [brandBlue1, brandBlue2, brandBlue3, brandBlue4] = getTetradicHarmonyColors(
-    new Color('#2e3575')
-  );
-  expect(brandBlue1.toHex()).toBe('#2e3575');
-  expect(brandBlue2.toHex()).toBe('#6e2e75');
-  expect(brandBlue3.toHex()).toBe('#756e2e');
-  expect(brandBlue4.toHex()).toBe('#35752e');
+    const [brandBlue1, brandBlue2, brandBlue3, brandBlue4] = getTetradicHarmonyColors(
+      new Color('#2e3575')
+    );
+    expect(brandBlue1.toHex()).toBe('#2e3575');
+    expect(brandBlue2.toHex()).toBe('#6e2e75');
+    expect(brandBlue3.toHex()).toBe('#756e2e');
+    expect(brandBlue4.toHex()).toBe('#35752e');
 
-  const [yellow1, yellow2, yellow3, yellow4] = getTetradicHarmonyColors(new Color('#d3e204'));
-  expect(yellow1.toHex()).toBe('#d3e204');
-  expect(yellow2.toHex()).toBe('#04e213');
-  expect(yellow3.toHex()).toBe('#1304e2');
-  expect(yellow4.toHex()).toBe('#e204d3');
+    const [yellow1, yellow2, yellow3, yellow4] = getTetradicHarmonyColors(new Color('#d3e204'));
+    expect(yellow1.toHex()).toBe('#d3e204');
+    expect(yellow2.toHex()).toBe('#04e213');
+    expect(yellow3.toHex()).toBe('#1304e2');
+    expect(yellow4.toHex()).toBe('#e204d3');
 
-const [green1b, green2b, green3b, green4b] = getTetradicHarmonyColors(new Color('#29cc53'));
-expect(green1b.toHex()).toBe('#29cc53');
-expect(green2b.toHex()).toBe('#29a2cc');
-expect(green3b.toHex()).toBe('#cc29a2');
-expect(green4b.toHex()).toBe('#cc5329');
+    const [green1b, green2b, green3b, green4b] = getTetradicHarmonyColors(new Color('#29cc53'));
+    expect(green1b.toHex()).toBe('#29cc53');
+    expect(green2b.toHex()).toBe('#29a2cc');
+    expect(green3b.toHex()).toBe('#cc29a2');
+    expect(green4b.toHex()).toBe('#cc5329');
 
-const [pink1, pink2, pink3, pink4] = getTetradicHarmonyColors(new Color('#811242'));
-expect(pink1.toHex()).toBe('#811242');
-expect(pink2.toHex()).toBe('#815112');
-expect(pink3.toHex()).toBe('#128151');
-expect(pink4.toHex()).toBe('#124281');
+    const [pink1, pink2, pink3, pink4] = getTetradicHarmonyColors(new Color('#811242'));
+    expect(pink1.toHex()).toBe('#811242');
+    expect(pink2.toHex()).toBe('#815112');
+    expect(pink3.toHex()).toBe('#128151');
+    expect(pink4.toHex()).toBe('#124281');
 
     const [brandRed1, brandRed2, brandRed3, brandRed4] = getTetradicHarmonyColors(
       new Color('#de0d14')
@@ -567,10 +567,10 @@ describe('getAnalogousHarmonyColors', () => {
       new Color('#d3e204')
     );
     expect(yellow1.toHex()).toBe('#d3e204');
-  expect(yellow2.toHex()).toBe('#e28204');
-  expect(yellow3.toHex()).toBe('#64e204');
-  expect(yellow4.toHex()).toBe('#e21304');
-  expect(yellow5.toHex()).toBe('#04e213');
+    expect(yellow2.toHex()).toBe('#e28204');
+    expect(yellow3.toHex()).toBe('#64e204');
+    expect(yellow4.toHex()).toBe('#e21304');
+    expect(yellow5.toHex()).toBe('#04e213');
 
     const [green1b, green2b, green3b, green4b, green5b] = getAnalogousHarmonyColors(
       new Color('#29cc53')
@@ -581,12 +581,12 @@ describe('getAnalogousHarmonyColors', () => {
     expect(green4b.toHex()).toBe('#a2cc29');
     expect(green5b.toHex()).toBe('#29a2cc');
 
-const [pink1, pink2, pink3, pink4, pink5] = getAnalogousHarmonyColors(new Color('#811242'));
-expect(pink1.toHex()).toBe('#811242');
-expect(pink2.toHex()).toBe('#81127a');
-expect(pink3.toHex()).toBe('#811a12');
-expect(pink4.toHex()).toBe('#511281');
-expect(pink5.toHex()).toBe('#815112');
+    const [pink1, pink2, pink3, pink4, pink5] = getAnalogousHarmonyColors(new Color('#811242'));
+    expect(pink1.toHex()).toBe('#811242');
+    expect(pink2.toHex()).toBe('#81127a');
+    expect(pink3.toHex()).toBe('#811a12');
+    expect(pink4.toHex()).toBe('#511281');
+    expect(pink5.toHex()).toBe('#815112');
 
     const [brandRed1, brandRed2, brandRed3, brandRed4, brandRed5] = getAnalogousHarmonyColors(
       new Color('#de0d14')
@@ -764,13 +764,13 @@ describe('getMonochromaticHarmonyColors', () => {
     expect(yellow4.toHex()).toBe('#d6e600');
     expect(yellow5.toHex()).toBe('#bfcb1b');
 
-  const [brandGreenOrig, brandGreen2, brandGreen3, brandGreen4, brandGreen5] =
-    getMonochromaticHarmonyColors(new Color('#29cc53'));
-  expect(brandGreenOrig.toHex()).toBe('#29cc53');
-  expect(brandGreen2.toHex()).toBe('#77e493');
-  expect(brandGreen3.toHex()).toBe('#187730');
-  expect(brandGreen4.toHex()).toBe('#10e547');
-  expect(brandGreen5.toHex()).toBe('#42b45f');
+    const [brandGreenOrig, brandGreen2, brandGreen3, brandGreen4, brandGreen5] =
+      getMonochromaticHarmonyColors(new Color('#29cc53'));
+    expect(brandGreenOrig.toHex()).toBe('#29cc53');
+    expect(brandGreen2.toHex()).toBe('#77e493');
+    expect(brandGreen3.toHex()).toBe('#187730');
+    expect(brandGreen4.toHex()).toBe('#10e547');
+    expect(brandGreen5.toHex()).toBe('#42b45f');
 
     const [pinkOrig, pink2, pink3, pink4, pink5] = getMonochromaticHarmonyColors(
       new Color('#811242')
@@ -781,13 +781,13 @@ describe('getMonochromaticHarmonyColors', () => {
     expect(pink4.toHex()).toBe('#900340');
     expect(pink5.toHex()).toBe('#722144');
 
-const [brandRedOrig, brandRed2, brandRed3, brandRed4, brandRed5] =
-  getMonochromaticHarmonyColors(new Color('#de0d14'));
-expect(brandRedOrig.toHex()).toBe('#de0d14');
-expect(brandRed2.toHex()).toBe('#f55c61');
-expect(brandRed3.toHex()).toBe('#7e070b');
-expect(brandRed4.toHex()).toBe('#eb0008');
-expect(brandRed5.toHex()).toBe('#c6252a');
+    const [brandRedOrig, brandRed2, brandRed3, brandRed4, brandRed5] =
+      getMonochromaticHarmonyColors(new Color('#de0d14'));
+    expect(brandRedOrig.toHex()).toBe('#de0d14');
+    expect(brandRed2.toHex()).toBe('#f55c61');
+    expect(brandRed3.toHex()).toBe('#7e070b');
+    expect(brandRed4.toHex()).toBe('#eb0008');
+    expect(brandRed5.toHex()).toBe('#c6252a');
 
     const [blackOrig, black2, black3, black4, black5] = getMonochromaticHarmonyColors(
       new Color('#000000')
@@ -815,14 +815,14 @@ expect(brandRed5.toHex()).toBe('#c6252a');
     expect(lightGray4.toHex()).toBe('#dccaca');
     expect(lightGray5.toHex()).toBe('#d3d3d3');
 
-  const [grayOrig, gray2, gray3, gray4, gray5] = getMonochromaticHarmonyColors(
-    new Color('#808080')
-  );
-  expect(grayOrig.toHex()).toBe('#808080');
-  expect(gray2.toHex()).toBe('#b3b3b3');
-  expect(gray3.toHex()).toBe('#4d4d4d');
-  expect(gray4.toHex()).toBe('#996767');
-  expect(gray5.toHex()).toBe('#808080');
+    const [grayOrig, gray2, gray3, gray4, gray5] = getMonochromaticHarmonyColors(
+      new Color('#808080')
+    );
+    expect(grayOrig.toHex()).toBe('#808080');
+    expect(gray2.toHex()).toBe('#b3b3b3');
+    expect(gray3.toHex()).toBe('#4d4d4d');
+    expect(gray4.toHex()).toBe('#996767');
+    expect(gray5.toHex()).toBe('#808080');
 
     const [darkGrayOrig, darkGray2, darkGray3, darkGray4, darkGray5] =
       getMonochromaticHarmonyColors(new Color('#333333'));

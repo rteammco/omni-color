@@ -1,3 +1,4 @@
+import { Color } from '../color';
 import {
   toCMYK,
   toHex,
@@ -13,7 +14,6 @@ import {
   toRGB,
   toRGBA,
 } from '../conversions';
-import { Color } from '../color';
 import type {
   ColorHex,
   ColorHSL,
