@@ -19,6 +19,7 @@ const MATCH_LAB_STRING_REGEX = /^lab\((.+)\)$/;
 const MATCH_LCH_STRING_REGEX = /^lch\((.+)\)$/;
 const MATCH_OKLCH_STRING_REGEX = /^oklch\((.+)\)$/;
 const MATCH_COLOR_FUNCTION_REGEX = /^color\((.+)\)$/;
+const MATCH_HUE_ANGLE_REGEX = /^([-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?)(deg|rad|grad|turn)?$/i;
 
 interface SplitColorParamsOptions {
   allowAlpha?: boolean;
@@ -98,6 +99,33 @@ function clampAlpha(value: number): number {
 function normalizeHue(value: number): number {
   const normalized = value % 360;
   return normalized < 0 ? normalized + 360 : normalized;
+}
+
+function parseHueAngle(value: string): number {
+  const trimmedValue = value.trim();
+  const match = trimmedValue.match(MATCH_HUE_ANGLE_REGEX);
+  if (!match) {
+    return NaN;
+  }
+
+  const numericValue = Number(match[1]);
+  if (isNaN(numericValue)) {
+    return NaN;
+  }
+
+  const unit = match[2]?.toLowerCase() ?? 'deg';
+  if (unit === 'rad') {
+    return normalizeHue((numericValue * 180) / Math.PI);
+  }
+  if (unit === 'grad') {
+    // 400grad is a full circle, so each grad equals 0.9deg.
+    return normalizeHue(numericValue * 0.9);
+  }
+  if (unit === 'turn') {
+    return normalizeHue(numericValue * 360);
+  }
+
+  return normalizeHue(numericValue);
 }
 
 function createColorOrNull(format: ColorFormat): Color | null {
@@ -220,7 +248,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, l] = [
-      normalizeHue(Math.round(parseFloat(hslParams.channels[0]))),
+      Math.round(parseHueAngle(hslParams.channels[0])),
       clampValue(Math.round(parseNumberOrPercent(hslParams.channels[1], 100)), 0, 100),
       clampValue(Math.round(parseNumberOrPercent(hslParams.channels[2], 100)), 0, 100),
     ];
@@ -249,7 +277,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, l] = [
-      normalizeHue(Math.round(parseFloat(hslaParams.channels[0]))),
+      Math.round(parseHueAngle(hslaParams.channels[0])),
       clampValue(Math.round(parseNumberOrPercent(hslaParams.channels[1], 100)), 0, 100),
       clampValue(Math.round(parseNumberOrPercent(hslaParams.channels[2], 100)), 0, 100),
     ];
@@ -272,7 +300,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, v] = [
-      normalizeHue(Math.round(parseFloat(hsvParams.channels[0]))),
+      Math.round(parseHueAngle(hsvParams.channels[0])),
       clampValue(Math.round(parseNumberOrPercent(hsvParams.channels[1], 100)), 0, 100),
       clampValue(Math.round(parseNumberOrPercent(hsvParams.channels[2], 100)), 0, 100),
     ];
@@ -301,7 +329,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, s, v] = [
-      normalizeHue(Math.round(parseFloat(hsvaParams.channels[0]))),
+      Math.round(parseHueAngle(hsvaParams.channels[0])),
       clampValue(Math.round(parseNumberOrPercent(hsvaParams.channels[1], 100)), 0, 100),
       clampValue(Math.round(parseNumberOrPercent(hsvaParams.channels[2], 100)), 0, 100),
     ];
@@ -324,7 +352,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [h, w, b] = [
-      normalizeHue(Math.round(parseFloat(hwbParams.channels[0]))),
+      Math.round(parseHueAngle(hwbParams.channels[0])),
       clampValue(Math.round(parseNumberOrPercent(hwbParams.channels[1], 100)), 0, 100),
       clampValue(Math.round(parseNumberOrPercent(hwbParams.channels[2], 100)), 0, 100),
     ];
@@ -383,7 +411,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     const [l, c, h] = [
       parseNumberOrPercent(lchParams.channels[0], 100),
       parseFloat(lchParams.channels[1]),
-      parseFloat(lchParams.channels[2]),
+      parseHueAngle(lchParams.channels[2]),
     ];
     if ([l, c, h].some((value) => isNaN(value))) {
       return null;
@@ -401,7 +429,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     const [l, c, h] = [
       parseFloat(oklchParams.channels[0]),
       parseFloat(oklchParams.channels[1]),
-      parseFloat(oklchParams.channels[2]),
+      parseHueAngle(oklchParams.channels[2]),
     ];
     if ([l, c, h].some((value) => isNaN(value))) {
       return null;
