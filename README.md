@@ -23,7 +23,7 @@ import { Color } from 'omni-color';
 
 const color = new Color('#ff7f50');
 const translucent = color.setAlpha(0.5);
-const darker = translucent.darken();
+const darker = translucent.darken({ amount: 20 });
 const hex8String = darker.toHex8();
 ```
 
