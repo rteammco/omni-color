@@ -137,7 +137,7 @@ import {
  * ```
  */
 export class Color {
-  private color: ColorRGBA;
+  readonly #color: Readonly<ColorRGBA>;
 
   /**
    * Create a new {@link Color} instance.
@@ -163,7 +163,7 @@ export class Color {
    */
   constructor(color?: ValidColorInputFormat | null) {
     // getColorRGBAFromInput always returns a fresh object
-    this.color = getColorRGBAFromInput(color);
+    this.#color = Object.freeze({ ...getColorRGBAFromInput(color) });
   }
 
   /**
@@ -236,7 +236,7 @@ export class Color {
    * ```
    */
   toHex(): ColorHex {
-    return toHex(this.color);
+    return toHex(this.#color);
   }
 
   /**
@@ -248,14 +248,14 @@ export class Color {
    * ```
    */
   toHex8(): ColorHex {
-    return toHex8(this.color);
+    return toHex8(this.#color);
   }
 
   /**
    * Get the color as a {@link ColorRGB} `{ r, g, b }` object.
    */
   toRGB(): ColorRGB {
-    return toRGB(this.color);
+    return toRGB(this.#color);
   }
 
   /**
@@ -269,7 +269,7 @@ export class Color {
    * Get the color as a {@link ColorRGBA} `{ r, g, b, a }` object.
    */
   toRGBA(): ColorRGBA {
-    return { ...this.color };
+    return { ...this.#color };
   }
 
   /**
@@ -284,7 +284,7 @@ export class Color {
    * and `l` are 0–100.
    */
   toHSL(): ColorHSL {
-    return toHSL(this.color);
+    return toHSL(this.#color);
   }
 
   /**
@@ -298,7 +298,7 @@ export class Color {
    * Get the color as a {@link ColorHSLA} `{ h, s, l, a }` object.
    */
   toHSLA(): ColorHSLA {
-    return toHSLA(this.color);
+    return toHSLA(this.#color);
   }
 
   /**
@@ -313,7 +313,7 @@ export class Color {
    * and `b` are 0–100.
    */
   toHWB(): ColorHWB {
-    return toHWB(this.color);
+    return toHWB(this.#color);
   }
 
   /**
@@ -327,7 +327,7 @@ export class Color {
    * Get the color as a {@link ColorHWBA} `{ h, w, b, a }` object.
    */
   toHWBA(): ColorHWBA {
-    return toHWBA(this.color);
+    return toHWBA(this.#color);
   }
 
   /**
@@ -342,14 +342,14 @@ export class Color {
    * and `v` are 0–100.
    */
   toHSV(): ColorHSV {
-    return toHSV(this.color);
+    return toHSV(this.#color);
   }
 
   /**
    * Get the color as a {@link ColorHSVA} `{ h, s, v, a }` object.
    */
   toHSVA(): ColorHSVA {
-    return toHSVA(this.color);
+    return toHSVA(this.#color);
   }
 
   /**
@@ -357,7 +357,7 @@ export class Color {
    * 0–100.
    */
   toCMYK(): ColorCMYK {
-    return toCMYK(this.color);
+    return toCMYK(this.#color);
   }
 
   /**
@@ -371,7 +371,7 @@ export class Color {
    * Get the color as a {@link ColorLAB} `{ l, a, b }` object.
    */
   toLAB(): ColorLAB {
-    return toLAB(this.color);
+    return toLAB(this.#color);
   }
 
   /**
@@ -385,7 +385,7 @@ export class Color {
    * Get the color as a {@link ColorLCH} (CIELCh) `{ l, c, h }` object.
    */
   toLCH(): ColorLCH {
-    return toLCH(this.color);
+    return toLCH(this.#color);
   }
 
   /**
@@ -399,7 +399,7 @@ export class Color {
    * Get the color as a {@link ColorOKLAB} `{ l, a, b }` object.
    */
   toOKLAB(): ColorOKLAB {
-    return toOKLAB(this.color);
+    return toOKLAB(this.#color);
   }
 
   /**
@@ -413,7 +413,7 @@ export class Color {
    * Get the color as a {@link ColorOKLCH} `{ l, c, h }` object.
    */
   toOKLCH(): ColorOKLCH {
-    return toOKLCH(this.color);
+    return toOKLCH(this.#color);
   }
 
   /**
@@ -434,7 +434,7 @@ export class Color {
    * Return the alpha channel of the color (0–1).
    */
   getAlpha(): number {
-    return this.color.a;
+    return this.#color.a;
   }
 
   /**
@@ -447,7 +447,7 @@ export class Color {
    */
   setAlpha(alpha: number): Color {
     return new Color({
-      ...this.color,
+      ...this.#color,
       a: Number.isFinite(alpha) ? +clampValue(alpha, 0, 1).toFixed(3) : 1,
     });
   }
@@ -976,7 +976,7 @@ export class Color {
     textColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityComparisonOptions
   ): Color {
-    return getMostReadableTextColorForBackground(this, getColorList(textColors), options);
+    return getMostReadableTextColorForBackground(this, getColorList(textColors), options).clone();
   }
 
   /**
@@ -1010,7 +1010,7 @@ export class Color {
     backgroundColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityComparisonOptions
   ): Color {
-    return getBestBackgroundColorForText(this, getColorList(backgroundColors), options);
+    return getBestBackgroundColorForText(this, getColorList(backgroundColors), options).clone();
   }
 
   /**
@@ -1068,6 +1068,6 @@ export class Color {
    * @returns A new {@link Color} instance with the same color value.
    */
   clone(): Color {
-    return new Color({ ...this.color });
+    return new Color({ ...this.#color });
   }
 }

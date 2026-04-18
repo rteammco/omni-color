@@ -846,6 +846,7 @@ describe('Color.getMostReadableTextColor', () => {
 
     const result = background.getMostReadableTextColor([gray, charcoal, black]);
     expect(result.toHex()).toBe('#000000');
+    expect(result).not.toBe(black);
   });
 
   it('can evaluate candidates with APCA scoring', () => {
@@ -884,6 +885,7 @@ describe('Color.getMostReadableTextColor', () => {
     const basicSwatch = new Color('#21352e').getColorSwatch({ centerOn500: true });
     const resultBasic = background.getMostReadableTextColor(basicSwatch);
     expect(resultBasic.equals(basicSwatch[900])).toBe(true);
+    expect(resultBasic).not.toBe(basicSwatch[900]);
 
     const extendedSwatch = new Color('#0ea5e9ff').getColorSwatch({
       extended: true,
@@ -891,6 +893,7 @@ describe('Color.getMostReadableTextColor', () => {
     });
     const resultExtended = background.getMostReadableTextColor(extendedSwatch);
     expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
+    expect(resultExtended).not.toBe(extendedSwatch[950]);
   });
 });
 
@@ -951,6 +954,7 @@ describe('Color.getBestBackgroundColor', () => {
 
     const result = textColor.getBestBackgroundColor([darkGray, slate, white]);
     expect(result.toHex()).toBe(white.toHex());
+    expect(result).not.toBe(white);
   });
 
   it('respects WCAG options when picking the closest match', () => {
@@ -1008,6 +1012,7 @@ describe('Color.getBestBackgroundColor', () => {
     const basicSwatch = new Color('#3e3623ff').getColorSwatch();
     const resultBasic = textColor.getBestBackgroundColor(basicSwatch);
     expect(resultBasic.equals(basicSwatch[100])).toBe(true);
+    expect(resultBasic).not.toBe(basicSwatch[100]);
 
     const extendedSwatch = new Color('#eab308').getColorSwatch({
       extended: true,
@@ -1015,6 +1020,7 @@ describe('Color.getBestBackgroundColor', () => {
     });
     const resultExtended = textColor.getBestBackgroundColor(extendedSwatch);
     expect(resultExtended.equals(extendedSwatch[50])).toBe(true);
+    expect(resultExtended).not.toBe(extendedSwatch[50]);
   });
 });
 
@@ -1069,6 +1075,36 @@ describe('Color.clone', () => {
     const cloned = color.clone();
     expect(cloned).toEqual(color);
     expect(cloned).not.toBe(color);
+  });
+});
+
+describe('Color immutability', () => {
+  it('returns defensive copies from toRGBA', () => {
+    const color = new Color('#336699');
+    const firstRGBA = color.toRGBA();
+    const secondRGBA = color.toRGBA();
+
+    expect(firstRGBA).toEqual(secondRGBA);
+    expect(firstRGBA).not.toBe(secondRGBA);
+
+    firstRGBA.r = 255;
+    firstRGBA.g = 255;
+    firstRGBA.b = 255;
+    firstRGBA.a = 0;
+
+    expect(color.toHex()).toBe('#336699');
+    expect(color.getAlpha()).toBe(1);
+  });
+
+  it('does not expose mutable internal state through runtime property access', () => {
+    const original = new Color('#123456');
+    const sameValueClone = new Color(original);
+
+    const runtimePrivateColor = Reflect.get(original as unknown as Record<string, unknown>, 'color');
+    expect(runtimePrivateColor).toBeUndefined();
+    expect(original.toHex()).toBe('#123456');
+    expect(sameValueClone.toHex()).toBe('#123456');
+    expect(sameValueClone).not.toBe(original);
   });
 });
 
