@@ -303,7 +303,7 @@ function getOKLABVector(color: Color, alpha: number): InterpolatableColor {
 function colorToVector(
   color: Color,
   space: ColorGradientSpace,
-  isCartesian: boolean
+  isCartesian: boolean,
 ): InterpolatableColor {
   const rgba = color.toRGBA();
   const alpha = rgba.a ?? 1;
@@ -330,7 +330,7 @@ function vectorToFormat(
   vector: InterpolatableColor,
   space: ColorGradientSpace,
   clamp: boolean,
-  isCartesian: boolean
+  isCartesian: boolean,
 ): {
   format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLAB | ColorOKLCH;
   alpha: number;
@@ -562,7 +562,7 @@ function oklabToRgbUnrounded(color: ColorOKLAB): ColorRGB {
 function formatToRGB(
   format: ColorRGB | ColorHSL | ColorHSV | ColorLCH | ColorOKLAB | ColorOKLCH,
   space: ColorGradientSpace,
-  clamp: boolean
+  clamp: boolean,
 ): ColorRGB {
   switch (space) {
     case 'HSL': {
@@ -652,7 +652,7 @@ function interpolateLinearStops({
       { values, alpha },
       space,
       clamp,
-      isCartesian
+      isCartesian,
     );
     results.push({ ...formatToRGB(format, space, clamp), a: +clampedAlpha.toFixed(3) });
   }
@@ -688,7 +688,7 @@ function interpolateBezierStops({
       { values, alpha },
       space,
       clamp,
-      isCartesian
+      isCartesian,
     );
     results.push({ ...formatToRGB(format, space, clamp), a: +clampedAlpha.toFixed(3) });
   }
@@ -699,7 +699,7 @@ function interpolateBezierStops({
 function adjustHueStops(
   stops: InterpolatableColor[],
   mode: HueInterpolationMode,
-  space: ColorGradientSpace
+  space: ColorGradientSpace,
 ): InterpolatableColor[] {
   // Identify hue index based on space
   let hueIndex = -1;
@@ -773,7 +773,7 @@ function adjustHueStops(
  */
 export function createColorGradient(
   colors: readonly Color[],
-  options: ColorGradientOptions = {}
+  options: ColorGradientOptions = {},
 ): Color[] {
   if (colors.length < MIN_SCALE_STOPS) {
     throw new Error('at least two colors are required to build a gradient');

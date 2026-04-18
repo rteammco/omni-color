@@ -72,10 +72,10 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('color(srgb 100% 0% 0% / 25%)')?.toHex8()).toBe('#ff000040');
     expect(parseCSSColorFormatString('color(srgb, 1, 1, 1, 50%)')?.toHex8()).toBe('#ffffff80');
     expect(parseCSSColorFormatString('color(display-p3 0 100% 0 / 75%)')?.toHex8()).toBe(
-      '#00ff00bf'
+      '#00ff00bf',
     );
     expect(parseCSSColorFormatString('color(display-p3, 50%, 20%, 10% / 0.5)')?.toHex8()).toBe(
-      '#8a2c0d80'
+      '#8a2c0d80',
     );
     expect(parseCSSColorFormatString('color(rec2020 25% 50% 75%)')?.toHex()).toBe('#0090cc');
     expect(parseCSSColorFormatString('color(rec2020 0 0.5 1 / 0.25)')?.toHex8()).toBe('#0092ff40');

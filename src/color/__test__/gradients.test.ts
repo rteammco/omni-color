@@ -57,7 +57,7 @@ describe('createColorGradient', () => {
   it('wraps hues smoothly across the 0°/360° boundary in polar spaces', () => {
     const gradient = createColorGradient(
       [new Color({ h: 350, s: 100, l: 50 }), new Color({ h: 10, s: 100, l: 50 })],
-      { stops: 5, space: 'HSL' }
+      { stops: 5, space: 'HSL' },
     );
 
     expect(gradient.map((color) => color.toHex())).toEqual([
@@ -77,7 +77,7 @@ describe('createColorGradient', () => {
       {
         stops: 3,
         space: 'RGB',
-      }
+      },
     );
 
     expect(gradient[0].toRGBA()).toEqual({ r: 255, g: 0, b: 0, a: 0.2 });
@@ -106,7 +106,7 @@ describe('createColorGradient', () => {
 
   it('throws when fewer than two colors are provided', () => {
     expect(() => createColorGradient([new Color('#ff0000')], { stops: 2 })).toThrow(
-      'at least two colors are required to build a gradient'
+      'at least two colors are required to build a gradient',
     );
   });
 

@@ -30,33 +30,33 @@ describe('Delta E calculations', () => {
       const firstPairB = new Color({ l: 50, a: 0, b: -82.7485 });
       expect(getDeltaE(firstPairA, firstPairB, { method: 'CIE94' })).toBeCloseTo(
         0.7636577088674601,
-        6
+        6,
       );
       expect(getDeltaE(firstPairA, firstPairB, { method: 'CIE76' })).toBeCloseTo(
         1.619848449701395,
-        6
+        6,
       );
 
       const secondPairA = new Color({ l: 50, a: 3.1571, b: -77.2803 });
       const secondPairB = new Color({ l: 50, a: 0, b: -82.7485 });
       expect(getDeltaE(secondPairA, secondPairB, { method: 'CIE94' })).toBeCloseTo(
         1.069608018415056,
-        6
+        6,
       );
       expect(getDeltaE(secondPairA, secondPairB, { method: 'CIE76' })).toBeCloseTo(
         1.2429935639415082,
-        6
+        6,
       );
 
       const thirdPairA = new Color({ l: 50, a: 2.8361, b: -74.02 });
       const thirdPairB = new Color({ l: 50, a: 0, b: -82.7485 });
       expect(getDeltaE(thirdPairA, thirdPairB, { method: 'CIE94' })).toBeCloseTo(
         1.6500919264582965,
-        6
+        6,
       );
       expect(getDeltaE(thirdPairA, thirdPairB, { method: 'CIE76' })).toBeCloseTo(
         3.4337015012956535,
-        6
+        6,
       );
     });
 
@@ -69,15 +69,15 @@ describe('Delta E calculations', () => {
       expect(getDeltaE(nearZeroHue, nearFullHue, { method: 'CIEDE2000' })).toBeCloseTo(9.2596, 4);
       expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIEDE2000' })).toBeCloseTo(
         10.328990616488563,
-        6
+        6,
       );
       expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIE94' })).toBeCloseTo(
         10.329000048382673,
-        6
+        6,
       );
       expect(getDeltaE(grayscaleA, grayscaleB, { method: 'CIE76' })).toBeCloseTo(
         10.329000048407398,
-        6
+        6,
       );
     });
 
@@ -129,7 +129,7 @@ describe('Delta E calculations', () => {
       const colorB = new Color({ l: 50, a: 0, b: -82.7485 });
 
       expect(() => getDeltaE(colorA, colorB, { method: 'INVALID' as never })).toThrow(
-        'Unsupported Delta E method: INVALID'
+        'Unsupported Delta E method: INVALID',
       );
     });
 

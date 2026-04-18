@@ -222,7 +222,7 @@ export class Color {
    */
   static createInterpolatedGradient(
     colors: readonly ValidColorInputFormat[],
-    options?: ColorGradientOptions
+    options?: ColorGradientOptions,
   ): Color[] {
     return createColorGradient(getColorList(colors), options);
   }
@@ -600,7 +600,7 @@ export class Color {
    */
   createGradientThrough(
     stops: readonly ValidColorInputFormat[],
-    options?: ColorGradientOptions
+    options?: ColorGradientOptions,
   ): Color[] {
     return Color.createInterpolatedGradient([this, ...stops], options);
   }
@@ -616,7 +616,7 @@ export class Color {
    */
   createGradientTo(
     target: ValidColorInputFormat,
-    options?: Omit<ColorGradientOptions, 'interpolation'>
+    options?: Omit<ColorGradientOptions, 'interpolation'>,
   ): Color[] {
     return Color.createInterpolatedGradient([this, target], options);
   }
@@ -838,7 +838,7 @@ export class Color {
    */
   getColorPalette(
     harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
-    options?: GenerateColorPaletteOptions
+    options?: GenerateColorPaletteOptions,
   ): ColorPalette {
     return generateColorPaletteFromBaseColor(this, harmony, options);
   }
@@ -960,7 +960,7 @@ export class Color {
    */
   getTextReadabilityReport(
     backgroundColor: ValidColorInputFormat,
-    options?: TextReadabilityOptions
+    options?: TextReadabilityOptions,
   ): TextReadabilityReport {
     return getTextReadabilityReport(this, new Color(backgroundColor), options);
   }
@@ -974,7 +974,7 @@ export class Color {
    */
   getMostReadableTextColor(
     textColors: readonly ValidColorInputFormat[] | ColorSwatch,
-    options?: ReadabilityComparisonOptions
+    options?: ReadabilityComparisonOptions,
   ): Color {
     return getMostReadableTextColorForBackground(this, getColorList(textColors), options).clone();
   }
@@ -994,7 +994,7 @@ export class Color {
    */
   isReadableAsTextColor(
     backgroundColor: ValidColorInputFormat,
-    options?: TextReadabilityOptions
+    options?: TextReadabilityOptions,
   ): boolean {
     return isTextReadable(this, new Color(backgroundColor), options);
   }
@@ -1008,7 +1008,7 @@ export class Color {
    */
   getBestBackgroundColor(
     backgroundColors: readonly ValidColorInputFormat[] | ColorSwatch,
-    options?: ReadabilityComparisonOptions
+    options?: ReadabilityComparisonOptions,
   ): Color {
     return getBestBackgroundColorForText(this, getColorList(backgroundColors), options).clone();
   }

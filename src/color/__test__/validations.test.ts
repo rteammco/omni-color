@@ -56,10 +56,10 @@ describe('validateColorOrThrow RGB format', () => {
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 256 })).toThrow(/invalid RGB color/);
     expect(() => validateColorOrThrow({ r: NaN, g: 0, b: 0 } as any)).toThrow(/invalid RGB color/);
     expect(() => validateColorOrThrow({ r: 0, g: Infinity, b: 0 } as any)).toThrow(
-      /invalid RGB color/
+      /invalid RGB color/,
     );
     expect(() => validateColorOrThrow({ r: '255' as any, g: 0, b: 0 })).toThrow(
-      /invalid RGB color/
+      /invalid RGB color/,
     );
   });
 });
@@ -73,15 +73,15 @@ describe('validateColorOrThrow RGBA format', () => {
 
   it('rejects invalid RGBA objects', () => {
     expect(() => validateColorOrThrow({ r: 256, g: 0, b: 0, a: 0.5 })).toThrow(
-      /invalid RGBA color/
+      /invalid RGBA color/,
     );
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 0, a: -0.1 })).toThrow(/invalid RGBA color/);
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 0, a: 1.1 })).toThrow(/invalid RGBA color/);
     expect(() => validateColorOrThrow({ r: 0, g: 0, b: 0, a: '0.5' as any })).toThrow(
-      /invalid RGBA color/
+      /invalid RGBA color/,
     );
     expect(() => validateColorOrThrow({ r: NaN, g: 0, b: 0, a: 0.5 } as any)).toThrow(
-      /invalid RGBA color/
+      /invalid RGBA color/,
     );
   });
 });
@@ -113,20 +113,20 @@ describe('validateColorOrThrow HSLA format', () => {
   it('rejects invalid HSLA objects', () => {
     expect(() => validateColorOrThrow({ h: -1, s: 0, l: 0, a: 0.5 })).toThrow(/invalid HSLA color/);
     expect(() => validateColorOrThrow({ h: 361, s: 0, l: 0, a: 0.5 })).toThrow(
-      /invalid HSLA color/
+      /invalid HSLA color/,
     );
     expect(() => validateColorOrThrow({ h: 0, s: -1, l: 0, a: 0.5 })).toThrow(/invalid HSLA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 101, l: 0, a: 0.5 })).toThrow(
-      /invalid HSLA color/
+      /invalid HSLA color/,
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: -1, a: 0.5 })).toThrow(/invalid HSLA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 101, a: 0.5 })).toThrow(
-      /invalid HSLA color/
+      /invalid HSLA color/,
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 0, a: -0.1 })).toThrow(/invalid HSLA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 0, a: 1.1 })).toThrow(/invalid HSLA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 0, l: 0, a: '0.5' as any })).toThrow(
-      /invalid HSLA color/
+      /invalid HSLA color/,
     );
   });
 });
@@ -158,20 +158,20 @@ describe('validateColorOrThrow HSVA format', () => {
   it('rejects invalid HSVA objects', () => {
     expect(() => validateColorOrThrow({ h: -1, s: 0, v: 0, a: 0.5 })).toThrow(/invalid HSVA color/);
     expect(() => validateColorOrThrow({ h: 361, s: 0, v: 0, a: 0.5 })).toThrow(
-      /invalid HSVA color/
+      /invalid HSVA color/,
     );
     expect(() => validateColorOrThrow({ h: 0, s: -1, v: 0, a: 0.5 })).toThrow(/invalid HSVA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 101, v: 0, a: 0.5 })).toThrow(
-      /invalid HSVA color/
+      /invalid HSVA color/,
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: -1, a: 0.5 })).toThrow(/invalid HSVA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 101, a: 0.5 })).toThrow(
-      /invalid HSVA color/
+      /invalid HSVA color/,
     );
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 0, a: -0.1 })).toThrow(/invalid HSVA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 0, a: 1.1 })).toThrow(/invalid HSVA color/);
     expect(() => validateColorOrThrow({ h: 0, s: 0, v: 0, a: '0.5' as any })).toThrow(
-      /invalid HSVA color/
+      /invalid HSVA color/,
     );
   });
 });
@@ -205,7 +205,7 @@ describe('validateColorOrThrow HWBA format', () => {
     expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0, a: -0.1 })).toThrow(/invalid HWBA color/);
     expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0, a: 1.1 })).toThrow(/invalid HWBA color/);
     expect(() => validateColorOrThrow({ h: 0, w: 0, b: 0, a: '0.5' as any })).toThrow(
-      /invalid HWBA color/
+      /invalid HWBA color/,
     );
   });
 });
@@ -223,7 +223,7 @@ describe('validateColorOrThrow CMYK format', () => {
     expect(() => validateColorOrThrow({ c: 0, m: 0, y: -1, k: 0 })).toThrow(/invalid CMYK color/);
     expect(() => validateColorOrThrow({ c: 0, m: 0, y: 0, k: 101 })).toThrow(/invalid CMYK color/);
     expect(() => validateColorOrThrow({ c: '0' as any, m: 0, y: 0, k: 0 })).toThrow(
-      /invalid CMYK color/
+      /invalid CMYK color/,
     );
   });
 });
@@ -253,16 +253,16 @@ describe('validateColorOrThrow OKLAB format', () => {
 
   it('rejects invalid OKLAB objects', () => {
     expect(() => validateColorOrThrow({ l: -0.1, a: 0, b: 0, format: 'OKLAB' })).toThrow(
-      /invalid OKLAB color/
+      /invalid OKLAB color/,
     );
     expect(() => validateColorOrThrow({ l: 1.1, a: 0, b: 0, format: 'OKLAB' })).toThrow(
-      /invalid OKLAB color/
+      /invalid OKLAB color/,
     );
     expect(() => validateColorOrThrow({ l: 0.5, a: Infinity, b: 0, format: 'OKLAB' })).toThrow(
-      /invalid OKLAB color/
+      /invalid OKLAB color/,
     );
     expect(() => validateColorOrThrow({ l: 0.5, a: 0, b: NaN, format: 'OKLAB' } as any)).toThrow(
-      /invalid OKLAB color/
+      /invalid OKLAB color/,
     );
   });
 });
@@ -294,7 +294,7 @@ describe('validateColorOrThrow OKLCH format', () => {
     expect(() => validateColorOrThrow({ l: -0.1, c: 0, h: 0 })).toThrow(/invalid OKLCH color/);
     expect(() => validateColorOrThrow({ l: 0, c: -0.1, h: 0 })).toThrow(/invalid OKLCH color/);
     expect(() => validateColorOrThrow({ l: 0, c: '0' as any, h: 0 })).toThrow(
-      /invalid OKLCH color/
+      /invalid OKLCH color/,
     );
     expect(() => validateColorOrThrow({ l: 0, c: 0, h: -1 })).toThrow(/invalid OKLCH color/);
     expect(() => validateColorOrThrow({ l: 0, c: 0, h: 361 })).toThrow(/invalid OKLCH color/);

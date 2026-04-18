@@ -33,7 +33,7 @@ const DEFAULT_MANIPULATION_AMOUNT = 10;
 const DEFAULT_LAB_LIGHTNESS_DELTA_PER_STEP = 18;
 
 function getColorBrightnessOptions(
-  options?: ColorBrightnessOptions
+  options?: ColorBrightnessOptions,
 ): Required<ColorBrightnessOptions> {
   const {
     amount = DEFAULT_MANIPULATION_AMOUNT,
@@ -44,7 +44,7 @@ function getColorBrightnessOptions(
 }
 
 function getColorSaturationOptions(
-  options?: ColorSaturationOptions
+  options?: ColorSaturationOptions,
 ): Required<ColorSaturationOptions> {
   const {
     amount = DEFAULT_MANIPULATION_AMOUNT,

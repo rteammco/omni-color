@@ -179,7 +179,7 @@ interface ReadabilityComparisonResult {
 
 function isBetterReadabilityCandidate(
   candidate: ReadabilityComparisonResult,
-  currentBest: ReadabilityComparisonResult
+  currentBest: ReadabilityComparisonResult,
 ): boolean {
   if (candidate.isReadable !== currentBest.isReadable) {
     return candidate.isReadable;
@@ -199,7 +199,7 @@ function isBetterReadabilityCandidate(
 export function getTextReadabilityReport(
   foreground: Color,
   background: Color,
-  options: TextReadabilityOptions = {}
+  options: TextReadabilityOptions = {},
 ): TextReadabilityReport {
   const level = (options.level?.toUpperCase() ?? 'AA') as TextReadabilityConformanceLevel;
   const size = (options.size?.toUpperCase() ?? 'SMALL') as TextReadabilityTextSizeOptions;
@@ -217,7 +217,7 @@ export function getTextReadabilityReport(
 export function isTextReadable(
   foreground: Color,
   background: Color,
-  options: TextReadabilityOptions = {}
+  options: TextReadabilityOptions = {},
 ): boolean {
   return getTextReadabilityReport(foreground, background, options).isReadable;
 }
@@ -225,7 +225,7 @@ export function isTextReadable(
 function getReadabilityComparisonResult(
   foreground: Color,
   background: Color,
-  options: ReadabilityComparisonOptions = {}
+  options: ReadabilityComparisonOptions = {},
 ): ReadabilityComparisonResult {
   const algorithm = (options.algorithm?.toUpperCase() ?? 'WCAG') as ReadabilityAlgorithm;
   const { textReadabilityOptions } = options;
@@ -252,7 +252,7 @@ function getReadabilityComparisonResult(
 export function getMostReadableTextColorForBackground(
   backgroundColor: Color,
   textColors: readonly Color[],
-  options: ReadabilityComparisonOptions = {}
+  options: ReadabilityComparisonOptions = {},
 ): Color {
   if (textColors.length === 0) {
     throw new Error('At least one text color must be provided.');
@@ -279,7 +279,7 @@ export function getMostReadableTextColorForBackground(
 export function getBestBackgroundColorForText(
   textColor: Color,
   backgroundColors: readonly Color[],
-  options: ReadabilityComparisonOptions = {}
+  options: ReadabilityComparisonOptions = {},
 ): Color {
   if (backgroundColors.length === 0) {
     throw new Error('At least one background color must be provided.');

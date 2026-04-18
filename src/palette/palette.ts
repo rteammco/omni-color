@@ -78,7 +78,7 @@ function harmonizeNeutrals(paletteBaseColor: Color): Color {
 
 function harmonizeTintedNeutrals(
   paletteBaseColor: Color,
-  options: Required<NeutralColorHarmonizationOptions>
+  options: Required<NeutralColorHarmonizationOptions>,
 ): Color {
   const { l: baseL, c: baseC, h: baseH } = paletteBaseColor.toOKLCH();
   const chromaFactor = clampValue(options.tintChromaFactor, 0, 1);
@@ -110,7 +110,7 @@ const CHROMA_THRESHOLD_FOR_USABLE_HUE = 0.015; // below this threshold, colors a
 function harmonizeSemanticColor(
   paletteBaseColor: Color,
   semanticColor: SemanticColor,
-  options: Required<SemanticColorHarmonizationOptions>
+  options: Required<SemanticColorHarmonizationOptions>,
 ): Color {
   // Constrain hue pull option to its valid range:
   const huePullOption = clampValue(options.huePull, 0, 1);
@@ -132,7 +132,7 @@ function harmonizeSemanticColor(
   const resultChroma = clampValue(
     Math.max(baseC * chromaFactor, minAllowableChroma), // ensure minimum chroma for very low‑chroma base colors (overrides `minChroma` option if necessary)
     Math.max(minChromaOption, minAllowableChroma),
-    maxChromaOption
+    maxChromaOption,
   );
 
   return new Color({ l: baseL, c: resultChroma, h: resultHue });
@@ -141,7 +141,7 @@ function harmonizeSemanticColor(
 export function generateColorPaletteFromBaseColor(
   baseColor: Color,
   harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
-  options?: GenerateColorPaletteOptions
+  options?: GenerateColorPaletteOptions,
 ): ColorPalette {
   // TODO: helpers or warnings if the palette is suboptimal
 
@@ -178,32 +178,32 @@ export function generateColorPaletteFromBaseColor(
       .map((color) => color.getColorSwatch(paletteSwatchOptions)),
     neutrals: harmonizeNeutrals(baseColor).getColorSwatch(paletteSwatchOptions),
     tintedNeutrals: harmonizeTintedNeutrals(baseColor, neutralHarmonizationOptions).getColorSwatch(
-      paletteSwatchOptions
+      paletteSwatchOptions,
     ),
     back: new Color(BLACK_HEX),
     white: new Color(WHITE_HEX),
     info: harmonizeSemanticColor(baseColor, 'info', semanticHarmonizationOptions).getColorSwatch(
-      paletteSwatchOptions
+      paletteSwatchOptions,
     ),
     positive: harmonizeSemanticColor(
       baseColor,
       'positive',
-      semanticHarmonizationOptions
+      semanticHarmonizationOptions,
     ).getColorSwatch(paletteSwatchOptions),
     negative: harmonizeSemanticColor(
       baseColor,
       'negative',
-      semanticHarmonizationOptions
+      semanticHarmonizationOptions,
     ).getColorSwatch(paletteSwatchOptions),
     warning: harmonizeSemanticColor(
       baseColor,
       'warning',
-      semanticHarmonizationOptions
+      semanticHarmonizationOptions,
     ).getColorSwatch(paletteSwatchOptions),
     special: harmonizeSemanticColor(
       baseColor,
       'special',
-      semanticHarmonizationOptions
+      semanticHarmonizationOptions,
     ).getColorSwatch(paletteSwatchOptions),
   };
 }

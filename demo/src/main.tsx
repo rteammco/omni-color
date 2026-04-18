@@ -12,11 +12,11 @@ const router = createBrowserRouter(
     { path: '/', element: <DemoPage /> },
     { path: '/playground', element: <PlaygroundPage /> },
   ],
-  { basename }
+  { basename },
 );
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
+  </StrictMode>,
 );

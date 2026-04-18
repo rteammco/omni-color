@@ -36,7 +36,7 @@ function expectHSLToBeClose(actual: ColorHSL, expected: ColorHSL): void {
 
 function expectHSVToBeClose(
   actual: { h: number; s: number; v: number },
-  expected: { h: number; s: number; v: number }
+  expected: { h: number; s: number; v: number },
 ): void {
   expect(actual.h).toBeCloseTo(expected.h, 0);
   expect(actual.s).toBeCloseTo(expected.s, 0);

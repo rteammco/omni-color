@@ -284,10 +284,10 @@ describe('Color.toXString methods', () => {
     expect(color.toOKLCHString()).toBe('oklch(0.627955 0.257683 29.234)');
     expect(color.toColorString()).toBe('color(srgb 1 0 0 / 0.5)');
     expect(color.toColorString({ space: 'display-p3' })).toBe(
-      'color(display-p3 0.917488 0.200287 0.138561 / 0.5)'
+      'color(display-p3 0.917488 0.200287 0.138561 / 0.5)',
     );
     expect(color.toColorString({ space: 'REC2020' })).toBe(
-      'color(rec2020 0.791977 0.230976 0.073761 / 0.5)'
+      'color(rec2020 0.791977 0.230976 0.073761 / 0.5)',
     );
   });
 });
@@ -776,7 +776,7 @@ describe('Color.getColorPalette', () => {
       },
     });
     expect(neutralMatchPalette.tintedNeutrals[500].toHex()).toBe(
-      neutralMatchPalette.neutrals[500].toHex()
+      neutralMatchPalette.neutrals[500].toHex(),
     );
 
     const cappedTintPalette = baseColor.getColorPalette('COMPLEMENTARY', {
@@ -991,7 +991,7 @@ describe('Color.getBestBackgroundColor', () => {
     const textColor = new Color('#123456');
 
     expect(() => textColor.getBestBackgroundColor([])).toThrow(
-      'At least one background color must be provided.'
+      'At least one background color must be provided.',
     );
   });
 
@@ -1033,7 +1033,7 @@ describe('Color temperature methods', () => {
   it('returns a temperature string for off-white colors', () => {
     expect(new Color('#ffffff').getTemperatureAsString()).toBe('6504 K (cloudy sky)');
     expect(new Color('#ffffff').getTemperatureAsString({ formatNumber: true })).toBe(
-      '6,504 K (cloudy sky)'
+      '6,504 K (cloudy sky)',
     );
   });
 
@@ -1100,7 +1100,10 @@ describe('Color immutability', () => {
     const original = new Color('#123456');
     const sameValueClone = new Color(original);
 
-    const runtimePrivateColor = Reflect.get(original as unknown as Record<string, unknown>, 'color');
+    const runtimePrivateColor = Reflect.get(
+      original as unknown as Record<string, unknown>,
+      'color',
+    );
     expect(runtimePrivateColor).toBeUndefined();
     expect(original.toHex()).toBe('#123456');
     expect(sameValueClone.toHex()).toBe('#123456');

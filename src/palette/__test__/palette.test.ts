@@ -231,7 +231,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             tintChromaFactor: NaN,
             maxTintChroma: NaN,
           },
-        })
+        }),
       ).toThrow();
     });
   });
@@ -368,7 +368,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
       expect(() =>
         generateColorPaletteFromBaseColor(base, undefined, {
           semanticHarmonization: { huePull: NaN, chromaRange: [NaN, NaN] },
-        })
+        }),
       ).toThrow();
     });
 
@@ -421,7 +421,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
       const monochromatic = generateColorPaletteFromBaseColor(
         new Color('#336699'),
-        'MONOCHROMATIC'
+        'MONOCHROMATIC',
       );
       expect(monochromatic.secondaryColors.length).toBe(4);
       expect(monochromatic.secondaryColors[0][500].toHex()).toBe('#6699cc');

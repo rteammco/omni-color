@@ -33,7 +33,7 @@ interface SplitColorParamsResult {
 
 function splitColorFunctionParams(
   params: string,
-  { expectedChannels, allowAlpha = false, allowSlashForAlpha = false }: SplitColorParamsOptions
+  { expectedChannels, allowAlpha = false, allowSlashForAlpha = false }: SplitColorParamsOptions,
 ): SplitColorParamsResult | null {
   let channelsSection = params;
   let alphaSection: string | undefined;
@@ -138,7 +138,7 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
     }
 
     const [r, g, b] = colorParams.channels.map((channel) =>
-      clampValue(parseNumberOrPercent(channel, 1), 0, 1)
+      clampValue(parseNumberOrPercent(channel, 1), 0, 1),
     );
     if ([r, g, b].some((value) => isNaN(value))) {
       return null;

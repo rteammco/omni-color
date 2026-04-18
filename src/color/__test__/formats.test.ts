@@ -152,7 +152,7 @@ describe('hslToString', () => {
 
   it('rounds component values to three decimals', () => {
     expect(hslToString({ h: 123.4567, s: 50.5555, l: 10.1234 })).toBe(
-      'hsl(123.457 50.556% 10.123%)'
+      'hsl(123.457 50.556% 10.123%)',
     );
   });
 });
@@ -202,7 +202,7 @@ describe('hslaToString', () => {
 
   it('rounds hsla components to three decimals', () => {
     expect(hslaToString({ h: 123.4567, s: 50.5555, l: 10.1234, a: 0.98765 })).toBe(
-      'hsl(123.457 50.556% 10.123% / 0.988)'
+      'hsl(123.457 50.556% 10.123% / 0.988)',
     );
   });
 });
@@ -215,10 +215,10 @@ describe('colorToString', () => {
     expect(colorToString(opaque.toRGBA())).toBe('color(srgb 0.2 0.4 0.6)');
     expect(colorToString(translucent.toRGBA())).toBe('color(srgb 0.2 0.4 0.6 / 0.8)');
     expect(colorToString(translucent.toRGBA(), { space: 'display-p3' })).toBe(
-      'color(display-p3 0.249851 0.39524 0.584034 / 0.8)'
+      'color(display-p3 0.249851 0.39524 0.584034 / 0.8)',
     );
     expect(colorToString(opaque.toRGBA(), { space: 'rec2020' })).toBe(
-      'color(rec2020 0.250128 0.336705 0.537794)'
+      'color(rec2020 0.250128 0.336705 0.537794)',
     );
   });
 });
@@ -253,7 +253,7 @@ describe('hwbToString', () => {
 
   it('rounds hwb components to three decimals', () => {
     expect(hwbToString({ h: 123.4567, w: 12.3456, b: 65.4321 })).toBe(
-      'hwb(123.457 12.346% 65.432%)'
+      'hwb(123.457 12.346% 65.432%)',
     );
   });
 });
@@ -303,7 +303,7 @@ describe('cmykToString', () => {
 
   it('rounds cmyk components to three decimals', () => {
     expect(cmykToString({ c: 12.3456, m: 0.9876, y: 54.321, k: 10.5555 })).toBe(
-      'device-cmyk(12.346% 0.988% 54.321% 10.556%)'
+      'device-cmyk(12.346% 0.988% 54.321% 10.556%)',
     );
   });
 });
@@ -341,7 +341,7 @@ describe('labToString', () => {
 
   it('rounds lab components to three decimals', () => {
     expect(labToString({ l: 12.3456, a: -7.654321, b: 123.4567 })).toBe(
-      'lab(12.346% -7.654 123.457)'
+      'lab(12.346% -7.654 123.457)',
     );
   });
 });
@@ -391,7 +391,7 @@ describe('lchToString', () => {
 
   it('rounds lch components to three decimals', () => {
     expect(lchToString({ l: 12.3456, c: 7.654321, h: 123.4567 })).toBe(
-      'lch(12.346% 7.654 123.457)'
+      'lch(12.346% 7.654 123.457)',
     );
   });
 });
@@ -417,7 +417,7 @@ describe('oklabToString', () => {
 
   it('rounds oklab components to six decimals', () => {
     expect(oklabToString({ l: 0.123456789, a: 0.987654321, b: 0.111213141 })).toBe(
-      'oklab(0.123457 0.987654 0.111213)'
+      'oklab(0.123457 0.987654 0.111213)',
     );
   });
 });
@@ -467,7 +467,7 @@ describe('oklchToString', () => {
 
   it('rounds oklch components to six decimals', () => {
     expect(oklchToString({ l: 0.123456789, c: 0.987654321, h: 123.456789 })).toBe(
-      'oklch(0.123457 0.987654 123.457)'
+      'oklch(0.123457 0.987654 123.457)',
     );
   });
 });

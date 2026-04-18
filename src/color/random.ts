@@ -79,7 +79,7 @@ export function getRandomColorRGBA(options: RandomColorOptions = {}): ColorRGBA 
     } else {
       l = getRandomIntInclusive(
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
-        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
+        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
       );
     }
   } else {

@@ -88,9 +88,9 @@ describe('Color interoperability with chroma-js', () => {
       expect(pastelBlueCmyk.y).toBeCloseTo(pastelBlueChromaCmyk[2] * 100, 0);
       expect(pastelBlueCmyk.k).toBeCloseTo(pastelBlueChromaCmyk[3] * 100, 0);
       const pastelBlueChromaCmykString = `device-cmyk(${Math.round(
-        pastelBlueChromaCmyk[0] * 100
+        pastelBlueChromaCmyk[0] * 100,
       )}% ${Math.round(pastelBlueChromaCmyk[1] * 100)}% ${Math.round(
-        pastelBlueChromaCmyk[2] * 100
+        pastelBlueChromaCmyk[2] * 100,
       )}% ${Math.round(pastelBlueChromaCmyk[3] * 100)}%)`;
       expect(pastelBlue.toCMYKString()).toBe(pastelBlueChromaCmykString);
 
@@ -104,9 +104,9 @@ describe('Color interoperability with chroma-js', () => {
       expect(warmYellowCmyk.y).toBeCloseTo(warmYellowChromaCmyk[2] * 100, 0);
       expect(warmYellowCmyk.k).toBeCloseTo(warmYellowChromaCmyk[3] * 100, 0);
       const warmYellowChromaCmykString = `device-cmyk(${Math.round(
-        warmYellowChromaCmyk[0] * 100
+        warmYellowChromaCmyk[0] * 100,
       )}% ${Math.round(warmYellowChromaCmyk[1] * 100)}% ${Math.round(
-        warmYellowChromaCmyk[2] * 100
+        warmYellowChromaCmyk[2] * 100,
       )}% ${Math.round(warmYellowChromaCmyk[3] * 100)}%)`;
       expect(warmYellow.toCMYKString()).toBe(warmYellowChromaCmykString);
     });
@@ -161,7 +161,7 @@ describe('Color interoperability with chroma-js', () => {
       const chromaLinear = chroma.average(
         ['#ff0000', '#00ff00', '#0000ff'],
         'lrgb',
-        [0.5, 0.25, 0.25]
+        [0.5, 0.25, 0.25],
       );
 
       expect(omniLinear.toHex()).toBe('#bc8989');
@@ -193,7 +193,7 @@ describe('Color interoperability with chroma-js', () => {
       const cyanCmyk = chroma('#00ffff').cmyk();
       const yellowCmyk = chroma('#ffff00').cmyk();
       const averagedCmyk = cyanCmyk.map(
-        (channel, index) => 0.5 * channel + 0.5 * yellowCmyk[index]
+        (channel, index) => 0.5 * channel + 0.5 * yellowCmyk[index],
       );
       const [c, m, y, k] = averagedCmyk;
       const chromaSubtractiveApproximation = chroma.cmyk(c, m, y, k);
@@ -220,7 +220,7 @@ describe('Color interoperability with chroma-js', () => {
     it('matches linear LCH gradients for three-stop anchors', () => {
       const threeStopOmniGradient = Color.createInterpolatedGradient(
         ['#ff0000', '#00ff00', '#0000ff'],
-        { space: 'LCH', stops: 7 }
+        { space: 'LCH', stops: 7 },
       );
       const threeStopChromaGradient = chroma
         .scale(['#ff0000', '#00ff00', '#0000ff'])
@@ -228,7 +228,7 @@ describe('Color interoperability with chroma-js', () => {
         .colors(7);
 
       expect(threeStopOmniGradient.map((color) => color.toHex())).toEqual(
-        threeStopChromaGradient.map((hex) => hex.toLowerCase())
+        threeStopChromaGradient.map((hex) => hex.toLowerCase()),
       );
     });
 
@@ -242,7 +242,7 @@ describe('Color interoperability with chroma-js', () => {
       const bezierChromaGradient = chroma.bezier(bezierAnchors).scale().mode('lch').colors(6);
 
       expect(bezierOmniGradient.map((color) => color.toHex())).toEqual(
-        bezierChromaGradient.map((hex) => hex.toLowerCase())
+        bezierChromaGradient.map((hex) => hex.toLowerCase()),
       );
     });
 
@@ -331,14 +331,14 @@ describe('Color interoperability with chroma-js', () => {
       const omniContrast = foreground.getContrastRatio(background);
       const chromaDirectContrast = chroma.contrast(
         'rgba(0, 0, 0, 0.5)',
-        'rgba(255, 255, 255, 0.6)'
+        'rgba(255, 255, 255, 0.6)',
       );
 
       const compositeForeground = compositeRgba(foreground.toRGBA(), background.toRGBA());
       const compositeBackground = compositeRgba(background.toRGBA(), foreground.toRGBA());
       const chromaCompositedContrast = chroma.contrast(
         chroma.rgb(compositeForeground.r, compositeForeground.g, compositeForeground.b),
-        chroma.rgb(compositeBackground.r, compositeBackground.g, compositeBackground.b)
+        chroma.rgb(compositeBackground.r, compositeBackground.g, compositeBackground.b),
       );
 
       expect(omniContrast).toBeCloseTo(chromaCompositedContrast, 2);
@@ -427,11 +427,11 @@ describe('Color interoperability with chroma-js', () => {
     it('keeps circular HSL averaging close to chroma-js while weighting saturation', () => {
       const omniAverage = new Color('hsl(350, 100%, 50%)').average(
         ['hsl(10, 100%, 50%)', 'hsl(30, 60%, 50%)'],
-        { space: 'HSL' }
+        { space: 'HSL' },
       );
       const chromaAverage = chroma.average(
         ['hsl(350, 100%, 50%)', 'hsl(10, 100%, 50%)', 'hsl(30, 60%, 50%)'],
-        'hsl'
+        'hsl',
       );
 
       expect(omniAverage.toHex()).toBe('#eb2d14');
@@ -439,7 +439,7 @@ describe('Color interoperability with chroma-js', () => {
       const chromaHsl = chromaAverage.hsl();
       const hueDelta = Math.min(
         Math.abs(omniHsl.h - chromaHsl[0]),
-        360 - Math.abs(omniHsl.h - chromaHsl[0])
+        360 - Math.abs(omniHsl.h - chromaHsl[0]),
       );
       expect(hueDelta).toBeLessThan(5);
       expect(Math.abs(omniHsl.s - chromaHsl[1] * 100)).toBeLessThan(5);
@@ -634,7 +634,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(Math.abs(lchFromOmni.c - chromaLch[1])).toBeLessThanOrEqual(chromaTolerance);
       const lchHueDelta = Math.min(
         Math.abs(lchFromOmni.h - chromaLch[2]),
-        360 - Math.abs(lchFromOmni.h - chromaLch[2])
+        360 - Math.abs(lchFromOmni.h - chromaLch[2]),
       );
       expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
 
@@ -644,7 +644,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
       const oklchHueDelta = Math.min(
         Math.abs(oklchFromOmni.h - chromaOklch[2]),
-        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2]),
       );
       expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
     });
@@ -665,7 +665,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(Math.abs(lchFromOmni.c - chromaLch[1])).toBeLessThanOrEqual(chromaTolerance);
       const lchHueDelta = Math.min(
         Math.abs(lchFromOmni.h - chromaLch[2]),
-        360 - Math.abs(lchFromOmni.h - chromaLch[2])
+        360 - Math.abs(lchFromOmni.h - chromaLch[2]),
       );
       expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
 
@@ -675,7 +675,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
       const oklchHueDelta = Math.min(
         Math.abs(oklchFromOmni.h - chromaOklch[2]),
-        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2]),
       );
       expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
     });
@@ -696,7 +696,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(Math.abs(lchFromOmni.c - chromaLch[1])).toBeLessThanOrEqual(chromaTolerance);
       const lchHueDelta = Math.min(
         Math.abs(lchFromOmni.h - chromaLch[2]),
-        360 - Math.abs(lchFromOmni.h - chromaLch[2])
+        360 - Math.abs(lchFromOmni.h - chromaLch[2]),
       );
       expect(lchHueDelta).toBeLessThanOrEqual(hueTolerance);
 
@@ -706,7 +706,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(Math.abs(oklchFromOmni.c - chromaOklch[1])).toBeLessThanOrEqual(0.001);
       const oklchHueDelta = Math.min(
         Math.abs(oklchFromOmni.h - chromaOklch[2]),
-        360 - Math.abs(oklchFromOmni.h - chromaOklch[2])
+        360 - Math.abs(oklchFromOmni.h - chromaOklch[2]),
       );
       expect(oklchHueDelta).toBeLessThanOrEqual(hueTolerance);
     });

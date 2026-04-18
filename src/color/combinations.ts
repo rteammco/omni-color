@@ -22,7 +22,7 @@ export interface MixColorsOptions {
 
 function getWeights(
   numColors: number,
-  inputRawWeights?: number[]
+  inputRawWeights?: number[],
 ): { weights: number[]; sumOfWeights: number; normalizedWeights: number[] } {
   let weights =
     inputRawWeights && inputRawWeights.length === numColors
@@ -45,7 +45,7 @@ function mixNormalizedChannel(
   values: readonly number[],
   normalizedWeights: readonly number[],
   maxValue: number,
-  precision?: number
+  precision?: number,
 ): number {
   const normalizedValues = values.map((value) => clampValue(value / maxValue, 0, 1));
   const mixedNormalized = weightedGeometricMean(normalizedValues, normalizedWeights);
@@ -67,7 +67,7 @@ function mixAlphaChannel(colors: readonly Color[], normalizedWeights: readonly n
 function mixSubtractiveHue(
   hues: readonly number[],
   magnitudes: readonly number[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): number {
   let x = 0;
   let y = 0;
@@ -90,23 +90,23 @@ function mixSubtractiveHue(
 
 function mixColorsSubtractiveInRgb(
   colors: readonly Color[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   const rgbValues = colors.map((color) => color.toRGBA());
   const r = mixNormalizedChannel(
     rgbValues.map((value) => value.r),
     normalizedWeights,
-    255
+    255,
   );
   const g = mixNormalizedChannel(
     rgbValues.map((value) => value.g),
     normalizedWeights,
-    255
+    255,
   );
   const b = mixNormalizedChannel(
     rgbValues.map((value) => value.b),
     normalizedWeights,
-    255
+    255,
   );
 
   const a = mixAlphaChannel(colors, normalizedWeights);
@@ -116,7 +116,7 @@ function mixColorsSubtractiveInRgb(
 
 function mixColorsSubtractiveInLinearRgb(
   colors: readonly Color[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   const linearValues = colors
     .map((color) => color.toRGBA())
@@ -128,15 +128,15 @@ function mixColorsSubtractiveInLinearRgb(
 
   const rLinear = weightedGeometricMean(
     linearValues.map((value) => value.r),
-    normalizedWeights
+    normalizedWeights,
   );
   const gLinear = weightedGeometricMean(
     linearValues.map((value) => value.g),
-    normalizedWeights
+    normalizedWeights,
   );
   const bLinear = weightedGeometricMean(
     linearValues.map((value) => value.b),
-    normalizedWeights
+    normalizedWeights,
   );
 
   const r = Math.round(clampValue(linearChannelToSrgb(rLinear, 'SRGB'), 0, 255));
@@ -149,26 +149,26 @@ function mixColorsSubtractiveInLinearRgb(
 
 function mixColorsSubtractiveInHsl(
   colors: readonly Color[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   const hslValues = colors.map((color) => color.toHSL());
   const saturation = mixNormalizedChannel(
     hslValues.map((value) => value.s),
     normalizedWeights,
     100,
-    3
+    3,
   );
   const lightness = mixNormalizedChannel(
     hslValues.map((value) => value.l),
     normalizedWeights,
     100,
-    3
+    3,
   );
 
   const hue = mixSubtractiveHue(
     hslValues.map((value) => value.h),
     hslValues.map((value) => value.s / 100),
-    normalizedWeights
+    normalizedWeights,
   );
 
   const a = mixAlphaChannel(colors, normalizedWeights);
@@ -178,7 +178,7 @@ function mixColorsSubtractiveInHsl(
 
 function mixColorsSubtractiveInLch(
   colors: readonly Color[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   const lchValues = colors.map((color) => color.toLCH());
   const lightnessValues = lchValues.map((value) => value.l);
@@ -193,12 +193,12 @@ function mixColorsSubtractiveInLch(
       : +clampValue(
           mixNormalizedChannel(chromaValues, normalizedWeights, maxChroma, 3),
           0,
-          maxChroma
+          maxChroma,
         ).toFixed(3);
   const hue = mixSubtractiveHue(
     lchValues.map((value) => value.h),
     maxChroma === 0 ? chromaValues : chromaValues.map((value) => value / maxChroma),
-    normalizedWeights
+    normalizedWeights,
   );
   const a = mixAlphaChannel(colors, normalizedWeights);
 
@@ -214,7 +214,7 @@ function mixColorsSubtractiveInLch(
 
 function mixColorsSubtractiveInOklch(
   colors: readonly Color[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   const oklchValues = colors.map((color) => color.toOKLCH());
   const lightnessValues = oklchValues.map((value) => value.l);
@@ -228,12 +228,12 @@ function mixColorsSubtractiveInOklch(
       : +clampValue(
           mixNormalizedChannel(chromaValues, normalizedWeights, maxChroma, 6),
           0,
-          maxChroma
+          maxChroma,
         ).toFixed(6);
   const hue = mixSubtractiveHue(
     oklchValues.map((value) => value.h),
     maxChroma === 0 ? chromaValues : chromaValues.map((value) => value / maxChroma),
-    normalizedWeights
+    normalizedWeights,
   );
   const a = mixAlphaChannel(colors, normalizedWeights);
 
@@ -250,7 +250,7 @@ function mixColorsSubtractiveInOklch(
 function mixColorsSubtractive(
   colors: readonly Color[],
   space: MixSpace,
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   switch (space) {
     case 'RGB':
@@ -275,7 +275,7 @@ function normalizeHue(hue: number): number {
 function mixColorsAdditiveInLinearRgb(
   colors: readonly Color[],
   weights: readonly number[],
-  sumOfWeights: number
+  sumOfWeights: number,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let rLinear = 0;
@@ -306,7 +306,7 @@ function mixColorsAdditiveInLinearRgb(
 function mixColorsAdditiveInHsl(
   colors: readonly Color[],
   weights: readonly number[],
-  sumOfWeights: number
+  sumOfWeights: number,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let x = 0;
@@ -340,7 +340,7 @@ function mixColorsAdditiveInHsl(
 function mixColorsAdditiveInLch(
   colors: readonly Color[],
   weights: readonly number[],
-  sumOfWeights: number
+  sumOfWeights: number,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let lightness = 0;
@@ -377,7 +377,7 @@ function mixColorsAdditiveInLch(
 function mixColorsAdditiveInOklch(
   colors: readonly Color[],
   weights: readonly number[],
-  sumOfWeights: number
+  sumOfWeights: number,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let lightness = 0;
@@ -414,7 +414,7 @@ function mixColorsAdditiveInOklch(
 function mixColorsAdditiveInRgb(
   colors: readonly Color[],
   weights: readonly number[],
-  sumOfWeights: number
+  sumOfWeights: number,
 ): Color {
   let r = 0;
   let g = 0;
@@ -441,7 +441,7 @@ function mixColorsAdditive(
   colors: readonly Color[],
   space: MixSpace,
   weights: readonly number[],
-  sumOfWeights: number
+  sumOfWeights: number,
 ) {
   switch (space) {
     case 'LINEAR_RGB':
@@ -685,7 +685,7 @@ function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonl
 
 function averageColorsInOklch(
   colors: readonly Color[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   let lightness = 0;
   let chromaX = 0;
@@ -711,7 +711,7 @@ function averageColorsInOklch(
 
 function averageColorsInLinearRgb(
   colors: readonly Color[],
-  normalizedWeights: readonly number[]
+  normalizedWeights: readonly number[],
 ): Color {
   let r = 0;
   let g = 0;

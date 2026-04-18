@@ -251,7 +251,7 @@ export function colorToString(color: ColorRGBA, options?: ColorStringOptions): s
   const space = resolveColorSpace(options?.space);
   const values = convertRGBToColorSpaceValues(color, space);
   const base = `${formatColorFunctionChannel(values.r)} ${formatColorFunctionChannel(
-    values.g
+    values.g,
   )} ${formatColorFunctionChannel(values.b)}`;
 
   if (color.a !== undefined && color.a < 1) {
@@ -275,25 +275,25 @@ export function hslToString({ h, s, l }: ColorHSL): string {
 
 export function hslaToString({ h, s, l, a }: ColorHSLA): string {
   return `hsl(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(
-    l
+    l,
   )}% / ${getDecimalString(a)})`;
 }
 
 export function hwbToString(color: ColorHWB): string {
   return `hwb(${getDecimalString(color.h)} ${getDecimalString(color.w)}% ${getDecimalString(
-    color.b
+    color.b,
   )}%)`;
 }
 
 export function hwbaToString(color: ColorHWBA): string {
   return `hwb(${getDecimalString(color.h)} ${getDecimalString(color.w)}% ${getDecimalString(
-    color.b
+    color.b,
   )}% / ${getDecimalString(color.a)})`;
 }
 
 export function cmykToString({ c, m, y, k }: ColorCMYK): string {
   return `device-cmyk(${getDecimalString(c)}% ${getDecimalString(m)}% ${getDecimalString(
-    y
+    y,
   )}% ${getDecimalString(k)}%)`;
 }
 

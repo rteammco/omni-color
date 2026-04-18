@@ -26,7 +26,7 @@ export function DemoPage() {
         '@id': 'https://rteammco.github.io/omni-color/#software',
       },
     }),
-    []
+    [],
   );
 
   return (

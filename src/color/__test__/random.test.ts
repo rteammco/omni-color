@@ -135,7 +135,7 @@ describe('getRandomColorRGBA', () => {
         GRAYSCALE_MIN_SATURATION_THRESHOLD,
       l:
         Math.floor(
-          randomValue * (WHITE_MAX_LIGHTNESS_THRESHOLD - BLACK_MIN_LIGHTNESS_THRESHOLD + 1)
+          randomValue * (WHITE_MAX_LIGHTNESS_THRESHOLD - BLACK_MIN_LIGHTNESS_THRESHOLD + 1),
         ) + BLACK_MIN_LIGHTNESS_THRESHOLD,
       a: 1,
     });
@@ -193,7 +193,7 @@ describe('getRandomColorRGBA', () => {
     randomValue: number,
     anchor: BaseColorName,
     min: number,
-    max: number
+    max: number,
   ): void {
     const colorRGBA = getRandomColorRGBA({ anchorColor: anchor, paletteSuitable: true });
     const expectedH = Math.floor(randomValue * 360);
@@ -215,19 +215,19 @@ describe('getRandomColorRGBA', () => {
         randomValue,
         'Black',
         0,
-        BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1
+        BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1,
       );
       expectGrayscaleAnchor(
         randomValue,
         'White',
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1,
-        100
+        100,
       );
       expectGrayscaleAnchor(
         randomValue,
         'Gray',
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
-        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
+        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
       );
       spy.mockRestore();
     });
@@ -239,19 +239,19 @@ describe('getRandomColorRGBA', () => {
         randomValue,
         'Black',
         0,
-        BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1
+        BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1,
       );
       expectGrayscaleAnchor(
         randomValue,
         'White',
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1,
-        100
+        100,
       );
       expectGrayscaleAnchor(
         randomValue,
         'Gray',
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
-        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
+        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
       );
       spy.mockRestore();
     });
@@ -263,19 +263,19 @@ describe('getRandomColorRGBA', () => {
         randomValue,
         'Black',
         0,
-        BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1
+        BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION - 1,
       );
       expectGrayscaleAnchor(
         randomValue,
         'White',
         WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION + 1,
-        100
+        100,
       );
       expectGrayscaleAnchor(
         randomValue,
         'Gray',
         BLACK_MIN_LIGHTNESS_THRESHOLD_LOW_SATURATION,
-        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION
+        WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
       );
       spy.mockRestore();
     });

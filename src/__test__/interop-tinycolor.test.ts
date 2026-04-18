@@ -24,7 +24,7 @@ function tinycolorRGBToObj(value: tinycolor.ColorFormats.RGBA): ColorRGB | Color
 function expectSimilarRGBAValues(
   omniValues: ColorRGB | ColorRGBA,
   tiny: tinycolor.Instance,
-  tolerance = 1
+  tolerance = 1,
 ) {
   const { r, g, b, a } = tiny.toRgb();
   expect(Math.abs(omniValues.r - r)).toBeLessThanOrEqual(tolerance);
@@ -49,7 +49,7 @@ function expectComponentArraysClose(
   omniValues: number[],
   tinyValues: number[],
   tolerance = 1,
-  alphaTolerance = 0.02
+  alphaTolerance = 0.02,
 ) {
   const omniHasAlpha = omniValues.length > 3;
   const tinyHasAlpha = tinyValues.length > 3;
@@ -261,66 +261,66 @@ describe('Color interoperability with tinycolor2', () => {
     it('matches tinycolor darkness and lightness classifications for YIQ inputs', () => {
       const pureBlack = '#000';
       expect(new Color(pureBlack).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(pureBlack).isDark()
+        tinycolor(pureBlack).isDark(),
       );
       expect(new Color(pureBlack).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(pureBlack).isLight()
+        !tinycolor(pureBlack).isLight(),
       );
 
       const pureWhite = '#fff';
       expect(new Color(pureWhite).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(pureWhite).isDark()
+        tinycolor(pureWhite).isDark(),
       );
       expect(new Color(pureWhite).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(pureWhite).isLight()
+        !tinycolor(pureWhite).isLight(),
       );
 
       const middleGray = '#7f7f7f';
       expect(new Color(middleGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(middleGray).isDark()
+        tinycolor(middleGray).isDark(),
       );
       expect(new Color(middleGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(middleGray).isLight()
+        !tinycolor(middleGray).isLight(),
       );
 
       const darkerGray = '#808080';
       expect(new Color(darkerGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(darkerGray).isDark()
+        tinycolor(darkerGray).isDark(),
       );
       expect(new Color(darkerGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(darkerGray).isLight()
+        !tinycolor(darkerGray).isLight(),
       );
 
       const saturatedRed = '#ff0000';
       expect(new Color(saturatedRed).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(saturatedRed).isDark()
+        tinycolor(saturatedRed).isDark(),
       );
       expect(new Color(saturatedRed).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(saturatedRed).isLight()
+        !tinycolor(saturatedRed).isLight(),
       );
 
       const saturatedBlue = '#0000ff';
       expect(new Color(saturatedBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(saturatedBlue).isDark()
+        tinycolor(saturatedBlue).isDark(),
       );
       expect(new Color(saturatedBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(saturatedBlue).isLight()
+        !tinycolor(saturatedBlue).isLight(),
       );
 
       const saturatedGreen = '#00ff00';
       expect(new Color(saturatedGreen).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(saturatedGreen).isDark()
+        tinycolor(saturatedGreen).isDark(),
       );
       expect(new Color(saturatedGreen).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(saturatedGreen).isLight()
+        !tinycolor(saturatedGreen).isLight(),
       );
 
       const pastelBlue = '#a0c8ff';
       expect(new Color(pastelBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(pastelBlue).isDark()
+        tinycolor(pastelBlue).isDark(),
       );
       expect(new Color(pastelBlue).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        !tinycolor(pastelBlue).isLight()
+        !tinycolor(pastelBlue).isLight(),
       );
     });
 
@@ -330,7 +330,7 @@ describe('Color interoperability with tinycolor2', () => {
       expect(new Color(borderlineGray).isDark()).toBe(false);
       expect(tinycolor(borderlineGray).isDark()).toBe(true);
       expect(new Color(borderlineGray).isDark({ colorDarknessMode: 'YIQ' })).toBe(
-        tinycolor(borderlineGray).isDark()
+        tinycolor(borderlineGray).isDark(),
       );
     });
   });
@@ -363,7 +363,7 @@ describe('Color interoperability with tinycolor2', () => {
 
       expect(opaqueReport.contrastRatio).toBeCloseTo(
         tinycolor.readability(opaqueForeground, opaqueBackground),
-        2
+        2,
       );
       expect(opaqueReport.isReadable).toBe(tinyOpaqueReadable);
 
@@ -371,7 +371,7 @@ describe('Color interoperability with tinycolor2', () => {
       const semiTransparentBackground = '#ffffff';
 
       const semiTransparentReport = new Color(semiTransparentForeground).getTextReadabilityReport(
-        semiTransparentBackground
+        semiTransparentBackground,
       );
       const tinySemiReadable = tinycolor.isReadable(
         semiTransparentForeground,
@@ -379,13 +379,13 @@ describe('Color interoperability with tinycolor2', () => {
         {
           level: 'AA',
           size: 'small',
-        }
+        },
       );
 
       expect(tinySemiReadable).toBe(true);
       expect(semiTransparentReport.isReadable).toBe(false);
       expect(semiTransparentReport.contrastRatio).toBeLessThan(
-        tinycolor.readability(semiTransparentForeground, semiTransparentBackground)
+        tinycolor.readability(semiTransparentForeground, semiTransparentBackground),
       );
     });
 
@@ -572,21 +572,21 @@ describe('Color interoperability with tinycolor2', () => {
 
       expectComponentArraysClose(
         getNumericValuesFromString(color.toHSLString()),
-        tinyHslStringValues
+        tinyHslStringValues,
       );
       expectComponentArraysClose(
         getNumericValuesFromString(color.toHSLAString()),
-        tinyHslStringValues
+        tinyHslStringValues,
       );
       expectComponentArraysClose(
         getNumericValuesFromString(
-          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(hsva.v)}%)`
+          `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(hsva.v)}%)`,
         ),
-        tinyHsvStringValues
+        tinyHsvStringValues,
       );
       expectComponentArraysClose(
         getNumericValuesFromString(color.toRGBAString()),
-        getNumericValuesFromString(tiny.toRgbString())
+        getNumericValuesFromString(tiny.toRgbString()),
       );
     });
 
@@ -625,19 +625,19 @@ describe('Color interoperability with tinycolor2', () => {
 
       expectComponentArraysClose(
         getNumericValuesFromString(color.toHSLAString()),
-        tinyHslStringValues
+        tinyHslStringValues,
       );
       expectComponentArraysClose(
         getNumericValuesFromString(
           `hsv(${formatDecimal(hsva.h)} ${formatDecimal(hsva.s)}% ${formatDecimal(
-            hsva.v
-          )}% / ${formatDecimal(hsva.a)})`
+            hsva.v,
+          )}% / ${formatDecimal(hsva.a)})`,
         ),
-        tinyHsvStringValues
+        tinyHsvStringValues,
       );
       expectComponentArraysClose(
         getNumericValuesFromString(color.toRGBAString()),
-        getNumericValuesFromString(tiny.toRgbString())
+        getNumericValuesFromString(tiny.toRgbString()),
       );
     });
   });
@@ -655,7 +655,7 @@ describe('Color interoperability with tinycolor2', () => {
 
       expectHexArraysClose(
         getHexesFromColors(baseColor.getTriadicHarmonyColors()),
-        getHexesFromTinyColors(tinyBase.triad())
+        getHexesFromTinyColors(tinyBase.triad()),
       );
     });
 
@@ -690,7 +690,7 @@ describe('Color interoperability with tinycolor2', () => {
       expect(Math.max(...tinyLightnesses)).toBeCloseTo(baseLightness, 3);
 
       expect(sortHexesByHue(monochromaticHexes)).not.toEqual(
-        sortHexesByHue(tinyMonochromaticHexes)
+        sortHexesByHue(tinyMonochromaticHexes),
       );
     });
 
