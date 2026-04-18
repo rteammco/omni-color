@@ -839,4 +839,20 @@ describe('conversions', () => {
       });
     });
   });
+
+  describe('validated conversion entry points', () => {
+    it('keeps thrown validation errors consistent for invalid RGB-like inputs', () => {
+      expect(() => toHSL({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toHSLA({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toHSV({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toHSVA({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toHWB({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toHWBA({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toCMYK({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toLAB({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toOKLAB({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toLCH({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+      expect(() => toOKLCH({ r: 999, g: 0, b: 0 } as ColorRGBA)).toThrow('invalid RGB color');
+    });
+  });
 });

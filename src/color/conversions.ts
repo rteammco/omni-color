@@ -560,14 +560,11 @@ function oklchToRGBA(color: ColorOKLCH, alpha?: number): ColorRGBA {
   return rgbToRGBA(rgb, alpha);
 }
 
-export function toRGB(color: ColorFormat): ColorRGB {
-  validateColorOrThrow(color);
-  const rgba = toRGBA(color);
-  return roundRGBChannels(rgba);
-}
-
-export function toRGBA(color: ColorFormat): ColorRGBA {
-  validateColorOrThrow(color);
+/**
+ * Internal conversion helper that skips input validation.
+ * Call this only after `validateColorOrThrow(color)` has already succeeded.
+ */
+function toRGBAUnsafe(color: ColorFormat): ColorRGBA {
   const { formatType, value } = getColorFormatType(color);
   switch (formatType) {
     case 'HEX':
@@ -602,6 +599,25 @@ export function toRGBA(color: ColorFormat): ColorRGBA {
     default:
       throw new Error(`unknown color format: ${formatType}`);
   }
+}
+
+export function toRGBA(color: ColorFormat): ColorRGBA {
+  validateColorOrThrow(color);
+  return toRGBAUnsafe(color);
+}
+
+/**
+ * Internal conversion helper that skips input validation.
+ * Call this only after `validateColorOrThrow(color)` has already succeeded.
+ */
+function toRGBUnsafe(color: ColorFormat): ColorRGB {
+  const rgba = toRGBAUnsafe(color);
+  return roundRGBChannels(rgba);
+}
+
+export function toRGB(color: ColorFormat): ColorRGB {
+  validateColorOrThrow(color);
+  return toRGBUnsafe(color);
 }
 
 export function toHex(color: ColorFormat): ColorHex {
@@ -684,24 +700,24 @@ export function toHex8(color: ColorFormat): ColorHex {
 
 export function toHSL(color: ColorFormat): ColorHSL {
   validateColorOrThrow(color);
-  const { r, g, b } = toRGBA(color);
+  const { r, g, b } = toRGBAUnsafe(color);
   return rgbToHSL({ r, g, b });
 }
 
 export function toHSLA(color: ColorFormat): ColorHSLA {
   validateColorOrThrow(color);
-  return rgbaToHSLA(toRGBA(color));
+  return rgbaToHSLA(toRGBAUnsafe(color));
 }
 
 export function toHSV(color: ColorFormat): ColorHSV {
   validateColorOrThrow(color);
-  const { r, g, b } = toRGBA(color);
+  const { r, g, b } = toRGBAUnsafe(color);
   return rgbToHSV({ r, g, b });
 }
 
 export function toHSVA(color: ColorFormat): ColorHSVA {
   validateColorOrThrow(color);
-  return rgbaToHSVA(toRGBA(color));
+  return rgbaToHSVA(toRGBAUnsafe(color));
 }
 
 export function toHWB(color: ColorFormat): ColorHWB {
@@ -714,7 +730,7 @@ export function toHWB(color: ColorFormat): ColorHWB {
     const { h, w, b } = value;
     return { h, w, b };
   }
-  return rgbToHWB(toRGB(color));
+  return rgbToHWB(toRGBUnsafe(color));
 }
 
 export function toHWBA(color: ColorFormat): ColorHWBA {
@@ -726,12 +742,12 @@ export function toHWBA(color: ColorFormat): ColorHWBA {
   if (formatType === 'HWB') {
     return { ...value, a: 1 };
   }
-  return rgbaToHWBA(toRGBA(color));
+  return rgbaToHWBA(toRGBAUnsafe(color));
 }
 
 export function toCMYK(color: ColorFormat): ColorCMYK {
   validateColorOrThrow(color);
-  return rgbToCMYK(toRGB(color));
+  return rgbToCMYK(toRGBUnsafe(color));
 }
 
 export function toLAB(color: ColorFormat): ColorLAB {
@@ -740,7 +756,7 @@ export function toLAB(color: ColorFormat): ColorLAB {
   if (formatType === 'LAB') {
     return { ...value };
   }
-  return rgbToLAB(toRGB(color));
+  return rgbToLAB(toRGBUnsafe(color));
 }
 
 export function toOKLAB(color: ColorFormat): ColorOKLAB {
@@ -749,7 +765,7 @@ export function toOKLAB(color: ColorFormat): ColorOKLAB {
   if (formatType === 'OKLAB') {
     return { ...value };
   }
-  return rgbToOKLAB(toRGB(color));
+  return rgbToOKLAB(toRGBUnsafe(color));
 }
 
 export function toLCH(color: ColorFormat): ColorLCH {
@@ -758,7 +774,7 @@ export function toLCH(color: ColorFormat): ColorLCH {
   if (formatType === 'LCH') {
     return { ...value };
   }
-  return rgbToLCH(toRGB(color));
+  return rgbToLCH(toRGBUnsafe(color));
 }
 
 export function toOKLCH(color: ColorFormat): ColorOKLCH {
@@ -767,5 +783,5 @@ export function toOKLCH(color: ColorFormat): ColorOKLCH {
   if (formatType === 'OKLCH') {
     return { ...value };
   }
-  return rgbToOKLCH(toRGB(color));
+  return rgbToOKLCH(toRGBUnsafe(color));
 }
