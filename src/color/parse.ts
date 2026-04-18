@@ -17,6 +17,7 @@ const MATCH_HWB_STRING_REGEX = /^hwb\((.+)\)$/;
 const MATCH_CMYK_STRING_REGEX = /^cmyk\((.+)\)$/;
 const MATCH_LAB_STRING_REGEX = /^lab\((.+)\)$/;
 const MATCH_LCH_STRING_REGEX = /^lch\((.+)\)$/;
+const MATCH_OKLAB_STRING_REGEX = /^oklab\((.+)\)$/;
 const MATCH_OKLCH_STRING_REGEX = /^oklch\((.+)\)$/;
 const MATCH_COLOR_FUNCTION_REGEX = /^color\((.+)\)$/;
 const MATCH_HUE_ANGLE_REGEX = /^([-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?)(deg|rad|grad|turn)?$/i;
@@ -417,6 +418,45 @@ export function parseCSSColorFormatString(colorFormatString: string): Color | nu
       return null;
     }
     return createColorOrNull({ l, c, h });
+  }
+
+  const oklabMatch = str.match(MATCH_OKLAB_STRING_REGEX);
+  if (oklabMatch) {
+    const oklabParams = splitColorFunctionParams(oklabMatch[1], {
+      expectedChannels: 3,
+      allowAlpha: true,
+      allowSlashForAlpha: true,
+    });
+    if (!oklabParams) {
+      return null;
+    }
+
+    const [l, a, b] = [
+      parseFloat(oklabParams.channels[0]),
+      parseFloat(oklabParams.channels[1]),
+      parseFloat(oklabParams.channels[2]),
+    ];
+    if ([l, a, b].some((value) => isNaN(value))) {
+      return null;
+    }
+    if (l < 0 || l > 1) {
+      return null;
+    }
+
+    const parsedColor = createColorOrNull({ l, a, b, format: 'OKLAB' });
+    if (!parsedColor) {
+      return null;
+    }
+
+    if (oklabParams.alpha !== undefined) {
+      const alphaValue = clampAlpha(parseAlphaValue(oklabParams.alpha));
+      if (isNaN(alphaValue)) {
+        return null;
+      }
+      return parsedColor.setAlpha(alphaValue);
+    }
+
+    return parsedColor;
   }
 
   const oklchMatch = str.match(MATCH_OKLCH_STRING_REGEX);

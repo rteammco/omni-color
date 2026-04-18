@@ -225,6 +225,30 @@ describe('parseCSSColorFormatString', () => {
     );
   });
 
+  it('parses OKLAB inputs', () => {
+    expect(parseCSSColorFormatString('oklab(0 0 0)')?.toHex()).toBe('#000000');
+    expect(parseCSSColorFormatString('oklab(1 0 0)')?.toHex()).toBe('#ffffff');
+    expect(parseCSSColorFormatString('oklab(0.599871 0 0)')?.toHex()).toBe('#808080');
+    expect(parseCSSColorFormatString('oklab(0.627955 0.224863 0.125846)')?.toHex()).toBe('#ff0000');
+    expect(parseCSSColorFormatString('oklab(0.86644 -0.233888 0.179498)')?.toHex()).toBe('#00ff00');
+    expect(parseCSSColorFormatString('oklab(0.452014 -0.032457 -0.311528)')?.toHex()).toBe(
+      '#0000ff',
+    );
+  });
+
+  it('parses OKLAB inputs with optional alpha', () => {
+    expect(parseCSSColorFormatString('oklab(0.627955 0.224863 0.125846 / 0.5)')?.toHex8()).toBe(
+      '#ff000080',
+    );
+    expect(parseCSSColorFormatString('oklab(0.86644 -0.233888 0.179498 / 25%)')?.toHex8()).toBe(
+      '#00ff0040',
+    );
+    expect(parseCSSColorFormatString('oklab(0.452014 -0.032457 -0.311528 0.75)')?.toHex8()).toBe(
+      '#0000ffbf',
+    );
+    expect(parseCSSColorFormatString('oklab(0.599871 0 0 / 0%)')?.toHex8()).toBe('#80808000');
+  });
+
   it('parses additional forgiving input variations', () => {
     expect(parseCSSColorFormatString('cmyk(0% 100% 100% 0%)')?.toHex()).toBe('#ff0000');
     expect(parseCSSColorFormatString('lab(53.233%, 80.109, 67.22)')?.toHex()).toBe('#ff0000');
@@ -248,6 +272,10 @@ describe('parseCSSColorFormatString', () => {
     expect(parseCSSColorFormatString('lab(50% 0)')).toBeNull();
     expect(parseCSSColorFormatString('lch(120% 0 0)')).toBeNull();
     expect(parseCSSColorFormatString('lch(50% 30)')).toBeNull();
+    expect(parseCSSColorFormatString('oklab(1.1 0 0)')).toBeNull();
+    expect(parseCSSColorFormatString('oklab(-0.1 0 0)')).toBeNull();
+    expect(parseCSSColorFormatString('oklab(0.5 0)')).toBeNull();
+    expect(parseCSSColorFormatString('oklab(0.5 0 0 / foo)')).toBeNull();
     expect(parseCSSColorFormatString('oklch(1.1 0 0)')).toBeNull();
     expect(parseCSSColorFormatString('oklch(-0.1 0 0)')).toBeNull();
     expect(parseCSSColorFormatString('hwb(0 0%)')).toBeNull();
