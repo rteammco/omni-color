@@ -132,7 +132,7 @@ import {
  * ```ts
  * const red = new Color('#ff0000');
  * red.toHSL(); // { h: 0, s: 100, l: 50 }
- * const darker = red.darken(20); // new Color
+ * const darker = red.darken({ amount: 20 }); // new Color
  * red.toHex(); // '#ff0000'
  * ```
  */
@@ -480,7 +480,7 @@ export class Color {
    *
    * @example
    * ```ts
-   * new Color('#808080').brighten(20).toHex(); // '#b3b3b3'
+   * new Color('#808080').brighten({ amount: 20 }).toHex(); // '#b3b3b3'
    * ```
    */
   brighten(options?: ColorBrightnessOptions): Color {
@@ -497,7 +497,7 @@ export class Color {
    *
    * @example
    * ```ts
-   * new Color('#808080').darken(20).toHex(); // '#4d4d4d'
+   * new Color('#808080').darken({ amount: 20 }).toHex(); // '#4d4d4d'
    * ```
    */
   darken(options?: ColorBrightnessOptions): Color {
@@ -514,7 +514,7 @@ export class Color {
    *
    * @example
    * ```ts
-   * new Color('hsl(0, 50%, 50%)').saturate(20).toHSLString();
+   * new Color('hsl(0, 50%, 50%)').saturate({ amount: 20 }).toHSLString();
    * // 'hsl(0, 70%, 50%)'
    * ```
    */
@@ -532,7 +532,7 @@ export class Color {
    *
    * @example
    * ```ts
-   * new Color('hsl(0, 50%, 50%)').desaturate(20).toHSLString();
+   * new Color('hsl(0, 50%, 50%)').desaturate({ amount: 20 }).toHSLString();
    * // 'hsl(0, 30%, 50%)'
    * ```
    */
