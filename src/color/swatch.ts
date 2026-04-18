@@ -141,7 +141,7 @@ function getMainStop(baseColor: Color, shouldCenterOn500: boolean): BasicColorSw
 function getSwatchStopDelta<Stop extends number>(
   stop: Stop,
   baseStop: BasicColorSwatchStop,
-  deltas: Record<number, SwatchStopDelta>
+  deltas: Record<number, SwatchStopDelta>,
 ): SwatchStopDelta {
   const baseDelta = deltas[baseStop];
   const stopDelta = deltas[stop];
@@ -202,7 +202,7 @@ function getBaseColorSwatch(baseColor: Color, mainStop: BasicColorSwatchStop): B
 
 function getExtendedColorSwatch(
   baseColor: Color,
-  mainStop: BasicColorSwatchStop
+  mainStop: BasicColorSwatchStop,
 ): ExtendedColorSwatch {
   return createSwatch({
     baseColor,
@@ -215,7 +215,7 @@ function getExtendedColorSwatch(
 
 export function getColorSwatch(
   baseColor: Color,
-  options?: ColorSwatchOptions & { extended: true }
+  options?: ColorSwatchOptions & { extended: true },
 ): ExtendedColorSwatch;
 export function getColorSwatch(baseColor: Color, options?: ColorSwatchOptions): ColorSwatch;
 export function getColorSwatch(baseColor: Color, options: ColorSwatchOptions = {}): ColorSwatch {

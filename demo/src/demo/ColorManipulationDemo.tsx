@@ -19,7 +19,7 @@ interface Props {
 export function ColorManipulationDemo({ color }: Props) {
   const [intensityPercentage, setIntensityPercentage] = useState(DEFAULT_INTENSITY_PERCENTAGE);
   const [colorSpace, setColorSpace] = useState<ColorBrightnessSpace | ColorSaturationSpace>(
-    DEFAULT_COLOR_SPACE
+    DEFAULT_COLOR_SPACE,
   );
   const [labScale, setLabScale] = useState(DEFAULT_LAB_SCALE);
 

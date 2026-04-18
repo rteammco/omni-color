@@ -11,19 +11,19 @@ describe('areColorsEqual', () => {
 
   it('treats even small channel or alpha differences as unequal', () => {
     expect(areColorsEqual(new Color('rgba(0, 0, 0, 0.5)'), new Color('rgba(1, 0, 0, 0.5)'))).toBe(
-      false
+      false,
     );
     expect(areColorsEqual(new Color('rgba(0, 0, 0, 0.5)'), new Color('rgba(0, 1, 0, 0.5)'))).toBe(
-      false
+      false,
     );
     expect(areColorsEqual(new Color('rgba(0, 0, 0, 0.5)'), new Color('rgba(0, 0, 1, 0.5)'))).toBe(
-      false
+      false,
     );
     expect(
       areColorsEqual(
         new Color({ r: 0, g: 0, b: 0, a: 0.5 }),
-        new Color({ r: 0, g: 0, b: 0, a: 0.5005 })
-      )
+        new Color({ r: 0, g: 0, b: 0, a: 0.5005 }),
+      ),
     ).toBe(false);
   });
 
@@ -404,19 +404,19 @@ describe('getColorRGBAFromInput', () => {
 
   it('parses full and partial color temperature strings', () => {
     expect(new Color(getColorRGBAFromInput('candlelight')).toHex()).toBe(
-      getColorFromTemperatureLabel('Candlelight').toHex()
+      getColorFromTemperatureLabel('Candlelight').toHex(),
     );
 
     expect(new Color(getColorRGBAFromInput('incandescent')).toHex()).toBe(
-      getColorFromTemperatureLabel('Incandescent lamp').toHex()
+      getColorFromTemperatureLabel('Incandescent lamp').toHex(),
     );
 
     expect(new Color(getColorRGBAFromInput('  shade  ')).toHex()).toBe(
-      getColorFromTemperatureLabel('Shade').toHex()
+      getColorFromTemperatureLabel('Shade').toHex(),
     );
 
     expect(new Color(getColorRGBAFromInput('cloudy sky')).toHex()).toBe(
-      getColorFromTemperatureLabel('Cloudy sky').toHex()
+      getColorFromTemperatureLabel('Cloudy sky').toHex(),
     );
   });
 

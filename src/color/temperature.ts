@@ -94,7 +94,7 @@ export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
 
 export function getColorTemperatureString(
   color: Color,
-  options: ColorTemperatureStringFormatOptions = {}
+  options: ColorTemperatureStringFormatOptions = {},
 ): string {
   const { temperature, label } = getColorTemperature(color);
   const formattedTemperature = options.formatNumber ? temperature.toLocaleString() : temperature;
@@ -151,7 +151,7 @@ export function getColorFromTemperature(temperature: number): Color {
 }
 
 export function matchPartialColorTemperatureLabel(
-  partialLabel: string
+  partialLabel: string,
 ): ColorTemperatureLabel | null {
   const cleanedPartialLabel = partialLabel.trim().toLowerCase();
   const matchedLabel = Object.values(COLOR_TEMPERATURE_LABELS).find((label) => {

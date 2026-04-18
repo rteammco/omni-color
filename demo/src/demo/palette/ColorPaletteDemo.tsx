@@ -27,7 +27,7 @@ interface Props {
 export function ColorPaletteDemo({ color }: Props) {
   const [selectedHarmony, setSelectedHarmony] = useState<ColorHarmony>('COMPLEMENTARY');
   const [options, setOptions] = useState<GenerateColorPaletteOptions>(
-    DEFAULT_GENERATE_COLOR_PALETTE_OPTIONS
+    DEFAULT_GENERATE_COLOR_PALETTE_OPTIONS,
   );
 
   const palette = color.getColorPalette(selectedHarmony, options);

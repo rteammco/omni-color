@@ -34,7 +34,7 @@ export function Playground() {
       setCode(newCode);
       executeCode(newCode);
     },
-    [executeCode]
+    [executeCode],
   );
 
   const handleResetOrInitCode = useCallback(() => {

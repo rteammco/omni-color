@@ -23,7 +23,7 @@ export function ReadabilityDemo({ color }: Props) {
       new Color('magenta'),
       new Color('cyan'),
     ],
-    []
+    [],
   );
 
   const bestBackgroundColor = color.getBestBackgroundColor(backgroundColors);

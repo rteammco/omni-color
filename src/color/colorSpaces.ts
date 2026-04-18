@@ -56,7 +56,7 @@ const REC2020_GAMMA = 0.45;
 
 function multiply3x3(
   matrix: readonly number[][],
-  vector: readonly number[]
+  vector: readonly number[],
 ): [number, number, number] {
   const [x, y, z] = vector;
   return [
@@ -130,7 +130,7 @@ export function resolveColorSpace(space?: CaseInsensitive<ColorSpace>): ColorSpa
 
 export function convertColorSpaceValuesToRGB(
   values: ColorSpaceValues,
-  space: ColorSpace
+  space: ColorSpace,
 ): ColorRGB {
   const linear = [
     decodeColorSpaceChannel(values.r, space),

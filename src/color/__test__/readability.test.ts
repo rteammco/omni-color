@@ -2862,7 +2862,7 @@ describe('readability selection helpers', () => {
   it('selects the most readable text color using WCAG inputs', () => {
     const background = new Color('#fefefe');
     const candidates = ['#000000', new Color('#1a1a1a'), { r: 120, g: 120, b: 120 }].map(
-      (c) => new Color(c)
+      (c) => new Color(c),
     );
 
     const result = getMostReadableTextColorForBackground(background, candidates, {
@@ -2887,7 +2887,7 @@ describe('readability selection helpers', () => {
     const basicSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
     const resultBasic = getMostReadableTextColorForBackground(
       background,
-      getColorList(basicSwatch)
+      getColorList(basicSwatch),
     );
     expect(resultBasic.equals(basicSwatch[900])).toBe(true);
 
@@ -2897,7 +2897,7 @@ describe('readability selection helpers', () => {
     });
     const resultExtended = getMostReadableTextColorForBackground(
       background,
-      getColorList(extendedSwatch)
+      getColorList(extendedSwatch),
     );
     expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
   });

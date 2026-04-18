@@ -49,7 +49,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
         setIsInputColorValid(false);
       }
     },
-    [onColorChanged]
+    [onColorChanged],
   );
 
   const handlePresetColorSelected = useCallback(
@@ -59,7 +59,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
       setIsInputColorValid(true);
       onColorChanged(newColor);
     },
-    [onColorChanged]
+    [onColorChanged],
   );
 
   const handleRandomColorSelected = useCallback(
@@ -69,7 +69,7 @@ export function ColorInput({ color, onColorChanged }: Props) {
       setIsInputColorValid(true);
       onColorChanged(color);
     },
-    [onColorChanged]
+    [onColorChanged],
   );
 
   return (

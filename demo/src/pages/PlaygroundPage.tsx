@@ -22,7 +22,7 @@ export function PlaygroundPage() {
         '@id': 'https://rteammco.github.io/omni-color/#software',
       },
     }),
-    []
+    [],
   );
 
   return (

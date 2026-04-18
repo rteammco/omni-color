@@ -173,7 +173,7 @@ describe('getColorTemperatureString', () => {
     expect(
       getColorTemperatureString(getColorFromTemperatureLabel('Cloudy sky'), {
         formatNumber: true,
-      })
+      }),
     ).toBe('7,049 K (cloudy sky)');
     expect(getColorTemperatureString(new Color('#ff0000'), { formatNumber: true })).toBe('2,655 K');
   });

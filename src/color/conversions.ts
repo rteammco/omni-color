@@ -85,14 +85,14 @@ function rgbaToHex8(color: ColorRGBA): ColorHex {
   const rounded = roundRGBChannels(color);
   const alphaHex = numToHex(Math.round((color.a ?? 1) * 255));
   return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(
-    rounded.b
+    rounded.b,
   )}${alphaHex}`.toLowerCase() as ColorHex;
 }
 
 function rgbaToHex(color: ColorRGBA): ColorHex {
   const rounded = roundRGBChannels(color);
   return `#${numToHex(rounded.r)}${numToHex(rounded.g)}${numToHex(
-    rounded.b
+    rounded.b,
   )}`.toLowerCase() as ColorHex;
 }
 

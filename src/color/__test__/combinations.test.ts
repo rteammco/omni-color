@@ -641,7 +641,7 @@ describe('blendColors', () => {
     expect(screen.toHex()).toBe('#ff4640');
     expect(overlay.toHex()).toBe('#ff0064');
     expect(new Set([normal.toHex(), multiply.toHex(), screen.toHex(), overlay.toHex()]).size).toBe(
-      4
+      4,
     );
   });
 

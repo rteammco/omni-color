@@ -42,7 +42,7 @@ class ModernPuppeteerRenderer {
 
   async renderRoutes(
     routes: string[],
-    prerenderer: { getOptions: () => { server: { host: string; port: number } } }
+    prerenderer: { getOptions: () => { server: { host: string; port: number } } },
   ) {
     if (!this.browser) {
       throw new Error('Renderer is not initialized.');
@@ -92,13 +92,13 @@ class ModernPuppeteerRenderer {
   modifyServer(
     prerenderer: { getOptions: () => { staticDir: string } },
     serverInstance: { _expressServer: Express },
-    stage: string
+    stage: string,
   ) {
     if (stage === 'post-static') {
       const { staticDir: prerenderStaticDir } = prerenderer.getOptions();
       serverInstance._expressServer.use(
         basePath,
-        express.static(prerenderStaticDir, { dotfiles: 'allow' })
+        express.static(prerenderStaticDir, { dotfiles: 'allow' }),
       );
     }
   }

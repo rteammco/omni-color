@@ -152,7 +152,7 @@ describe('darkenColor', () => {
 
   it('accepts LAB options and clamps when approaching black', () => {
     expect(darkenColor(new Color('#ffffff'), { amount: 200, space: 'LAB' }).toHex()).toBe(
-      '#000000'
+      '#000000',
     );
     expect(darkenColor(new Color('#000000'), { amount: 25, space: 'LAB' }).toHex()).toBe('#000000');
   });
@@ -215,7 +215,7 @@ describe('saturateColor', () => {
     const mutedTeal = new Color('hsl(190, 25%, 55%)');
     expect(saturateColor(mutedTeal, { space: 'LCH', amount: 40 }).toHex()).toBe('#00b8f7');
     expect(saturateColor(mutedTeal, { space: 'LCH', amount: 40, labScale: 12 }).toHex()).toBe(
-      '#00b1dd'
+      '#00b1dd',
     );
   });
 

@@ -135,7 +135,7 @@ function tryToGetLineNumberFromError(error: object) {
   }
 
   const lineNumberPartAndRest = stack.substring(
-    anonFunctionTraceIndex + ANON_FUNCTION_TRACE_LOCATION_PREFIX.length
+    anonFunctionTraceIndex + ANON_FUNCTION_TRACE_LOCATION_PREFIX.length,
   );
   const restIndex = lineNumberPartAndRest.indexOf(':');
   if (restIndex < 0) {
@@ -200,7 +200,7 @@ export async function tryToRunCode(code: string): Promise<RunCodeResults> {
       `"use strict";
       return (async () => {
         ${code}
-      })();`
+      })();`,
     );
     maybeColorValue = await codeRunnerFn(Color, mockJSConsole);
   } catch (err) {

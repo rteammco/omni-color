@@ -16,9 +16,9 @@ export function Select<T extends string>({ label, options, value, onChange }: Pr
   const resolvedOptions = useMemo(
     () =>
       options.map((option) =>
-        typeof option === 'string' ? { label: option, value: option } : option
+        typeof option === 'string' ? { label: option, value: option } : option,
       ),
-    [options]
+    [options],
   );
 
   return (

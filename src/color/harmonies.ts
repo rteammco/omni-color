@@ -34,7 +34,7 @@ function spinLightness(hsla: ColorHSLA, degrees: number): Color {
 function spinColorOnHueOrLightness(
   color: Color,
   degrees: number,
-  grayscaleHandlingMode: GrayscaleHandlingMode
+  grayscaleHandlingMode: GrayscaleHandlingMode,
 ): Color {
   const hsla = color.toHSLA();
   if (hsla.s === 0) {
@@ -58,7 +58,7 @@ function resolveGrayscaleHandlingMode({
 
 export function getComplementaryColors(
   color: Color,
-  options?: ColorHarmonyOptions
+  options?: ColorHarmonyOptions,
 ): [Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [color.clone(), spinColorOnHueOrLightness(color, 180, grayscaleHandlingMode)];
@@ -66,7 +66,7 @@ export function getComplementaryColors(
 
 export function getSplitComplementaryColors(
   color: Color,
-  options?: ColorHarmonyOptions
+  options?: ColorHarmonyOptions,
 ): [Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
@@ -78,7 +78,7 @@ export function getSplitComplementaryColors(
 
 export function getTriadicHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions
+  options?: ColorHarmonyOptions,
 ): [Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
@@ -90,7 +90,7 @@ export function getTriadicHarmonyColors(
 
 export function getSquareHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions
+  options?: ColorHarmonyOptions,
 ): [Color, Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
@@ -103,7 +103,7 @@ export function getSquareHarmonyColors(
 
 export function getTetradicHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions
+  options?: ColorHarmonyOptions,
 ): [Color, Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   // TODO: tetradic harmonies can also be "wide" (120, 180, 300) or go in the other direction, or potentially any rectangle
@@ -119,7 +119,7 @@ export function getTetradicHarmonyColors(
 
 export function getAnalogousHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions
+  options?: ColorHarmonyOptions,
 ): [Color, Color, Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   // TODO: verify, because other libraries seem to have a slightly narrower angle
@@ -144,7 +144,7 @@ export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Colo
 export function getHarmonyColors(
   color: Color,
   harmony: CaseInsensitive<ColorHarmony>,
-  options?: ColorHarmonyOptions
+  options?: ColorHarmonyOptions,
 ): Color[] {
   switch (harmony.toUpperCase() as ColorHarmony) {
     case 'COMPLEMENTARY':
