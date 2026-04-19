@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import type { AverageColorsOptions, BlendColorsOptions, MixColorsOptions } from '../../../../dist';
 import { Color } from '../../../../dist';
 import { ColorBox } from '../../components/ColorBox';
 import { MixColorsOptionInputs } from './MixColorsOptionInputs';
@@ -14,6 +15,56 @@ import {
 
 interface Props {
   color: Color;
+}
+
+function getMixCodeSnippet(colorHex: string, mixOptions: MixColorsOptions) {
+  const mixSpace = mixOptions.space ?? DEFAULT_MIX_COLORS_OPTIONS.space;
+  const mixType = mixOptions.type ?? DEFAULT_MIX_COLORS_OPTIONS.type;
+  return `
+const color = new Color('${colorHex}');
+
+const red = new Color('red');
+const green = new Color('green');
+const blue = new Color('blue');
+
+const mixedWithRed = color.mix([red], { space: '${mixSpace}', type: '${mixType}' });
+const mixedWithGreen = color.mix([green], { space: '${mixSpace}', type: '${mixType}' });
+const mixedWithBlue = color.mix([blue], { space: '${mixSpace}', type: '${mixType}' });
+const mixedWithAll = color.mix([red, green, blue], { space: '${mixSpace}', type: '${mixType}' });
+`;
+}
+
+function getBlendCodeSnippet(colorHex: string, blendOptions: BlendColorsOptions) {
+  const blendMode = blendOptions.mode ?? DEFAULT_BLEND_COLORS_OPTIONS.mode;
+  const blendSpace = blendOptions.space ?? DEFAULT_BLEND_COLORS_OPTIONS.space;
+  const blendRatio = blendOptions.ratio ?? DEFAULT_BLEND_COLORS_OPTIONS.ratio;
+  return `
+const color = new Color('${colorHex}');
+
+const red = new Color('red');
+const green = new Color('green');
+const blue = new Color('blue');
+
+const blendedWithRed = color.blend(red, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
+const blendedWithGreen = color.blend(green, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
+const blendedWithBlue = color.blend(blue, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
+`;
+}
+
+function getAverageCodeSnippet(colorHex: string, averageOptions: AverageColorsOptions) {
+  const averageSpace = averageOptions.space ?? DEFAULT_AVERAGE_COLORS_OPTIONS.space;
+  return `
+const color = new Color('${colorHex}');
+
+const red = new Color('red');
+const green = new Color('green');
+const blue = new Color('blue');
+
+const averagedWithRed = color.average([red], { space: '${averageSpace}' });
+const averagedWithGreen = color.average([green], { space: '${averageSpace}' });
+const averagedWithBlue = color.average([blue], { space: '${averageSpace}' });
+const averagedWithAll = color.average([red, green, blue], { space: '${averageSpace}' });
+`;
 }
 
 export function ColorCombinationDemo({ color }: Props) {
@@ -43,7 +94,7 @@ export function ColorCombinationDemo({ color }: Props) {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <Card title="Mix">
+      <Card codeSnippet={getMixCodeSnippet(color.toHex8(), mixOptions)} title="Mix">
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-4">
           <ColorBox
             color={color}
@@ -83,7 +134,7 @@ export function ColorCombinationDemo({ color }: Props) {
         </div>
         <MixColorsOptionInputs mixOptions={mixOptions} onOptionsChanged={setMixOptions} />
       </Card>
-      <Card title="Blend">
+      <Card codeSnippet={getBlendCodeSnippet(color.toHex8(), blendOptions)} title="Blend">
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-4">
           <ColorBox
             color={color}
@@ -123,7 +174,7 @@ export function ColorCombinationDemo({ color }: Props) {
         </div>
         <BlendColorsOptionInputs blendOptions={blendOptions} onOptionsChanged={setBlendOptions} />
       </Card>
-      <Card title="Average">
+      <Card codeSnippet={getAverageCodeSnippet(color.toHex8(), averageOptions)} title="Average">
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-4">
           <ColorBox
             color={color}
