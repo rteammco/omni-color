@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Color, ColorBrightnessSpace, ColorSaturationSpace } from '../../../dist';
+import type { Color, ColorBrightnessSpace, ColorHex, ColorSaturationSpace } from '../../../dist';
 import { Card } from '../components/Card';
 import { ColorBox } from '../components/ColorBox';
 import { Slider } from '../components/inputs/Slider';
@@ -12,12 +12,34 @@ const DEFAULT_COLOR_SPACE: ColorBrightnessSpace | ColorSaturationSpace = 'HSL';
 const DEFAULT_LAB_SCALE = 18;
 const DEFAULT_SPIN_DEGREES = 180;
 
+function getAdjustColorCodeSnippet({
+  amount,
+  colorHex,
+  colorSpace,
+  labScale,
+}: {
+  amount: number;
+  colorHex: ColorHex;
+  colorSpace: ColorBrightnessSpace | ColorSaturationSpace;
+  labScale: number;
+}) {
+  const labSpaceInput = colorSpace !== 'HSL' ? ` labScale: ${labScale}` : '';
+  const inputs = `{ amount: ${amount}, space: ${colorSpace}${labSpaceInput} }`;
+  return `
+const color = new Color(${colorHex});
+const brightened = color.brighten(${inputs});
+const darkened = color.darken(${inputs});
+const saturated = color.saturate(${inputs});
+const desaturated = color.desaturate(${inputs});
+`;
+}
+
 interface Props {
   color: Color;
 }
 
 export function ColorManipulationDemo({ color }: Props) {
-  const [intensityPercentage, setIntensityPercentage] = useState(DEFAULT_INTENSITY_PERCENTAGE);
+  const [amount, setAmount] = useState(DEFAULT_INTENSITY_PERCENTAGE);
   const [colorSpace, setColorSpace] = useState<ColorBrightnessSpace | ColorSaturationSpace>(
     DEFAULT_COLOR_SPACE,
   );
@@ -26,24 +48,21 @@ export function ColorManipulationDemo({ color }: Props) {
   const [spinDegrees, setSpinDegrees] = useState(DEFAULT_SPIN_DEGREES);
 
   const handleReset = () => {
-    setIntensityPercentage(DEFAULT_INTENSITY_PERCENTAGE);
+    setAmount(DEFAULT_INTENSITY_PERCENTAGE);
     setColorSpace(DEFAULT_COLOR_SPACE);
     setLabScale(DEFAULT_LAB_SCALE);
     setSpinDegrees(DEFAULT_SPIN_DEGREES);
   };
 
-  const brightenedColor = color.brighten({
-    space: colorSpace,
-    amount: intensityPercentage,
-  });
-  const darkenedColor = color.darken({ amount: intensityPercentage, space: colorSpace, labScale });
+  const brightenedColor = color.brighten({ space: colorSpace, amount, labScale });
+  const darkenedColor = color.darken({ amount, space: colorSpace, labScale });
   const saturatedColor = color.saturate({
-    amount: intensityPercentage,
+    amount,
     space: colorSpace !== 'LAB' ? colorSpace : 'HSL',
     labScale,
   });
   const desaturatedColor = color.desaturate({
-    amount: intensityPercentage,
+    amount,
     space: colorSpace !== 'LAB' ? colorSpace : 'HSL',
     labScale,
   });
@@ -54,7 +73,15 @@ export function ColorManipulationDemo({ color }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Card title="Adjust color">
+      <Card
+        title="Adjust color"
+        codeSnippet={getAdjustColorCodeSnippet({
+          amount,
+          colorHex: color.toHex8(),
+          colorSpace,
+          labScale,
+        })}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-2 mb-4">
           <ColorBox
             color={color}
@@ -102,15 +129,16 @@ export function ColorManipulationDemo({ color }: Props) {
         <InputGroup onResetClicked={handleReset}>
           <div className="flex flex-row justify-center gap-4">
             <Slider
-              label="Intensity:"
+              label="Amount:"
               max={100}
               min={0}
               step={1}
-              value={intensityPercentage}
-              onChange={setIntensityPercentage}
+              value={amount}
+              onChange={setAmount}
             />
             <div className="flex items-center w-12 flex-shrink-0 text-left">
-              {intensityPercentage}%
+              {amount}
+              {colorSpace === 'HSL' ? '%' : ''}
             </div>
           </div>
           <Select

@@ -1,11 +1,14 @@
+import { ExpandableCodeSnippet } from './ExpandableCodeSnippet';
+
 interface Props {
   backgroundColor?: string;
   borderColor?: string;
   children: React.ReactNode;
+  codeSnippet?: string;
   title?: string;
 }
 
-export function Card({ backgroundColor, borderColor, children, title }: Props) {
+export function Card({ backgroundColor, borderColor, children, codeSnippet, title }: Props) {
   const cardJSX = (
     <div
       className={`p-4 border rounded-2xl ${borderColor ? '' : 'border-gray-200'} ${
@@ -14,6 +17,11 @@ export function Card({ backgroundColor, borderColor, children, title }: Props) {
       style={{ backgroundColor, borderColor }}
     >
       {children}
+      {codeSnippet && (
+        <div className="mt-4">
+          <ExpandableCodeSnippet codeSnippet={codeSnippet} />
+        </div>
+      )}
     </div>
   );
 
