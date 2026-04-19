@@ -446,7 +446,7 @@ function parseLAB(params: string): Color | null {
     return null;
   }
 
-  return createColorOrNull({ l, a, b });
+  return createColorOrNull({ l, a, b, format: 'LAB' });
 }
 
 function parseLCH(params: string): Color | null {
@@ -464,7 +464,7 @@ function parseLCH(params: string): Color | null {
     return null;
   }
 
-  return createColorOrNull({ l, c, h });
+  return createColorOrNull({ l, c, h, format: 'LCH' });
 }
 
 function parseOKLAB(params: string): Color | null {
