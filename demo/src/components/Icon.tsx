@@ -4,6 +4,7 @@ import ArrowTopRightOnSquare from '../assets/icons/arrow-top-right-on-square.svg
 import Check from '../assets/icons/check.svg?react';
 import CheckCircle from '../assets/icons/check-circle.svg?react';
 import ChevronDown from '../assets/icons/chevron-down.svg?react';
+import Copy from '../assets/icons/copy.svg?react';
 import Moon from '../assets/icons/moon.svg?react';
 import Plus from '../assets/icons/plus.svg?react';
 import Sun from '../assets/icons/sun.svg?react';
@@ -33,6 +34,8 @@ export function Icon({ color, size = 24, type }: Props) {
       return <CheckCircle {...iconProps} />;
     case IconType.CHEVRON_DOWN:
       return <ChevronDown {...iconProps} />;
+    case IconType.COPY:
+      return <Copy {...iconProps} />;
     case IconType.MOON:
       return <Moon {...iconProps} />;
     case IconType.PLUS:

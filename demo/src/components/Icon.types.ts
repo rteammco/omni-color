@@ -4,6 +4,7 @@ export enum IconType {
   CHECK = 'CHECK',
   CHECK_CIRCLE = 'CHECK_CIRCLE',
   CHEVRON_DOWN = 'CHEVRON_DOWN',
+  COPY = 'COPY',
   MOON = 'MOON',
   PLUS = 'PLUS',
   SUN = 'SUN',
