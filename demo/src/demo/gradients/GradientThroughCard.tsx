@@ -26,6 +26,7 @@ function getGradientThroughCodeSnippet({
   const clamp = options.clamp ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.clamp;
   const hueInterpolationMode =
     options.hueInterpolationMode ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.hueInterpolationMode;
+  const easingInput = typeof easing === 'function' ? easing.toString() : `'${easing}'`;
 
   const hueInterpolationInput =
     space !== 'RGB'
@@ -41,7 +42,7 @@ const gradient = color.createGradientThrough(stopColors, {
   stops: ${stops},
   space: '${space}',
   interpolation: '${interpolation}',
-  easing: '${easing}',
+  easing: ${easingInput},
   clamp: ${clamp}${hueInterpolationInput},
 });
 `;

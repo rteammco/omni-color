@@ -16,15 +16,15 @@ function getGradientToCodeSnippet({
 }: {
   colorHex: string;
   targetColorHex: string;
-  options: ColorGradientOptions;
+  options: Omit<ColorGradientOptions, 'interpolation'>;
 }) {
   const stops = options.stops ?? DEFAULT_COLOR_GRADIENT_TO_OPTIONS.stops;
   const space = options.space ?? DEFAULT_COLOR_GRADIENT_TO_OPTIONS.space;
-  const interpolation = options.interpolation ?? DEFAULT_COLOR_GRADIENT_TO_OPTIONS.interpolation;
   const easing = options.easing ?? DEFAULT_COLOR_GRADIENT_TO_OPTIONS.easing;
   const clamp = options.clamp ?? DEFAULT_COLOR_GRADIENT_TO_OPTIONS.clamp;
   const hueInterpolationMode =
     options.hueInterpolationMode ?? DEFAULT_COLOR_GRADIENT_TO_OPTIONS.hueInterpolationMode;
+  const easingInput = typeof easing === 'function' ? easing.toString() : `'${easing}'`;
 
   const hueInterpolationInput =
     space !== 'RGB'
@@ -39,8 +39,7 @@ const targetColor = new Color('${targetColorHex}');
 const gradient = color.createGradientTo(targetColor, {
   stops: ${stops},
   space: '${space}',
-  interpolation: '${interpolation}',
-  easing: '${easing}',
+  easing: ${easingInput},
   clamp: ${clamp}${hueInterpolationInput},
 });
 `;
