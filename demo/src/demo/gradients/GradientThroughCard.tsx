@@ -22,10 +22,17 @@ function getGradientThroughCodeSnippet({
   const space = options.space ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.space;
   const interpolation =
     options.interpolation ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.interpolation;
-  const easing = String(options.easing);
+  const easing = options.easing ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.easing;
   const clamp = options.clamp ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.clamp;
   const hueInterpolationMode =
     options.hueInterpolationMode ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.hueInterpolationMode;
+
+  const hueInterpolationInput =
+    space !== 'RGB'
+      ? `,
+  hueInterpolationMode: '${hueInterpolationMode}'`
+      : '';
+
   return `
 const color = new Color('${colorHex}');
 const stopColors = ['red', 'green', 'blue'];
@@ -35,8 +42,7 @@ const gradient = color.createGradientThrough(stopColors, {
   space: '${space}',
   interpolation: '${interpolation}',
   easing: '${easing}',
-  clamp: ${clamp},
-  hueInterpolationMode: '${hueInterpolationMode}',
+  clamp: ${clamp}${hueInterpolationInput},
 });
 `;
 }
