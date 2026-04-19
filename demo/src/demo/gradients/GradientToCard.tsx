@@ -53,12 +53,12 @@ export function GradientToCard({ color }: Props) {
 
   return (
     <Card
-      title="Gradient to"
       codeSnippet={getGradientToCodeSnippet({
         colorHex: color.toHex8(),
         targetColorHex: targetColor.toHex8(),
         options,
       })}
+      title="Gradient to"
     >
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
         {gradientColors.map((color, index) => {

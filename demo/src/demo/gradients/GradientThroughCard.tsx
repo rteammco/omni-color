@@ -68,11 +68,11 @@ export function GradientThroughCard({ color }: Props) {
 
   return (
     <Card
-      title="Gradient through red, green, and blue"
       codeSnippet={getGradientThroughCodeSnippet({
         colorHex: color.toHex8(),
         options,
       })}
+      title="Gradient through red, green, and blue"
     >
       <div className="flex flex-col sm:flex-row gap-2 mb-4">{colorBoxes}</div>
       <GradientOptionInputs

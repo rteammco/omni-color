@@ -27,6 +27,7 @@ function getAdjustColorCodeSnippet({
   const inputs = `{ amount: ${amount}, space: ${colorSpace}${labSpaceInput} }`;
   return `
 const color = new Color(${colorHex});
+
 const brightened = color.brighten(${inputs});
 const darkened = color.darken(${inputs});
 const saturated = color.saturate(${inputs});
@@ -43,6 +44,7 @@ function getSpinHueCodeSnippet({
 }) {
   return `
 const color = new Color(${colorHex});
+
 const spun = color.spin(${spinDegrees});
 `;
 }
