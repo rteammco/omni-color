@@ -34,6 +34,19 @@ const desaturated = color.desaturate(${inputs});
 `;
 }
 
+function getSpinHueCodeSnippet({
+  colorHex,
+  spinDegrees,
+}: {
+  colorHex: ColorHex;
+  spinDegrees: number;
+}) {
+  return `
+const color = new Color(${colorHex});
+const spun = color.spin(${spinDegrees});
+`;
+}
+
 interface Props {
   color: Color;
 }
@@ -159,7 +172,10 @@ export function ColorManipulationDemo({ color }: Props) {
           )}
         </InputGroup>
       </Card>
-      <Card title="Spin hue">
+      <Card
+        codeSnippet={getSpinHueCodeSnippet({ colorHex: color.toHex8(), spinDegrees })}
+        title="Spin hue"
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
           <ColorBox
             color={color}
