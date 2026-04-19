@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Color } from '../../../../dist';
+import { Color, type ColorGradientOptions } from '../../../../dist';
 import { Card } from '../../components/Card';
 import { ColorBox } from '../../components/ColorBox';
 import { GradientOptionInputs } from './GradientOptionInputs';
@@ -9,6 +9,36 @@ const STOP_COLORS = ['Red', 'Green', 'Blue'] as const;
 
 interface Props {
   color: Color;
+}
+
+function getGradientThroughCodeSnippet({
+  colorHex,
+  options,
+}: {
+  colorHex: string;
+  options: ColorGradientOptions;
+}) {
+  const stops = options.stops ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.stops;
+  const space = options.space ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.space;
+  const interpolation =
+    options.interpolation ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.interpolation;
+  const easing = String(options.easing);
+  const clamp = options.clamp ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.clamp;
+  const hueInterpolationMode =
+    options.hueInterpolationMode ?? DEFAULT_COLOR_GRADIENT_THROUGH_OPTIONS.hueInterpolationMode;
+  return `
+const color = new Color('${colorHex}');
+const stopColors = ['red', 'green', 'blue'];
+
+const gradient = color.createGradientThrough(stopColors, {
+  stops: ${stops},
+  space: '${space}',
+  interpolation: '${interpolation}',
+  easing: '${easing}',
+  clamp: ${clamp},
+  hueInterpolationMode: '${hueInterpolationMode}',
+});
+`;
 }
 
 export function GradientThroughCard({ color }: Props) {
@@ -37,7 +67,13 @@ export function GradientThroughCard({ color }: Props) {
   }, [color, options]);
 
   return (
-    <Card title="Gradient through red, green, and blue">
+    <Card
+      title="Gradient through red, green, and blue"
+      codeSnippet={getGradientThroughCodeSnippet({
+        colorHex: color.toHex8(),
+        options,
+      })}
+    >
       <div className="flex flex-col sm:flex-row gap-2 mb-4">{colorBoxes}</div>
       <GradientOptionInputs
         options={options}
