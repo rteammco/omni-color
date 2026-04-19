@@ -1,10 +1,11 @@
 import { Color } from '../color';
 import {
+  getAPCAReadabilityReport,
   getAPCAReadabilityScore,
   getBestBackgroundColorForText,
   getMostReadableTextColorForBackground,
-  getTextReadabilityReport,
   getWCAGContrastRatio,
+  getWCAGReadabilityReport,
   isTextReadable,
 } from '../readability';
 import { getColorList } from '../utils';
@@ -1390,11 +1391,11 @@ describe('getWCAGContrastRatio', () => {
   });
 });
 
-describe('getTextReadabilityReport', () => {
+describe('getWCAGReadabilityReport', () => {
   it('returns contrast ratio and shortfall information', () => {
     const fg = new Color('#555555');
     const bg = new Color('#aaaaaa');
-    const report = getTextReadabilityReport(fg, bg);
+    const report = getWCAGReadabilityReport(fg, bg);
     expect(report.contrastRatio).toBeCloseTo(3.21, 2);
     expect(report.requiredContrast).toBe(4.5);
     expect(report.isReadable).toBe(false);
@@ -1404,7 +1405,7 @@ describe('getTextReadabilityReport', () => {
   it('respects text size options', () => {
     const fg = new Color('#555555');
     const bg = new Color('#aaaaaa');
-    const report = getTextReadabilityReport(fg, bg, { size: 'LARGE' });
+    const report = getWCAGReadabilityReport(fg, bg, { size: 'LARGE' });
     expect(report.contrastRatio).toBeCloseTo(3.21, 2);
     expect(report.requiredContrast).toBe(3);
     expect(report.isReadable).toBe(true);
@@ -1430,50 +1431,50 @@ describe('isTextReadable', () => {
   it('#555555 vs #aaaaaa AA large', () => {
     const c1 = new Color('#555555');
     const c2 = new Color('#aaaaaa');
-    expect(isTextReadable(c1, c2, { size: 'LARGE' })).toBe(true);
-    expect(isTextReadable(c2, c1, { size: 'LARGE' })).toBe(true);
+    expect(isTextReadable(c1, c2, { wcagOptions: { size: 'LARGE' } })).toBe(true);
+    expect(isTextReadable(c2, c1, { wcagOptions: { size: 'LARGE' } })).toBe(true);
   });
 
   it('#666666 vs #999999 AA large', () => {
     const c1 = new Color('#666666');
     const c2 = new Color('#999999');
-    expect(isTextReadable(c1, c2, { size: 'LARGE' })).toBe(false);
-    expect(isTextReadable(c2, c1, { size: 'LARGE' })).toBe(false);
+    expect(isTextReadable(c1, c2, { wcagOptions: { size: 'LARGE' } })).toBe(false);
+    expect(isTextReadable(c2, c1, { wcagOptions: { size: 'LARGE' } })).toBe(false);
   });
 
   it('#333333 vs #cccccc AAA small', () => {
     const c1 = new Color('#333333');
     const c2 = new Color('#cccccc');
-    expect(isTextReadable(c1, c2, { level: 'AAA' })).toBe(true);
-    expect(isTextReadable(c2, c1, { level: 'AAA' })).toBe(true);
+    expect(isTextReadable(c1, c2, { wcagOptions: { level: 'AAA' } })).toBe(true);
+    expect(isTextReadable(c2, c1, { wcagOptions: { level: 'AAA' } })).toBe(true);
   });
 
   it('#444444 vs #bbbbbb AAA small', () => {
     const c1 = new Color('#444444');
     const c2 = new Color('#bbbbbb');
-    expect(isTextReadable(c1, c2, { level: 'AAA' })).toBe(false);
-    expect(isTextReadable(c2, c1, { level: 'AAA' })).toBe(false);
+    expect(isTextReadable(c1, c2, { wcagOptions: { level: 'AAA' } })).toBe(false);
+    expect(isTextReadable(c2, c1, { wcagOptions: { level: 'AAA' } })).toBe(false);
   });
 
   it('#444444 vs #bbbbbb AAA large', () => {
     const c1 = new Color('#444444');
     const c2 = new Color('#bbbbbb');
-    expect(isTextReadable(c1, c2, { level: 'AAA', size: 'LARGE' })).toBe(true);
-    expect(isTextReadable(c2, c1, { level: 'AAA', size: 'LARGE' })).toBe(true);
+    expect(isTextReadable(c1, c2, { wcagOptions: { level: 'AAA', size: 'LARGE' } })).toBe(true);
+    expect(isTextReadable(c2, c1, { wcagOptions: { level: 'AAA', size: 'LARGE' } })).toBe(true);
   });
 
   it('#555555 vs #aaaaaa AAA large', () => {
     const c1 = new Color('#555555');
     const c2 = new Color('#aaaaaa');
-    expect(isTextReadable(c1, c2, { level: 'AAA', size: 'LARGE' })).toBe(false);
-    expect(isTextReadable(c2, c1, { level: 'AAA', size: 'LARGE' })).toBe(false);
+    expect(isTextReadable(c1, c2, { wcagOptions: { level: 'AAA', size: 'LARGE' } })).toBe(false);
+    expect(isTextReadable(c2, c1, { wcagOptions: { level: 'AAA', size: 'LARGE' } })).toBe(false);
   });
 
   it('red dark 0.5 alpha on #ffffff', () => {
     const fg = new Color({ r: 153, g: 0, b: 0, a: 0.5 });
     const bg = new Color('#ffffff');
     expect(isTextReadable(fg, bg)).toBe(false);
-    expect(isTextReadable(fg, bg, { size: 'LARGE' })).toBe(true);
+    expect(isTextReadable(fg, bg, { wcagOptions: { size: 'LARGE' } })).toBe(true);
   });
 });
 
@@ -2866,7 +2867,7 @@ describe('readability selection helpers', () => {
     );
 
     const result = getMostReadableTextColorForBackground(background, candidates, {
-      textReadabilityOptions: { level: 'AAA', size: 'LARGE' },
+      wcagOptions: { level: 'AAA', size: 'LARGE' },
     });
 
     expect(result.toHex()).toBe('#000000');
@@ -2932,8 +2933,8 @@ describe('readability selection helpers', () => {
   it('accepts mixed case level and size', () => {
     const fg = new Color('black');
     const bg = new Color('white');
-    const r1 = getTextReadabilityReport(fg, bg, { level: 'AA', size: 'SMALL' });
-    const r2 = getTextReadabilityReport(fg, bg, { level: 'aa', size: 'small' });
+    const r1 = getWCAGReadabilityReport(fg, bg, { level: 'AA', size: 'SMALL' });
+    const r2 = getWCAGReadabilityReport(fg, bg, { level: 'aa', size: 'small' });
 
     expect(r1.isReadable).toBe(r2.isReadable);
     expect(r1.requiredContrast).toBe(r2.requiredContrast);
@@ -2946,5 +2947,101 @@ describe('readability selection helpers', () => {
     const best2 = getBestBackgroundColorForText(bg, [fg], { algorithm: 'apca' });
 
     expect(best1.toHex()).toBe(best2.toHex());
+  });
+});
+
+describe('APCA readability report and policy behavior', () => {
+  it('returns advisory report values with null readability fields by default', () => {
+    const foreground = new Color('#444444');
+    const background = new Color('#f8f9fb');
+
+    const report = getAPCAReadabilityReport(foreground, background);
+
+    expect(report.score).toBeCloseTo(getAPCAReadabilityScore(foreground, background), 2);
+    expect(report.absoluteScore).toBeCloseTo(Math.abs(report.score), 2);
+    expect(report.isReadable).toBeNull();
+    expect(report.requiredLc).toBeNull();
+    expect(report.shortfall).toBeNull();
+  });
+
+  it('supports custom APCA threshold pass and fail with shortfall', () => {
+    const foreground = new Color('#555555');
+    const background = new Color('#aaaaaa');
+
+    const report = getAPCAReadabilityReport(foreground, background, {
+      policy: 'CUSTOM',
+      threshold: 55,
+    });
+
+    expect(report.absoluteScore).toBeCloseTo(38.04, 2);
+    expect(report.isReadable).toBe(false);
+    expect(report.requiredLc).toBe(55);
+    expect(report.shortfall).toBeCloseTo(16.96, 2);
+
+    const passReport = getAPCAReadabilityReport(foreground, background, {
+      policy: 'CUSTOM',
+      threshold: 35,
+    });
+
+    expect(passReport.isReadable).toBe(true);
+    expect(passReport.requiredLc).toBe(35);
+    expect(passReport.shortfall).toBe(0);
+  });
+
+  it('supports APCA preset thresholds and case-insensitive preset input', () => {
+    const foreground = new Color('#555555');
+    const background = new Color('#aaaaaa');
+
+    const bodyReport = getAPCAReadabilityReport(foreground, background, {
+      policy: 'PRESET',
+      preset: 'body',
+    });
+
+    expect(bodyReport.requiredLc).toBe(60);
+    expect(bodyReport.isReadable).toBe(false);
+
+    const nonTextReport = getAPCAReadabilityReport(foreground, background, {
+      policy: 'PRESET',
+      preset: 'NON_TEXT',
+    });
+
+    expect(nonTextReport.requiredLc).toBe(30);
+    expect(nonTextReport.isReadable).toBe(true);
+    expect(nonTextReport.shortfall).toBe(0);
+  });
+
+  it('supports algorithm-aware readability helper semantics', () => {
+    const foreground = new Color('#333333');
+    const background = new Color('#ffffff');
+
+    expect(isTextReadable(foreground, background)).toBe(true);
+    expect(isTextReadable(foreground, background, { algorithm: 'APCA' })).toBe(true);
+    expect(
+      isTextReadable(foreground, background, {
+        algorithm: 'APCA',
+        apcaOptions: { policy: 'PRESET', preset: 'BODY' },
+      }),
+    ).toBe(true);
+  });
+
+  it('ranks APCA candidates by absolute score in advisory mode', () => {
+    const background = new Color('#ffffff');
+    const candidates = [new Color('#666666'), new Color('#333333')];
+
+    const advisoryBest = getMostReadableTextColorForBackground(background, candidates, {
+      algorithm: 'APCA',
+    });
+
+    const thresholdBest = getMostReadableTextColorForBackground(background, candidates, {
+      algorithm: 'APCA',
+      apcaOptions: { policy: 'CUSTOM', threshold: 80 },
+    });
+
+    const scoreCandidateOne = Math.abs(getAPCAReadabilityScore(candidates[0], background));
+    const scoreCandidateTwo = Math.abs(getAPCAReadabilityScore(candidates[1], background));
+
+    expect(scoreCandidateOne).toBeLessThan(scoreCandidateTwo);
+    expect(advisoryBest.toHex()).toBe('#333333');
+    expect(thresholdBest.toHex()).toBe('#333333');
   });
 });

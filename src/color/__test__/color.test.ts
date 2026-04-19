@@ -15,7 +15,7 @@ import type {
   ColorRGB,
 } from '../formats';
 import { getRandomColorRGBA } from '../random';
-import type { ReadabilityComparisonOptions } from '../readability';
+import type { ReadabilityOptions } from '../readability';
 import { getColorFromTemperatureLabel } from '../temperature';
 
 jest.mock('../random', () => {
@@ -837,6 +837,49 @@ describe('Color.getReadabilityScore', () => {
   });
 });
 
+describe('Color.getAPCAReadabilityReport', () => {
+  it('returns APCA advisory report by default and supports threshold policy options', () => {
+    const foreground = new Color('#555555');
+    const background = new Color('#aaaaaa');
+
+    const advisory = foreground.getAPCAReadabilityReport(background);
+    expect(advisory.isReadable).toBeNull();
+    expect(advisory.requiredLc).toBeNull();
+    expect(advisory.shortfall).toBeNull();
+
+    const presetReport = foreground.getAPCAReadabilityReport(background, {
+      policy: 'PRESET',
+      preset: 'LARGE_TEXT',
+    });
+    expect(presetReport.requiredLc).toBe(45);
+    expect(presetReport.isReadable).toBe(false);
+
+    const customReport = foreground.getAPCAReadabilityReport(background, {
+      policy: 'CUSTOM',
+      threshold: 35,
+    });
+    expect(customReport.requiredLc).toBe(35);
+    expect(customReport.isReadable).toBe(true);
+    expect(customReport.shortfall).toBe(0);
+  });
+});
+
+describe('Color.isReadableAsTextColor with APCA options', () => {
+  it('returns null for APCA advisory mode and boolean for threshold mode', () => {
+    const foreground = new Color('#333333');
+    const background = new Color('#ffffff');
+
+    expect(foreground.isReadableAsTextColor(background)).toBe(true);
+    expect(foreground.isReadableAsTextColor(background, { algorithm: 'APCA' })).toBe(true);
+    expect(
+      foreground.isReadableAsTextColor(background, {
+        algorithm: 'APCA',
+        apcaOptions: { policy: 'PRESET', preset: 'BODY' },
+      }),
+    ).toBe(true);
+  });
+});
+
 describe('Color.getMostReadableTextColor', () => {
   it('returns the text color with the strongest WCAG readability', () => {
     const background = new Color('#ffffff');
@@ -897,17 +940,17 @@ describe('Color.getMostReadableTextColor', () => {
   });
 });
 
-describe('Color.getTextReadabilityReport', () => {
+describe('Color.getWCAGReadabilityReport', () => {
   it('provides readability details for color pairs', () => {
     const c1 = new Color('#444444');
     const c2 = new Color('#bbbbbb');
-    const report = c1.getTextReadabilityReport(c2);
+    const report = c1.getWCAGReadabilityReport(c2);
     expect(report.contrastRatio).toBeCloseTo(5.07, 2);
     expect(report.requiredContrast).toBe(4.5);
     expect(report.isReadable).toBe(true);
     expect(report.shortfall).toBeCloseTo(0, 2);
 
-    const stricter = c1.getTextReadabilityReport(c2, { level: 'AAA' });
+    const stricter = c1.getWCAGReadabilityReport(c2, { level: 'AAA' });
     expect(stricter.isReadable).toBe(false);
     expect(stricter.requiredContrast).toBe(7);
   });
@@ -915,7 +958,7 @@ describe('Color.getTextReadabilityReport', () => {
   it('respects text size options', () => {
     const c1 = new Color('#555555');
     const c2 = new Color('#aaaaaa');
-    const report = c1.getTextReadabilityReport(c2, { size: 'LARGE' });
+    const report = c1.getWCAGReadabilityReport(c2, { size: 'LARGE' });
     expect(report.contrastRatio).toBeCloseTo(3.21, 2);
     expect(report.requiredContrast).toBe(3);
     expect(report.isReadable).toBe(true);
@@ -925,7 +968,7 @@ describe('Color.getTextReadabilityReport', () => {
   it('treats readability options in a case-insensitive way', () => {
     const c1 = new Color('#555555');
     const c2 = new Color('#aaaaaa');
-    const report = c1.getTextReadabilityReport(c2, { level: 'aaa', size: 'large' });
+    const report = c1.getWCAGReadabilityReport(c2, { level: 'aaa', size: 'large' });
 
     expect(report.contrastRatio).toBeCloseTo(3.21, 2);
     expect(report.requiredContrast).toBe(4.5);
@@ -940,8 +983,8 @@ describe('Color.isReadableAsTextColor', () => {
     const c2 = new Color('#bbbbbb');
     expect(c1.isReadableAsTextColor(c2)).toBe(true);
     expect(c2.isReadableAsTextColor(c1)).toBe(true);
-    expect(c1.isReadableAsTextColor(c2, { level: 'AAA' })).toBe(false);
-    expect(c2.isReadableAsTextColor(c1, { level: 'AAA' })).toBe(false);
+    expect(c1.isReadableAsTextColor(c2, { wcagOptions: { level: 'AAA' } })).toBe(false);
+    expect(c2.isReadableAsTextColor(c1, { wcagOptions: { level: 'AAA' } })).toBe(false);
   });
 });
 
@@ -961,8 +1004,8 @@ describe('Color.getBestBackgroundColor', () => {
     const textColor = new Color('#808080');
     const paleGray = new Color('#c0c0c0');
     const black = new Color('#000000');
-    const options: ReadabilityComparisonOptions = {
-      textReadabilityOptions: { level: 'AAA', size: 'SMALL' },
+    const options: ReadabilityOptions = {
+      wcagOptions: { level: 'AAA', size: 'SMALL' },
     };
 
     const result = textColor.getBestBackgroundColor([paleGray, black], options);

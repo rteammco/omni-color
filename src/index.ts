@@ -38,12 +38,16 @@ import type { BaseColorName, ColorLightnessModifier } from './color/names';
 import { ColorNameAndLightness } from './color/names';
 import { RandomColorOptions } from './color/random';
 import type {
+  APCAReadabilityOptions,
+  APCAReadabilityPolicy,
+  APCAReadabilityReport,
+  APCAThresholdPreset,
   ReadabilityAlgorithm,
-  ReadabilityComparisonOptions,
-  TextReadabilityConformanceLevel,
-  TextReadabilityTextSizeOptions,
+  ReadabilityOptions,
+  WCAGReadabilityConformanceLevel,
+  WCAGReadabilityTextSizeOptions,
 } from './color/readability';
-import { TextReadabilityOptions, TextReadabilityReport } from './color/readability';
+import { WCAGReadabilityOptions, WCAGReadabilityReport } from './color/readability';
 import { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
 import type { ColorTemperatureLabel } from './color/temperature';
 import { ColorTemperatureAndLabel, ColorTemperatureStringFormatOptions } from './color/temperature';
@@ -51,6 +55,10 @@ import { ColorDarknessMode, IsColorDarkOptions } from './color/utils';
 import { ColorPalette, GenerateColorPaletteOptions } from './palette/palette';
 
 export {
+  APCAReadabilityOptions,
+  type APCAReadabilityPolicy,
+  APCAReadabilityReport,
+  type APCAThresholdPreset,
   AverageColorsOptions,
   type BaseColorName,
   BlendColorsOptions,
@@ -107,9 +115,9 @@ export {
   type MixType,
   RandomColorOptions,
   type ReadabilityAlgorithm,
-  ReadabilityComparisonOptions,
-  type TextReadabilityConformanceLevel,
-  TextReadabilityOptions,
-  TextReadabilityReport,
-  type TextReadabilityTextSizeOptions,
+  ReadabilityOptions,
+  type WCAGReadabilityConformanceLevel,
+  WCAGReadabilityOptions,
+  WCAGReadabilityReport,
+  type WCAGReadabilityTextSizeOptions,
 };

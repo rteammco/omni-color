@@ -355,7 +355,7 @@ describe('Color interoperability with tinycolor2', () => {
       const opaqueForeground = '#1a1a1a';
       const opaqueBackground = '#fafafa';
 
-      const opaqueReport = new Color(opaqueForeground).getTextReadabilityReport(opaqueBackground);
+      const opaqueReport = new Color(opaqueForeground).getWCAGReadabilityReport(opaqueBackground);
       const tinyOpaqueReadable = tinycolor.isReadable(opaqueForeground, opaqueBackground, {
         level: 'AA',
         size: 'small',
@@ -370,7 +370,7 @@ describe('Color interoperability with tinycolor2', () => {
       const semiTransparentForeground = 'rgba(0, 0, 0, 0.5)';
       const semiTransparentBackground = '#ffffff';
 
-      const semiTransparentReport = new Color(semiTransparentForeground).getTextReadabilityReport(
+      const semiTransparentReport = new Color(semiTransparentForeground).getWCAGReadabilityReport(
         semiTransparentBackground,
       );
       const tinySemiReadable = tinycolor.isReadable(

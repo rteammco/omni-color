@@ -819,6 +819,11 @@ palette.info[500].toHex(); // '#9d40d4'
 
 ### Readability and Accessibility
 
+`omni-color` supports two readability algorithms:
+
+- **WCAG 2.x contrast ratio** (`getContrastRatio`, `getWCAGReadabilityReport`, `isReadableAsTextColor`) for established pass/fail conformance checks.
+- **APCA Lc score** (`getReadabilityScore`, `getAPCAReadabilityReport`) for directional contrast analysis. APCA is still draft guidance for WCAG 3, so this library defaults APCA to **advisory mode** unless you opt into a threshold policy.
+
 #### `getContrastRatio(color: Color | ColorFormat | string): number`
 
 - <ins>Returns</ins> the WCAG contrast ratio against another color (alpha-aware).
@@ -833,7 +838,7 @@ new Color('#000000').getContrastRatio('#ffffff'); // 21
 
 **Note:** This implementation uses the `0.0.98G-4g` constants from the draft APCA recommendations. As WCAG 3 is not yet finalized, this score is experimental and provided for advisory use only.
 
-- <ins>Returns</ins> the APCA readability score (Lc) against a background color.
+- <ins>Returns</ins> the signed APCA readability score (Lc) against a background color.
 - <ins>Inputs</ins>:
   - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
 
@@ -841,36 +846,73 @@ new Color('#000000').getContrastRatio('#ffffff'); // 21
 new Color('#1a73e8').getReadabilityScore('#ffffff'); // e.g. 71.61
 ```
 
-#### `getTextReadabilityReport(background: Color | ColorFormat | string, options?: TextReadabilityOptions): TextReadabilityReport`
+#### `getAPCAReadabilityReport(background: Color | ColorFormat | string, options?: APCAReadabilityOptions): APCAReadabilityReport`
+
+- <ins>Returns</ins> APCA score metadata: `{ score, absoluteScore, isReadable, requiredLc, shortfall }`.
+- <ins>Inputs</ins>:
+  - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
+  - `options` (optional) - `APCAReadabilityOptions`:
+    - `policy` - `'NONE' | 'PRESET' | 'CUSTOM'` (default: `'NONE'`).
+      - `'NONE'` is advisory-only: `isReadable`, `requiredLc`, and `shortfall` are `null`.
+      - `'PRESET'` uses a named threshold via `preset`.
+      - `'CUSTOM'` uses an explicit numeric Lc threshold via `threshold`.
+    - `preset` - `'BODY' | 'LARGE_TEXT' | 'NON_TEXT' | 'VERY_LOW_VISION'` (default: `'BODY'` when policy is `'PRESET'`).
+    - `threshold` - custom required absolute Lc when policy is `'CUSTOM'`.
+
+```ts
+const textColor = new Color('#4b5563');
+
+// Advisory APCA (default): no pass/fail classification
+textColor.getAPCAReadabilityReport('#ffffff');
+// { score: 51.42, absoluteScore: 51.42, isReadable: null, requiredLc: null, shortfall: null }
+
+// Preset threshold policy
+textColor.getAPCAReadabilityReport('#ffffff', { policy: 'PRESET', preset: 'BODY' });
+// { ..., isReadable: false, requiredLc: 60, shortfall: 8.58 }
+
+// Custom threshold policy
+textColor.getAPCAReadabilityReport('#ffffff', { policy: 'CUSTOM', threshold: 45 });
+// { ..., isReadable: true, requiredLc: 45, shortfall: 0 }
+```
+
+#### `getWCAGReadabilityReport(background: Color | ColorFormat | string, options?: WCAGReadabilityOptions): WCAGReadabilityReport`
 
 - <ins>Returns</ins> `{ contrastRatio, requiredContrast, isReadable, shortfall }` for WCAG levels `"AA" | "AAA"` and text sizes `"SMALL" | "LARGE"`.
 - <ins>Inputs</ins>:
   - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
-  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level (`"AA" | "AAA"`) and text size (`"SMALL" | "LARGE"`). Defaults to `level: "AA"` and `size: "SMALL"`.
+  - `options` (optional) - `WCAGReadabilityOptions` specifying WCAG level (`"AA" | "AAA"`) and text size (`"SMALL" | "LARGE"`). Defaults to `level: "AA"` and `size: "SMALL"`.
 
 ```ts
-new Color('#444').getTextReadabilityReport(new Color('#bbb'), { level: 'AA', size: 'LARGE' });
+new Color('#444').getWCAGReadabilityReport(new Color('#bbb'), { level: 'AA', size: 'LARGE' });
 // { contrastRatio: 5.07, requiredContrast: 3, isReadable: true, shortfall: 0 }
 ```
 
-#### `isReadableAsTextColor(background: Color | ColorFormat | string, options?: TextReadabilityOptions): boolean`
+#### `isReadableAsTextColor(background: Color | ColorFormat | string, options?: ReadabilityOptions): boolean`
 
-- <ins>Returns</ins> `true` if the color meets the specified WCAG contrast requirements against a background color.
+- <ins>Returns</ins> readability pass/fail (`true` or `false`) for the selected algorithm.
 - <ins>Inputs</ins>:
   - `background` - the background [`Color`](#types-color), [`ColorFormat`](#types-color-format), or parsable color input.
-  - `options` (optional) - `TextReadabilityOptions` specifying WCAG level and text size. Defaults to `level: "AA"` and `size: "SMALL"`.
+  - `options` (optional) - `ReadabilityOptions`:
+    - `algorithm` - `'WCAG' | 'APCA'` (defaults to `'WCAG'`).
+    - `wcagOptions` - WCAG level/size options used only when algorithm is `'WCAG'`.
+    - `apcaOptions` - APCA policy options used only when algorithm is `'APCA'`. If omitted or advisory (`policy: 'NONE'`), this method uses a default APCA pass threshold of `BODY` (`Lc >= 60`).
 
 ```ts
 new Color('#000000').isReadableAsTextColor('#ffffff'); // true
+new Color('#000000').isReadableAsTextColor('#ffffff', { algorithm: 'APCA' }); // true
+new Color('#000000').isReadableAsTextColor('#ffffff', {
+  algorithm: 'APCA',
+  apcaOptions: { policy: 'PRESET', preset: 'BODY' },
+}); // true
 ```
 
-#### `getMostReadableTextColor(candidateTextColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityComparisonOptions): Color`
+#### `getMostReadableTextColor(candidateTextColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityOptions): Color`
 
 - <ins>Returns</ins> the candidate [`Color`](#types-color) with the strongest readability against the current color used as the background.
 - <ins>Inputs</ins>:
   - `candidateTextColors` - one or more candidate text colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), parsable color inputs, or a [`ColorSwatch`](#types-color-swatch) to choose from.
     - **Empty list of candidate colors will throw an exception.**
-  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs. Defaults to `"WCAG"` contrast.
+  - `options` (optional) - `ReadabilityOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring. You can pass `wcagOptions` for WCAG and/or `apcaOptions` for APCA policy (`'NONE'`, `'PRESET'`, `'CUSTOM'`). Defaults to `"WCAG"` contrast.
 
 ```ts
 const background = new Color('#121212');
@@ -883,13 +925,13 @@ const bestSwatchColor = background.getMostReadableTextColor(
 bestSwatchColor.toHex(); // '#f5f8ff'
 ```
 
-#### `getBestBackgroundColor(candidateBackgroundColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityComparisonOptions): Color`
+#### `getBestBackgroundColor(candidateBackgroundColors: Array<Color | ColorFormat | string> | ColorSwatch, options?: ReadabilityOptions): Color`
 
 - <ins>Returns</ins> the background [`Color`](#types-color) that maximizes readability for the current color used as text.
 - <ins>Inputs</ins>:
   - `candidateBackgroundColors` - one or more candidate background colors as [`Color`](#types-color), [`ColorFormat`](#types-color-format), parsable color inputs, or a [`ColorSwatch`](#types-color-swatch) to choose from.
     - **Empty list of candidate colors will throw an exception.**
-  - `options` (optional) - `ReadabilityComparisonOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring and pass optional WCAG text readability inputs. Defaults to `"WCAG"` contrast.
+  - `options` (optional) - `ReadabilityOptions` to choose between `"WCAG"` contrast or `"APCA"` scoring. You can pass `wcagOptions` for WCAG and/or `apcaOptions` for APCA policy (`'NONE'`, `'PRESET'`, `'CUSTOM'`). Defaults to `"WCAG"` contrast.
 
 ```ts
 const textColor = new Color('#ff7f50');
