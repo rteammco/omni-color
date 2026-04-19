@@ -204,6 +204,19 @@ describe('parseCSSColorFormatString', () => {
     );
   });
 
+  it('parses very small LAB/LCH percentage lightness like canonical LAB/LCH (not OKLAB/OKLCH)', () => {
+    const labHalfPercent = parseCSSColorFormatString('lab(0.5% 0 0)')?.toHex();
+    const labHalfUnit = parseCSSColorFormatString('lab(0.5 0 0)')?.toHex();
+    expect(labHalfPercent).toBe(labHalfUnit);
+
+    const lchHalfPercent = parseCSSColorFormatString('lch(0.5% 0 0)')?.toHex();
+    const lchHalfUnit = parseCSSColorFormatString('lch(0.5 0 0)')?.toHex();
+    expect(lchHalfPercent).toBe(lchHalfUnit);
+
+    expect(labHalfPercent).not.toBe(parseCSSColorFormatString('oklab(0.5 0 0)')?.toHex());
+    expect(lchHalfPercent).not.toBe(parseCSSColorFormatString('oklch(0.5 0 0)')?.toHex());
+  });
+
   it('parses OKLCH inputs', () => {
     expect(parseCSSColorFormatString('oklch(0 0 0)')?.toHex()).toBe('#000000');
     expect(parseCSSColorFormatString('oklch(1 0 89.876)')?.toHex()).toBe('#ffffff');
