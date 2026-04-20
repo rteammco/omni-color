@@ -87,9 +87,10 @@ export function ToastProvider({ children }: PropsWithChildren) {
           const variantStyles = getToastVariantStyles(toast.variant);
           return (
             <div
+              aria-atomic="true"
               className="pointer-events-auto rounded-xl border border-slate-200 bg-white/95 p-3 text-left shadow-lg backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/95"
               key={toast.id}
-              role="status"
+              role={toast.variant === 'ERROR' ? 'alert' : 'status'}
             >
               <div className="flex items-center gap-3">
                 <span className={variantStyles.iconClassName}>
