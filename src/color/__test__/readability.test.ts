@@ -3050,24 +3050,24 @@ describe('APCA readability report and policy behavior', () => {
     const background = new Color('#ffffff');
 
     expect(() => isTextReadable(foreground, background, { algorithm: 'INVALID' as never })).toThrow(
-      'Invalid algorithm',
+      "Invalid 'algorithm'",
     );
     expect(() =>
       getWCAGReadabilityReport(foreground, background, { level: 'INVALID' as never }),
-    ).toThrow('Invalid level');
+    ).toThrow("Invalid 'level'");
     expect(() =>
       getWCAGReadabilityReport(foreground, background, { size: 'INVALID' as never }),
-    ).toThrow('Invalid size');
+    ).toThrow("Invalid 'size'");
     expect(() =>
       getAPCAReadabilityReport(foreground, background, {
         policy: 'INVALID' as never,
       }),
-    ).toThrow('Invalid policy');
+    ).toThrow("Invalid 'policy'");
     expect(() =>
       getAPCAReadabilityReport(foreground, background, {
         policy: 'PRESET',
         preset: 'INVALID' as never,
       }),
-    ).toThrow('Invalid preset');
+    ).toThrow("Invalid 'preset'");
   });
 });

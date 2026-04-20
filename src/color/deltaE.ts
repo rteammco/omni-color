@@ -1,5 +1,4 @@
-import type { CaseInsensitive } from '../utils';
-import { resolveCaseInsensitiveOption } from '../utils';
+import { type CaseInsensitive, resolveCaseInsensitiveOption } from '../utils';
 import type { Color } from './color';
 
 const DELTA_E_METHODS = ['CIE76', 'CIE94', 'CIEDE2000'] as const;
@@ -175,10 +174,10 @@ function deltaECIEDE2000(colorA: Color, colorB: Color, options: CIEDE2000Options
 
 export function getDeltaE(colorA: Color, colorB: Color, options: DeltaEOptions = {}): number {
   const method = resolveCaseInsensitiveOption({
-    value: options.method,
     allowedValues: DELTA_E_METHODS,
     defaultValue: 'CIEDE2000',
-    optionName: 'method',
+    key: 'method',
+    options,
   });
 
   if (method === 'CIE76') {

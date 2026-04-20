@@ -952,7 +952,7 @@ describe('getHarmonyColors', () => {
 
   it('throws for unknown harmony type', () => {
     expect(() => getHarmonyColors(new Color('#ff0000'), 'unknown' as ColorHarmony)).toThrow(
-      'Invalid harmony',
+      "Invalid 'harmony'",
     );
   });
 
@@ -961,6 +961,6 @@ describe('getHarmonyColors', () => {
       getComplementaryColors(new Color('#808080'), {
         grayscaleHandlingMode: 'unknown' as never,
       }),
-    ).toThrow('Invalid grayscaleHandlingMode');
+    ).toThrow("Invalid 'grayscaleHandlingMode'");
   });
 });

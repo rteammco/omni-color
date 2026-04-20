@@ -18,56 +18,95 @@ function getAllowedOptionList<T extends string>(allowedValues: readonly T[]): st
   return allowedValues.join(', ');
 }
 
-export function resolveCaseInsensitiveOption<T extends string>({
-  value,
+// Type signature: If the given `defaultValue` is `null`, then the return type will be either
+// the resolved value if present, or `null` if the key was not provided.
+export function resolveCaseInsensitiveOption<
+  T extends object,
+  K extends keyof T,
+  V extends Extract<T[K], string>,
+>({
   allowedValues,
   defaultValue,
-  optionName,
+  key,
+  options,
 }: {
-  value: unknown;
-  allowedValues: readonly T[];
-  defaultValue: T;
-  optionName: string;
-}): T {
+  allowedValues: readonly V[];
+  defaultValue: null;
+  key: K;
+  options: T;
+}): V | null;
+// Type signature: If the given `defaultValue` is one of the options, then the return type will always be
+// non-null - either the resolved value, or the given `defaultValue` if the key was not provided.
+export function resolveCaseInsensitiveOption<
+  T extends object,
+  K extends keyof T,
+  V extends Extract<T[K], string>,
+>({
+  allowedValues,
+  defaultValue,
+  key,
+  options,
+}: {
+  allowedValues: readonly V[];
+  defaultValue: V;
+  key: K;
+  options: T;
+}): V;
+// Function implementation:
+export function resolveCaseInsensitiveOption<
+  T extends object,
+  K extends keyof T,
+  V extends Extract<T[K], string>,
+>({
+  allowedValues,
+  defaultValue,
+  key,
+  options,
+}: {
+  allowedValues: readonly V[];
+  defaultValue: V | null;
+  key: K;
+  options: T;
+}): V | null {
+  const value = options[key];
+
   if (value === undefined || value === null) {
     return defaultValue;
   }
 
   if (typeof value !== 'string') {
     throw new Error(
-      `Invalid ${optionName}: expected one of ${getAllowedOptionList(allowedValues)}, got ${String(value)}`,
+      `Invalid '${String(key)}': "${value}". Expected one of ${getAllowedOptionList(allowedValues)}`,
     );
   }
 
   const normalized = value.trim().toUpperCase();
   if ((allowedValues as readonly string[]).includes(normalized)) {
-    return normalized as T;
+    return normalized as V;
   }
 
   throw new Error(
-    `Invalid ${optionName}: "${value}". Expected one of ${getAllowedOptionList(allowedValues)}`,
+    `Invalid '${String(key)}': "${value}". Expected one of ${getAllowedOptionList(allowedValues)}`,
   );
 }
 
-export function resolveRequiredCaseInsensitiveOption<T extends string>({
-  value,
-  allowedValues,
-  optionName,
-}: {
-  value: unknown;
-  allowedValues: readonly T[];
-  optionName: string;
-}): T {
+export function resolveRequiredCaseInsensitiveOption<
+  T extends object,
+  K extends keyof T,
+  V extends Extract<T[K], string>,
+>({ allowedValues, key, options }: { allowedValues: readonly V[]; key: K; options: T }): V {
+  const value = options[key];
+
   if (value === undefined || value === null) {
     throw new Error(
-      `Missing required ${optionName}. Expected one of ${getAllowedOptionList(allowedValues)}`,
+      `Missing required option '${String(key)}'. Expected one of ${getAllowedOptionList(allowedValues)}`,
     );
   }
 
   return resolveCaseInsensitiveOption({
-    value,
     allowedValues,
     defaultValue: allowedValues[0],
-    optionName,
+    key,
+    options,
   });
 }

@@ -299,7 +299,7 @@ describe('isColorDark', () => {
       isColorDark(new Color('#ffffff'), {
         colorDarknessMode: 'INVALID' as never,
       }),
-    ).toThrow('Invalid colorDarknessMode');
+    ).toThrow("Invalid 'colorDarknessMode'");
   });
 
   it('allows customizing the WCAG threshold', () => {
@@ -437,20 +437,20 @@ describe('getColorRGBAFromInput', () => {
 describe('resolveCaseInsensitiveOption', () => {
   it('normalizes mixed casing and trims whitespace', () => {
     const resolved = resolveCaseInsensitiveOption({
-      value: '  yiQ  ',
       allowedValues: ['WCAG', 'YIQ'],
       defaultValue: 'WCAG',
-      optionName: 'colorDarknessMode',
+      key: 'colorDarknessMode',
+      options: { colorDarknessMode: '  yiQ  ' },
     });
     expect(resolved).toBe('YIQ');
   });
 
   it('returns the default when value is undefined', () => {
     const resolved = resolveCaseInsensitiveOption({
-      value: undefined,
       allowedValues: ['WCAG', 'YIQ'],
       defaultValue: 'WCAG',
-      optionName: 'colorDarknessMode',
+      key: 'colorDarknessMode',
+      options: {} as { colorDarknessMode: 'WCAG' | 'YIQ' },
     });
     expect(resolved).toBe('WCAG');
   });
@@ -458,22 +458,22 @@ describe('resolveCaseInsensitiveOption', () => {
   it('throws for unknown values', () => {
     expect(() =>
       resolveCaseInsensitiveOption({
-        value: 'unknown',
         allowedValues: ['WCAG', 'YIQ'],
         defaultValue: 'WCAG',
-        optionName: 'colorDarknessMode',
+        key: 'colorDarknessMode',
+        options: { colorDarknessMode: 'unknown' },
       }),
-    ).toThrow('Invalid colorDarknessMode');
+    ).toThrow("Invalid 'colorDarknessMode'");
   });
 
   it('throws for non-string values', () => {
     expect(() =>
       resolveCaseInsensitiveOption({
-        value: 123,
         allowedValues: ['WCAG', 'YIQ'],
         defaultValue: 'WCAG',
-        optionName: 'colorDarknessMode',
+        key: 'colorDarknessMode',
+        options: { colorDarknessMode: 123 as never as string }, // test different type
       }),
-    ).toThrow('Invalid colorDarknessMode');
+    ).toThrow("Invalid 'colorDarknessMode'");
   });
 });

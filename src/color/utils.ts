@@ -149,10 +149,10 @@ function isColorDarkYIQ(color: Color, threshold: number): boolean {
 // Checks if a color is dark based on the specified algorithm and threshold.
 export function isColorDark(color: Color, options: IsColorDarkOptions = {}): boolean {
   const colorDarknessMode = resolveCaseInsensitiveOption({
-    value: options.colorDarknessMode,
     allowedValues: COLOR_DARKNESS_MODES,
     defaultValue: 'WCAG',
-    optionName: 'colorDarknessMode',
+    key: 'colorDarknessMode',
+    options,
   });
 
   if (colorDarknessMode === 'YIQ') {

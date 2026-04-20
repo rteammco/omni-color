@@ -122,17 +122,17 @@ describe('createColorGradient', () => {
     const anchors = [new Color('#ff0000'), new Color('#0000ff')];
 
     expect(() => createColorGradient(anchors, { space: 'INVALID' as never })).toThrow(
-      'Invalid space',
+      "Invalid 'space'",
     );
     expect(() => createColorGradient(anchors, { interpolation: 'INVALID' as never })).toThrow(
-      'Invalid interpolation',
+      "Invalid 'interpolation'",
     );
     expect(() => createColorGradient(anchors, { easing: 'INVALID' as never })).toThrow(
-      'Invalid easing',
+      "Invalid 'easing'",
     );
     expect(() =>
       createColorGradient(anchors, { hueInterpolationMode: 'INVALID' as never }),
-    ).toThrow('Invalid hueInterpolationMode');
+    ).toThrow("Invalid 'hueInterpolationMode'");
   });
 });
 

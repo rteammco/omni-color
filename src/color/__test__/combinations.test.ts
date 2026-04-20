@@ -773,16 +773,16 @@ describe('LINEAR_RGB robustness', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
 
-    expect(() => mixColors([red, blue], { type: 'INVALID' as never })).toThrow('Invalid type');
-    expect(() => mixColors([red, blue], { space: 'INVALID' as never })).toThrow('Invalid space');
+    expect(() => mixColors([red, blue], { type: 'INVALID' as never })).toThrow("Invalid 'type'");
+    expect(() => mixColors([red, blue], { space: 'INVALID' as never })).toThrow("Invalid 'space'");
   });
 
   it('throws for invalid blend option values', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
 
-    expect(() => blendColors(red, blue, { mode: 'INVALID' as never })).toThrow('Invalid mode');
-    expect(() => blendColors(red, blue, { space: 'INVALID' as never })).toThrow('Invalid space');
+    expect(() => blendColors(red, blue, { mode: 'INVALID' as never })).toThrow("Invalid 'mode'");
+    expect(() => blendColors(red, blue, { space: 'INVALID' as never })).toThrow("Invalid 'space'");
   });
 
   it('throws for invalid average option values', () => {
@@ -790,7 +790,7 @@ describe('LINEAR_RGB robustness', () => {
     const blue = new Color('#0000ff');
 
     expect(() => averageColors([red, blue], { space: 'INVALID' as never })).toThrow(
-      'Invalid space',
+      "Invalid 'space'",
     );
   });
 });

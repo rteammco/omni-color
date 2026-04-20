@@ -3,6 +3,21 @@ import type { Color } from './color';
 import type { ColorRGBA } from './formats';
 import { getRelativeLuminance } from './utils';
 
+const APCA_THRESHOLD_PRESETS = ['BODY', 'LARGE_TEXT', 'NON_TEXT', 'VERY_LOW_VISION'] as const;
+export type APCAThresholdPreset = (typeof APCA_THRESHOLD_PRESETS)[number];
+
+const APCA_READABILITY_POLICIES = ['NONE', 'PRESET', 'CUSTOM'] as const;
+export type APCAReadabilityPolicy = (typeof APCA_READABILITY_POLICIES)[number];
+
+const WCAG_CONFORMANCE_LEVELS = ['AA', 'AAA'] as const;
+export type WCAGReadabilityConformanceLevel = (typeof WCAG_CONFORMANCE_LEVELS)[number];
+
+const WCAG_TEXT_SIZES = ['SMALL', 'LARGE'] as const;
+export type WCAGReadabilityTextSizeOptions = (typeof WCAG_TEXT_SIZES)[number];
+
+const READABILITY_ALGORITHMS = ['WCAG', 'APCA'] as const;
+export type ReadabilityAlgorithm = (typeof READABILITY_ALGORITHMS)[number];
+
 // Does alpha blending between the two RGBA colors. Calculates what the a
 // semi-transparent foreground color would look like on the background color.
 function getCompositeRGBA(fg: ColorRGBA, bg: ColorRGBA): ColorRGBA {
@@ -134,17 +149,6 @@ export function getAPCAReadabilityScore(foreground: Color, background: Color): n
   return getAPCAContrast(txtY, bgY);
 }
 
-const APCA_THRESHOLD_PRESETS = ['BODY', 'LARGE_TEXT', 'NON_TEXT', 'VERY_LOW_VISION'] as const;
-const APCA_READABILITY_POLICIES = ['NONE', 'PRESET', 'CUSTOM'] as const;
-const WCAG_CONFORMANCE_LEVELS = ['AA', 'AAA'] as const;
-const WCAG_TEXT_SIZES = ['SMALL', 'LARGE'] as const;
-const READABILITY_ALGORITHMS = ['WCAG', 'APCA'] as const;
-export type APCAThresholdPreset = (typeof APCA_THRESHOLD_PRESETS)[number];
-export type APCAReadabilityPolicy = (typeof APCA_READABILITY_POLICIES)[number];
-export type WCAGReadabilityConformanceLevel = (typeof WCAG_CONFORMANCE_LEVELS)[number];
-export type WCAGReadabilityTextSizeOptions = (typeof WCAG_TEXT_SIZES)[number];
-export type ReadabilityAlgorithm = (typeof READABILITY_ALGORITHMS)[number];
-
 export interface APCAReadabilityOptions {
   policy?: CaseInsensitive<APCAReadabilityPolicy>;
   preset?: CaseInsensitive<APCAThresholdPreset>;
@@ -168,10 +172,10 @@ const APCA_REQUIRED_PRESETS = {
 
 function getAPCARequiredLc(options: APCAReadabilityOptions = {}): number | null {
   const policy = resolveCaseInsensitiveOption({
-    value: options.policy,
     allowedValues: APCA_READABILITY_POLICIES,
     defaultValue: 'NONE',
-    optionName: 'policy',
+    key: 'policy',
+    options,
   });
 
   if (policy === 'NONE') {
@@ -183,10 +187,10 @@ function getAPCARequiredLc(options: APCAReadabilityOptions = {}): number | null 
   }
 
   const preset = resolveCaseInsensitiveOption({
-    value: options.preset,
     allowedValues: APCA_THRESHOLD_PRESETS,
     defaultValue: 'BODY',
-    optionName: 'preset',
+    key: 'preset',
+    options,
   });
   return APCA_REQUIRED_PRESETS[preset];
 }
@@ -289,16 +293,16 @@ export function getWCAGReadabilityReport(
   options: WCAGReadabilityOptions = {},
 ): WCAGReadabilityReport {
   const level = resolveCaseInsensitiveOption({
-    value: options.level,
     allowedValues: WCAG_CONFORMANCE_LEVELS,
     defaultValue: 'AA',
-    optionName: 'level',
+    key: 'level',
+    options,
   });
   const size = resolveCaseInsensitiveOption({
-    value: options.size,
     allowedValues: WCAG_TEXT_SIZES,
     defaultValue: 'SMALL',
-    optionName: 'size',
+    key: 'size',
+    options,
   });
 
   const contrastRatio = getWCAGContrastRatio(foreground, background);
@@ -317,10 +321,10 @@ export function isTextReadable(
   options: ReadabilityOptions = {},
 ): boolean {
   const algorithm = resolveCaseInsensitiveOption({
-    value: options.algorithm,
     allowedValues: READABILITY_ALGORITHMS,
     defaultValue: 'WCAG',
-    optionName: 'algorithm',
+    key: 'algorithm',
+    options,
   });
 
   if (algorithm === 'APCA') {
@@ -337,10 +341,10 @@ function getReadabilityComparisonResult(
   options: ReadabilityOptions = {},
 ): ReadabilityComparisonResult {
   const algorithm = resolveCaseInsensitiveOption({
-    value: options.algorithm,
     allowedValues: READABILITY_ALGORITHMS,
     defaultValue: 'WCAG',
-    optionName: 'algorithm',
+    key: 'algorithm',
+    options,
   });
   const { apcaOptions, wcagOptions } = options;
 

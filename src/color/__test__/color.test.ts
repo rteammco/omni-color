@@ -1285,15 +1285,15 @@ describe('Color option validation', () => {
     const base = new Color('#ff0000');
     const blue = new Color('#0000ff');
 
-    expect(() => base.mix([blue], { space: 'INVALID' as never })).toThrow('Invalid space');
-    expect(() => base.blend(blue, { mode: 'INVALID' as never })).toThrow('Invalid mode');
+    expect(() => base.mix([blue], { space: 'INVALID' as never })).toThrow("Invalid 'space'");
+    expect(() => base.blend(blue, { mode: 'INVALID' as never })).toThrow("Invalid 'mode'");
     expect(() => base.createGradientTo(blue, { hueInterpolationMode: 'INVALID' as never })).toThrow(
-      'Invalid hueInterpolationMode',
+      "Invalid 'hueInterpolationMode'",
     );
     expect(() =>
       base.isReadableAsTextColor('#ffffff', {
         algorithm: 'INVALID' as never,
       }),
-    ).toThrow('Invalid algorithm');
+    ).toThrow("Invalid 'algorithm'");
   });
 });

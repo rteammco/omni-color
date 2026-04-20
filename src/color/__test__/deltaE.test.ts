@@ -129,7 +129,7 @@ describe('Delta E calculations', () => {
       const colorB = new Color({ l: 50, a: 0, b: -82.7485 });
 
       expect(() => getDeltaE(colorA, colorB, { method: 'INVALID' as never })).toThrow(
-        'Invalid method',
+        "Invalid 'method'",
       );
     });
 
