@@ -1,4 +1,5 @@
 import { type CaseInsensitive, clampValue } from '../utils';
+import { resolveCaseInsensitiveOption } from '../utils';
 import type { Color } from './color';
 import type {
   ColorHSL,
@@ -11,21 +12,26 @@ import type {
 } from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 
-export type ColorGradientSpace = 'RGB' | 'HSL' | 'HSV' | 'LCH' | 'OKLAB' | 'OKLCH';
-export type ColorGradientInterpolation = 'LINEAR' | 'BEZIER';
-
-type ColorGradientEasingMode = 'LINEAR' | 'EASE_IN' | 'EASE_OUT' | 'EASE_IN_OUT';
+const GRADIENT_EASING_MODES = ['LINEAR', 'EASE_IN', 'EASE_OUT', 'EASE_IN_OUT'] as const;
+const GRADIENT_SPACES = ['RGB', 'HSL', 'HSV', 'LCH', 'OKLAB', 'OKLCH'] as const;
+const GRADIENT_INTERPOLATIONS = ['LINEAR', 'BEZIER'] as const;
+const HUE_INTERPOLATION_MODES = [
+  'CARTESIAN',
+  'SHORTEST',
+  'LONGEST',
+  'INCREASING',
+  'DECREASING',
+  'RAW',
+] as const;
+const HUE_INTERPOLATION_MODES_WITH_AUTO = [...HUE_INTERPOLATION_MODES, 'AUTO'] as const;
+export type ColorGradientSpace = (typeof GRADIENT_SPACES)[number];
+export type ColorGradientInterpolation = (typeof GRADIENT_INTERPOLATIONS)[number];
+type ColorGradientEasingMode = (typeof GRADIENT_EASING_MODES)[number];
+export type HueInterpolationMode = (typeof HUE_INTERPOLATION_MODES)[number];
+type HueInterpolationModeWithAuto = (typeof HUE_INTERPOLATION_MODES_WITH_AUTO)[number];
 export type ColorGradientEasing =
   | CaseInsensitive<ColorGradientEasingMode>
   | ((t: number) => number);
-
-export type HueInterpolationMode =
-  | 'CARTESIAN'
-  | 'SHORTEST'
-  | 'LONGEST'
-  | 'INCREASING'
-  | 'DECREASING'
-  | 'RAW';
 
 export interface ColorGradientOptions {
   /**
@@ -91,7 +97,12 @@ function getEasingFunction(easing?: ColorGradientEasing): (t: number) => number 
     return easing;
   }
 
-  const easingMode = (easing ? easing.toUpperCase() : 'LINEAR') as ColorGradientEasingMode;
+  const easingMode = resolveCaseInsensitiveOption({
+    value: easing,
+    allowedValues: GRADIENT_EASING_MODES,
+    defaultValue: 'LINEAR',
+    optionName: 'easing',
+  });
   switch (easingMode) {
     case 'EASE_IN':
       return (t: number) => t ** 2;
@@ -781,9 +792,18 @@ export function createColorGradient(
 
   const ColorConstructor = colors[0].constructor as typeof Color;
   const stopCount = getStopCount(options.stops);
-  const space = (options.space?.toUpperCase() ?? DEFAULT_SPACE) as ColorGradientSpace;
-  const interpolation = (options.interpolation?.toUpperCase() ??
-    DEFAULT_INTERPOLATION) as ColorGradientInterpolation;
+  const space = resolveCaseInsensitiveOption({
+    value: options.space,
+    allowedValues: GRADIENT_SPACES,
+    defaultValue: DEFAULT_SPACE,
+    optionName: 'space',
+  });
+  const interpolation = resolveCaseInsensitiveOption({
+    value: options.interpolation,
+    allowedValues: GRADIENT_INTERPOLATIONS,
+    defaultValue: DEFAULT_INTERPOLATION,
+    optionName: 'interpolation',
+  });
   const clamp = options.clamp ?? true;
   const easing = getEasingFunction(options.easing);
   const isBezier = interpolation === 'BEZIER';
@@ -792,9 +812,15 @@ export function createColorGradient(
   // Default to 'SHORTEST' for Polar spaces, 'CARTESIAN' (legacy) for RGB or if explicit.
   // Actually, legacy for Polar was Cartesian.
   // New default for Polar is Shortest.
-  let hueMode = options.hueInterpolationMode?.toUpperCase() as HueInterpolationMode | undefined;
+  const resolvedHueMode = resolveCaseInsensitiveOption({
+    value: options.hueInterpolationMode,
+    allowedValues: HUE_INTERPOLATION_MODES_WITH_AUTO,
+    defaultValue: 'AUTO',
+    optionName: 'hueInterpolationMode',
+  });
+  let hueMode: HueInterpolationModeWithAuto = resolvedHueMode;
 
-  if (!hueMode) {
+  if (hueMode === 'AUTO') {
     if (isBezier && space === 'LCH') {
       hueMode = 'CARTESIAN';
     } else if (space === 'RGB') {

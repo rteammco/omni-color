@@ -1,10 +1,13 @@
 import { type CaseInsensitive, clampValue } from '../utils';
+import { resolveCaseInsensitiveOption } from '../utils';
 import { Color } from './color';
 import type { ColorHSL, ColorHSLA, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
 import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
 
-export type MixType = 'ADDITIVE' | 'SUBTRACTIVE';
-export type MixSpace = 'RGB' | 'LINEAR_RGB' | 'HSL' | 'LCH' | 'OKLCH';
+const MIX_TYPES = ['ADDITIVE', 'SUBTRACTIVE'] as const;
+const MIX_SPACES = ['RGB', 'LINEAR_RGB', 'HSL', 'LCH', 'OKLCH'] as const;
+export type MixType = (typeof MIX_TYPES)[number];
+export type MixSpace = (typeof MIX_SPACES)[number];
 
 export interface MixColorsOptions {
   space?: CaseInsensitive<MixSpace>;
@@ -462,8 +465,18 @@ export function mixColors(colors: readonly Color[], options: MixColorsOptions = 
   if (colors.length < 2) {
     throw new Error('at least two colors are required for mixing');
   }
-  const type = (options.type?.toUpperCase() ?? 'ADDITIVE') as MixType;
-  const space = (options.space?.toUpperCase() ?? 'LINEAR_RGB') as MixSpace;
+  const type = resolveCaseInsensitiveOption({
+    value: options.type,
+    allowedValues: MIX_TYPES,
+    defaultValue: 'ADDITIVE',
+    optionName: 'type',
+  });
+  const space = resolveCaseInsensitiveOption({
+    value: options.space,
+    allowedValues: MIX_SPACES,
+    defaultValue: 'LINEAR_RGB',
+    optionName: 'space',
+  });
 
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
 
@@ -474,8 +487,10 @@ export function mixColors(colors: readonly Color[], options: MixColorsOptions = 
   return mixColorsAdditive(colors, space, weights, sumOfWeights);
 }
 
-export type BlendMode = 'NORMAL' | 'MULTIPLY' | 'SCREEN' | 'OVERLAY';
-export type BlendSpace = 'RGB' | 'HSL';
+const BLEND_MODES = ['NORMAL', 'MULTIPLY', 'SCREEN', 'OVERLAY'] as const;
+const BLEND_SPACES = ['RGB', 'HSL'] as const;
+export type BlendMode = (typeof BLEND_MODES)[number];
+export type BlendSpace = (typeof BLEND_SPACES)[number];
 
 export interface BlendColorsOptions {
   mode?: CaseInsensitive<BlendMode>;
@@ -600,8 +615,18 @@ function blendColorsInHSLSpace(base: Color, blend: Color, mode: BlendMode, ratio
 }
 
 export function blendColors(base: Color, blend: Color, options: BlendColorsOptions = {}): Color {
-  const mode = (options.mode?.toUpperCase() ?? 'NORMAL') as BlendMode;
-  const space = (options.space?.toUpperCase() ?? 'RGB') as BlendSpace;
+  const mode = resolveCaseInsensitiveOption({
+    value: options.mode,
+    allowedValues: BLEND_MODES,
+    defaultValue: 'NORMAL',
+    optionName: 'mode',
+  });
+  const space = resolveCaseInsensitiveOption({
+    value: options.space,
+    allowedValues: BLEND_SPACES,
+    defaultValue: 'RGB',
+    optionName: 'space',
+  });
   const ratio = clampValue(options.ratio ?? 0.5, 0, 1);
 
   if (space === 'RGB') {
@@ -758,7 +783,12 @@ export function averageColors(colors: readonly Color[], options: AverageColorsOp
   if (colors.length < 2) {
     throw new Error('at least two colors are required for averaging');
   }
-  const space = (options.space?.toUpperCase() ?? 'LINEAR_RGB') as MixSpace;
+  const space = resolveCaseInsensitiveOption({
+    value: options.space,
+    allowedValues: MIX_SPACES,
+    defaultValue: 'LINEAR_RGB',
+    optionName: 'space',
+  });
   const { normalizedWeights } = getWeights(colors.length, options.weights);
 
   switch (space) {

@@ -1279,3 +1279,21 @@ describe('Color gradients', () => {
     expect(mid.b).toBeCloseTo(-0.092635, 6);
   });
 });
+
+describe('Color option validation', () => {
+  it('throws when runtime option strings are invalid', () => {
+    const base = new Color('#ff0000');
+    const blue = new Color('#0000ff');
+
+    expect(() => base.mix([blue], { space: 'INVALID' as never })).toThrow('Invalid space');
+    expect(() => base.blend(blue, { mode: 'INVALID' as never })).toThrow('Invalid mode');
+    expect(() => base.createGradientTo(blue, { hueInterpolationMode: 'INVALID' as never })).toThrow(
+      'Invalid hueInterpolationMode',
+    );
+    expect(() =>
+      base.isReadableAsTextColor('#ffffff', {
+        algorithm: 'INVALID' as never,
+      }),
+    ).toThrow('Invalid algorithm');
+  });
+});

@@ -1,3 +1,4 @@
+import { resolveCaseInsensitiveOption } from '../../utils';
 import { Color } from '../color';
 import { getColorFromTemperatureLabel } from '../temperature';
 import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
@@ -293,6 +294,14 @@ describe('isColorDark', () => {
     expect(isColorDark(new Color('#00AA00'))).toBe(false); // Med Green (L ~ 0.28) -> Light
   });
 
+  it('throws for invalid darkness mode option values', () => {
+    expect(() =>
+      isColorDark(new Color('#ffffff'), {
+        colorDarknessMode: 'INVALID' as never,
+      }),
+    ).toThrow('Invalid colorDarknessMode');
+  });
+
   it('allows customizing the WCAG threshold', () => {
     const red = new Color('#ff0000'); // Luminance ~0.2126
 
@@ -422,5 +431,49 @@ describe('getColorRGBAFromInput', () => {
 
   it('throws on unknown color names', () => {
     expect(() => getColorRGBAFromInput('notacolor')).toThrow();
+  });
+});
+
+describe('resolveCaseInsensitiveOption', () => {
+  it('normalizes mixed casing and trims whitespace', () => {
+    const resolved = resolveCaseInsensitiveOption({
+      value: '  yiQ  ',
+      allowedValues: ['WCAG', 'YIQ'],
+      defaultValue: 'WCAG',
+      optionName: 'colorDarknessMode',
+    });
+    expect(resolved).toBe('YIQ');
+  });
+
+  it('returns the default when value is undefined', () => {
+    const resolved = resolveCaseInsensitiveOption({
+      value: undefined,
+      allowedValues: ['WCAG', 'YIQ'],
+      defaultValue: 'WCAG',
+      optionName: 'colorDarknessMode',
+    });
+    expect(resolved).toBe('WCAG');
+  });
+
+  it('throws for unknown values', () => {
+    expect(() =>
+      resolveCaseInsensitiveOption({
+        value: 'unknown',
+        allowedValues: ['WCAG', 'YIQ'],
+        defaultValue: 'WCAG',
+        optionName: 'colorDarknessMode',
+      }),
+    ).toThrow('Invalid colorDarknessMode');
+  });
+
+  it('throws for non-string values', () => {
+    expect(() =>
+      resolveCaseInsensitiveOption({
+        value: 123,
+        allowedValues: ['WCAG', 'YIQ'],
+        defaultValue: 'WCAG',
+        optionName: 'colorDarknessMode',
+      }),
+    ).toThrow('Invalid colorDarknessMode');
   });
 });

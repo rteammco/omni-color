@@ -1,19 +1,22 @@
 import { type CaseInsensitive, clampValue } from '../utils';
+import { resolveCaseInsensitiveOption, resolveRequiredCaseInsensitiveOption } from '../utils';
 import { Color } from './color';
 import type { ColorHSLA } from './formats';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 
-export type ColorHarmony =
-  | 'COMPLEMENTARY'
-  | 'SPLIT_COMPLEMENTARY'
-  | 'TRIADIC'
-  | 'SQUARE'
-  | 'TETRADIC'
-  | 'ANALOGOUS'
-  | 'MONOCHROMATIC';
-
-export type GrayscaleHandlingMode = 'SPIN_LIGHTNESS' | 'IGNORE';
+const GRAYSCALE_HANDLING_MODES = ['SPIN_LIGHTNESS', 'IGNORE'] as const;
+const COLOR_HARMONIES = [
+  'COMPLEMENTARY',
+  'SPLIT_COMPLEMENTARY',
+  'TRIADIC',
+  'SQUARE',
+  'TETRADIC',
+  'ANALOGOUS',
+  'MONOCHROMATIC',
+] as const;
+export type GrayscaleHandlingMode = (typeof GRAYSCALE_HANDLING_MODES)[number];
+export type ColorHarmony = (typeof COLOR_HARMONIES)[number];
 
 export interface ColorHarmonyOptions {
   grayscaleHandlingMode?: CaseInsensitive<GrayscaleHandlingMode>;
@@ -50,10 +53,12 @@ function spinColorOnHueOrLightness(
 function resolveGrayscaleHandlingMode({
   grayscaleHandlingMode,
 }: ColorHarmonyOptions = {}): GrayscaleHandlingMode {
-  if (!grayscaleHandlingMode) {
-    return 'SPIN_LIGHTNESS';
-  }
-  return grayscaleHandlingMode.toUpperCase() as GrayscaleHandlingMode;
+  return resolveCaseInsensitiveOption({
+    value: grayscaleHandlingMode,
+    allowedValues: GRAYSCALE_HANDLING_MODES,
+    defaultValue: 'SPIN_LIGHTNESS',
+    optionName: 'grayscaleHandlingMode',
+  });
 }
 
 export function getComplementaryColors(
@@ -146,7 +151,13 @@ export function getHarmonyColors(
   harmony: CaseInsensitive<ColorHarmony>,
   options?: ColorHarmonyOptions,
 ): Color[] {
-  switch (harmony.toUpperCase() as ColorHarmony) {
+  const resolvedHarmony = resolveRequiredCaseInsensitiveOption({
+    value: harmony,
+    allowedValues: COLOR_HARMONIES,
+    optionName: 'harmony',
+  });
+
+  switch (resolvedHarmony) {
     case 'COMPLEMENTARY':
       return getComplementaryColors(color, options);
     case 'SPLIT_COMPLEMENTARY':

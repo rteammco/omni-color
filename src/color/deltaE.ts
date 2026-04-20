@@ -1,7 +1,9 @@
 import type { CaseInsensitive } from '../utils';
+import { resolveCaseInsensitiveOption } from '../utils';
 import type { Color } from './color';
 
-export type DeltaEMethod = 'CIE76' | 'CIE94' | 'CIEDE2000';
+const DELTA_E_METHODS = ['CIE76', 'CIE94', 'CIEDE2000'] as const;
+export type DeltaEMethod = (typeof DELTA_E_METHODS)[number];
 
 /**
  * Optional weighting factors for the CIE94 Delta E calculation.
@@ -172,7 +174,12 @@ function deltaECIEDE2000(colorA: Color, colorB: Color, options: CIEDE2000Options
 }
 
 export function getDeltaE(colorA: Color, colorB: Color, options: DeltaEOptions = {}): number {
-  const method = options.method?.toUpperCase() ?? ('CIEDE2000' as DeltaEMethod);
+  const method = resolveCaseInsensitiveOption({
+    value: options.method,
+    allowedValues: DELTA_E_METHODS,
+    defaultValue: 'CIEDE2000',
+    optionName: 'method',
+  });
 
   if (method === 'CIE76') {
     return deltaECIE76(colorA, colorB);
