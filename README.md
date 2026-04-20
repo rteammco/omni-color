@@ -821,8 +821,14 @@ palette.info[500].toHex(); // '#9d40d4'
 
 `omni-color` supports two readability algorithms:
 
-- **WCAG 2.x contrast ratio** (`getWCAGContrastRatio`, `getWCAGReadabilityReport`, `isReadableAsTextColor`) for established pass/fail conformance checks.
-- **APCA Lc score** (`getAPCAReadabilityScore`, `getAPCAReadabilityReport`) for directional contrast analysis. APCA is still draft guidance for WCAG 3, so this library defaults APCA to **advisory mode** unless you opt into a threshold policy.
+- **WCAG 2.x contrast ratio** (`getWCAGContrastRatio`, `getWCAGReadabilityReport`, `isReadableAsTextColor`) for established pass/fail conformance checks. WCAG stands for **Web Content Accessibility Guidelines** (W3C).
+- **APCA Lc score** (`getAPCAReadabilityScore`, `getAPCAReadabilityReport`) for directional contrast analysis. APCA stands for **Advanced Perceptual Contrast Algorithm**. APCA is still draft guidance for WCAG 3, so this library defaults APCA to **advisory mode** unless you opt into a threshold policy.
+
+Reference resources:
+- WCAG 2.2 specification: https://www.w3.org/TR/WCAG22/
+- WCAG Understanding SC 1.4.3 (Contrast Minimum): https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
+- APCA project repository (used for ongoing algorithm drafts): https://github.com/Myndex/apca-w3
+- APCA documentation index: https://git.apcacontrast.com/documentation/
 
 #### `getWCAGContrastRatio(color: Color | ColorFormat | string): number`
 
@@ -836,7 +842,7 @@ new Color('#000000').getWCAGContrastRatio('#ffffff'); // 21
 
 #### `getAPCAReadabilityScore(background: Color | ColorFormat | string): number`
 
-**Note:** This implementation uses the `0.0.98G-4g` constants from the draft APCA recommendations. As WCAG 3 is not yet finalized, this score is experimental and provided for advisory use only.
+**Note:** This implementation uses the `0.0.98G-4g` constants from the draft APCA recommendations published via the APCA project. As WCAG 3 is not yet finalized, this score is experimental and provided for advisory use only.
 
 - <ins>Returns</ins> the signed APCA readability score (Lc) against a background color.
 - <ins>Inputs</ins>:
