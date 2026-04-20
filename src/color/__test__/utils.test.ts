@@ -445,6 +445,16 @@ describe('resolveCaseInsensitiveOption', () => {
     expect(resolved).toBe('YIQ');
   });
 
+  it('returns the canonical allowed value when allowed values are not uppercase', () => {
+    const resolved = resolveCaseInsensitiveOption({
+      allowedValues: ['camelCase', 'PascalCase'],
+      defaultValue: 'camelCase',
+      key: 'mode',
+      options: { mode: '  PASCALcase ' },
+    });
+    expect(resolved).toBe('PascalCase');
+  });
+
   it('returns the default when value is undefined', () => {
     const resolved = resolveCaseInsensitiveOption({
       allowedValues: ['WCAG', 'YIQ'],

@@ -85,7 +85,7 @@ export function resolveCaseInsensitiveOption<
     (allowedValue) => allowedValue.trim().toUpperCase() === normalized,
   );
   if (matchedValue !== undefined) {
-    return normalized as V;
+    return matchedValue;
   }
 
   throw new Error(
