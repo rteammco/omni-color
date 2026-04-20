@@ -37,7 +37,7 @@ export function ReadabilityDemo({ color }: Props) {
             <ColorBox
               key={bgColor.toHex()}
               color={bgColor}
-              label={color.getContrastRatio(bgColor).toFixed(2)}
+              label={color.getWCAGContrastRatio(bgColor).toFixed(2)}
               overlayColor={color}
               width="STRETCH"
             />
@@ -50,7 +50,7 @@ export function ReadabilityDemo({ color }: Props) {
             <ColorBox
               key={bgColor.toHex()}
               color={bgColor}
-              label={color.getReadabilityScore(bgColor).toFixed(2)}
+              label={color.getAPCAReadabilityScore(bgColor).toFixed(2)}
               overlayColor={color}
               width="STRETCH"
             />

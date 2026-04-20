@@ -318,7 +318,7 @@ describe('Color interoperability with chroma-js', () => {
       const foreground = new Color('#1a1a1a');
       const background = new Color('#fafafa');
 
-      const omniContrast = foreground.getContrastRatio(background);
+      const omniContrast = foreground.getWCAGContrastRatio(background);
       const chromaContrast = chroma.contrast('#1a1a1a', '#fafafa');
 
       expect(omniContrast).toBeCloseTo(chromaContrast, 2);
@@ -328,7 +328,7 @@ describe('Color interoperability with chroma-js', () => {
       const foreground = new Color('rgba(0, 0, 0, 0.5)');
       const background = new Color('rgba(255, 255, 255, 0.6)');
 
-      const omniContrast = foreground.getContrastRatio(background);
+      const omniContrast = foreground.getWCAGContrastRatio(background);
       const chromaDirectContrast = chroma.contrast(
         'rgba(0, 0, 0, 0.5)',
         'rgba(255, 255, 255, 0.6)',
@@ -389,7 +389,7 @@ describe('Color interoperability with chroma-js', () => {
       const midGrayContrast = chroma.contrast(midGray.toHex(), background.toHex());
       const darkGrayContrast = chroma.contrast(darkGray.toHex(), background.toHex());
 
-      const aaSmallReport = midGray.getTextReadabilityReport(background, {
+      const aaSmallReport = midGray.getWCAGReadabilityReport(background, {
         level: 'AA',
         size: 'SMALL',
       });
@@ -397,7 +397,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(aaSmallReport.requiredContrast).toBe(4.5);
       expect(aaSmallReport.isReadable).toBe(false);
 
-      const aaLargeReport = midGray.getTextReadabilityReport(background, {
+      const aaLargeReport = midGray.getWCAGReadabilityReport(background, {
         level: 'AA',
         size: 'LARGE',
       });
@@ -405,7 +405,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(aaLargeReport.requiredContrast).toBe(3);
       expect(aaLargeReport.isReadable).toBe(true);
 
-      const aaaSmallReport = darkGray.getTextReadabilityReport(background, {
+      const aaaSmallReport = darkGray.getWCAGReadabilityReport(background, {
         level: 'AAA',
         size: 'SMALL',
       });
@@ -413,7 +413,7 @@ describe('Color interoperability with chroma-js', () => {
       expect(aaaSmallReport.requiredContrast).toBe(7);
       expect(aaaSmallReport.isReadable).toBe(true);
 
-      const aaaLargeReport = midGray.getTextReadabilityReport(background, {
+      const aaaLargeReport = midGray.getWCAGReadabilityReport(background, {
         level: 'AAA',
         size: 'LARGE',
       });

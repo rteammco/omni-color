@@ -84,15 +84,18 @@ import {
 import { type ColorNameAndLightness, getBaseColorName } from './names';
 import { getRandomColorRGBA, type RandomColorOptions } from './random';
 import {
+  type APCAReadabilityOptions,
+  type APCAReadabilityReport,
+  getAPCAReadabilityReport,
   getAPCAReadabilityScore,
   getBestBackgroundColorForText,
   getMostReadableTextColorForBackground,
-  getTextReadabilityReport,
   getWCAGContrastRatio,
+  getWCAGReadabilityReport,
   isTextReadable,
-  type ReadabilityComparisonOptions,
-  type TextReadabilityOptions,
-  type TextReadabilityReport,
+  type ReadabilityOptions,
+  type WCAGReadabilityOptions,
+  type WCAGReadabilityReport,
 } from './readability';
 import {
   type ColorSwatch,
@@ -926,7 +929,7 @@ export class Color {
    * @param other The other {@link Color} or color input to compare against.
    * @returns The WCAG contrast ratio between the two colors.
    */
-  getContrastRatio(other: ValidColorInputFormat): number {
+  getWCAGContrastRatio(other: ValidColorInputFormat): number {
     return getWCAGContrastRatio(this, new Color(other));
   }
 
@@ -938,63 +941,92 @@ export class Color {
    * @param backgroundColor The background {@link Color} or color input to compare against.
    * @returns The APCA readability score as a number.
    */
-  getReadabilityScore(backgroundColor: ValidColorInputFormat): number {
+  getAPCAReadabilityScore(backgroundColor: ValidColorInputFormat): number {
     return getAPCAReadabilityScore(this, new Color(backgroundColor));
   }
 
   /**
-   * Get detailed readability metrics against a background color.
+   * Get APCA readability details of this color against a given background color.
+   *
+   * NOTE: APCA policy defaults to advisory mode (`'NONE'`), which returns
+   * a signed Lc score with `isReadable`, `requiredLc`, and `shortfall` as `null`.
+   *
+   * @param backgroundColor The background {@link Color} or color input to compare against.
+   * @param options Optional {@link APCAReadabilityOptions} to evaluate against a preset or custom Lc threshold.
+   * @returns A {@link APCAReadabilityReport} with signed score, absolute score, and optional pass/fail metrics.
+   *
+   * @example
+   * ```ts
+   * new Color('#111827').getAPCAReadabilityReport('#ffffff', {
+   *   policy: 'PRESET',
+   *   preset: 'BODY',
+   * });
+   * // { score: 104.5, absoluteScore: 104.5, isReadable: true, requiredLc: 60, shortfall: 0 }
+   * ```
+   */
+  getAPCAReadabilityReport(
+    backgroundColor: ValidColorInputFormat,
+    options?: APCAReadabilityOptions,
+  ): APCAReadabilityReport {
+    return getAPCAReadabilityReport(this, new Color(backgroundColor), options);
+  }
+
+  /**
+   * Get detailed WCAG readability metrics against a background color.
    *
    * Calculates the WCAG contrast ratio and determines whether this color meets
    * the specified conformance level and text size requirements.
    *
    * @param backgroundColor The background {@link Color} or color input to compare against.
-   * @param options Optional {@link TextReadabilityOptions} for conformance level and text size.
-   * @returns A {@link TextReadabilityReport} with the contrast ratio, required contrast, readability flag, and shortfall.
+   * @param options Optional {@link WCAGReadabilityOptions} for conformance level and text size.
+   * @returns A {@link WCAGReadabilityReport} with the contrast ratio, required contrast, readability flag, and shortfall.
    *
    * @example
    * ```ts
-   * new Color('#444444').getTextReadabilityReport(new Color('#bbbbbb'));
+   * new Color('#444444').getWCAGReadabilityReport(new Color('#bbbbbb'));
    * // { contrastRatio: 5.07, requiredContrast: 4.5, isReadable: true, shortfall: 0 }
    * ```
    */
-  getTextReadabilityReport(
+  getWCAGReadabilityReport(
     backgroundColor: ValidColorInputFormat,
-    options?: TextReadabilityOptions,
-  ): TextReadabilityReport {
-    return getTextReadabilityReport(this, new Color(backgroundColor), options);
+    options?: WCAGReadabilityOptions,
+  ): WCAGReadabilityReport {
+    return getWCAGReadabilityReport(this, new Color(backgroundColor), options);
   }
 
   /**
    * Find the most readable text color against this color as a background.
    *
    * @param textColors A non-empty list of {@link Color} or color input candidate text colors, or a {@link ColorSwatch} to pick from.
-   * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
+   * @param options Optional {@link ReadabilityOptions} to pick the readability algorithm and WCAG inputs.
    * @returns The candidate color with the strongest readability against this color.
    */
   getMostReadableTextColor(
     textColors: readonly ValidColorInputFormat[] | ColorSwatch,
-    options?: ReadabilityComparisonOptions,
+    options?: ReadabilityOptions,
   ): Color {
     return getMostReadableTextColorForBackground(this, getColorList(textColors), options).clone();
   }
 
   /**
-   * Determine if this color meets WCAG contrast guidelines against a background color.
+   * Determine whether this color is readable as text against a background color.
+   *
+   * By default this uses WCAG contrast checks. You can opt into APCA by passing
+   * `options.algorithm = 'APCA'` and optional `apcaOptions`.
    *
    * @param backgroundColor The background {@link Color} or color input to compare against.
-   * @param options Optional {@link TextReadabilityOptions} for conformance level and text size.
-   * @returns `true` if the contrast ratio meets the specified requirements.
+   * @param options Optional {@link ReadabilityOptions} for choosing WCAG or APCA and passing algorithm-specific settings.
+   * @returns `true` if readable, otherwise `false`.
    *
    * @example
    * ```ts
-   * new Color('#000000').isReadable(new Color('#ffffff')); // true
-   * new Color('#777777').isReadable(new Color('#888888')); // false
+   * new Color('#000000').isReadableAsTextColor('#ffffff'); // true
+   * new Color('#000000').isReadableAsTextColor('#ffffff', { algorithm: 'APCA' }); // true
    * ```
    */
   isReadableAsTextColor(
     backgroundColor: ValidColorInputFormat,
-    options?: TextReadabilityOptions,
+    options: ReadabilityOptions = {},
   ): boolean {
     return isTextReadable(this, new Color(backgroundColor), options);
   }
@@ -1003,12 +1035,12 @@ export class Color {
    * Find the best background color for this color as foreground text.
    *
    * @param backgroundColors A non-empty list of candidate background {@link Color}s or color inputs, or a {@link ColorSwatch} to pick from.
-   * @param options Optional {@link ReadabilityComparisonOptions} to pick the readability algorithm and WCAG inputs.
+   * @param options Optional {@link ReadabilityOptions} to pick the readability algorithm and WCAG inputs.
    * @returns The candidate background color that maximizes readability for this color.
    */
   getBestBackgroundColor(
     backgroundColors: readonly ValidColorInputFormat[] | ColorSwatch,
-    options?: ReadabilityComparisonOptions,
+    options?: ReadabilityOptions,
   ): Color {
     return getBestBackgroundColorForText(this, getColorList(backgroundColors), options).clone();
   }

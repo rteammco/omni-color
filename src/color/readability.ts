@@ -134,13 +134,80 @@ export function getAPCAReadabilityScore(foreground: Color, background: Color): n
   return getAPCAContrast(txtY, bgY);
 }
 
-export type TextReadabilityConformanceLevel = 'AA' | 'AAA';
-export type TextReadabilityTextSizeOptions =
+export type APCAThresholdPreset = 'BODY' | 'LARGE_TEXT' | 'NON_TEXT' | 'VERY_LOW_VISION';
+export type APCAReadabilityPolicy = 'NONE' | 'PRESET' | 'CUSTOM';
+
+export interface APCAReadabilityOptions {
+  policy?: CaseInsensitive<APCAReadabilityPolicy>;
+  preset?: CaseInsensitive<APCAThresholdPreset>;
+  threshold?: number;
+}
+
+export interface APCAReadabilityReport {
+  score: number;
+  absoluteScore: number;
+  isReadable: boolean | null;
+  requiredLc: number | null;
+  shortfall: number | null;
+}
+
+const APCA_REQUIRED_PRESETS = {
+  BODY: 60,
+  LARGE_TEXT: 45,
+  NON_TEXT: 30,
+  VERY_LOW_VISION: 75,
+} as const satisfies Record<APCAThresholdPreset, number>;
+
+function getAPCARequiredLc(options: APCAReadabilityOptions = {}): number | null {
+  const policy = (options.policy?.toUpperCase() ?? 'NONE') as APCAReadabilityPolicy;
+
+  if (policy === 'NONE') {
+    return null;
+  }
+
+  if (policy === 'CUSTOM') {
+    return Math.max(0, Math.abs(options.threshold ?? APCA_REQUIRED_PRESETS.BODY));
+  }
+
+  const preset = (options.preset?.toUpperCase() ?? 'BODY') as APCAThresholdPreset;
+  return APCA_REQUIRED_PRESETS[preset];
+}
+
+export function getAPCAReadabilityReport(
+  foreground: Color,
+  background: Color,
+  options: APCAReadabilityOptions = {},
+): APCAReadabilityReport {
+  const score = getAPCAReadabilityScore(foreground, background);
+  const absoluteScore = Math.abs(score);
+  const requiredLc = getAPCARequiredLc(options);
+
+  if (requiredLc === null) {
+    return {
+      score,
+      absoluteScore,
+      isReadable: null,
+      requiredLc: null,
+      shortfall: null,
+    };
+  }
+
+  return {
+    score,
+    absoluteScore,
+    isReadable: absoluteScore >= requiredLc,
+    requiredLc,
+    shortfall: Math.max(0, requiredLc - absoluteScore),
+  };
+}
+
+export type WCAGReadabilityConformanceLevel = 'AA' | 'AAA';
+export type WCAGReadabilityTextSizeOptions =
   | 'SMALL' // normal body text (< 18pt or < 14pt if bold)
   | 'LARGE'; // large-scale text (>= 18pt or >= 14pt if bold)
 
 const WCAG_CONTRAST_READABILITY_THRESHOLDS: {
-  [key in TextReadabilityConformanceLevel]: { [key in TextReadabilityTextSizeOptions]: number };
+  [key in WCAGReadabilityConformanceLevel]: { [key in WCAGReadabilityTextSizeOptions]: number };
 } = {
   AA: {
     SMALL: 4.5,
@@ -152,12 +219,12 @@ const WCAG_CONTRAST_READABILITY_THRESHOLDS: {
   },
 } as const;
 
-export interface TextReadabilityOptions {
-  level?: CaseInsensitive<TextReadabilityConformanceLevel>;
-  size?: CaseInsensitive<TextReadabilityTextSizeOptions>;
+export interface WCAGReadabilityOptions {
+  level?: CaseInsensitive<WCAGReadabilityConformanceLevel>;
+  size?: CaseInsensitive<WCAGReadabilityTextSizeOptions>;
 }
 
-export interface TextReadabilityReport {
+export interface WCAGReadabilityReport {
   contrastRatio: number;
   isReadable: boolean;
   requiredContrast: number;
@@ -166,21 +233,28 @@ export interface TextReadabilityReport {
 
 export type ReadabilityAlgorithm = 'WCAG' | 'APCA';
 
-export interface ReadabilityComparisonOptions {
+export interface ReadabilityOptions {
   algorithm?: CaseInsensitive<ReadabilityAlgorithm>;
-  textReadabilityOptions?: TextReadabilityOptions;
+  // Used only when algorithm is WCAG. Ignored for APCA.
+  wcagOptions?: WCAGReadabilityOptions;
+  // Used only when algorithm is APCA. Ignored for WCAG.
+  apcaOptions?: APCAReadabilityOptions;
 }
 
 interface ReadabilityComparisonResult {
   score: number;
-  isReadable: boolean;
-  shortfall: number;
+  isReadable: boolean | null;
+  shortfall: number | null;
 }
 
 function isBetterReadabilityCandidate(
   candidate: ReadabilityComparisonResult,
   currentBest: ReadabilityComparisonResult,
 ): boolean {
+  if (candidate.isReadable === null || currentBest.isReadable === null) {
+    return candidate.score > currentBest.score;
+  }
+
   if (candidate.isReadable !== currentBest.isReadable) {
     return candidate.isReadable;
   }
@@ -188,7 +262,9 @@ function isBetterReadabilityCandidate(
   if (
     !candidate.isReadable &&
     !currentBest.isReadable &&
-    candidate.shortfall !== currentBest.shortfall
+    candidate.shortfall !== currentBest.shortfall &&
+    candidate.shortfall !== null &&
+    currentBest.shortfall !== null
   ) {
     return candidate.shortfall < currentBest.shortfall;
   }
@@ -196,13 +272,13 @@ function isBetterReadabilityCandidate(
   return candidate.score > currentBest.score;
 }
 
-export function getTextReadabilityReport(
+export function getWCAGReadabilityReport(
   foreground: Color,
   background: Color,
-  options: TextReadabilityOptions = {},
-): TextReadabilityReport {
-  const level = (options.level?.toUpperCase() ?? 'AA') as TextReadabilityConformanceLevel;
-  const size = (options.size?.toUpperCase() ?? 'SMALL') as TextReadabilityTextSizeOptions;
+  options: WCAGReadabilityOptions = {},
+): WCAGReadabilityReport {
+  const level = (options.level?.toUpperCase() ?? 'AA') as WCAGReadabilityConformanceLevel;
+  const size = (options.size?.toUpperCase() ?? 'SMALL') as WCAGReadabilityTextSizeOptions;
 
   const contrastRatio = getWCAGContrastRatio(foreground, background);
   const requiredContrast = WCAG_CONTRAST_READABILITY_THRESHOLDS[level][size];
@@ -217,28 +293,36 @@ export function getTextReadabilityReport(
 export function isTextReadable(
   foreground: Color,
   background: Color,
-  options: TextReadabilityOptions = {},
+  options: ReadabilityOptions = {},
 ): boolean {
-  return getTextReadabilityReport(foreground, background, options).isReadable;
+  const algorithm = (options.algorithm?.toUpperCase() ?? 'WCAG') as ReadabilityAlgorithm;
+
+  if (algorithm === 'APCA') {
+    const report = getAPCAReadabilityReport(foreground, background, options.apcaOptions);
+    return report.isReadable ?? report.absoluteScore >= APCA_REQUIRED_PRESETS.BODY;
+  }
+
+  return getWCAGReadabilityReport(foreground, background, options.wcagOptions).isReadable;
 }
 
 function getReadabilityComparisonResult(
   foreground: Color,
   background: Color,
-  options: ReadabilityComparisonOptions = {},
+  options: ReadabilityOptions = {},
 ): ReadabilityComparisonResult {
   const algorithm = (options.algorithm?.toUpperCase() ?? 'WCAG') as ReadabilityAlgorithm;
-  const { textReadabilityOptions } = options;
+  const { apcaOptions, wcagOptions } = options;
 
   if (algorithm === 'APCA') {
+    const report = getAPCAReadabilityReport(foreground, background, apcaOptions);
     return {
-      score: Math.abs(getAPCAReadabilityScore(foreground, background)),
-      isReadable: true,
-      shortfall: 0,
+      score: report.absoluteScore,
+      isReadable: report.isReadable,
+      shortfall: report.shortfall,
     };
   }
 
-  const report = getTextReadabilityReport(foreground, background, textReadabilityOptions);
+  const report = getWCAGReadabilityReport(foreground, background, wcagOptions);
   return {
     score: report.contrastRatio,
     isReadable: report.isReadable,
@@ -252,7 +336,7 @@ function getReadabilityComparisonResult(
 export function getMostReadableTextColorForBackground(
   backgroundColor: Color,
   textColors: readonly Color[],
-  options: ReadabilityComparisonOptions = {},
+  options: ReadabilityOptions = {},
 ): Color {
   if (textColors.length === 0) {
     throw new Error('At least one text color must be provided.');
@@ -279,7 +363,7 @@ export function getMostReadableTextColorForBackground(
 export function getBestBackgroundColorForText(
   textColor: Color,
   backgroundColors: readonly Color[],
-  options: ReadabilityComparisonOptions = {},
+  options: ReadabilityOptions = {},
 ): Color {
   if (backgroundColors.length === 0) {
     throw new Error('At least one background color must be provided.');
