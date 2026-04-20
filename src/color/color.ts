@@ -929,7 +929,7 @@ export class Color {
    * @param other The other {@link Color} or color input to compare against.
    * @returns The WCAG contrast ratio between the two colors.
    */
-  getContrastRatio(other: ValidColorInputFormat): number {
+  getWCAGContrastRatio(other: ValidColorInputFormat): number {
     return getWCAGContrastRatio(this, new Color(other));
   }
 
@@ -941,7 +941,7 @@ export class Color {
    * @param backgroundColor The background {@link Color} or color input to compare against.
    * @returns The APCA readability score as a number.
    */
-  getReadabilityScore(backgroundColor: ValidColorInputFormat): number {
+  getAPCAReadabilityScore(backgroundColor: ValidColorInputFormat): number {
     return getAPCAReadabilityScore(this, new Color(backgroundColor));
   }
 

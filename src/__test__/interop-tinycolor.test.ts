@@ -344,7 +344,7 @@ describe('Color interoperability with tinycolor2', () => {
       ];
 
       pairs.forEach(([foreground, background]) => {
-        const omniContrast = new Color(foreground).getContrastRatio(background);
+        const omniContrast = new Color(foreground).getWCAGContrastRatio(background);
         const tinyContrast = tinycolor.readability(foreground, background);
 
         expect(omniContrast).toBeCloseTo(tinyContrast, 2);

@@ -318,7 +318,7 @@ describe('Color interoperability with chroma-js', () => {
       const foreground = new Color('#1a1a1a');
       const background = new Color('#fafafa');
 
-      const omniContrast = foreground.getContrastRatio(background);
+      const omniContrast = foreground.getWCAGContrastRatio(background);
       const chromaContrast = chroma.contrast('#1a1a1a', '#fafafa');
 
       expect(omniContrast).toBeCloseTo(chromaContrast, 2);
@@ -328,7 +328,7 @@ describe('Color interoperability with chroma-js', () => {
       const foreground = new Color('rgba(0, 0, 0, 0.5)');
       const background = new Color('rgba(255, 255, 255, 0.6)');
 
-      const omniContrast = foreground.getContrastRatio(background);
+      const omniContrast = foreground.getWCAGContrastRatio(background);
       const chromaDirectContrast = chroma.contrast(
         'rgba(0, 0, 0, 0.5)',
         'rgba(255, 255, 255, 0.6)',

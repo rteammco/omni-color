@@ -819,21 +819,21 @@ describe('Color.isOffWhite sanity check', () => {
   });
 });
 
-describe('Color.getContrastRatio', () => {
+describe('Color.getWCAGContrastRatio', () => {
   it('calculates the WCAG contrast ratio between colors', () => {
     const c1 = new Color('#444444');
     const c2 = new Color('#bbbbbb');
-    expect(c1.getContrastRatio(c2)).toBeCloseTo(5.07, 2);
-    expect(c2.getContrastRatio(c1)).toBeCloseTo(5.07, 2);
+    expect(c1.getWCAGContrastRatio(c2)).toBeCloseTo(5.07, 2);
+    expect(c2.getWCAGContrastRatio(c1)).toBeCloseTo(5.07, 2);
   });
 });
 
-describe('Color.getReadabilityScore', () => {
+describe('Color.getAPCAReadabilityScore', () => {
   it('returns the APCA readability score against a background color', () => {
     const fg = new Color('#ff0000');
     const bg = new Color('#ffffff');
-    expect(fg.getReadabilityScore(bg)).toBeCloseTo(64.13, 2);
-    expect(bg.getReadabilityScore(fg)).toBeCloseTo(-69.62, 2);
+    expect(fg.getAPCAReadabilityScore(bg)).toBeCloseTo(64.13, 2);
+    expect(bg.getAPCAReadabilityScore(fg)).toBeCloseTo(-69.62, 2);
   });
 });
 
@@ -865,7 +865,7 @@ describe('Color.getAPCAReadabilityReport', () => {
 });
 
 describe('Color.isReadableAsTextColor with APCA options', () => {
-  it('returns null for APCA advisory mode and boolean for threshold mode', () => {
+  it('returns a boolean for default, APCA advisory, and APCA threshold modes', () => {
     const foreground = new Color('#333333');
     const background = new Color('#ffffff');
 
