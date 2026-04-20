@@ -1,7 +1,6 @@
-import { PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
-
+import { type PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
 import { Icon } from '../components/Icon';
-import { subscribeToToast, ToastEvent, ToastVariant } from './toastBus';
+import { subscribeToToast, type ToastEvent, type ToastVariant } from './toastBus';
 
 interface ToastItem extends ToastEvent {
   id: string;
@@ -25,7 +24,7 @@ function getToastVariantStyles(toastVariant: ToastVariant) {
     default:
       return {
         iconClassName: 'text-blue-600 dark:text-blue-300',
-        iconType: Icon.TYPE.CHEVRON_DOWN,
+        iconType: Icon.TYPE.INFO_CIRCLE,
       };
   }
 }
@@ -86,14 +85,13 @@ export function ToastProvider({ children }: PropsWithChildren) {
       <div className="pointer-events-none fixed right-4 bottom-4 z-50 flex max-w-sm flex-col gap-2">
         {toasts.map((toast) => {
           const variantStyles = getToastVariantStyles(toast.variant);
-
           return (
             <div
               className="pointer-events-auto rounded-xl border border-slate-200 bg-white/95 p-3 text-left shadow-lg backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/95"
               key={toast.id}
               role="status"
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-3">
                 <span className={variantStyles.iconClassName}>
                   <Icon size={20} type={variantStyles.iconType} />
                 </span>
@@ -107,11 +105,11 @@ export function ToastProvider({ children }: PropsWithChildren) {
                 </div>
                 <button
                   aria-label="Dismiss alert"
-                  className="bg-transparent px-0 py-0 font-normal shadow-none hover:shadow-none"
+                  className="icon-button"
                   onClick={() => dismissToast(toast.id)}
                   type="button"
                 >
-                  <Icon size={18} type={Icon.TYPE.X_CIRCLE} />
+                  <Icon size={18} type={Icon.TYPE.X} />
                 </button>
               </div>
             </div>

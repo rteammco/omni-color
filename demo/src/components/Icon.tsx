@@ -5,9 +5,11 @@ import Check from '../assets/icons/check.svg?react';
 import CheckCircle from '../assets/icons/check-circle.svg?react';
 import ChevronDown from '../assets/icons/chevron-down.svg?react';
 import Copy from '../assets/icons/copy.svg?react';
+import InfoCircle from '../assets/icons/info-circle.svg?react';
 import Moon from '../assets/icons/moon.svg?react';
 import Plus from '../assets/icons/plus.svg?react';
 import Sun from '../assets/icons/sun.svg?react';
+import X from '../assets/icons/x.svg?react';
 import XCircle from '../assets/icons/x-circle.svg?react';
 
 interface Props {
@@ -36,12 +38,16 @@ export function Icon({ color, size = 24, type }: Props) {
       return <ChevronDown {...iconProps} />;
     case IconType.COPY:
       return <Copy {...iconProps} />;
+    case IconType.INFO_CIRCLE:
+      return <InfoCircle {...iconProps} />;
     case IconType.MOON:
       return <Moon {...iconProps} />;
     case IconType.PLUS:
       return <Plus {...iconProps} />;
     case IconType.SUN:
       return <Sun {...iconProps} />;
+    case IconType.X:
+      return <X {...iconProps} />;
     case IconType.X_CIRCLE:
       return <XCircle {...iconProps} />;
     default:
