@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { DemoPage } from './pages/DemoPage';
 import { PlaygroundPage } from './pages/PlaygroundPage';
+import { ToastProvider } from './toast';
 
 import './index.css';
 
@@ -17,6 +18,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ToastProvider>
+      <RouterProvider router={router} />
+    </ToastProvider>
   </StrictMode>,
 );

@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { showErrorToast, showSuccessToast } from '../toast';
 import { Icon } from './Icon';
 
 interface Props {
@@ -11,7 +12,9 @@ export function ExpandableCodeSnippet({ codeSnippet }: Props) {
   const handleCopyCodeToClipboard = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(trimmedCodeSnippet);
+      showSuccessToast('Copied code to clipboard!');
     } catch (err) {
+      showErrorToast('Could not copy code to clipboard.', err);
       console.error('Failed to copy:', err);
     }
   }, [trimmedCodeSnippet]);
