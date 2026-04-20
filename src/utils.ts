@@ -81,7 +81,10 @@ export function resolveCaseInsensitiveOption<
   }
 
   const normalized = value.trim().toUpperCase();
-  if ((allowedValues as readonly string[]).includes(normalized)) {
+  const matchedValue = allowedValues.find(
+    (allowedValue) => allowedValue.trim().toUpperCase() === normalized,
+  );
+  if (matchedValue !== undefined) {
     return normalized as V;
   }
 
@@ -103,10 +106,17 @@ export function resolveRequiredCaseInsensitiveOption<
     );
   }
 
-  return resolveCaseInsensitiveOption({
+  const resolvedValue = resolveCaseInsensitiveOption({
     allowedValues,
-    defaultValue: allowedValues[0],
+    defaultValue: null,
     key,
     options,
   });
+
+  if (resolvedValue === null) {
+    throw new Error(
+      `Missing required option '${String(key)}'. Expected one of ${getAllowedOptionList(allowedValues)}`,
+    );
+  }
+  return resolvedValue;
 }
