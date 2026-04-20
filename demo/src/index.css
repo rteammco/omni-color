@@ -116,3 +116,9 @@ h6 {
     @apply text-indigo-600;
   }
 }
+
+@layer components {
+  .icon-button {
+    @apply !bg-transparent !p-1 !text-indigo-900 hover:!text-indigo-700 active:!text-indigo-500 dark:!text-indigo-100 dark:hover:!text-indigo-300 dark:active:!text-indigo-400 !shadow-none;
+  }
+}

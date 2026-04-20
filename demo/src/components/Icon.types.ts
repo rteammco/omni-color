@@ -5,8 +5,10 @@ export enum IconType {
   CHECK_CIRCLE = 'CHECK_CIRCLE',
   CHEVRON_DOWN = 'CHEVRON_DOWN',
   COPY = 'COPY',
+  INFO_CIRCLE = 'INFO_CIRCLE',
   MOON = 'MOON',
   PLUS = 'PLUS',
   SUN = 'SUN',
+  X = 'X',
   X_CIRCLE = 'X_CIRCLE',
 }

@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { showErrorToast, showSuccessToast } from '../toast';
 import { Icon } from './Icon';
 
 interface Props {
@@ -11,8 +12,9 @@ export function ExpandableCodeSnippet({ codeSnippet }: Props) {
   const handleCopyCodeToClipboard = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(trimmedCodeSnippet);
+      showSuccessToast('Copied code to clipboard!');
     } catch (err) {
-      console.error('Failed to copy:', err);
+      showErrorToast('Could not copy code to clipboard.', err);
     }
   }, [trimmedCodeSnippet]);
 
@@ -29,7 +31,11 @@ export function ExpandableCodeSnippet({ codeSnippet }: Props) {
           {trimmedCodeSnippet}
         </pre>
         <div className="absolute bottom-2 right-2">
-          <button onClick={handleCopyCodeToClipboard}>
+          <button
+            aria-label="Copy code snippet to clipboard"
+            className="icon-button"
+            onClick={handleCopyCodeToClipboard}
+          >
             <Icon size={20} type={Icon.TYPE.COPY} />
           </button>
         </div>
