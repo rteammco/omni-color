@@ -9,11 +9,11 @@ export function AppFooter() {
       </div>
       <div className="flex flex-col gap-1">
         <span className="mb-1 font-semibold text-neutral-500">Accessibility</span>
-        <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a>
+        <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2 specification</a>
         <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">
-          Understanding contrast
+          WCAG contrast guidance
         </a>
-        <a href="https://github.com/Myndex/apca-w3">APCA W3C</a>
+        <a href="https://github.com/Myndex/apca-w3">APCA draft source (apca-w3)</a>
         <a href="https://git.apcacontrast.com/documentation/">APCA documentation</a>
       </div>
       <div className="flex flex-col gap-1">

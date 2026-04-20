@@ -926,6 +926,9 @@ export class Color {
   /**
    * Get the contrast ratio between this color and another color.
    *
+   * WCAG (Web Content Accessibility Guidelines, from W3C) defines this as a
+   * luminance-based ratio from `1` to `21` commonly used for accessibility checks.
+   *
    * @param other The other {@link Color} or color input to compare against.
    * @returns The WCAG contrast ratio between the two colors.
    */
@@ -935,6 +938,9 @@ export class Color {
 
   /**
    * Get the readability score of this color against a given background color.
+   *
+   * APCA (Advanced Perceptual Contrast Algorithm) is a newer, directional
+   * contrast model being explored for WCAG 3 guidance.
    *
    * NOTE: This is based on draft recommendations and is provided for advisory use only as WCAG 3 is not finalized.
    *
@@ -947,6 +953,9 @@ export class Color {
 
   /**
    * Get APCA readability details of this color against a given background color.
+   *
+   * APCA (Advanced Perceptual Contrast Algorithm) provides a signed Lc score
+   * where polarity (dark-on-light vs light-on-dark) matters.
    *
    * NOTE: APCA policy defaults to advisory mode (`'NONE'`), which returns
    * a signed Lc score with `isReadable`, `requiredLc`, and `shortfall` as `null`.
@@ -974,6 +983,9 @@ export class Color {
   /**
    * Get detailed WCAG readability metrics against a background color.
    *
+   * WCAG (Web Content Accessibility Guidelines) defines standard AA/AAA
+   * thresholds for text contrast conformance.
+   *
    * Calculates the WCAG contrast ratio and determines whether this color meets
    * the specified conformance level and text size requirements.
    *
@@ -997,6 +1009,9 @@ export class Color {
   /**
    * Find the most readable text color against this color as a background.
    *
+   * This ranks candidates using either WCAG contrast ratio (default) or APCA
+   * scoring, depending on `options.algorithm`.
+   *
    * @param textColors A non-empty list of {@link Color} or color input candidate text colors, or a {@link ColorSwatch} to pick from.
    * @param options Optional {@link ReadabilityOptions} to pick the readability algorithm and WCAG inputs.
    * @returns The candidate color with the strongest readability against this color.
@@ -1011,7 +1026,8 @@ export class Color {
   /**
    * Determine whether this color is readable as text against a background color.
    *
-   * By default this uses WCAG contrast checks. You can opt into APCA by passing
+   * By default this uses WCAG contrast checks (Web Content Accessibility Guidelines).
+   * You can opt into APCA (Advanced Perceptual Contrast Algorithm) by passing
    * `options.algorithm = 'APCA'` and optional `apcaOptions`.
    *
    * @param backgroundColor The background {@link Color} or color input to compare against.
@@ -1033,6 +1049,9 @@ export class Color {
 
   /**
    * Find the best background color for this color as foreground text.
+   *
+   * This ranks candidates using either WCAG contrast ratio (default) or APCA
+   * scoring, depending on `options.algorithm`.
    *
    * @param backgroundColors A non-empty list of candidate background {@link Color}s or color inputs, or a {@link ColorSwatch} to pick from.
    * @param options Optional {@link ReadabilityOptions} to pick the readability algorithm and WCAG inputs.
