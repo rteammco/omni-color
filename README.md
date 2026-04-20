@@ -936,13 +936,13 @@ bestSwatchBackground.toHex(); // '#301308'
 
 ### First-Time Setup
 
-From the project's <u>root directory</u>:
+From the project's <ins>root directory</ins>:
 
 1. `npx simple-git-hooks` - run once to initiate the pre-commit checks that will run automatically.
 
 ### Run Demo
 
-From the <u>`demo/` directory</u>:
+From the <ins>`demo/` directory</ins>:
 
 - `npm install` - install the omni-color library from the project's root directory.
 - `npm run dev` - run the demo locally.
@@ -951,7 +951,7 @@ _GitHub actions will automatically update the live demo on merges to the `main` 
 
 ### Run Tests and Checks
 
-From the project's <u>root directory</u>:
+From the project's <ins>root directory</ins>:
 
 - Run tests:
   - `npm run test` - run all tests.
