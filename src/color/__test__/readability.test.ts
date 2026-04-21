@@ -3044,4 +3044,30 @@ describe('APCA readability report and policy behavior', () => {
     expect(advisoryBest.toHex()).toBe('#333333');
     expect(thresholdBest.toHex()).toBe('#333333');
   });
+
+  it('throws for invalid readability option values', () => {
+    const foreground = new Color('#333333');
+    const background = new Color('#ffffff');
+
+    expect(() => isTextReadable(foreground, background, { algorithm: 'INVALID' as never })).toThrow(
+      "Invalid 'algorithm'",
+    );
+    expect(() =>
+      getWCAGReadabilityReport(foreground, background, { level: 'INVALID' as never }),
+    ).toThrow("Invalid 'level'");
+    expect(() =>
+      getWCAGReadabilityReport(foreground, background, { size: 'INVALID' as never }),
+    ).toThrow("Invalid 'size'");
+    expect(() =>
+      getAPCAReadabilityReport(foreground, background, {
+        policy: 'INVALID' as never,
+      }),
+    ).toThrow("Invalid 'policy'");
+    expect(() =>
+      getAPCAReadabilityReport(foreground, background, {
+        policy: 'PRESET',
+        preset: 'INVALID' as never,
+      }),
+    ).toThrow("Invalid 'preset'");
+  });
 });

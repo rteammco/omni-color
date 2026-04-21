@@ -124,12 +124,12 @@ describe('Delta E calculations', () => {
       expect(getDeltaE(red, yellow, { method: 'CIEDE2000' })).toBeCloseTo(63.5875, 4);
     });
 
-    it('throws for unsupported methods in getDeltaE', () => {
+    it('throws for invalid methods in getDeltaE', () => {
       const colorA = new Color({ l: 50, a: 2.6772, b: -79.7751 });
       const colorB = new Color({ l: 50, a: 0, b: -82.7485 });
 
       expect(() => getDeltaE(colorA, colorB, { method: 'INVALID' as never })).toThrow(
-        'Unsupported Delta E method: INVALID',
+        "Invalid 'method'",
       );
     });
 

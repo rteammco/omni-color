@@ -1,4 +1,4 @@
-import { type CaseInsensitive, clampValue } from '../utils';
+import { type CaseInsensitive, clampValue, resolveCaseInsensitiveOption } from '../utils';
 import { Color } from './color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.consts';
 import { toRGBA } from './conversions';
@@ -96,7 +96,8 @@ export function getRelativeLuminance(rgb: ColorRGBA): number {
 /**
  * The algorithm mode to use for calculating if a color is dark.
  */
-export type ColorDarknessMode = 'WCAG' | 'YIQ';
+const COLOR_DARKNESS_MODES = ['WCAG', 'YIQ'] as const;
+export type ColorDarknessMode = (typeof COLOR_DARKNESS_MODES)[number];
 
 interface IsColorDarkWCAGOptions {
   /**
@@ -147,7 +148,14 @@ function isColorDarkYIQ(color: Color, threshold: number): boolean {
 
 // Checks if a color is dark based on the specified algorithm and threshold.
 export function isColorDark(color: Color, options: IsColorDarkOptions = {}): boolean {
-  if (options.colorDarknessMode?.toUpperCase() === 'YIQ') {
+  const colorDarknessMode = resolveCaseInsensitiveOption({
+    allowedValues: COLOR_DARKNESS_MODES,
+    defaultValue: 'WCAG',
+    key: 'colorDarknessMode',
+    options,
+  });
+
+  if (colorDarknessMode === 'YIQ') {
     return isColorDarkYIQ(color, options.yiqThreshold ?? 128);
   }
 

@@ -1,19 +1,23 @@
 import { type CaseInsensitive, clampValue } from '../utils';
+import { resolveCaseInsensitiveOption, resolveRequiredCaseInsensitiveOption } from '../utils';
 import { Color } from './color';
 import type { ColorHSLA } from './formats';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 
-export type ColorHarmony =
-  | 'COMPLEMENTARY'
-  | 'SPLIT_COMPLEMENTARY'
-  | 'TRIADIC'
-  | 'SQUARE'
-  | 'TETRADIC'
-  | 'ANALOGOUS'
-  | 'MONOCHROMATIC';
+const GRAYSCALE_HANDLING_MODES = ['SPIN_LIGHTNESS', 'IGNORE'] as const;
+export type GrayscaleHandlingMode = (typeof GRAYSCALE_HANDLING_MODES)[number];
 
-export type GrayscaleHandlingMode = 'SPIN_LIGHTNESS' | 'IGNORE';
+const COLOR_HARMONIES = [
+  'COMPLEMENTARY',
+  'SPLIT_COMPLEMENTARY',
+  'TRIADIC',
+  'SQUARE',
+  'TETRADIC',
+  'ANALOGOUS',
+  'MONOCHROMATIC',
+] as const;
+export type ColorHarmony = (typeof COLOR_HARMONIES)[number];
 
 export interface ColorHarmonyOptions {
   grayscaleHandlingMode?: CaseInsensitive<GrayscaleHandlingMode>;
@@ -47,18 +51,18 @@ function spinColorOnHueOrLightness(
   return color.spin(degrees);
 }
 
-function resolveGrayscaleHandlingMode({
-  grayscaleHandlingMode,
-}: ColorHarmonyOptions = {}): GrayscaleHandlingMode {
-  if (!grayscaleHandlingMode) {
-    return 'SPIN_LIGHTNESS';
-  }
-  return grayscaleHandlingMode.toUpperCase() as GrayscaleHandlingMode;
+function resolveGrayscaleHandlingMode(options: ColorHarmonyOptions): GrayscaleHandlingMode {
+  return resolveCaseInsensitiveOption({
+    allowedValues: GRAYSCALE_HANDLING_MODES,
+    defaultValue: 'SPIN_LIGHTNESS',
+    key: 'grayscaleHandlingMode',
+    options,
+  });
 }
 
 export function getComplementaryColors(
   color: Color,
-  options?: ColorHarmonyOptions,
+  options: ColorHarmonyOptions = {},
 ): [Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [color.clone(), spinColorOnHueOrLightness(color, 180, grayscaleHandlingMode)];
@@ -66,7 +70,7 @@ export function getComplementaryColors(
 
 export function getSplitComplementaryColors(
   color: Color,
-  options?: ColorHarmonyOptions,
+  options: ColorHarmonyOptions = {},
 ): [Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
@@ -78,7 +82,7 @@ export function getSplitComplementaryColors(
 
 export function getTriadicHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions,
+  options: ColorHarmonyOptions = {},
 ): [Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
@@ -90,7 +94,7 @@ export function getTriadicHarmonyColors(
 
 export function getSquareHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions,
+  options: ColorHarmonyOptions = {},
 ): [Color, Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
@@ -103,7 +107,7 @@ export function getSquareHarmonyColors(
 
 export function getTetradicHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions,
+  options: ColorHarmonyOptions = {},
 ): [Color, Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   // TODO: tetradic harmonies can also be "wide" (120, 180, 300) or go in the other direction, or potentially any rectangle
@@ -119,7 +123,7 @@ export function getTetradicHarmonyColors(
 
 export function getAnalogousHarmonyColors(
   color: Color,
-  options?: ColorHarmonyOptions,
+  options: ColorHarmonyOptions = {},
 ): [Color, Color, Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   // TODO: verify, because other libraries seem to have a slightly narrower angle
@@ -144,9 +148,15 @@ export function getMonochromaticHarmonyColors(color: Color): [Color, Color, Colo
 export function getHarmonyColors(
   color: Color,
   harmony: CaseInsensitive<ColorHarmony>,
-  options?: ColorHarmonyOptions,
+  options: ColorHarmonyOptions = {},
 ): Color[] {
-  switch (harmony.toUpperCase() as ColorHarmony) {
+  const resolvedHarmony = resolveRequiredCaseInsensitiveOption({
+    allowedValues: COLOR_HARMONIES,
+    key: 'harmony',
+    options: { harmony },
+  });
+
+  switch (resolvedHarmony) {
     case 'COMPLEMENTARY':
       return getComplementaryColors(color, options);
     case 'SPLIT_COMPLEMENTARY':

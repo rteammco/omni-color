@@ -1,7 +1,22 @@
-import { type CaseInsensitive } from '../utils';
+import { type CaseInsensitive, resolveCaseInsensitiveOption } from '../utils';
 import type { Color } from './color';
 import type { ColorRGBA } from './formats';
 import { getRelativeLuminance } from './utils';
+
+const APCA_THRESHOLD_PRESETS = ['BODY', 'LARGE_TEXT', 'NON_TEXT', 'VERY_LOW_VISION'] as const;
+export type APCAThresholdPreset = (typeof APCA_THRESHOLD_PRESETS)[number];
+
+const APCA_READABILITY_POLICIES = ['NONE', 'PRESET', 'CUSTOM'] as const;
+export type APCAReadabilityPolicy = (typeof APCA_READABILITY_POLICIES)[number];
+
+const WCAG_CONFORMANCE_LEVELS = ['AA', 'AAA'] as const;
+export type WCAGReadabilityConformanceLevel = (typeof WCAG_CONFORMANCE_LEVELS)[number];
+
+const WCAG_TEXT_SIZES = ['SMALL', 'LARGE'] as const;
+export type WCAGReadabilityTextSizeOptions = (typeof WCAG_TEXT_SIZES)[number];
+
+const READABILITY_ALGORITHMS = ['WCAG', 'APCA'] as const;
+export type ReadabilityAlgorithm = (typeof READABILITY_ALGORITHMS)[number];
 
 // Does alpha blending between the two RGBA colors. Calculates what the a
 // semi-transparent foreground color would look like on the background color.
@@ -134,9 +149,6 @@ export function getAPCAReadabilityScore(foreground: Color, background: Color): n
   return getAPCAContrast(txtY, bgY);
 }
 
-export type APCAThresholdPreset = 'BODY' | 'LARGE_TEXT' | 'NON_TEXT' | 'VERY_LOW_VISION';
-export type APCAReadabilityPolicy = 'NONE' | 'PRESET' | 'CUSTOM';
-
 export interface APCAReadabilityOptions {
   policy?: CaseInsensitive<APCAReadabilityPolicy>;
   preset?: CaseInsensitive<APCAThresholdPreset>;
@@ -159,7 +171,12 @@ const APCA_REQUIRED_PRESETS = {
 } as const satisfies Record<APCAThresholdPreset, number>;
 
 function getAPCARequiredLc(options: APCAReadabilityOptions = {}): number | null {
-  const policy = (options.policy?.toUpperCase() ?? 'NONE') as APCAReadabilityPolicy;
+  const policy = resolveCaseInsensitiveOption({
+    allowedValues: APCA_READABILITY_POLICIES,
+    defaultValue: 'NONE',
+    key: 'policy',
+    options,
+  });
 
   if (policy === 'NONE') {
     return null;
@@ -169,7 +186,12 @@ function getAPCARequiredLc(options: APCAReadabilityOptions = {}): number | null 
     return Math.max(0, Math.abs(options.threshold ?? APCA_REQUIRED_PRESETS.BODY));
   }
 
-  const preset = (options.preset?.toUpperCase() ?? 'BODY') as APCAThresholdPreset;
+  const preset = resolveCaseInsensitiveOption({
+    allowedValues: APCA_THRESHOLD_PRESETS,
+    defaultValue: 'BODY',
+    key: 'preset',
+    options,
+  });
   return APCA_REQUIRED_PRESETS[preset];
 }
 
@@ -201,11 +223,6 @@ export function getAPCAReadabilityReport(
   };
 }
 
-export type WCAGReadabilityConformanceLevel = 'AA' | 'AAA';
-export type WCAGReadabilityTextSizeOptions =
-  | 'SMALL' // normal body text (< 18pt or < 14pt if bold)
-  | 'LARGE'; // large-scale text (>= 18pt or >= 14pt if bold)
-
 const WCAG_CONTRAST_READABILITY_THRESHOLDS: {
   [key in WCAGReadabilityConformanceLevel]: { [key in WCAGReadabilityTextSizeOptions]: number };
 } = {
@@ -230,8 +247,6 @@ export interface WCAGReadabilityReport {
   requiredContrast: number;
   shortfall: number;
 }
-
-export type ReadabilityAlgorithm = 'WCAG' | 'APCA';
 
 export interface ReadabilityOptions {
   algorithm?: CaseInsensitive<ReadabilityAlgorithm>;
@@ -277,8 +292,18 @@ export function getWCAGReadabilityReport(
   background: Color,
   options: WCAGReadabilityOptions = {},
 ): WCAGReadabilityReport {
-  const level = (options.level?.toUpperCase() ?? 'AA') as WCAGReadabilityConformanceLevel;
-  const size = (options.size?.toUpperCase() ?? 'SMALL') as WCAGReadabilityTextSizeOptions;
+  const level = resolveCaseInsensitiveOption({
+    allowedValues: WCAG_CONFORMANCE_LEVELS,
+    defaultValue: 'AA',
+    key: 'level',
+    options,
+  });
+  const size = resolveCaseInsensitiveOption({
+    allowedValues: WCAG_TEXT_SIZES,
+    defaultValue: 'SMALL',
+    key: 'size',
+    options,
+  });
 
   const contrastRatio = getWCAGContrastRatio(foreground, background);
   const requiredContrast = WCAG_CONTRAST_READABILITY_THRESHOLDS[level][size];
@@ -295,7 +320,12 @@ export function isTextReadable(
   background: Color,
   options: ReadabilityOptions = {},
 ): boolean {
-  const algorithm = (options.algorithm?.toUpperCase() ?? 'WCAG') as ReadabilityAlgorithm;
+  const algorithm = resolveCaseInsensitiveOption({
+    allowedValues: READABILITY_ALGORITHMS,
+    defaultValue: 'WCAG',
+    key: 'algorithm',
+    options,
+  });
 
   if (algorithm === 'APCA') {
     const report = getAPCAReadabilityReport(foreground, background, options.apcaOptions);
@@ -310,7 +340,12 @@ function getReadabilityComparisonResult(
   background: Color,
   options: ReadabilityOptions = {},
 ): ReadabilityComparisonResult {
-  const algorithm = (options.algorithm?.toUpperCase() ?? 'WCAG') as ReadabilityAlgorithm;
+  const algorithm = resolveCaseInsensitiveOption({
+    allowedValues: READABILITY_ALGORITHMS,
+    defaultValue: 'WCAG',
+    key: 'algorithm',
+    options,
+  });
   const { apcaOptions, wcagOptions } = options;
 
   if (algorithm === 'APCA') {

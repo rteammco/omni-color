@@ -1,3 +1,4 @@
+import { resolveCaseInsensitiveOption } from '../../utils';
 import { Color } from '../color';
 import { getColorFromTemperatureLabel } from '../temperature';
 import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
@@ -293,6 +294,14 @@ describe('isColorDark', () => {
     expect(isColorDark(new Color('#00AA00'))).toBe(false); // Med Green (L ~ 0.28) -> Light
   });
 
+  it('throws for invalid darkness mode option values', () => {
+    expect(() =>
+      isColorDark(new Color('#ffffff'), {
+        colorDarknessMode: 'INVALID' as never,
+      }),
+    ).toThrow("Invalid 'colorDarknessMode'");
+  });
+
   it('allows customizing the WCAG threshold', () => {
     const red = new Color('#ff0000'); // Luminance ~0.2126
 
@@ -422,5 +431,59 @@ describe('getColorRGBAFromInput', () => {
 
   it('throws on unknown color names', () => {
     expect(() => getColorRGBAFromInput('notacolor')).toThrow();
+  });
+});
+
+describe('resolveCaseInsensitiveOption', () => {
+  it('normalizes mixed casing and trims whitespace', () => {
+    const resolved = resolveCaseInsensitiveOption({
+      allowedValues: ['WCAG', 'YIQ'],
+      defaultValue: 'WCAG',
+      key: 'colorDarknessMode',
+      options: { colorDarknessMode: '  yiQ  ' },
+    });
+    expect(resolved).toBe('YIQ');
+  });
+
+  it('returns the canonical allowed value when allowed values are not uppercase', () => {
+    const resolved = resolveCaseInsensitiveOption({
+      allowedValues: ['camelCase', 'PascalCase'],
+      defaultValue: 'camelCase',
+      key: 'mode',
+      options: { mode: '  PASCALcase ' },
+    });
+    expect(resolved).toBe('PascalCase');
+  });
+
+  it('returns the default when value is undefined', () => {
+    const resolved = resolveCaseInsensitiveOption({
+      allowedValues: ['WCAG', 'YIQ'],
+      defaultValue: 'WCAG',
+      key: 'colorDarknessMode',
+      options: {} as { colorDarknessMode: 'WCAG' | 'YIQ' },
+    });
+    expect(resolved).toBe('WCAG');
+  });
+
+  it('throws for unknown values', () => {
+    expect(() =>
+      resolveCaseInsensitiveOption({
+        allowedValues: ['WCAG', 'YIQ'],
+        defaultValue: 'WCAG',
+        key: 'colorDarknessMode',
+        options: { colorDarknessMode: 'unknown' },
+      }),
+    ).toThrow("Invalid 'colorDarknessMode'");
+  });
+
+  it('throws for non-string values', () => {
+    expect(() =>
+      resolveCaseInsensitiveOption({
+        allowedValues: ['WCAG', 'YIQ'],
+        defaultValue: 'WCAG',
+        key: 'colorDarknessMode',
+        options: { colorDarknessMode: 123 as never as string }, // test different type
+      }),
+    ).toThrow("Invalid 'colorDarknessMode'");
   });
 });
