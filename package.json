@@ -1,7 +1,42 @@
 {
   "name": "omni-color",
-  "version": "0.0.1",
-  "description": "",
+  "description": "A modern TypeScript color library for parsing, converting, manipulating, palettes, and accessibility.",
+  "version": "0.1.0",
+  "homepage": "https://rteammco.github.io/omni-color/",
+  "license": "ISC",
+  "author": "Richard Teammco",
+  "keywords": [
+    "color",
+    "typescript",
+    "javascript",
+    "color-library",
+    "color-parsing",
+    "color-conversion",
+    "color-manipulation",
+    "color-gradient",
+    "color-scale",
+    "color-harmony",
+    "color-palette",
+    "css-color",
+    "color-space",
+    "oklch",
+    "lab",
+    "lch",
+    "wcag",
+    "apca",
+    "immutable",
+    "contrast",
+    "accessibility"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rteammco/omni-color.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rteammco/omni-color/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -24,15 +59,11 @@
     "typecheck": "tsc",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json --watch",
     "build": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run format:check && npm run lint && npm run typecheck && npm run test"
   },
-  "keywords": [],
-  "author": "Richard Teammco",
-  "license": "ISC",
-  "type": "module",
   "devDependencies": {
     "@types/chroma-js": "^3.1.2",
     "@types/jest": "^30.0.0",
