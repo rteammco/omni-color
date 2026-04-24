@@ -1008,10 +1008,11 @@ From the project's <ins>root directory</ins>:
 
 ### Run Demo
 
-From the <ins>`demo/` directory</ins>:
+From the project's <ins>root directory</ins>:
 
-- `npm install` - install the omni-color library from the project's root directory.
-- `npm run dev` - run the demo locally.
+- `npm install` - install library dependencies.
+- `npm run install:demo` - install demo dependencies.
+- `npm run dev:demo` - run the demo locally.
 
 _GitHub actions will automatically update the live demo on merges to the `main` branch._
 

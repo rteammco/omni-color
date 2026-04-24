@@ -141,13 +141,21 @@ export function ColorInfoCard({ color, extended }: Props) {
             colorStrings={[color.toHSLString(), color.toHSLAString()]}
             title="HSL"
           />
+          <InfoBox
+            color={color}
+            colorStrings={[color.toHSVString(), color.toHSVAString()]}
+            title="HSV"
+          />
           <InfoBox color={color} colorStrings={[color.toCMYKString()]} title="CMYK" />
           <InfoBox color={color} colorStrings={[color.toLABString()]} title="LAB" />
           <InfoBox color={color} colorStrings={[color.toOKLABString()]} title="OKLAB" />
           <InfoBox color={color} colorStrings={[color.toLCHString()]} title="LCH" />
           <InfoBox color={color} colorStrings={[color.toOKLCHString()]} title="OKLCH" />
-          <InfoBox color={color} colorStrings={[color.toHWBString()]} title="HWB" />
-          <InfoBox color={color} colorStrings={[color.toHWBAString()]} title="HWBA" />
+          <InfoBox
+            color={color}
+            colorStrings={[color.toHWBString(), color.toHWBAString()]}
+            title="HWB"
+          />
           <InfoBox
             color={color}
             colorStrings={[

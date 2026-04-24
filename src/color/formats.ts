@@ -243,16 +243,13 @@ function getDecimalString(value: number, digits = 3): number {
   return +value.toFixed(digits);
 }
 
-function formatColorFunctionChannel(value: number): number {
-  return getDecimalString(value, 6);
-}
-
 export function colorToString(color: ColorRGBA, options?: ColorStringOptions): string {
   const space = resolveColorSpace(options?.space);
   const values = convertRGBToColorSpaceValues(color, space);
-  const base = `${formatColorFunctionChannel(values.r)} ${formatColorFunctionChannel(
+  const base = `${getDecimalString(values.r, 6)} ${getDecimalString(
     values.g,
-  )} ${formatColorFunctionChannel(values.b)}`;
+    6,
+  )} ${getDecimalString(values.b, 6)}`;
 
   if (color.a !== undefined && color.a < 1) {
     return `color(${space.toLowerCase()} ${base} / ${getDecimalString(color.a)})`;
@@ -262,11 +259,11 @@ export function colorToString(color: ColorRGBA, options?: ColorStringOptions): s
 }
 
 export function rgbToString({ r, g, b }: ColorRGB): string {
-  return `rgb(${r} ${g} ${b})`;
+  return `rgb(${getDecimalString(r)} ${getDecimalString(g)} ${getDecimalString(b)})`;
 }
 
 export function rgbaToString({ r, g, b, a }: ColorRGBA): string {
-  return `rgb(${r} ${g} ${b} / ${getDecimalString(a)})`;
+  return `rgb(${getDecimalString(r)} ${getDecimalString(g)} ${getDecimalString(b)} / ${getDecimalString(a)})`;
 }
 
 export function hslToString({ h, s, l }: ColorHSL): string {

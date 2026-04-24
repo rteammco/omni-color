@@ -59,7 +59,10 @@
     "typecheck": "tsc",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json --watch",
     "build": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "install:demo": "npm install --prefix demo",
+    "dev:demo": "npm run build && npm run dev --prefix demo",
+    "build:demo": "npm run build && npm run build --prefix demo"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run format:check && npm run lint && npm run typecheck && npm run test"

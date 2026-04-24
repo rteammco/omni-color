@@ -130,6 +130,9 @@ export function ColorInput({ color, onColorChanged }: Props) {
           <button onClick={() => handlePresetColorSelected('lab(65 15 -42)')}>
             lab(65 15 -42)
           </button>
+          <button onClick={() => handlePresetColorSelected('color(display-p3 0.6 0.5 1)')}>
+            color(display-p3 0.6 0.5 1)
+          </button>
         </div>
       </div>
       <div>
