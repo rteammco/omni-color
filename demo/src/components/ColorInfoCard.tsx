@@ -106,6 +106,7 @@ interface Props {
 export function ColorInfoCard({ color, extended }: Props) {
   const { backgroundColor, borderColor } = useColorBackgroundAndBorderColors(color);
   const isDark = color.isDark();
+  const isPaletteSuitable = color.isPaletteSuitable();
 
   return (
     <Card backgroundColor={backgroundColor} borderColor={borderColor}>
@@ -117,6 +118,15 @@ export function ColorInfoCard({ color, extended }: Props) {
           {extended && (
             <InfoPill color={color} icon={isDark ? IconType.MOON : IconType.SUN} variant="outlined">
               {isDark ? 'Dark' : 'Light'}
+            </InfoPill>
+          )}
+          {extended && (
+            <InfoPill
+              color={color}
+              icon={isPaletteSuitable ? IconType.CHECK : IconType.X}
+              variant="outlined"
+            >
+              {isPaletteSuitable ? 'Suitable for palette' : 'Not suitable for palette'}
             </InfoPill>
           )}
         </div>
