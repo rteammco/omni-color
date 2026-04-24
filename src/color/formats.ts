@@ -284,7 +284,7 @@ export function hsvToString({ h, s, v }: ColorHSV): string {
 }
 
 export function hsvaToString({ h, s, v, a }: ColorHSVA): string {
-  return `hsva(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(
+  return `hsv(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(
     v,
   )}% / ${getDecimalString(a)})`;
 }

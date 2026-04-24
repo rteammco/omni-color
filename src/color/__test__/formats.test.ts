@@ -242,29 +242,29 @@ describe('hsvToString', () => {
 describe('hsvaToString', () => {
   it('generates hsva strings', () => {
     const transparentBlack = new Color('#00000000');
-    expect(hsvaToString(transparentBlack.toHSVA())).toBe('hsva(0 0% 0% / 0)');
-    expect(transparentBlack.toHSVAString()).toBe('hsva(0 0% 0% / 0)');
+    expect(hsvaToString(transparentBlack.toHSVA())).toBe('hsv(0 0% 0% / 0)');
+    expect(transparentBlack.toHSVAString()).toBe('hsv(0 0% 0% / 0)');
 
     const opaqueWhite = new Color('#ffffffff');
-    expect(hsvaToString(opaqueWhite.toHSVA())).toBe('hsva(0 0% 100% / 1)');
-    expect(opaqueWhite.toHSVAString()).toBe('hsva(0 0% 100% / 1)');
+    expect(hsvaToString(opaqueWhite.toHSVA())).toBe('hsv(0 0% 100% / 1)');
+    expect(opaqueWhite.toHSVAString()).toBe('hsv(0 0% 100% / 1)');
 
     const red = new Color('#ff000080');
-    expect(hsvaToString(red.toHSVA())).toBe('hsva(0 100% 100% / 0.502)');
-    expect(red.toHSVAString()).toBe('hsva(0 100% 100% / 0.502)');
+    expect(hsvaToString(red.toHSVA())).toBe('hsv(0 100% 100% / 0.502)');
+    expect(red.toHSVAString()).toBe('hsv(0 100% 100% / 0.502)');
 
     const green = new Color('#00ff007f');
-    expect(hsvaToString(green.toHSVA())).toBe('hsva(120 100% 100% / 0.498)');
-    expect(green.toHSVAString()).toBe('hsva(120 100% 100% / 0.498)');
+    expect(hsvaToString(green.toHSVA())).toBe('hsv(120 100% 100% / 0.498)');
+    expect(green.toHSVAString()).toBe('hsv(120 100% 100% / 0.498)');
 
     const custom = new Color('#abc123d6');
-    expect(hsvaToString(custom.toHSVA())).toBe('hsva(68.354 81.865% 75.686% / 0.839)');
-    expect(custom.toHSVAString()).toBe('hsva(68.354 81.865% 75.686% / 0.839)');
+    expect(hsvaToString(custom.toHSVA())).toBe('hsv(68.354 81.865% 75.686% / 0.839)');
+    expect(custom.toHSVAString()).toBe('hsv(68.354 81.865% 75.686% / 0.839)');
   });
 
   it('rounds hsva components to three decimals', () => {
     expect(hsvaToString({ h: 123.4567, s: 50.5555, v: 10.1234, a: 0.98765 })).toBe(
-      'hsva(123.457 50.556% 10.123% / 0.988)',
+      'hsv(123.457 50.556% 10.123% / 0.988)',
     );
   });
 });

@@ -365,7 +365,7 @@ export class Color {
   }
 
   /**
-   * Get the color as an `hsva(h s% v% / a)` string.
+   * Get the color as an `hsv(h s% v% / a)` string.
    */
   toHSVAString(): string {
     return hsvaToString(this.toHSVA());

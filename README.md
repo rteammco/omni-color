@@ -298,7 +298,7 @@ new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
 - <ins>Returns</ins> an `"hsva(h s% v% / a)"` string.
 
 ```ts
-new Color('#1e90ff').toHSVAString(); // 'hsva(210 88.235% 100% / 1)'
+new Color('#1e90ff').toHSVAString(); // 'hsv(210 88.235% 100% / 1)'
 ```
 
 #### `toHWB(): { h: number; w: number; b: number }`
