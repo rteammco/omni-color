@@ -1,5 +1,55 @@
 import { Color } from '../../color/color';
-import { generateColorPaletteFromBaseColor } from '../palette';
+import {
+  generateColorPaletteFromBaseColor,
+  isColorPaletteSuitable,
+  SUITABLE_PALETTE_MAX_LIGHTNESS,
+  SUITABLE_PALETTE_MIN_LIGHTNESS,
+  SUITABLE_PALETTE_MIN_SATURATION,
+} from '../palette';
+
+describe('isColorPaletteSuitable()', () => {
+  it('returns true when saturation and lightness are within palette-suitable ranges', () => {
+    expect(
+      isColorPaletteSuitable(new Color({ h: 0, s: SUITABLE_PALETTE_MIN_SATURATION, l: 50 })),
+    ).toBe(true);
+    expect(
+      isColorPaletteSuitable(new Color({ h: 220, s: 85, l: SUITABLE_PALETTE_MIN_LIGHTNESS })),
+    ).toBe(true);
+    expect(
+      isColorPaletteSuitable(new Color({ h: 120, s: 60, l: SUITABLE_PALETTE_MAX_LIGHTNESS })),
+    ).toBe(true);
+  });
+
+  it('returns false when saturation or lightness are outside palette-suitable ranges', () => {
+    expect(
+      isColorPaletteSuitable(
+        new Color({
+          h: 0,
+          s: SUITABLE_PALETTE_MIN_SATURATION - 1,
+          l: SUITABLE_PALETTE_MIN_LIGHTNESS,
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isColorPaletteSuitable(
+        new Color({
+          h: 0,
+          s: SUITABLE_PALETTE_MIN_SATURATION,
+          l: SUITABLE_PALETTE_MIN_LIGHTNESS - 1,
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isColorPaletteSuitable(
+        new Color({
+          h: 0,
+          s: SUITABLE_PALETTE_MIN_SATURATION,
+          l: SUITABLE_PALETTE_MAX_LIGHTNESS + 1,
+        }),
+      ),
+    ).toBe(false);
+  });
+});
 
 describe('generateColorPaletteFromBaseColor()', () => {
   it('harmonizes neutrals with the base color', () => {

@@ -2,6 +2,7 @@ import {
   type ColorPalette,
   generateColorPaletteFromBaseColor,
   type GenerateColorPaletteOptions,
+  isColorPaletteSuitable,
 } from '../palette/palette';
 import { type CaseInsensitive, clampValue } from '../utils';
 import type { ColorStringOptions } from './colorSpaces';
@@ -937,6 +938,22 @@ export class Color {
    */
   isOffWhite(): boolean {
     return isColorOffWhite(this);
+  }
+
+  /**
+   * Determine whether this color is suitable as a palette anchor.
+   *
+   * Uses the same thresholds as `Color.random({ paletteSuitable: true })`:
+   * saturation must be at least 40%, and lightness must be between 25% and 75% (inclusive).
+   *
+   * @example
+   * ```ts
+   * new Color('#ff0000').isPaletteSuitable(); // true
+   * new Color('#f2f2f2').isPaletteSuitable(); // false
+   * ```
+   */
+  isPaletteSuitable(): boolean {
+    return isColorPaletteSuitable(this);
   }
 
   /**

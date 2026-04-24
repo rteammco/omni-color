@@ -6,6 +6,13 @@ import { type CaseInsensitive, clampValue } from '../utils';
 
 type SemanticColor = 'info' | 'positive' | 'negative' | 'warning' | 'special';
 
+// Minimum HSL saturation (%) for a color to be considered suitable as a palette anchor:
+export const SUITABLE_PALETTE_MIN_SATURATION = 40;
+// Minimum HSL lightness (%) for a color to be considered suitable as a palette anchor:
+export const SUITABLE_PALETTE_MIN_LIGHTNESS = 25;
+// Maximum HSL lightness (%) for a color to be considered suitable as a palette anchor:
+export const SUITABLE_PALETTE_MAX_LIGHTNESS = 75;
+
 export interface ColorPalette {
   // Main colors:
   primary: ColorSwatch;
@@ -64,6 +71,20 @@ const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: Required<NeutralColorHarmoniz
   tintChromaFactor: 0.1,
   maxTintChroma: 0.04,
 };
+
+/**
+ * Determine if a color meets the same "palette suitable" constraints used by `Color.random({ paletteSuitable: true })`:
+ * - saturation >= `SUITABLE_PALETTE_MIN_SATURATION`
+ * - lightness between `SUITABLE_PALETTE_MIN_LIGHTNESS` and `SUITABLE_PALETTE_MAX_LIGHTNESS` (inclusive)
+ */
+export function isColorPaletteSuitable(color: Color): boolean {
+  const { s, l } = color.toHSL();
+  return (
+    s >= SUITABLE_PALETTE_MIN_SATURATION &&
+    l >= SUITABLE_PALETTE_MIN_LIGHTNESS &&
+    l <= SUITABLE_PALETTE_MAX_LIGHTNESS
+  );
+}
 
 export interface GenerateColorPaletteOptions {
   neutralHarmonization?: NeutralColorHarmonizationOptions;
