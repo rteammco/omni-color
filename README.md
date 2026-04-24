@@ -41,11 +41,12 @@ _`constructor`_
     - **Invalid inputs throw an exception.**
 
 ```ts
-const red = new Color('#ff0000');
-const byName = new Color('red');
-const fromObj = new Color({ h: 210, s: 80, l: 40 });
-const parsed = new Color('rgba(255, 0, 0, 0.5)');
-const fromTemperature = new Color('Incandescent lamp');
+const red = new Color('#ff0000'); // #ff0000
+const byName = new Color('red'); // #ff0000
+const fromObj = new Color({ h: 210, s: 80, l: 40 }); // #1466b8
+const parsed = new Color('rgba(255, 0, 0, 0.5)'); // #ff000080
+const fromTemperature = new Color('Incandescent lamp'); // #ffa757
+const fromCSSColor = new Color('color(display-p3 1 0.5 0)'); // #ff7600
 const random = new Color();
 ```
 
@@ -819,12 +820,13 @@ palette.info[500].toHex(); // '#9d40d4'
 
 ### Readability and Accessibility
 
-`omni-color` supports two readability algorithms:
+**_omni-color_** supports two readability algorithms:
 
-- **WCAG 2.x contrast ratio** (`getWCAGContrastRatio`, `getWCAGReadabilityReport`, `isReadableAsTextColor`) for established pass/fail conformance checks. WCAG stands for **Web Content Accessibility Guidelines** (W3C).
-- **APCA Lc score** (`getAPCAReadabilityScore`, `getAPCAReadabilityReport`) for directional contrast analysis. APCA stands for **Advanced Perceptual Contrast Algorithm**. APCA is still draft guidance for WCAG 3, so this library defaults APCA to **advisory mode** unless you opt into a threshold policy.
+- <ins>WCAG 2.x contrast ratio</ins> (`getWCAGContrastRatio`, `getWCAGReadabilityReport`, `isReadableAsTextColor`) for established pass/fail conformance checks. WCAG stands for *Web Content Accessibility Guidelines* (W3C).
+- <ins>APCA Lc score</ins> (`getAPCAReadabilityScore`, `getAPCAReadabilityReport`) for directional contrast analysis. APCA stands for *Advanced Perceptual Contrast Algorithm*. APCA is still draft guidance for WCAG 3, so this library defaults APCA to *advisory mode* unless you opt into a threshold policy.
 
 Reference resources:
+
 - WCAG 2.2 specification: https://www.w3.org/TR/WCAG22/
 - WCAG Understanding SC 1.4.3 (Contrast Minimum): https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
 - APCA project repository (used for ongoing algorithm drafts): https://github.com/Myndex/apca-w3
@@ -969,7 +971,7 @@ bestSwatchBackground.toHex(); // '#301308'
   - <span id="types-color-oklab">`ColorOKLAB`</span> - OKLAB color space with lightness and color-opponent dimensions. `{ l: number; a: number; b: number }` where `l` is a number between 0 and 1 (lightness), and `a` and `b` are numbers typically between -0.4 and 0.4 (color-opponent dimensions).
   - <span id="types-color-lch">`ColorLCH`</span> - CIELCh color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 100 (lightness), `c` is a number representing chroma (typically 0–150+), and `h` is a number between 0 and 360 (hue in degrees).
   - <span id="types-color-oklch">`ColorOKLCH`</span> - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
-- <span id="types-color-space">`ColorSpace`</span> - supported color spaces for `color()` output: `"SRGB" | "DISPLAY-P3" | "REC2020"`.
+- <span id="types-color-space">`ColorSpace`</span> - supported color spaces for `Color.toColorString()`: `"SRGB" | "DISPLAY-P3" | "REC2020"`.
 - <span id="types-color-temperature-label">`ColorTemperatureLabel`</span> - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
 - <span id="types-base-color-swatch">`BaseColorSwatch`</span> - a swatch representing shades of the same color from 100 to 900 `{ 100: number; 200 number; ... 900: number }` where `100` is the lightest shade and `900` is the darkest shade.
 - <span id="types-extended-color-swatch">`ExtendedColorSwatch`</span> - same as a [`ColorSwatch`](#types-color-swatch) but includes half-shades at 50, 100, 150, ..., 950. It is a superset of [`ColorSwatch`](#types-color-swatch).
