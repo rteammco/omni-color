@@ -14,5 +14,5 @@
     "removeComments": false,
     "jsx": "react-jsx"
   },
-  "include": ["./src", "./demo/src"]
+  "include": ["./src"]
 }
