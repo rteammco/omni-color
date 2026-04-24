@@ -1,3 +1,8 @@
+import {
+  SUITABLE_PALETTE_MAX_LIGHTNESS,
+  SUITABLE_PALETTE_MIN_LIGHTNESS,
+  SUITABLE_PALETTE_MIN_SATURATION,
+} from '../palette/palette';
 import type { CaseInsensitive } from '../utils';
 import { capitalizeString, clampValue } from '../utils';
 import { toRGBA } from './conversions';
@@ -12,10 +17,6 @@ import {
   WHITE_MAX_LIGHTNESS_THRESHOLD,
   WHITE_MAX_LIGHTNESS_THRESHOLD_LOW_SATURATION,
 } from './names';
-
-const SUITABLE_PALETTE_MIN_SATURATION = 40;
-const SUITABLE_PALETTE_MIN_LIGHTNESS = 25;
-const SUITABLE_PALETTE_MAX_LIGHTNESS = 75;
 
 export interface RandomColorOptions {
   /**

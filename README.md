@@ -140,6 +140,18 @@ new Color('#ffffff').isOffWhite(); // true
 new Color('#cccccc').isOffWhite(); // false
 ```
 
+#### `isPaletteSuitable(): boolean`
+
+- <ins>Returns</ins> `true` if the color matches the same "palette suitable" constraints used by `Color.random({ paletteSuitable: true })`.
+- A palette-suitable color must have:
+  - saturation **>= 40%**
+  - lightness **between 25% and 75%** (inclusive)
+
+```ts
+new Color('#ff0000').isPaletteSuitable(); // true
+new Color('#f2f2f2').isPaletteSuitable(); // false
+```
+
 #### `getTemperature(): { temperature: number; label: ColorTemperatureLabel }`
 
 - <ins>Returns</ins> the estimated correlated color temperature in Kelvin plus a [`ColorTemperatureLabel`](#types-color-temperature-label) describing the closest standard lighting condition.

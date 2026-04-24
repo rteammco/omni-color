@@ -819,6 +819,16 @@ describe('Color.isOffWhite sanity check', () => {
   });
 });
 
+describe('Color.isPaletteSuitable sanity check', () => {
+  it('matches the paletteSuitable threshold criteria', () => {
+    expect(new Color({ h: 0, s: 40, l: 25 }).isPaletteSuitable()).toBe(true);
+    expect(new Color({ h: 240, s: 70, l: 75 }).isPaletteSuitable()).toBe(true);
+    expect(new Color({ h: 0, s: 39, l: 25 }).isPaletteSuitable()).toBe(false);
+    expect(new Color({ h: 0, s: 40, l: 24 }).isPaletteSuitable()).toBe(false);
+    expect(new Color({ h: 0, s: 40, l: 76 }).isPaletteSuitable()).toBe(false);
+  });
+});
+
 describe('Color.getWCAGContrastRatio', () => {
   it('calculates the WCAG contrast ratio between colors', () => {
     const c1 = new Color('#444444');
