@@ -5,6 +5,8 @@ import {
   getColorFormatType,
   hslaToString,
   hslToString,
+  hsvaToString,
+  hsvToString,
   hwbToString,
   labToString,
   lchToString,
@@ -203,6 +205,66 @@ describe('hslaToString', () => {
   it('rounds hsla components to three decimals', () => {
     expect(hslaToString({ h: 123.4567, s: 50.5555, l: 10.1234, a: 0.98765 })).toBe(
       'hsl(123.457 50.556% 10.123% / 0.988)',
+    );
+  });
+});
+
+describe('hsvToString', () => {
+  it('generates hsv strings', () => {
+    const black = new Color('#000000');
+    expect(hsvToString(black.toHSV())).toBe('hsv(0 0% 0%)');
+    expect(black.toHSVString()).toBe('hsv(0 0% 0%)');
+
+    const white = new Color('#ffffff');
+    expect(hsvToString(white.toHSV())).toBe('hsv(0 0% 100%)');
+    expect(white.toHSVString()).toBe('hsv(0 0% 100%)');
+
+    const red = new Color('#ff0000');
+    expect(hsvToString(red.toHSV())).toBe('hsv(0 100% 100%)');
+    expect(red.toHSVString()).toBe('hsv(0 100% 100%)');
+
+    const green = new Color('#00ff00');
+    expect(hsvToString(green.toHSV())).toBe('hsv(120 100% 100%)');
+    expect(green.toHSVString()).toBe('hsv(120 100% 100%)');
+
+    const custom = new Color('#abc123');
+    expect(hsvToString(custom.toHSV())).toBe('hsv(68.354 81.865% 75.686%)');
+    expect(custom.toHSVString()).toBe('hsv(68.354 81.865% 75.686%)');
+  });
+
+  it('rounds hsv components to three decimals', () => {
+    expect(hsvToString({ h: 123.4567, s: 50.5555, v: 10.1234 })).toBe(
+      'hsv(123.457 50.556% 10.123%)',
+    );
+  });
+});
+
+describe('hsvaToString', () => {
+  it('generates hsva strings', () => {
+    const transparentBlack = new Color('#00000000');
+    expect(hsvaToString(transparentBlack.toHSVA())).toBe('hsv(0 0% 0% / 0)');
+    expect(transparentBlack.toHSVAString()).toBe('hsv(0 0% 0% / 0)');
+
+    const opaqueWhite = new Color('#ffffffff');
+    expect(hsvaToString(opaqueWhite.toHSVA())).toBe('hsv(0 0% 100% / 1)');
+    expect(opaqueWhite.toHSVAString()).toBe('hsv(0 0% 100% / 1)');
+
+    const red = new Color('#ff000080');
+    expect(hsvaToString(red.toHSVA())).toBe('hsv(0 100% 100% / 0.502)');
+    expect(red.toHSVAString()).toBe('hsv(0 100% 100% / 0.502)');
+
+    const green = new Color('#00ff007f');
+    expect(hsvaToString(green.toHSVA())).toBe('hsv(120 100% 100% / 0.498)');
+    expect(green.toHSVAString()).toBe('hsv(120 100% 100% / 0.498)');
+
+    const custom = new Color('#abc123d6');
+    expect(hsvaToString(custom.toHSVA())).toBe('hsv(68.354 81.865% 75.686% / 0.839)');
+    expect(custom.toHSVAString()).toBe('hsv(68.354 81.865% 75.686% / 0.839)');
+  });
+
+  it('rounds hsva components to three decimals', () => {
+    expect(hsvaToString({ h: 123.4567, s: 50.5555, v: 10.1234, a: 0.98765 })).toBe(
+      'hsv(123.457 50.556% 10.123% / 0.988)',
     );
   });
 });

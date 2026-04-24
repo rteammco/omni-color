@@ -279,6 +279,16 @@ export function hslaToString({ h, s, l, a }: ColorHSLA): string {
   )}% / ${getDecimalString(a)})`;
 }
 
+export function hsvToString({ h, s, v }: ColorHSV): string {
+  return `hsv(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(v)}%)`;
+}
+
+export function hsvaToString({ h, s, v, a }: ColorHSVA): string {
+  return `hsv(${getDecimalString(h)} ${getDecimalString(s)}% ${getDecimalString(
+    v,
+  )}% / ${getDecimalString(a)})`;
+}
+
 export function hwbToString(color: ColorHWB): string {
   return `hwb(${getDecimalString(color.h)} ${getDecimalString(color.w)}% ${getDecimalString(
     color.b,
