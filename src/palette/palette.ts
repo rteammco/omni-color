@@ -6,22 +6,11 @@ import { type CaseInsensitive, clampValue } from '../utils';
 
 type SemanticColor = 'info' | 'positive' | 'negative' | 'warning' | 'special';
 
-/**
- * Minimum HSL saturation (%) for a color to be considered suitable as a palette anchor.
- * This matches the `paletteSuitable` option behavior in `Color.random()`.
- */
+// Minimum HSL saturation (%) for a color to be considered suitable as a palette anchor:
 export const SUITABLE_PALETTE_MIN_SATURATION = 40;
-
-/**
- * Minimum HSL lightness (%) for a color to be considered suitable as a palette anchor.
- * This matches the `paletteSuitable` option behavior in `Color.random()`.
- */
+// Minimum HSL lightness (%) for a color to be considered suitable as a palette anchor:
 export const SUITABLE_PALETTE_MIN_LIGHTNESS = 25;
-
-/**
- * Maximum HSL lightness (%) for a color to be considered suitable as a palette anchor.
- * This matches the `paletteSuitable` option behavior in `Color.random()`.
- */
+// Maximum HSL lightness (%) for a color to be considered suitable as a palette anchor:
 export const SUITABLE_PALETTE_MAX_LIGHTNESS = 75;
 
 export interface ColorPalette {
