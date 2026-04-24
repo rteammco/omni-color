@@ -49,6 +49,8 @@ import {
   colorToString,
   hslaToString,
   hslToString,
+  hsvaToString,
+  hsvToString,
   hwbaToString,
   hwbToString,
   labToString,
@@ -349,10 +351,24 @@ export class Color {
   }
 
   /**
+   * Get the color as an `hsv(h s% v%)` string.
+   */
+  toHSVString(): string {
+    return hsvToString(this.toHSV());
+  }
+
+  /**
    * Get the color as a {@link ColorHSVA} `{ h, s, v, a }` object.
    */
   toHSVA(): ColorHSVA {
     return toHSVA(this.#color);
+  }
+
+  /**
+   * Get the color as an `hsva(h s% v% / a)` string.
+   */
+  toHSVAString(): string {
+    return hsvaToString(this.toHSVA());
   }
 
   /**

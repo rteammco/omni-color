@@ -277,12 +277,28 @@ new Color('#663399').toHSLAString(); // 'hsl(270 50% 40% / 1)'
 new Color('#1e90ff').toHSV(); // { h: 210, s: 88, v: 100 }
 ```
 
+#### `toHSVString(): string`
+
+- <ins>Returns</ins> an `"hsv(h s% v%)"` string.
+
+```ts
+new Color('#1e90ff').toHSVString(); // 'hsv(210 88.235% 100%)'
+```
+
 #### `toHSVA(): { h: number; s: number; v: number; a: number }`
 
 - <ins>Returns</ins> a [`ColorHSVA`](#types-color-hsva) object with hue 0–360, saturation/value 0–100, and alpha 0–1.
 
 ```ts
 new Color('#1e90ff').toHSVA(); // { h: 210, s: 88, v: 100, a: 1 }
+```
+
+#### `toHSVAString(): string`
+
+- <ins>Returns</ins> an `"hsva(h s% v% / a)"` string.
+
+```ts
+new Color('#1e90ff').toHSVAString(); // 'hsva(210 88.235% 100% / 1)'
 ```
 
 #### `toHWB(): { h: number; w: number; b: number }`

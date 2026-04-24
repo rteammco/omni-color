@@ -275,6 +275,8 @@ describe('Color.toXString methods', () => {
     expect(color.toRGBAString()).toBe('rgb(255 0 0 / 0.5)');
     expect(color.toHSLString()).toBe('hsl(0 100% 50%)');
     expect(color.toHSLAString()).toBe('hsl(0 100% 50% / 0.5)');
+    expect(color.toHSVString()).toBe('hsv(0 100% 100%)');
+    expect(color.toHSVAString()).toBe('hsva(0 100% 100% / 0.5)');
     expect(color.toHWBString()).toBe('hwb(0 0% 0%)');
     expect(color.toHWBAString()).toBe('hwb(0 0% 0% / 0.5)');
     expect(color.toCMYKString()).toBe('device-cmyk(0% 100% 100% 0%)');
