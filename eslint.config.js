@@ -65,6 +65,13 @@ export default [
           ignoreExports: ['**/*.test.ts', '**/__test__/**', 'src/index.ts'],
         },
       ],
+      'import/no-cycle': [
+        'error',
+        {
+          maxDepth: Infinity,
+          ignoreExternal: true,
+        },
+      ],
       'simple-import-sort/imports': 'warn',
       'simple-import-sort/exports': 'warn',
       'prefer-const': 'warn',
