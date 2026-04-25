@@ -7,6 +7,8 @@ import {
   SUITABLE_PALETTE_MIN_SATURATION,
 } from '../palette';
 
+const createColor = (input: ConstructorParameters<typeof Color>[0]) => new Color(input);
+
 describe('isColorPaletteSuitable()', () => {
   it('returns true when saturation and lightness are within palette-suitable ranges', () => {
     expect(
@@ -54,7 +56,7 @@ describe('isColorPaletteSuitable()', () => {
 describe('generateColorPaletteFromBaseColor()', () => {
   it('harmonizes neutrals with the base color', () => {
     const baseColor = new Color('#ff0000');
-    const palette = generateColorPaletteFromBaseColor(baseColor);
+    const palette = generateColorPaletteFromBaseColor(baseColor, createColor);
 
     expect(palette.neutrals[100].toHex()).toBe('#eeeeee');
     expect(palette.neutrals[500].toHex()).toBe('#888888');
@@ -68,77 +70,77 @@ describe('generateColorPaletteFromBaseColor()', () => {
   describe('neutral harmonization across many base colors', () => {
     it('creates neutrals and tinted neutrals for a broad spectrum', () => {
       const red = new Color('#ff0000');
-      const redPalette = generateColorPaletteFromBaseColor(red);
+      const redPalette = generateColorPaletteFromBaseColor(red, createColor);
       expect(redPalette.neutrals[500].toHex()).toBe('#888888');
       expect(redPalette.tintedNeutrals[500].toHex()).toBe('#988380');
 
       const orange = new Color('#ffa500');
-      const orangePalette = generateColorPaletteFromBaseColor(orange);
+      const orangePalette = generateColorPaletteFromBaseColor(orange, createColor);
       expect(orangePalette.neutrals[500].toHex()).toBe('#bbbbbb');
       expect(orangePalette.tintedNeutrals[500].toHex()).toBe('#c3bab0');
 
       const yellow = new Color('#ffff00');
-      const yellowPalette = generateColorPaletteFromBaseColor(yellow);
+      const yellowPalette = generateColorPaletteFromBaseColor(yellow, createColor);
       expect(yellowPalette.neutrals[500].toHex()).toBe('#f4f4f4');
       expect(yellowPalette.tintedNeutrals[500].toHex()).toBe('#f5f6e6');
 
       const green = new Color('#00ff00');
-      const greenPalette = generateColorPaletteFromBaseColor(green);
+      const greenPalette = generateColorPaletteFromBaseColor(green, createColor);
       expect(greenPalette.neutrals[500].toHex()).toBe('#d3d3d3');
       expect(greenPalette.tintedNeutrals[500].toHex()).toBe('#c8d8c7');
 
       const cyan = new Color('#00ffff');
-      const cyanPalette = generateColorPaletteFromBaseColor(cyan);
+      const cyanPalette = generateColorPaletteFromBaseColor(cyan, createColor);
       expect(cyanPalette.neutrals[500].toHex()).toBe('#e0e0e0');
       expect(cyanPalette.tintedNeutrals[500].toHex()).toBe('#d5e3e3');
 
       const blue = new Color('#0000ff');
-      const bluePalette = generateColorPaletteFromBaseColor(blue);
+      const bluePalette = generateColorPaletteFromBaseColor(blue, createColor);
       expect(bluePalette.neutrals[500].toHex()).toBe('#565656');
       expect(bluePalette.tintedNeutrals[500].toHex()).toBe('#4d5668');
 
       const magenta = new Color('#ff00ff');
-      const magentaPalette = generateColorPaletteFromBaseColor(magenta);
+      const magentaPalette = generateColorPaletteFromBaseColor(magenta, createColor);
       expect(magentaPalette.neutrals[500].toHex()).toBe('#9f9f9f');
       expect(magentaPalette.tintedNeutrals[500].toHex()).toBe('#ab98a9');
 
       const purple = new Color('#800080');
-      const purplePalette = generateColorPaletteFromBaseColor(purple);
+      const purplePalette = generateColorPaletteFromBaseColor(purple, createColor);
       expect(purplePalette.neutrals[500].toHex()).toBe('#4d4d4d');
       expect(purplePalette.tintedNeutrals[500].toHex()).toBe('#534a53');
 
       const teal = new Color('#008080');
-      const tealPalette = generateColorPaletteFromBaseColor(teal);
+      const tealPalette = generateColorPaletteFromBaseColor(teal, createColor);
       expect(tealPalette.neutrals[500].toHex()).toBe('#6f6f6f');
       expect(tealPalette.tintedNeutrals[500].toHex()).toBe('#6a7171');
 
       const olive = new Color('#808000');
-      const olivePalette = generateColorPaletteFromBaseColor(olive);
+      const olivePalette = generateColorPaletteFromBaseColor(olive, createColor);
       expect(olivePalette.neutrals[500].toHex()).toBe('#7a7a7a');
       expect(olivePalette.tintedNeutrals[500].toHex()).toBe('#7b7b73');
 
       const hotpink = new Color('#ff69b4');
-      const hotpinkPalette = generateColorPaletteFromBaseColor(hotpink);
+      const hotpinkPalette = generateColorPaletteFromBaseColor(hotpink, createColor);
       expect(hotpinkPalette.neutrals[500].toHex()).toBe('#a7a7a7');
       expect(hotpinkPalette.tintedNeutrals[500].toHex()).toBe('#b2a2a8');
 
       const maroon = new Color('#800000');
-      const maroonPalette = generateColorPaletteFromBaseColor(maroon);
+      const maroonPalette = generateColorPaletteFromBaseColor(maroon, createColor);
       expect(maroonPalette.neutrals[500].toHex()).toBe('#414141');
       expect(maroonPalette.tintedNeutrals[500].toHex()).toBe('#493f3d');
 
       const gray = new Color('#808080');
-      const grayPalette = generateColorPaletteFromBaseColor(gray);
+      const grayPalette = generateColorPaletteFromBaseColor(gray, createColor);
       expect(grayPalette.neutrals[500].toHex()).toBe('#808080');
       expect(grayPalette.tintedNeutrals[500].toHex()).toBe('#808080');
 
       const black = new Color('#000000');
-      const blackPalette = generateColorPaletteFromBaseColor(black);
+      const blackPalette = generateColorPaletteFromBaseColor(black, createColor);
       expect(blackPalette.neutrals[500].toHex()).toBe('#000000');
       expect(blackPalette.tintedNeutrals[500].toHex()).toBe('#000000');
 
       const white = new Color('#ffffff');
-      const whitePalette = generateColorPaletteFromBaseColor(white);
+      const whitePalette = generateColorPaletteFromBaseColor(white, createColor);
       expect(whitePalette.neutrals[500].toHex()).toBe('#ffffff');
       expect(whitePalette.tintedNeutrals[500].toHex()).toBe('#ffffff');
     });
@@ -147,23 +149,33 @@ describe('generateColorPaletteFromBaseColor()', () => {
   describe('neutral harmonization options', () => {
     it('clamps tint chroma factor and maximum chroma', () => {
       const base = new Color('#00ff00');
-      const palette = generateColorPaletteFromBaseColor(base, undefined, {
-        neutralHarmonization: {
-          tintChromaFactor: -1,
-          maxTintChroma: -0.5,
+      const palette = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          neutralHarmonization: {
+            tintChromaFactor: -1,
+            maxTintChroma: -0.5,
+          },
         },
-      });
+        createColor,
+      );
       expect(palette.tintedNeutrals[500].toHex()).toBe('#d3d3d3');
     });
 
     it('respects tint chroma factor and maximum', () => {
       const base = new Color('#00ffff');
-      const palette = generateColorPaletteFromBaseColor(base, undefined, {
-        neutralHarmonization: {
-          tintChromaFactor: 1,
-          maxTintChroma: 0.02,
+      const palette = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          neutralHarmonization: {
+            tintChromaFactor: 1,
+            maxTintChroma: 0.02,
+          },
         },
-      });
+        createColor,
+      );
       expect(palette.tintedNeutrals[500].toHex()).toBe('#d1e4e4');
     });
   });
@@ -171,9 +183,14 @@ describe('generateColorPaletteFromBaseColor()', () => {
   describe('swatch options', () => {
     it('forwards swatch options to palette swatches', () => {
       const baseColor = new Color('#111111');
-      const palette = generateColorPaletteFromBaseColor(baseColor, 'COMPLEMENTARY', {
-        swatchOptions: { extended: true, centerOn500: false },
-      });
+      const palette = generateColorPaletteFromBaseColor(
+        baseColor,
+        'COMPLEMENTARY',
+        {
+          swatchOptions: { extended: true, centerOn500: false },
+        },
+        createColor,
+      );
 
       const expected = baseColor.getColorSwatch({ extended: true, centerOn500: false });
 
@@ -187,7 +204,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('centers palette swatches on 500 by default', () => {
       const baseColor = new Color('#222222');
-      const palette = generateColorPaletteFromBaseColor(baseColor);
+      const palette = generateColorPaletteFromBaseColor(baseColor, createColor);
 
       expect(palette.primary.mainStop).toBe(500);
     });
@@ -195,7 +212,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
   describe('neutral harmonization across the full swatch', () => {
     it('produces a complete range for red', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), createColor);
       expect(palette.neutrals[100].toHex()).toBe('#eeeeee');
       expect(palette.neutrals[300].toHex()).toBe('#bbbbbb');
       expect(palette.neutrals[700].toHex()).toBe('#555555');
@@ -207,7 +224,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('produces a complete range for blue', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#0000ff'));
+      const palette = generateColorPaletteFromBaseColor(new Color('#0000ff'), createColor);
       expect(palette.neutrals[100].toHex()).toBe('#bcbcbc');
       expect(palette.neutrals[300].toHex()).toBe('#898989');
       expect(palette.neutrals[700].toHex()).toBe('#232323');
@@ -219,7 +236,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('produces a complete range for green', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#00ff00'));
+      const palette = generateColorPaletteFromBaseColor(new Color('#00ff00'), createColor);
       expect(palette.neutrals[100].toHex()).toBe('#ffffff');
       expect(palette.neutrals[300].toHex()).toBe('#ffffff');
       expect(palette.neutrals[700].toHex()).toBe('#a0a0a0');
@@ -231,13 +248,13 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('keeps tinted neutrals identical for achromatic bases', () => {
-      const white = generateColorPaletteFromBaseColor(new Color('#ffffff'));
+      const white = generateColorPaletteFromBaseColor(new Color('#ffffff'), createColor);
       expect(white.neutrals[100].toHex()).toBe('#ffffff');
       expect(white.tintedNeutrals[100].toHex()).toBe('#ffffff');
       expect(white.neutrals[900].toHex()).toBe('#999999');
       expect(white.tintedNeutrals[900].toHex()).toBe('#999999');
 
-      const black = generateColorPaletteFromBaseColor(new Color('#000000'));
+      const black = generateColorPaletteFromBaseColor(new Color('#000000'), createColor);
       expect(black.neutrals[100].toHex()).toBe('#666666');
       expect(black.tintedNeutrals[100].toHex()).toBe('#666666');
       expect(black.neutrals[900].toHex()).toBe('#000000');
@@ -247,24 +264,34 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
   describe('neutral harmonization edge cases', () => {
     it('clamps excessive tint chroma factor and honors maxTintChroma', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff00ff'), undefined, {
-        neutralHarmonization: {
-          tintChromaFactor: 2,
-          maxTintChroma: 0.5,
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff00ff'),
+        undefined,
+        {
+          neutralHarmonization: {
+            tintChromaFactor: 2,
+            maxTintChroma: 0.5,
+          },
         },
-      });
+        createColor,
+      );
       expect(palette.tintedNeutrals[100].toHex()).toBe('#ffccff');
       expect(palette.tintedNeutrals[500].toHex()).toBe('#ff00ff');
       expect(palette.tintedNeutrals[900].toHex()).toBe('#2e052e');
     });
 
     it('falls back to neutral swatches when maxTintChroma is zero', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#123456'), undefined, {
-        neutralHarmonization: {
-          tintChromaFactor: 0.5,
-          maxTintChroma: 0,
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#123456'),
+        undefined,
+        {
+          neutralHarmonization: {
+            tintChromaFactor: 0.5,
+            maxTintChroma: 0,
+          },
         },
-      });
+        createColor,
+      );
       expect(palette.neutrals[100].toHex()).toBe('#999999');
       expect(palette.tintedNeutrals[100].toHex()).toBe('#999999');
       expect(palette.neutrals[500].toHex()).toBe('#333333');
@@ -276,19 +303,24 @@ describe('generateColorPaletteFromBaseColor()', () => {
     it('throws for NaN neutral harmonization options', () => {
       const base = new Color('#00ff00');
       expect(() =>
-        generateColorPaletteFromBaseColor(base, undefined, {
-          neutralHarmonization: {
-            tintChromaFactor: NaN,
-            maxTintChroma: NaN,
+        generateColorPaletteFromBaseColor(
+          base,
+          undefined,
+          {
+            neutralHarmonization: {
+              tintChromaFactor: NaN,
+              maxTintChroma: NaN,
+            },
           },
-        }),
+          createColor,
+        ),
       ).toThrow();
     });
   });
 
   describe('semantic harmonization options', () => {
     it('produces semantic swatches with stable hex values for a red base', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), createColor);
       expect(palette.info[300].toHex()).toBe('#d3d3ff');
       expect(palette.positive[700].toHex()).toBe('#073e03');
       expect(palette.negative[500].toHex()).toBe('#fc0940');
@@ -298,18 +330,28 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('pulls semantic hues toward the base color', () => {
       const base = new Color('#ff0000');
-      const noPull = generateColorPaletteFromBaseColor(base, undefined, {
-        semanticHarmonization: {
-          huePull: 0,
-          chromaRange: [0.02, 0.25],
+      const noPull = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          semanticHarmonization: {
+            huePull: 0,
+            chromaRange: [0.02, 0.25],
+          },
         },
-      });
-      const fullPull = generateColorPaletteFromBaseColor(base, undefined, {
-        semanticHarmonization: {
-          huePull: 1,
-          chromaRange: [0.02, 0.25],
+        createColor,
+      );
+      const fullPull = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          semanticHarmonization: {
+            huePull: 1,
+            chromaRange: [0.02, 0.25],
+          },
         },
-      });
+        createColor,
+      );
       const noPullHue = noPull.info[500].toOKLCH().h;
       expect(noPullHue).toBeGreaterThan(263);
       expect(noPullHue).toBeLessThan(267);
@@ -320,18 +362,28 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('clamps hue pull outside of the 0–1 range', () => {
       const base = new Color('#ff0000');
-      const under = generateColorPaletteFromBaseColor(base, undefined, {
-        semanticHarmonization: {
-          huePull: -1,
-          chromaRange: [0.02, 0.25],
+      const under = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          semanticHarmonization: {
+            huePull: -1,
+            chromaRange: [0.02, 0.25],
+          },
         },
-      });
-      const over = generateColorPaletteFromBaseColor(base, undefined, {
-        semanticHarmonization: {
-          huePull: 2,
-          chromaRange: [0.02, 0.25],
+        createColor,
+      );
+      const over = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          semanticHarmonization: {
+            huePull: 2,
+            chromaRange: [0.02, 0.25],
+          },
         },
-      });
+        createColor,
+      );
       const underHue = under.info[500].toOKLCH().h;
       expect(underHue).toBeGreaterThan(263);
       expect(underHue).toBeLessThan(267);
@@ -342,7 +394,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('uses default hues for low chroma base colors', () => {
       const gray = new Color('#808080');
-      const palette = generateColorPaletteFromBaseColor(gray);
+      const palette = generateColorPaletteFromBaseColor(gray, createColor);
       const infoHue = palette.info[500].toOKLCH().h;
       const positiveHue = palette.positive[500].toOKLCH().h;
       expect(infoHue).toBeGreaterThan(263);
@@ -355,12 +407,17 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('keeps semantic chroma within the provided range', () => {
       const base = new Color('#0000ff');
-      const palette = generateColorPaletteFromBaseColor(base, undefined, {
-        semanticHarmonization: {
-          huePull: 0.5,
-          chromaRange: [0.1, 0.12],
+      const palette = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          semanticHarmonization: {
+            huePull: 0.5,
+            chromaRange: [0.1, 0.12],
+          },
         },
-      });
+        createColor,
+      );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeGreaterThanOrEqual(0.1);
       expect(c).toBeLessThanOrEqual(0.121);
@@ -369,12 +426,17 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('enforces minimum allowable chroma even when max is low', () => {
       const base = new Color('#ff0000');
-      const palette = generateColorPaletteFromBaseColor(base, undefined, {
-        semanticHarmonization: {
-          huePull: 0.2,
-          chromaRange: [-1, 0],
+      const palette = generateColorPaletteFromBaseColor(
+        base,
+        undefined,
+        {
+          semanticHarmonization: {
+            huePull: 0.2,
+            chromaRange: [-1, 0],
+          },
         },
-      });
+        createColor,
+      );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeCloseTo(0.04, 3);
       expect(palette.info[500].toHex()).toBe('#8885a0');
@@ -382,20 +444,25 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('generates semantic colors for white and black bases', () => {
       const white = new Color('#ffffff');
-      const whitePalette = generateColorPaletteFromBaseColor(white);
+      const whitePalette = generateColorPaletteFromBaseColor(white, createColor);
       expect(whitePalette.info[500].toHex()).not.toBe('#ffffff');
       const black = new Color('#000000');
-      const blackPalette = generateColorPaletteFromBaseColor(black);
+      const blackPalette = generateColorPaletteFromBaseColor(black, createColor);
       expect(blackPalette.info[500].toHex()).not.toBe('#000000');
     });
 
     it('handles reversed chroma ranges by clamping to the higher bound', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), undefined, {
-        semanticHarmonization: {
-          huePull: 0.5,
-          chromaRange: [0.3, 0.1],
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        undefined,
+        {
+          semanticHarmonization: {
+            huePull: 0.5,
+            chromaRange: [0.3, 0.1],
+          },
         },
-      });
+        createColor,
+      );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeGreaterThan(0.29);
       expect(c).toBeLessThan(0.3);
@@ -403,11 +470,16 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('clamps negative chroma ranges to the minimum allowable', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), undefined, {
-        semanticHarmonization: {
-          chromaRange: [-0.5, -0.1],
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        undefined,
+        {
+          semanticHarmonization: {
+            chromaRange: [-0.5, -0.1],
+          },
         },
-      });
+        createColor,
+      );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeCloseTo(0.0395, 3);
       expect(palette.info[500].toHex()).toBe('#8287a1');
@@ -416,14 +488,19 @@ describe('generateColorPaletteFromBaseColor()', () => {
     it('throws for NaN semantic harmonization options', () => {
       const base = new Color('#ff0000');
       expect(() =>
-        generateColorPaletteFromBaseColor(base, undefined, {
-          semanticHarmonization: { huePull: NaN, chromaRange: [NaN, NaN] },
-        }),
+        generateColorPaletteFromBaseColor(
+          base,
+          undefined,
+          {
+            semanticHarmonization: { huePull: NaN, chromaRange: [NaN, NaN] },
+          },
+          createColor,
+        ),
       ).toThrow();
     });
 
     it('creates positive and negative swatches across the spectrum', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'));
+      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), createColor);
       expect(palette.positive[100].toHex()).toBe('#7dff74');
       expect(palette.positive[500].toHex()).toBe('#0ba700');
       expect(palette.positive[700].toHex()).toBe('#073e03');
@@ -433,7 +510,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('provides full semantic colors for grayscale bases', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#808080'));
+      const palette = generateColorPaletteFromBaseColor(new Color('#808080'), createColor);
       expect(palette.info[500].toHex()).toBe('#758099');
       expect(palette.positive[500].toHex()).toBe('#6b8971');
       expect(palette.negative[500].toHex()).toBe('#a17271');
@@ -444,7 +521,11 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
   describe('color harmony generation', () => {
     it('creates complementary swatches with proper secondary colors', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), 'COMPLEMENTARY');
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        'COMPLEMENTARY',
+        createColor,
+      );
       expect(palette.secondaryColors.length).toBe(1);
       expect(palette.primary[100].toHex()).toBe('#ffcccc');
       expect(palette.primary[900].toHex()).toBe('#2e0505');
@@ -454,7 +535,11 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('creates a full triadic harmony', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), 'TRIADIC');
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        'TRIADIC',
+        createColor,
+      );
       expect(palette.secondaryColors.length).toBe(2);
       expect(palette.primary[500].toHex()).toBe('#ff0000');
       expect(palette.secondaryColors[0][500].toHex()).toBe('#0000ff');
@@ -464,7 +549,11 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('produces the expected number of secondary colors for other harmonies', () => {
-      const analogous = generateColorPaletteFromBaseColor(new Color('#336699'), 'ANALOGOUS');
+      const analogous = generateColorPaletteFromBaseColor(
+        new Color('#336699'),
+        'ANALOGOUS',
+        createColor,
+      );
       expect(analogous.secondaryColors.length).toBe(4);
       expect(analogous.secondaryColors[0][500].toHex()).toBe('#339999');
       expect(analogous.secondaryColors[3][500].toHex()).toBe('#663399');
@@ -472,6 +561,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
       const monochromatic = generateColorPaletteFromBaseColor(
         new Color('#336699'),
         'MONOCHROMATIC',
+        createColor,
       );
       expect(monochromatic.secondaryColors.length).toBe(4);
       expect(monochromatic.secondaryColors[0][500].toHex()).toBe('#6699cc');

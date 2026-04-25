@@ -5,6 +5,7 @@ import {
   isColorPaletteSuitable,
 } from '../palette/palette';
 import { type CaseInsensitive, clampValue } from '../utils';
+import { COLOR_BRAND, setColorInstanceFactory } from './color.helpers';
 import type { ColorStringOptions } from './colorSpaces';
 import {
   averageColors,
@@ -34,6 +35,7 @@ import { type DeltaEOptions, getDeltaE } from './deltaE';
 import {
   cmykToString,
   type ColorCMYK,
+  type ColorFormat,
   type ColorHex,
   type ColorHSL,
   type ColorHSLA,
@@ -122,8 +124,11 @@ import {
   isColorDark,
   type IsColorDarkOptions,
   isColorOffWhite,
-  type ValidColorInputFormat,
 } from './utils';
+
+export type ValidColorInputFormat = Color | ColorFormat | string;
+
+export type CreateColorInstance = (input: ValidColorInputFormat) => Color;
 
 /**
  * The base omni-color object.
@@ -144,6 +149,9 @@ import {
  */
 export class Color {
   readonly #color: Readonly<ColorRGBA>;
+
+  // Runtime brand used by `isColorInstance` without relying on `instanceof`.
+  readonly [COLOR_BRAND] = true;
 
   /**
    * Create a new {@link Color} instance.
@@ -169,7 +177,16 @@ export class Color {
    */
   constructor(color?: ValidColorInputFormat | null) {
     // getColorRGBAFromInput always returns a fresh object
-    this.#color = Object.freeze({ ...getColorRGBAFromInput(color) });
+    this.#color = Object.freeze({ ...getColorRGBAFromInput(color, Color.#createColor) });
+  }
+
+  // Helper for dependency injection into utility modules that create Color instances.
+  static #createColor(input: ValidColorInputFormat): Color {
+    return new Color(input);
+  }
+
+  static {
+    setColorInstanceFactory(Color.#createColor);
   }
 
   /**
@@ -184,7 +201,7 @@ export class Color {
    * ```
    */
   static random(options?: RandomColorOptions): Color {
-    return new Color(getRandomColorRGBA(options));
+    return Color.#createColor(getRandomColorRGBA(options));
   }
 
   /**
@@ -201,9 +218,9 @@ export class Color {
    */
   static fromTemperature(temperature: number | CaseInsensitive<ColorTemperatureLabel>): Color {
     if (typeof temperature === 'number') {
-      return getColorFromTemperature(temperature);
+      return getColorFromTemperature(temperature, Color.#createColor);
     }
-    return getColorFromTemperatureLabel(temperature);
+    return getColorFromTemperatureLabel(temperature, Color.#createColor);
   }
 
   /**
@@ -230,7 +247,11 @@ export class Color {
     colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions,
   ): Color[] {
-    return createColorGradient(getColorList(colors), options);
+    return createColorGradient(
+      getColorList(colors, Color.#createColor),
+      options,
+      Color.#createColor,
+    );
   }
 
   /**
@@ -466,7 +487,7 @@ export class Color {
    * Values out of range will be clamped to the nearest valid value.
    */
   setAlpha(alpha: number): Color {
-    return new Color({
+    return Color.#createColor({
       ...this.#color,
       a: Number.isFinite(alpha) ? +clampValue(alpha, 0, 1).toFixed(3) : 1,
     });
@@ -487,7 +508,7 @@ export class Color {
    * ```
    */
   spin(degrees: number): Color {
-    return spinColorHue(this, degrees);
+    return spinColorHue(this, degrees, Color.#createColor);
   }
 
   /**
@@ -504,7 +525,7 @@ export class Color {
    * ```
    */
   brighten(options?: ColorBrightnessOptions): Color {
-    return brightenColor(this, options);
+    return brightenColor(this, options, Color.#createColor);
   }
 
   /**
@@ -521,7 +542,7 @@ export class Color {
    * ```
    */
   darken(options?: ColorBrightnessOptions): Color {
-    return darkenColor(this, options);
+    return darkenColor(this, options, Color.#createColor);
   }
 
   /**
@@ -539,7 +560,7 @@ export class Color {
    * ```
    */
   saturate(options?: ColorSaturationOptions): Color {
-    return saturateColor(this, options);
+    return saturateColor(this, options, Color.#createColor);
   }
 
   /**
@@ -557,7 +578,7 @@ export class Color {
    * ```
    */
   desaturate(options?: ColorSaturationOptions): Color {
-    return desaturateColor(this, options);
+    return desaturateColor(this, options, Color.#createColor);
   }
 
   /**
@@ -567,7 +588,7 @@ export class Color {
    * @returns A new {@link Color} with the modified saturation.
    */
   grayscale(): Color {
-    return colorToGrayscale(this);
+    return colorToGrayscale(this, Color.#createColor);
   }
 
   /**
@@ -581,7 +602,11 @@ export class Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return mixColors([this, ...getColorList(others)], options);
+    return mixColors(
+      [this, ...getColorList(others, Color.#createColor)],
+      options,
+      Color.#createColor,
+    );
   }
 
   /**
@@ -592,7 +617,7 @@ export class Color {
    * @returns A new {@link Color} that is the result of the blending.
    */
   blend(other: ValidColorInputFormat, options?: BlendColorsOptions): Color {
-    return blendColors(this, new Color(other), options);
+    return blendColors(this, Color.#createColor(other), options, Color.#createColor);
   }
 
   /**
@@ -606,7 +631,11 @@ export class Color {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors([this, ...getColorList(others)], options);
+    return averageColors(
+      [this, ...getColorList(others, Color.#createColor)],
+      options,
+      Color.#createColor,
+    );
   }
 
   /**
@@ -658,7 +687,7 @@ export class Color {
    * ```
    */
   getComplementaryColors(options?: ColorHarmonyOptions): [Color, Color] {
-    return getComplementaryColors(this, options);
+    return getComplementaryColors(this, options, Color.#createColor);
   }
 
   /**
@@ -679,7 +708,7 @@ export class Color {
    * ```
    */
   getSplitComplementaryColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
-    return getSplitComplementaryColors(this, options);
+    return getSplitComplementaryColors(this, options, Color.#createColor);
   }
 
   /**
@@ -701,7 +730,7 @@ export class Color {
    * ```
    */
   getTriadicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
-    return getTriadicHarmonyColors(this, options);
+    return getTriadicHarmonyColors(this, options, Color.#createColor);
   }
 
   /**
@@ -723,7 +752,7 @@ export class Color {
    * ```
    */
   getSquareHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color] {
-    return getSquareHarmonyColors(this, options);
+    return getSquareHarmonyColors(this, options, Color.#createColor);
   }
 
   /**
@@ -745,7 +774,7 @@ export class Color {
    * ```
    */
   getTetradicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color] {
-    return getTetradicHarmonyColors(this, options);
+    return getTetradicHarmonyColors(this, options, Color.#createColor);
   }
 
   /**
@@ -768,7 +797,7 @@ export class Color {
    * ```
    */
   getAnalogousHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color, Color] {
-    return getAnalogousHarmonyColors(this, options);
+    return getAnalogousHarmonyColors(this, options, Color.#createColor);
   }
 
   /**
@@ -788,7 +817,7 @@ export class Color {
    * ```
    */
   getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color] {
-    return getMonochromaticHarmonyColors(this);
+    return getMonochromaticHarmonyColors(this, Color.#createColor);
   }
 
   /**
@@ -801,7 +830,7 @@ export class Color {
    * @returns A list of new {@link Color}s representing the original color and its harmony colors for the specified `harmony` option.
    */
   getHarmonyColors(harmony: CaseInsensitive<ColorHarmony>, options?: ColorHarmonyOptions): Color[] {
-    return getHarmonyColors(this, harmony, options);
+    return getHarmonyColors(this, harmony, options, Color.#createColor);
   }
 
   /**
@@ -835,7 +864,7 @@ export class Color {
   getColorSwatch(options?: ColorSwatchOptions & { extended: true }): ExtendedColorSwatch;
   getColorSwatch(options?: ColorSwatchOptions): ColorSwatch;
   getColorSwatch(options?: ColorSwatchOptions): ColorSwatch {
-    return getColorSwatch(this, options);
+    return getColorSwatch(this, options, Color.#createColor);
   }
 
   /**
@@ -860,7 +889,7 @@ export class Color {
     harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
     options?: GenerateColorPaletteOptions,
   ): ColorPalette {
-    return generateColorPaletteFromBaseColor(this, harmony, options);
+    return generateColorPaletteFromBaseColor(this, harmony, options, Color.#createColor);
   }
 
   /**
@@ -876,7 +905,7 @@ export class Color {
    * ```
    */
   equals(other: ValidColorInputFormat): boolean {
-    return areColorsEqual(this, new Color(other));
+    return areColorsEqual(this, Color.#createColor(other));
   }
 
   /**
@@ -904,7 +933,7 @@ export class Color {
    * ```
    */
   differenceFrom(other: ValidColorInputFormat, options?: DeltaEOptions): number {
-    return getDeltaE(this, new Color(other), options);
+    return getDeltaE(this, Color.#createColor(other), options);
   }
 
   /**
@@ -966,7 +995,7 @@ export class Color {
    * @returns The WCAG contrast ratio between the two colors.
    */
   getWCAGContrastRatio(other: ValidColorInputFormat): number {
-    return getWCAGContrastRatio(this, new Color(other));
+    return getWCAGContrastRatio(this, Color.#createColor(other));
   }
 
   /**
@@ -981,7 +1010,7 @@ export class Color {
    * @returns The APCA readability score as a number.
    */
   getAPCAReadabilityScore(backgroundColor: ValidColorInputFormat): number {
-    return getAPCAReadabilityScore(this, new Color(backgroundColor));
+    return getAPCAReadabilityScore(this, Color.#createColor(backgroundColor));
   }
 
   /**
@@ -1010,7 +1039,7 @@ export class Color {
     backgroundColor: ValidColorInputFormat,
     options?: APCAReadabilityOptions,
   ): APCAReadabilityReport {
-    return getAPCAReadabilityReport(this, new Color(backgroundColor), options);
+    return getAPCAReadabilityReport(this, Color.#createColor(backgroundColor), options);
   }
 
   /**
@@ -1036,7 +1065,7 @@ export class Color {
     backgroundColor: ValidColorInputFormat,
     options?: WCAGReadabilityOptions,
   ): WCAGReadabilityReport {
-    return getWCAGReadabilityReport(this, new Color(backgroundColor), options);
+    return getWCAGReadabilityReport(this, Color.#createColor(backgroundColor), options);
   }
 
   /**
@@ -1053,7 +1082,11 @@ export class Color {
     textColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityOptions,
   ): Color {
-    return getMostReadableTextColorForBackground(this, getColorList(textColors), options).clone();
+    return getMostReadableTextColorForBackground(
+      this,
+      getColorList(textColors, Color.#createColor),
+      options,
+    ).clone();
   }
 
   /**
@@ -1077,7 +1110,7 @@ export class Color {
     backgroundColor: ValidColorInputFormat,
     options: ReadabilityOptions = {},
   ): boolean {
-    return isTextReadable(this, new Color(backgroundColor), options);
+    return isTextReadable(this, Color.#createColor(backgroundColor), options);
   }
 
   /**
@@ -1094,7 +1127,11 @@ export class Color {
     backgroundColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityOptions,
   ): Color {
-    return getBestBackgroundColorForText(this, getColorList(backgroundColors), options).clone();
+    return getBestBackgroundColorForText(
+      this,
+      getColorList(backgroundColors, Color.#createColor),
+      options,
+    ).clone();
   }
 
   /**
@@ -1110,7 +1147,7 @@ export class Color {
    * Get the color's temperature as a string in Kelvin, optionally including a label for off-white colors.
    */
   getTemperatureAsString(options?: ColorTemperatureStringFormatOptions): string {
-    return getColorTemperatureString(this, options);
+    return getColorTemperatureString(this, options, Color.#createColor);
   }
 
   /**
@@ -1152,6 +1189,6 @@ export class Color {
    * @returns A new {@link Color} instance with the same color value.
    */
   clone(): Color {
-    return new Color({ ...this.#color });
+    return Color.#createColor({ ...this.#color });
   }
 }

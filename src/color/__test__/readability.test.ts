@@ -10,6 +10,8 @@ import {
 } from '../readability';
 import { getColorList } from '../utils';
 
+const createColor = (input: ConstructorParameters<typeof Color>[0]) => new Color(input);
+
 describe('getWCAGContrastRatio', () => {
   it('red dark on #000000 alpha 1', () => {
     const fg = new Color('#990000');
@@ -2888,7 +2890,7 @@ describe('readability selection helpers', () => {
     const basicSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
     const resultBasic = getMostReadableTextColorForBackground(
       background,
-      getColorList(basicSwatch),
+      getColorList(basicSwatch, createColor),
     );
     expect(resultBasic.equals(basicSwatch[900])).toBe(true);
 
@@ -2898,7 +2900,7 @@ describe('readability selection helpers', () => {
     });
     const resultExtended = getMostReadableTextColorForBackground(
       background,
-      getColorList(extendedSwatch),
+      getColorList(extendedSwatch, createColor),
     );
     expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
   });
@@ -2916,7 +2918,7 @@ describe('readability selection helpers', () => {
     const textColor = new Color('#111827');
     const swatch = new Color('#fbbf24').getColorSwatch({ extended: true, centerOn500: true });
 
-    const result = getBestBackgroundColorForText(textColor, getColorList(swatch));
+    const result = getBestBackgroundColorForText(textColor, getColorList(swatch, createColor));
 
     expect(result.toHex()).toBe(swatch[50].toHex());
   });

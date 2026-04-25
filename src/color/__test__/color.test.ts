@@ -18,6 +18,8 @@ import { getRandomColorRGBA } from '../random';
 import type { ReadabilityOptions } from '../readability';
 import { getColorFromTemperatureLabel } from '../temperature';
 
+const createColor = (input: ConstructorParameters<typeof Color>[0]) => new Color(input);
+
 jest.mock('../random', () => {
   const actual = jest.requireActual('../random');
   return {
@@ -185,16 +187,18 @@ describe('Color constructor and conversion tests', () => {
 
   it('accepts color temperature label strings', () => {
     let color = new Color('fluorescent');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Fluorescent lamp').toHex());
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel('Fluorescent lamp', createColor).toHex(),
+    );
 
     color = new Color('Daylight');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Daylight').toHex());
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Daylight', createColor).toHex());
 
     color = new Color('  shade ');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Shade').toHex());
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Shade', createColor).toHex());
 
     color = new Color('blue sky');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Blue sky').toHex());
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Blue sky', createColor).toHex());
   });
 });
 

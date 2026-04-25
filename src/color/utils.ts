@@ -1,17 +1,20 @@
-import { type CaseInsensitive, clampValue, resolveCaseInsensitiveOption } from '../utils';
-import { Color } from './color';
+import { type CaseInsensitive, resolveCaseInsensitiveOption } from '../utils';
+import type { Color, CreateColorInstance, ValidColorInputFormat } from './color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.consts';
+import { isColorInstance } from './color.helpers';
 import { toRGBA } from './conversions';
-import type { ColorFormat, ColorHex, ColorRGBA } from './formats';
-import type { ColorSwatch } from './swatch';
-
-export type ValidColorInputFormat = Color | ColorFormat | string;
+import type { ColorHex, ColorRGBA } from './formats';
 import { parseCSSColorFormatString } from './parse';
 import { getRandomColorRGBA } from './random';
+import { srgbChannelToLinear } from './srgb';
+import type { ColorSwatch } from './swatch';
 import { getColorFromTemperatureLabel, matchPartialColorTemperatureLabel } from './temperature';
 
-export function getColorRGBAFromInput(color?: ColorFormat | Color | string | null): ColorRGBA {
-  if (color instanceof Color) {
+export function getColorRGBAFromInput(
+  color: ValidColorInputFormat | null | undefined,
+  createColor: CreateColorInstance,
+): ColorRGBA {
+  if (isColorInstance(color)) {
     return color.toRGBA();
   }
 
@@ -31,11 +34,11 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string | nul
 
     const matchedColorTemperatureLabel = matchPartialColorTemperatureLabel(colorString);
     if (matchedColorTemperatureLabel) {
-      return getColorFromTemperatureLabel(matchedColorTemperatureLabel).toRGBA();
+      return getColorFromTemperatureLabel(matchedColorTemperatureLabel, createColor).toRGBA();
     }
 
     // Other CSS color format string (e.g. "rgb(255, 0, 0)"):
-    const parsedColor = parseCSSColorFormatString(colorString);
+    const parsedColor = parseCSSColorFormatString(colorString, createColor);
     if (parsedColor) {
       return parsedColor.toRGBA();
     }
@@ -44,46 +47,6 @@ export function getColorRGBAFromInput(color?: ColorFormat | Color | string | nul
   }
 
   return color ? toRGBA(color) : getRandomColorRGBA();
-}
-
-const RGB_CHANNEL_MAX_VALUE = 255; // 8‑bit channel ceiling
-const SRGB_LINEAR_SEGMENT_DIVISOR = 12.92; // slope for low‑intensity segment
-const SRGB_GAMMA_OFFSET = 0.055; // additive term in sRGB gamma curve
-const SRGB_GAMMA_SCALE = 1.055; // multiplicative term in sRGB gamma curve
-const SRGB_GAMMA_EXPONENT = 2.4; // exponent in sRGB transfer function
-
-const SRGB_GAMMA_PIVOT_OPTIONS = {
-  SRGB: 0.04045,
-  WCAG: 0.03928,
-} as const;
-
-type SrgbGammaPivot = keyof typeof SRGB_GAMMA_PIVOT_OPTIONS;
-
-// Does a gamma correction by converting the given sRGB channel value (0 to 255)
-// to a linear RGB channel value (0 to 1).
-export function srgbChannelToLinear(srgbChannelVal: number, pivot: SrgbGammaPivot): number {
-  const c = clampValue(srgbChannelVal, 0, RGB_CHANNEL_MAX_VALUE) / RGB_CHANNEL_MAX_VALUE; // normalize
-  let result: number;
-  if (c <= SRGB_GAMMA_PIVOT_OPTIONS[pivot]) {
-    result = c / SRGB_LINEAR_SEGMENT_DIVISOR; // linear portion for dark colors
-  } else {
-    result = Math.pow((c + SRGB_GAMMA_OFFSET) / SRGB_GAMMA_SCALE, SRGB_GAMMA_EXPONENT); // gamma correction for brighter colors
-  }
-  return clampValue(result, 0, 1);
-}
-
-// Inverts `srgbChannelToLinear()`. Takes a linearized channel value (0 to 1) and returns
-// the original sRGB channel value (0 to 255).
-export function linearChannelToSrgb(linearChannelVal: number, pivot: SrgbGammaPivot): number {
-  const c = clampValue(linearChannelVal, 0, 1);
-  const threshold = SRGB_GAMMA_PIVOT_OPTIONS[pivot] / SRGB_LINEAR_SEGMENT_DIVISOR;
-  let result: number;
-  if (c > threshold) {
-    result = SRGB_GAMMA_SCALE * Math.pow(c, 1 / SRGB_GAMMA_EXPONENT) - SRGB_GAMMA_OFFSET;
-  } else {
-    result = c * SRGB_LINEAR_SEGMENT_DIVISOR;
-  }
-  return clampValue(result * RGB_CHANNEL_MAX_VALUE, 0, RGB_CHANNEL_MAX_VALUE);
 }
 
 export function getRelativeLuminance(rgb: ColorRGBA): number {
@@ -200,14 +163,15 @@ export function areColorsEqual(color1: Color, color2: Color): boolean {
   return r1 === r2 && g1 === g2 && b1 === b2 && Math.abs(a1 - a2) <= ALPHA_EPSILON;
 }
 
-function isColor(value: unknown): value is Color {
-  return value instanceof Color;
-}
-
-export function getColorList(candidates: readonly ValidColorInputFormat[] | ColorSwatch): Color[] {
+export function getColorList(
+  candidates: readonly ValidColorInputFormat[] | ColorSwatch,
+  createColor: CreateColorInstance,
+): Color[] {
   if (Array.isArray(candidates)) {
-    return candidates.map((candidate) => (isColor(candidate) ? candidate : new Color(candidate)));
+    return candidates.map((candidate) =>
+      isColorInstance(candidate) ? candidate : createColor(candidate),
+    );
   }
 
-  return Object.values(candidates).filter(isColor);
+  return Object.values(candidates).filter(isColorInstance);
 }

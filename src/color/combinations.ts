@@ -1,7 +1,7 @@
 import { type CaseInsensitive, clampValue, resolveCaseInsensitiveOption } from '../utils';
-import { Color } from './color';
+import type { Color, CreateColorInstance } from './color';
 import type { ColorHSL, ColorHSLA, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
-import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
+import { linearChannelToSrgb, srgbChannelToLinear } from './srgb';
 
 const MIX_TYPES = ['ADDITIVE', 'SUBTRACTIVE'] as const;
 export type MixType = (typeof MIX_TYPES)[number];
@@ -94,6 +94,7 @@ function mixSubtractiveHue(
 function mixColorsSubtractiveInRgb(
   colors: readonly Color[],
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   const rgbValues = colors.map((color) => color.toRGBA());
   const r = mixNormalizedChannel(
@@ -114,12 +115,13 @@ function mixColorsSubtractiveInRgb(
 
   const a = mixAlphaChannel(colors, normalizedWeights);
 
-  return new Color({ r, g, b, a });
+  return createColor({ r, g, b, a });
 }
 
 function mixColorsSubtractiveInLinearRgb(
   colors: readonly Color[],
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   const linearValues = colors
     .map((color) => color.toRGBA())
@@ -147,12 +149,13 @@ function mixColorsSubtractiveInLinearRgb(
   const b = Math.round(clampValue(linearChannelToSrgb(bLinear, 'SRGB'), 0, 255));
   const a = mixAlphaChannel(colors, normalizedWeights);
 
-  return new Color({ r, g, b, a });
+  return createColor({ r, g, b, a });
 }
 
 function mixColorsSubtractiveInHsl(
   colors: readonly Color[],
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   const hslValues = colors.map((color) => color.toHSL());
   const saturation = mixNormalizedChannel(
@@ -176,12 +179,13 @@ function mixColorsSubtractiveInHsl(
 
   const a = mixAlphaChannel(colors, normalizedWeights);
 
-  return new Color({ h: hue, s: saturation, l: lightness, a });
+  return createColor({ h: hue, s: saturation, l: lightness, a });
 }
 
 function mixColorsSubtractiveInLch(
   colors: readonly Color[],
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   const lchValues = colors.map((color) => color.toLCH());
   const lightnessValues = lchValues.map((value) => value.l);
@@ -210,14 +214,15 @@ function mixColorsSubtractiveInLch(
     c: chroma,
     h: hue,
   };
-  const rgba = new Color(lchResult).toRGBA();
+  const rgba = createColor(lchResult).toRGBA();
 
-  return new Color({ ...rgba, a });
+  return createColor({ ...rgba, a });
 }
 
 function mixColorsSubtractiveInOklch(
   colors: readonly Color[],
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   const oklchValues = colors.map((color) => color.toOKLCH());
   const lightnessValues = oklchValues.map((value) => value.l);
@@ -245,28 +250,29 @@ function mixColorsSubtractiveInOklch(
     c: chroma,
     h: hue,
   };
-  const rgba = new Color(oklchResult).toRGBA();
+  const rgba = createColor(oklchResult).toRGBA();
 
-  return new Color({ ...rgba, a });
+  return createColor({ ...rgba, a });
 }
 
 function mixColorsSubtractive(
   colors: readonly Color[],
   space: MixSpace,
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   switch (space) {
     case 'RGB':
-      return mixColorsSubtractiveInRgb(colors, normalizedWeights);
+      return mixColorsSubtractiveInRgb(colors, normalizedWeights, createColor);
     case 'HSL':
-      return mixColorsSubtractiveInHsl(colors, normalizedWeights);
+      return mixColorsSubtractiveInHsl(colors, normalizedWeights, createColor);
     case 'LCH':
-      return mixColorsSubtractiveInLch(colors, normalizedWeights);
+      return mixColorsSubtractiveInLch(colors, normalizedWeights, createColor);
     case 'OKLCH':
-      return mixColorsSubtractiveInOklch(colors, normalizedWeights);
+      return mixColorsSubtractiveInOklch(colors, normalizedWeights, createColor);
     case 'LINEAR_RGB':
     default:
-      return mixColorsSubtractiveInLinearRgb(colors, normalizedWeights);
+      return mixColorsSubtractiveInLinearRgb(colors, normalizedWeights, createColor);
   }
 }
 
@@ -279,6 +285,7 @@ function mixColorsAdditiveInLinearRgb(
   colors: readonly Color[],
   weights: readonly number[],
   sumOfWeights: number,
+  createColor: CreateColorInstance,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let rLinear = 0;
@@ -303,13 +310,14 @@ function mixColorsAdditiveInLinearRgb(
     a: +clampValue(alpha / normalizationFactor, 0, 1).toFixed(3),
   };
 
-  return new Color(result);
+  return createColor(result);
 }
 
 function mixColorsAdditiveInHsl(
   colors: readonly Color[],
   weights: readonly number[],
   sumOfWeights: number,
+  createColor: CreateColorInstance,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let x = 0;
@@ -337,13 +345,14 @@ function mixColorsAdditiveInHsl(
     l: +clampValue(lightness, 0, 100).toFixed(3),
     a: +clampValue(alpha, 0, 1).toFixed(3),
   };
-  return new Color(result);
+  return createColor(result);
 }
 
 function mixColorsAdditiveInLch(
   colors: readonly Color[],
   weights: readonly number[],
   sumOfWeights: number,
+  createColor: CreateColorInstance,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let lightness = 0;
@@ -370,8 +379,8 @@ function mixColorsAdditiveInLch(
     c: +Math.max(0, chroma).toFixed(3),
     h: Number.isNaN(hue) ? 0 : hue,
   };
-  const rgba = new Color(lchResult).toRGBA();
-  return new Color({
+  const rgba = createColor(lchResult).toRGBA();
+  return createColor({
     ...rgba,
     a: +clampValue(alpha, 0, 1).toFixed(3),
   });
@@ -381,6 +390,7 @@ function mixColorsAdditiveInOklch(
   colors: readonly Color[],
   weights: readonly number[],
   sumOfWeights: number,
+  createColor: CreateColorInstance,
 ): Color {
   const normalizationFactor = sumOfWeights || 1;
   let lightness = 0;
@@ -407,8 +417,8 @@ function mixColorsAdditiveInOklch(
     c: +Math.max(0, chroma).toFixed(6),
     h: Number.isNaN(hue) ? 0 : hue,
   };
-  const rgba = new Color(oklchResult).toRGBA();
-  return new Color({
+  const rgba = createColor(oklchResult).toRGBA();
+  return createColor({
     ...rgba,
     a: +clampValue(alpha, 0, 1).toFixed(3),
   });
@@ -418,6 +428,7 @@ function mixColorsAdditiveInRgb(
   colors: readonly Color[],
   weights: readonly number[],
   sumOfWeights: number,
+  createColor: CreateColorInstance,
 ): Color {
   let r = 0;
   let g = 0;
@@ -437,31 +448,55 @@ function mixColorsAdditiveInRgb(
     b: Math.round(clampValue(b, 0, 255)),
     a: +clampValue(a / sumOfWeights, 0, 1).toFixed(3),
   };
-  return new Color(result);
+  return createColor(result);
 }
 
-function mixColorsAdditive(
-  colors: readonly Color[],
-  space: MixSpace,
-  weights: readonly number[],
-  sumOfWeights: number,
-) {
+function mixColorsAdditive({
+  colors,
+  space,
+  weights,
+  sumOfWeights,
+  createColor,
+}: {
+  colors: readonly Color[];
+  space: MixSpace;
+  weights: readonly number[];
+  sumOfWeights: number;
+  createColor: CreateColorInstance;
+}) {
   switch (space) {
     case 'LINEAR_RGB':
-      return mixColorsAdditiveInLinearRgb(colors, weights, sumOfWeights);
+      return mixColorsAdditiveInLinearRgb(colors, weights, sumOfWeights, createColor);
     case 'HSL':
-      return mixColorsAdditiveInHsl(colors, weights, sumOfWeights);
+      return mixColorsAdditiveInHsl(colors, weights, sumOfWeights, createColor);
     case 'LCH':
-      return mixColorsAdditiveInLch(colors, weights, sumOfWeights);
+      return mixColorsAdditiveInLch(colors, weights, sumOfWeights, createColor);
     case 'OKLCH':
-      return mixColorsAdditiveInOklch(colors, weights, sumOfWeights);
+      return mixColorsAdditiveInOklch(colors, weights, sumOfWeights, createColor);
     case 'RGB':
     default:
-      return mixColorsAdditiveInRgb(colors, weights, sumOfWeights);
+      return mixColorsAdditiveInRgb(colors, weights, sumOfWeights, createColor);
   }
 }
 
-export function mixColors(colors: readonly Color[], options: MixColorsOptions = {}): Color {
+export function mixColors(colors: readonly Color[], createColor: CreateColorInstance): Color;
+export function mixColors(
+  colors: readonly Color[],
+  options: MixColorsOptions | undefined,
+  createColor: CreateColorInstance,
+): Color;
+export function mixColors(
+  colors: readonly Color[],
+  optionsOrCreateColor: MixColorsOptions | CreateColorInstance | undefined = {},
+  maybeCreateColor?: CreateColorInstance,
+): Color {
+  const createColor =
+    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
+  if (!createColor) {
+    throw new Error('createColor function is required');
+  }
+  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
+
   if (colors.length < 2) {
     throw new Error('at least two colors are required for mixing');
   }
@@ -481,10 +516,16 @@ export function mixColors(colors: readonly Color[], options: MixColorsOptions = 
   const { weights, sumOfWeights, normalizedWeights } = getWeights(colors.length, options.weights);
 
   if (type === 'SUBTRACTIVE') {
-    return mixColorsSubtractive(colors, space, normalizedWeights);
+    return mixColorsSubtractive(colors, space, normalizedWeights, createColor);
   }
 
-  return mixColorsAdditive(colors, space, weights, sumOfWeights);
+  return mixColorsAdditive({
+    colors,
+    space,
+    weights,
+    sumOfWeights,
+    createColor,
+  });
 }
 
 const BLEND_MODES = ['NORMAL', 'MULTIPLY', 'SCREEN', 'OVERLAY'] as const;
@@ -566,7 +607,19 @@ function blendAlphaChannel(baseAlpha: number, blendAlpha: number, ratio: number)
   return +clampValue(mixedAlpha, 0, 1).toFixed(3);
 }
 
-function blendColorsInRGBSpace(base: Color, blend: Color, mode: BlendMode, ratio: number): Color {
+function blendColorsInRGBSpace({
+  base,
+  blend,
+  mode,
+  ratio,
+  createColor,
+}: {
+  base: Color;
+  blend: Color;
+  mode: BlendMode;
+  ratio: number;
+  createColor: CreateColorInstance;
+}): Color {
   const baseRGBA = base.toRGBA();
   const blendRGBA = blend.toRGBA();
   const r = (1 - ratio) * baseRGBA.r + ratio * blendChannel(mode, baseRGBA.r, blendRGBA.r);
@@ -579,10 +632,22 @@ function blendColorsInRGBSpace(base: Color, blend: Color, mode: BlendMode, ratio
     b: Math.round(clampValue(b, 0, 255)),
     a: +clampValue(a, 0, 1).toFixed(3),
   };
-  return new Color(resultRGBA);
+  return createColor(resultRGBA);
 }
 
-function blendColorsInHSLSpace(base: Color, blend: Color, mode: BlendMode, ratio: number): Color {
+function blendColorsInHSLSpace({
+  base,
+  blend,
+  mode,
+  ratio,
+  createColor,
+}: {
+  base: Color;
+  blend: Color;
+  mode: BlendMode;
+  ratio: number;
+  createColor: CreateColorInstance;
+}): Color {
   const baseHSL = base.toHSL();
   const blendHSL = blend.toHSL();
   const baseAlpha = base.toRGBA().a ?? 1;
@@ -594,7 +659,7 @@ function blendColorsInHSLSpace(base: Color, blend: Color, mode: BlendMode, ratio
     const s = (1 - ratio) * baseHSL.s + ratio * blendHSL.s;
     const l = (1 - ratio) * baseHSL.l + ratio * blendHSL.l;
 
-    return new Color({
+    return createColor({
       h,
       s,
       l,
@@ -607,7 +672,7 @@ function blendColorsInHSLSpace(base: Color, blend: Color, mode: BlendMode, ratio
   const l = blendValueChannel({ mode, base: baseHSL.l, blend: blendHSL.l, ratio, maxValue: 100 });
   const a = blendAlphaChannel(baseAlpha, blendAlpha, ratio);
 
-  return new Color({
+  return createColor({
     h,
     s,
     l,
@@ -615,7 +680,26 @@ function blendColorsInHSLSpace(base: Color, blend: Color, mode: BlendMode, ratio
   });
 }
 
-export function blendColors(base: Color, blend: Color, options: BlendColorsOptions = {}): Color {
+export function blendColors(base: Color, blend: Color, createColor: CreateColorInstance): Color;
+export function blendColors(
+  base: Color,
+  blend: Color,
+  options: BlendColorsOptions | undefined,
+  createColor: CreateColorInstance,
+): Color;
+export function blendColors(
+  base: Color,
+  blend: Color,
+  optionsOrCreateColor: BlendColorsOptions | CreateColorInstance | undefined = {},
+  maybeCreateColor?: CreateColorInstance,
+): Color {
+  const createColor =
+    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
+  if (!createColor) {
+    throw new Error('createColor function is required');
+  }
+  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
+
   const mode = resolveCaseInsensitiveOption({
     allowedValues: BLEND_MODES,
     defaultValue: 'NORMAL',
@@ -631,10 +715,10 @@ export function blendColors(base: Color, blend: Color, options: BlendColorsOptio
   const ratio = clampValue(options.ratio ?? 0.5, 0, 1);
 
   if (space === 'RGB') {
-    return blendColorsInRGBSpace(base, blend, mode, ratio);
+    return blendColorsInRGBSpace({ base, blend, mode, ratio, createColor });
   }
 
-  return blendColorsInHSLSpace(base, blend, mode, ratio);
+  return blendColorsInHSLSpace({ base, blend, mode, ratio, createColor });
 }
 
 export interface AverageColorsOptions {
@@ -663,7 +747,11 @@ function resolveAveragedHue(x: number, y: number, fallbackHue = 0): number {
   return Number.isNaN(normalizedHue) ? fallbackHue : normalizedHue;
 }
 
-function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
+function averageColorsInHsl(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
+): Color {
   let x = 0;
   let y = 0;
   let lightness = 0;
@@ -679,14 +767,18 @@ function averageColorsInHsl(colors: readonly Color[], normalizedWeights: readonl
   const hue = resolveAveragedHue(x, y);
   const saturation = clampValue(Math.hypot(x, y), 0, 100);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
-  return new Color({
+  return createColor({
     h: Math.round(hue),
     s: Math.round(saturation),
     l: Math.round(lightness),
   }).setAlpha(alpha);
 }
 
-function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
+function averageColorsInLch(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
+): Color {
   let lightness = 0;
   let chromaX = 0;
   let chromaY = 0;
@@ -702,7 +794,7 @@ function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonl
   const chroma = Math.hypot(chromaX, chromaY);
   const hue = resolveAveragedHue(chromaX, chromaY);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
-  return new Color({
+  return createColor({
     l: lightness,
     c: chroma,
     h: hue,
@@ -712,6 +804,7 @@ function averageColorsInLch(colors: readonly Color[], normalizedWeights: readonl
 function averageColorsInOklch(
   colors: readonly Color[],
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   let lightness = 0;
   let chromaX = 0;
@@ -728,7 +821,7 @@ function averageColorsInOklch(
   const chroma = Math.hypot(chromaX, chromaY);
   const hue = resolveAveragedHue(chromaX, chromaY);
   const alpha = mixAlphaChannel(colors, normalizedWeights);
-  return new Color({
+  return createColor({
     l: lightness,
     c: chroma,
     h: hue,
@@ -738,6 +831,7 @@ function averageColorsInOklch(
 function averageColorsInLinearRgb(
   colors: readonly Color[],
   normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
 ): Color {
   let r = 0;
   let g = 0;
@@ -751,7 +845,7 @@ function averageColorsInLinearRgb(
     b += srgbChannelToLinear(val.b, 'SRGB') * weight;
     a += (val.a ?? 1) * weight;
   });
-  return new Color({
+  return createColor({
     r: Math.round(linearChannelToSrgb(r, 'SRGB')),
     g: Math.round(linearChannelToSrgb(g, 'SRGB')),
     b: Math.round(linearChannelToSrgb(b, 'SRGB')),
@@ -759,7 +853,11 @@ function averageColorsInLinearRgb(
   });
 }
 
-function averageColorsInRgb(colors: readonly Color[], normalizedWeights: readonly number[]): Color {
+function averageColorsInRgb(
+  colors: readonly Color[],
+  normalizedWeights: readonly number[],
+  createColor: CreateColorInstance,
+): Color {
   let r = 0;
   let g = 0;
   let b = 0;
@@ -772,7 +870,7 @@ function averageColorsInRgb(colors: readonly Color[], normalizedWeights: readonl
     b += val.b * weight;
     a += (val.a ?? 1) * weight;
   });
-  return new Color({
+  return createColor({
     r: Math.round(r),
     g: Math.round(g),
     b: Math.round(b),
@@ -780,7 +878,24 @@ function averageColorsInRgb(colors: readonly Color[], normalizedWeights: readonl
   });
 }
 
-export function averageColors(colors: readonly Color[], options: AverageColorsOptions = {}): Color {
+export function averageColors(colors: readonly Color[], createColor: CreateColorInstance): Color;
+export function averageColors(
+  colors: readonly Color[],
+  options: AverageColorsOptions | undefined,
+  createColor: CreateColorInstance,
+): Color;
+export function averageColors(
+  colors: readonly Color[],
+  optionsOrCreateColor: AverageColorsOptions | CreateColorInstance | undefined = {},
+  maybeCreateColor?: CreateColorInstance,
+): Color {
+  const createColor =
+    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
+  if (!createColor) {
+    throw new Error('createColor function is required');
+  }
+  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
+
   if (colors.length < 2) {
     throw new Error('at least two colors are required for averaging');
   }
@@ -794,15 +909,15 @@ export function averageColors(colors: readonly Color[], options: AverageColorsOp
 
   switch (space) {
     case 'HSL':
-      return averageColorsInHsl(colors, normalizedWeights);
+      return averageColorsInHsl(colors, normalizedWeights, createColor);
     case 'LCH':
-      return averageColorsInLch(colors, normalizedWeights);
+      return averageColorsInLch(colors, normalizedWeights, createColor);
     case 'OKLCH':
-      return averageColorsInOklch(colors, normalizedWeights);
+      return averageColorsInOklch(colors, normalizedWeights, createColor);
     case 'LINEAR_RGB':
-      return averageColorsInLinearRgb(colors, normalizedWeights);
+      return averageColorsInLinearRgb(colors, normalizedWeights, createColor);
     case 'RGB':
     default:
-      return averageColorsInRgb(colors, normalizedWeights);
+      return averageColorsInRgb(colors, normalizedWeights, createColor);
   }
 }

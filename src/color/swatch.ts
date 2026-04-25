@@ -1,5 +1,5 @@
 import { clampValue } from '../utils';
-import { Color } from './color';
+import type { Color, CreateColorInstance } from './color';
 
 type BasicColorSwatchStop = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 type ExtendedColorSwatchStop =
@@ -158,12 +158,14 @@ function createSwatch<Stop extends number>({
   mainStop,
   stops,
   type,
+  createColor,
 }: {
   baseColor: Color;
   deltas: ColorSwatchStopDeltas<Stop>;
   mainStop: BasicColorSwatchStop;
   stops: readonly Stop[];
   type: ColorSwatch['type'];
+  createColor: CreateColorInstance;
 }): ColorSwatch {
   const { h: baseH, s: baseS, l: baseL, a: baseA } = baseColor.toHSLA();
 
@@ -173,7 +175,7 @@ function createSwatch<Stop extends number>({
     acc[stop] =
       stop === mainStop
         ? baseColor.clone()
-        : new Color({
+        : createColor({
             h: baseH,
             s: getAdjustedSaturation(baseS, delta.saturationDelta),
             l: clampValue(baseL + delta.lightnessDelta, 0, 100),
@@ -190,19 +192,25 @@ function createSwatch<Stop extends number>({
   } as ColorSwatch;
 }
 
-function getBaseColorSwatch(baseColor: Color, mainStop: BasicColorSwatchStop): BaseColorSwatch {
+function getBaseColorSwatch(
+  baseColor: Color,
+  mainStop: BasicColorSwatchStop,
+  createColor: CreateColorInstance,
+): BaseColorSwatch {
   return createSwatch({
     baseColor,
     deltas: BASIC_SWATCH_DELTAS,
     mainStop,
     stops: BASE_COLOR_SWATCH_STOPS,
     type: 'BASIC',
+    createColor,
   }) as BaseColorSwatch;
 }
 
 function getExtendedColorSwatch(
   baseColor: Color,
   mainStop: BasicColorSwatchStop,
+  createColor: CreateColorInstance,
 ): ExtendedColorSwatch {
   return createSwatch({
     baseColor,
@@ -210,20 +218,38 @@ function getExtendedColorSwatch(
     mainStop,
     stops: EXTENDED_COLOR_SWATCH_STOPS,
     type: 'EXTENDED',
+    createColor,
   }) as ExtendedColorSwatch;
 }
 
+export function getColorSwatch(baseColor: Color, createColor: CreateColorInstance): ColorSwatch;
 export function getColorSwatch(
   baseColor: Color,
-  options?: ColorSwatchOptions & { extended: true },
+  options: (ColorSwatchOptions & { extended: true }) | undefined,
+  createColor: CreateColorInstance,
 ): ExtendedColorSwatch;
-export function getColorSwatch(baseColor: Color, options?: ColorSwatchOptions): ColorSwatch;
-export function getColorSwatch(baseColor: Color, options: ColorSwatchOptions = {}): ColorSwatch {
+export function getColorSwatch(
+  baseColor: Color,
+  options: ColorSwatchOptions | undefined,
+  createColor: CreateColorInstance,
+): ColorSwatch;
+export function getColorSwatch(
+  baseColor: Color,
+  optionsOrCreateColor: ColorSwatchOptions | CreateColorInstance | undefined = {},
+  maybeCreateColor?: CreateColorInstance,
+): ColorSwatch {
+  const createColor =
+    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
+  if (!createColor) {
+    throw new Error('createColor function is required');
+  }
+  const options =
+    typeof optionsOrCreateColor === 'function' ? ({} as ColorSwatchOptions) : optionsOrCreateColor;
   const mainStop = getMainStop(baseColor, options.centerOn500 ?? false);
 
   if (options.extended) {
-    return getExtendedColorSwatch(baseColor, mainStop);
+    return getExtendedColorSwatch(baseColor, mainStop, createColor);
   }
 
-  return getBaseColorSwatch(baseColor, mainStop);
+  return getBaseColorSwatch(baseColor, mainStop, createColor);
 }
