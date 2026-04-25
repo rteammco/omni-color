@@ -1,4 +1,4 @@
-import { Color } from '../../color/color';
+import { Color, createColorInstance } from '../../color/color';
 import {
   generateColorPaletteFromBaseColor,
   isColorPaletteSuitable,
@@ -6,8 +6,6 @@ import {
   SUITABLE_PALETTE_MIN_LIGHTNESS,
   SUITABLE_PALETTE_MIN_SATURATION,
 } from '../palette';
-
-const createColor = (input: ConstructorParameters<typeof Color>[0]) => new Color(input);
 
 describe('isColorPaletteSuitable()', () => {
   it('returns true when saturation and lightness are within palette-suitable ranges', () => {
@@ -56,7 +54,12 @@ describe('isColorPaletteSuitable()', () => {
 describe('generateColorPaletteFromBaseColor()', () => {
   it('harmonizes neutrals with the base color', () => {
     const baseColor = new Color('#ff0000');
-    const palette = generateColorPaletteFromBaseColor(baseColor, createColor);
+    const palette = generateColorPaletteFromBaseColor(
+      baseColor,
+      undefined,
+      {},
+      createColorInstance,
+    );
 
     expect(palette.neutrals[100].toHex()).toBe('#eeeeee');
     expect(palette.neutrals[500].toHex()).toBe('#888888');
@@ -70,77 +73,147 @@ describe('generateColorPaletteFromBaseColor()', () => {
   describe('neutral harmonization across many base colors', () => {
     it('creates neutrals and tinted neutrals for a broad spectrum', () => {
       const red = new Color('#ff0000');
-      const redPalette = generateColorPaletteFromBaseColor(red, createColor);
+      const redPalette = generateColorPaletteFromBaseColor(red, undefined, {}, createColorInstance);
       expect(redPalette.neutrals[500].toHex()).toBe('#888888');
       expect(redPalette.tintedNeutrals[500].toHex()).toBe('#988380');
 
       const orange = new Color('#ffa500');
-      const orangePalette = generateColorPaletteFromBaseColor(orange, createColor);
+      const orangePalette = generateColorPaletteFromBaseColor(
+        orange,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(orangePalette.neutrals[500].toHex()).toBe('#bbbbbb');
       expect(orangePalette.tintedNeutrals[500].toHex()).toBe('#c3bab0');
 
       const yellow = new Color('#ffff00');
-      const yellowPalette = generateColorPaletteFromBaseColor(yellow, createColor);
+      const yellowPalette = generateColorPaletteFromBaseColor(
+        yellow,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(yellowPalette.neutrals[500].toHex()).toBe('#f4f4f4');
       expect(yellowPalette.tintedNeutrals[500].toHex()).toBe('#f5f6e6');
 
       const green = new Color('#00ff00');
-      const greenPalette = generateColorPaletteFromBaseColor(green, createColor);
+      const greenPalette = generateColorPaletteFromBaseColor(
+        green,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(greenPalette.neutrals[500].toHex()).toBe('#d3d3d3');
       expect(greenPalette.tintedNeutrals[500].toHex()).toBe('#c8d8c7');
 
       const cyan = new Color('#00ffff');
-      const cyanPalette = generateColorPaletteFromBaseColor(cyan, createColor);
+      const cyanPalette = generateColorPaletteFromBaseColor(
+        cyan,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(cyanPalette.neutrals[500].toHex()).toBe('#e0e0e0');
       expect(cyanPalette.tintedNeutrals[500].toHex()).toBe('#d5e3e3');
 
       const blue = new Color('#0000ff');
-      const bluePalette = generateColorPaletteFromBaseColor(blue, createColor);
+      const bluePalette = generateColorPaletteFromBaseColor(
+        blue,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(bluePalette.neutrals[500].toHex()).toBe('#565656');
       expect(bluePalette.tintedNeutrals[500].toHex()).toBe('#4d5668');
 
       const magenta = new Color('#ff00ff');
-      const magentaPalette = generateColorPaletteFromBaseColor(magenta, createColor);
+      const magentaPalette = generateColorPaletteFromBaseColor(
+        magenta,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(magentaPalette.neutrals[500].toHex()).toBe('#9f9f9f');
       expect(magentaPalette.tintedNeutrals[500].toHex()).toBe('#ab98a9');
 
       const purple = new Color('#800080');
-      const purplePalette = generateColorPaletteFromBaseColor(purple, createColor);
+      const purplePalette = generateColorPaletteFromBaseColor(
+        purple,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(purplePalette.neutrals[500].toHex()).toBe('#4d4d4d');
       expect(purplePalette.tintedNeutrals[500].toHex()).toBe('#534a53');
 
       const teal = new Color('#008080');
-      const tealPalette = generateColorPaletteFromBaseColor(teal, createColor);
+      const tealPalette = generateColorPaletteFromBaseColor(
+        teal,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(tealPalette.neutrals[500].toHex()).toBe('#6f6f6f');
       expect(tealPalette.tintedNeutrals[500].toHex()).toBe('#6a7171');
 
       const olive = new Color('#808000');
-      const olivePalette = generateColorPaletteFromBaseColor(olive, createColor);
+      const olivePalette = generateColorPaletteFromBaseColor(
+        olive,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(olivePalette.neutrals[500].toHex()).toBe('#7a7a7a');
       expect(olivePalette.tintedNeutrals[500].toHex()).toBe('#7b7b73');
 
       const hotpink = new Color('#ff69b4');
-      const hotpinkPalette = generateColorPaletteFromBaseColor(hotpink, createColor);
+      const hotpinkPalette = generateColorPaletteFromBaseColor(
+        hotpink,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(hotpinkPalette.neutrals[500].toHex()).toBe('#a7a7a7');
       expect(hotpinkPalette.tintedNeutrals[500].toHex()).toBe('#b2a2a8');
 
       const maroon = new Color('#800000');
-      const maroonPalette = generateColorPaletteFromBaseColor(maroon, createColor);
+      const maroonPalette = generateColorPaletteFromBaseColor(
+        maroon,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(maroonPalette.neutrals[500].toHex()).toBe('#414141');
       expect(maroonPalette.tintedNeutrals[500].toHex()).toBe('#493f3d');
 
       const gray = new Color('#808080');
-      const grayPalette = generateColorPaletteFromBaseColor(gray, createColor);
+      const grayPalette = generateColorPaletteFromBaseColor(
+        gray,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(grayPalette.neutrals[500].toHex()).toBe('#808080');
       expect(grayPalette.tintedNeutrals[500].toHex()).toBe('#808080');
 
       const black = new Color('#000000');
-      const blackPalette = generateColorPaletteFromBaseColor(black, createColor);
+      const blackPalette = generateColorPaletteFromBaseColor(
+        black,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(blackPalette.neutrals[500].toHex()).toBe('#000000');
       expect(blackPalette.tintedNeutrals[500].toHex()).toBe('#000000');
 
       const white = new Color('#ffffff');
-      const whitePalette = generateColorPaletteFromBaseColor(white, createColor);
+      const whitePalette = generateColorPaletteFromBaseColor(
+        white,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(whitePalette.neutrals[500].toHex()).toBe('#ffffff');
       expect(whitePalette.tintedNeutrals[500].toHex()).toBe('#ffffff');
     });
@@ -158,7 +231,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             maxTintChroma: -0.5,
           },
         },
-        createColor,
+        createColorInstance,
       );
       expect(palette.tintedNeutrals[500].toHex()).toBe('#d3d3d3');
     });
@@ -174,7 +247,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             maxTintChroma: 0.02,
           },
         },
-        createColor,
+        createColorInstance,
       );
       expect(palette.tintedNeutrals[500].toHex()).toBe('#d1e4e4');
     });
@@ -189,7 +262,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
         {
           swatchOptions: { extended: true, centerOn500: false },
         },
-        createColor,
+        createColorInstance,
       );
 
       const expected = baseColor.getColorSwatch({ extended: true, centerOn500: false });
@@ -204,7 +277,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('centers palette swatches on 500 by default', () => {
       const baseColor = new Color('#222222');
-      const palette = generateColorPaletteFromBaseColor(baseColor, createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        baseColor,
+        undefined,
+        {},
+        createColorInstance,
+      );
 
       expect(palette.primary.mainStop).toBe(500);
     });
@@ -212,7 +290,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
   describe('neutral harmonization across the full swatch', () => {
     it('produces a complete range for red', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(palette.neutrals[100].toHex()).toBe('#eeeeee');
       expect(palette.neutrals[300].toHex()).toBe('#bbbbbb');
       expect(palette.neutrals[700].toHex()).toBe('#555555');
@@ -224,7 +307,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('produces a complete range for blue', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#0000ff'), createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#0000ff'),
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(palette.neutrals[100].toHex()).toBe('#bcbcbc');
       expect(palette.neutrals[300].toHex()).toBe('#898989');
       expect(palette.neutrals[700].toHex()).toBe('#232323');
@@ -236,7 +324,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('produces a complete range for green', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#00ff00'), createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#00ff00'),
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(palette.neutrals[100].toHex()).toBe('#ffffff');
       expect(palette.neutrals[300].toHex()).toBe('#ffffff');
       expect(palette.neutrals[700].toHex()).toBe('#a0a0a0');
@@ -248,13 +341,23 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('keeps tinted neutrals identical for achromatic bases', () => {
-      const white = generateColorPaletteFromBaseColor(new Color('#ffffff'), createColor);
+      const white = generateColorPaletteFromBaseColor(
+        new Color('#ffffff'),
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(white.neutrals[100].toHex()).toBe('#ffffff');
       expect(white.tintedNeutrals[100].toHex()).toBe('#ffffff');
       expect(white.neutrals[900].toHex()).toBe('#999999');
       expect(white.tintedNeutrals[900].toHex()).toBe('#999999');
 
-      const black = generateColorPaletteFromBaseColor(new Color('#000000'), createColor);
+      const black = generateColorPaletteFromBaseColor(
+        new Color('#000000'),
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(black.neutrals[100].toHex()).toBe('#666666');
       expect(black.tintedNeutrals[100].toHex()).toBe('#666666');
       expect(black.neutrals[900].toHex()).toBe('#000000');
@@ -273,7 +376,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             maxTintChroma: 0.5,
           },
         },
-        createColor,
+        createColorInstance,
       );
       expect(palette.tintedNeutrals[100].toHex()).toBe('#ffccff');
       expect(palette.tintedNeutrals[500].toHex()).toBe('#ff00ff');
@@ -290,7 +393,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             maxTintChroma: 0,
           },
         },
-        createColor,
+        createColorInstance,
       );
       expect(palette.neutrals[100].toHex()).toBe('#999999');
       expect(palette.tintedNeutrals[100].toHex()).toBe('#999999');
@@ -312,7 +415,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
               maxTintChroma: NaN,
             },
           },
-          createColor,
+          createColorInstance,
         ),
       ).toThrow();
     });
@@ -320,7 +423,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
   describe('semantic harmonization options', () => {
     it('produces semantic swatches with stable hex values for a red base', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(palette.info[300].toHex()).toBe('#d3d3ff');
       expect(palette.positive[700].toHex()).toBe('#073e03');
       expect(palette.negative[500].toHex()).toBe('#fc0940');
@@ -339,7 +447,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [0.02, 0.25],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const fullPull = generateColorPaletteFromBaseColor(
         base,
@@ -350,7 +458,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [0.02, 0.25],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const noPullHue = noPull.info[500].toOKLCH().h;
       expect(noPullHue).toBeGreaterThan(263);
@@ -371,7 +479,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [0.02, 0.25],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const over = generateColorPaletteFromBaseColor(
         base,
@@ -382,7 +490,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [0.02, 0.25],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const underHue = under.info[500].toOKLCH().h;
       expect(underHue).toBeGreaterThan(263);
@@ -394,7 +502,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('uses default hues for low chroma base colors', () => {
       const gray = new Color('#808080');
-      const palette = generateColorPaletteFromBaseColor(gray, createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        gray,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       const infoHue = palette.info[500].toOKLCH().h;
       const positiveHue = palette.positive[500].toOKLCH().h;
       expect(infoHue).toBeGreaterThan(263);
@@ -416,7 +529,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [0.1, 0.12],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeGreaterThanOrEqual(0.1);
@@ -435,7 +548,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [-1, 0],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeCloseTo(0.04, 3);
@@ -444,10 +557,20 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
     it('generates semantic colors for white and black bases', () => {
       const white = new Color('#ffffff');
-      const whitePalette = generateColorPaletteFromBaseColor(white, createColor);
+      const whitePalette = generateColorPaletteFromBaseColor(
+        white,
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(whitePalette.info[500].toHex()).not.toBe('#ffffff');
       const black = new Color('#000000');
-      const blackPalette = generateColorPaletteFromBaseColor(black, createColor);
+      const blackPalette = generateColorPaletteFromBaseColor(
+        black,
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(blackPalette.info[500].toHex()).not.toBe('#000000');
     });
 
@@ -461,7 +584,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [0.3, 0.1],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeGreaterThan(0.29);
@@ -478,7 +601,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
             chromaRange: [-0.5, -0.1],
           },
         },
-        createColor,
+        createColorInstance,
       );
       const c = palette.info[500].toOKLCH().c;
       expect(c).toBeCloseTo(0.0395, 3);
@@ -494,13 +617,18 @@ describe('generateColorPaletteFromBaseColor()', () => {
           {
             semanticHarmonization: { huePull: NaN, chromaRange: [NaN, NaN] },
           },
-          createColor,
+          createColorInstance,
         ),
       ).toThrow();
     });
 
     it('creates positive and negative swatches across the spectrum', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#ff0000'), createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#ff0000'),
+        undefined,
+        undefined,
+        createColorInstance,
+      );
       expect(palette.positive[100].toHex()).toBe('#7dff74');
       expect(palette.positive[500].toHex()).toBe('#0ba700');
       expect(palette.positive[700].toHex()).toBe('#073e03');
@@ -510,7 +638,12 @@ describe('generateColorPaletteFromBaseColor()', () => {
     });
 
     it('provides full semantic colors for grayscale bases', () => {
-      const palette = generateColorPaletteFromBaseColor(new Color('#808080'), createColor);
+      const palette = generateColorPaletteFromBaseColor(
+        new Color('#808080'),
+        undefined,
+        {},
+        createColorInstance,
+      );
       expect(palette.info[500].toHex()).toBe('#758099');
       expect(palette.positive[500].toHex()).toBe('#6b8971');
       expect(palette.negative[500].toHex()).toBe('#a17271');
@@ -524,7 +657,8 @@ describe('generateColorPaletteFromBaseColor()', () => {
       const palette = generateColorPaletteFromBaseColor(
         new Color('#ff0000'),
         'COMPLEMENTARY',
-        createColor,
+        undefined,
+        createColorInstance,
       );
       expect(palette.secondaryColors.length).toBe(1);
       expect(palette.primary[100].toHex()).toBe('#ffcccc');
@@ -538,7 +672,8 @@ describe('generateColorPaletteFromBaseColor()', () => {
       const palette = generateColorPaletteFromBaseColor(
         new Color('#ff0000'),
         'TRIADIC',
-        createColor,
+        {},
+        createColorInstance,
       );
       expect(palette.secondaryColors.length).toBe(2);
       expect(palette.primary[500].toHex()).toBe('#ff0000');
@@ -552,7 +687,8 @@ describe('generateColorPaletteFromBaseColor()', () => {
       const analogous = generateColorPaletteFromBaseColor(
         new Color('#336699'),
         'ANALOGOUS',
-        createColor,
+        undefined,
+        createColorInstance,
       );
       expect(analogous.secondaryColors.length).toBe(4);
       expect(analogous.secondaryColors[0][500].toHex()).toBe('#339999');
@@ -561,7 +697,8 @@ describe('generateColorPaletteFromBaseColor()', () => {
       const monochromatic = generateColorPaletteFromBaseColor(
         new Color('#336699'),
         'MONOCHROMATIC',
-        createColor,
+        {},
+        createColorInstance,
       );
       expect(monochromatic.secondaryColors.length).toBe(4);
       expect(monochromatic.secondaryColors[0][500].toHex()).toBe('#6699cc');

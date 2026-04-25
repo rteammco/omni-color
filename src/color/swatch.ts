@@ -222,10 +222,9 @@ function getExtendedColorSwatch(
   }) as ExtendedColorSwatch;
 }
 
-export function getColorSwatch(baseColor: Color, createColor: CreateColorInstance): ColorSwatch;
 export function getColorSwatch(
   baseColor: Color,
-  options: (ColorSwatchOptions & { extended: true }) | undefined,
+  options: ColorSwatchOptions & { extended: true },
   createColor: CreateColorInstance,
 ): ExtendedColorSwatch;
 export function getColorSwatch(
@@ -235,16 +234,9 @@ export function getColorSwatch(
 ): ColorSwatch;
 export function getColorSwatch(
   baseColor: Color,
-  optionsOrCreateColor: ColorSwatchOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
+  options: ColorSwatchOptions = {},
+  createColor: CreateColorInstance,
 ): ColorSwatch {
-  const createColor =
-    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
-  if (!createColor) {
-    throw new Error('createColor function is required');
-  }
-  const options =
-    typeof optionsOrCreateColor === 'function' ? ({} as ColorSwatchOptions) : optionsOrCreateColor;
   const mainStop = getMainStop(baseColor, options.centerOn500 ?? false);
 
   if (options.extended) {

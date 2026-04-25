@@ -61,56 +61,20 @@ function resolveGrayscaleHandlingMode(options: ColorHarmonyOptions): GrayscaleHa
   });
 }
 
-function resolveHarmonyArgs(
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined,
-  maybeCreateColor?: CreateColorInstance,
-): { createColor: CreateColorInstance; options: ColorHarmonyOptions } {
-  const createColor =
-    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
-  if (!createColor) {
-    throw new Error('createColor function is required');
-  }
-
-  return {
-    createColor,
-    options: typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {}),
-  };
-}
-
 export function getComplementaryColors(
   color: Color,
+  options: ColorHarmonyOptions = {},
   createColor: CreateColorInstance,
-): [Color, Color];
-export function getComplementaryColors(
-  color: Color,
-  options: ColorHarmonyOptions | undefined,
-  createColor: CreateColorInstance,
-): [Color, Color];
-export function getComplementaryColors(
-  color: Color,
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): [Color, Color] {
-  const { options, createColor } = resolveHarmonyArgs(optionsOrCreateColor, maybeCreateColor);
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [color.clone(), spinColorOnHueOrLightness(color, 180, grayscaleHandlingMode, createColor)];
 }
 
 export function getSplitComplementaryColors(
   color: Color,
+  options: ColorHarmonyOptions = {},
   createColor: CreateColorInstance,
-): [Color, Color, Color];
-export function getSplitComplementaryColors(
-  color: Color,
-  options: ColorHarmonyOptions | undefined,
-  createColor: CreateColorInstance,
-): [Color, Color, Color];
-export function getSplitComplementaryColors(
-  color: Color,
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): [Color, Color, Color] {
-  const { options, createColor } = resolveHarmonyArgs(optionsOrCreateColor, maybeCreateColor);
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
     color.clone(),
@@ -121,19 +85,9 @@ export function getSplitComplementaryColors(
 
 export function getTriadicHarmonyColors(
   color: Color,
+  options: ColorHarmonyOptions = {},
   createColor: CreateColorInstance,
-): [Color, Color, Color];
-export function getTriadicHarmonyColors(
-  color: Color,
-  options: ColorHarmonyOptions | undefined,
-  createColor: CreateColorInstance,
-): [Color, Color, Color];
-export function getTriadicHarmonyColors(
-  color: Color,
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): [Color, Color, Color] {
-  const { options, createColor } = resolveHarmonyArgs(optionsOrCreateColor, maybeCreateColor);
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
     color.clone(),
@@ -144,19 +98,9 @@ export function getTriadicHarmonyColors(
 
 export function getSquareHarmonyColors(
   color: Color,
+  options: ColorHarmonyOptions = {},
   createColor: CreateColorInstance,
-): [Color, Color, Color, Color];
-export function getSquareHarmonyColors(
-  color: Color,
-  options: ColorHarmonyOptions | undefined,
-  createColor: CreateColorInstance,
-): [Color, Color, Color, Color];
-export function getSquareHarmonyColors(
-  color: Color,
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): [Color, Color, Color, Color] {
-  const { options, createColor } = resolveHarmonyArgs(optionsOrCreateColor, maybeCreateColor);
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   return [
     color.clone(),
@@ -168,19 +112,9 @@ export function getSquareHarmonyColors(
 
 export function getTetradicHarmonyColors(
   color: Color,
+  options: ColorHarmonyOptions = {},
   createColor: CreateColorInstance,
-): [Color, Color, Color, Color];
-export function getTetradicHarmonyColors(
-  color: Color,
-  options: ColorHarmonyOptions | undefined,
-  createColor: CreateColorInstance,
-): [Color, Color, Color, Color];
-export function getTetradicHarmonyColors(
-  color: Color,
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): [Color, Color, Color, Color] {
-  const { options, createColor } = resolveHarmonyArgs(optionsOrCreateColor, maybeCreateColor);
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   // TODO: tetradic harmonies can also be "wide" (120, 180, 300) or go in the other direction, or potentially any rectangle
   // e.g. #0000ff => #0000ff, #ff00ff, #ffff00, #00ff00
@@ -195,19 +129,9 @@ export function getTetradicHarmonyColors(
 
 export function getAnalogousHarmonyColors(
   color: Color,
+  options: ColorHarmonyOptions = {},
   createColor: CreateColorInstance,
-): [Color, Color, Color, Color, Color];
-export function getAnalogousHarmonyColors(
-  color: Color,
-  options: ColorHarmonyOptions | undefined,
-  createColor: CreateColorInstance,
-): [Color, Color, Color, Color, Color];
-export function getAnalogousHarmonyColors(
-  color: Color,
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): [Color, Color, Color, Color, Color] {
-  const { options, createColor } = resolveHarmonyArgs(optionsOrCreateColor, maybeCreateColor);
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
   // TODO: verify, because other libraries seem to have a slightly narrower angle
   return [
@@ -234,21 +158,9 @@ export function getMonochromaticHarmonyColors(
 export function getHarmonyColors(
   color: Color,
   harmony: CaseInsensitive<ColorHarmony>,
+  options: ColorHarmonyOptions = {},
   createColor: CreateColorInstance,
-): Color[];
-export function getHarmonyColors(
-  color: Color,
-  harmony: CaseInsensitive<ColorHarmony>,
-  options: ColorHarmonyOptions | undefined,
-  createColor: CreateColorInstance,
-): Color[];
-export function getHarmonyColors(
-  color: Color,
-  harmony: CaseInsensitive<ColorHarmony>,
-  optionsOrCreateColor: ColorHarmonyOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): Color[] {
-  const { options, createColor } = resolveHarmonyArgs(optionsOrCreateColor, maybeCreateColor);
   const resolvedHarmony = resolveRequiredCaseInsensitiveOption({
     allowedValues: COLOR_HARMONIES,
     key: 'harmony',

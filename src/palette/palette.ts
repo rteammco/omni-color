@@ -1,6 +1,5 @@
 import type { Color, CreateColorInstance } from '../color/color';
 import { BLACK_HEX, WHITE_HEX } from '../color/color.consts';
-import { getColorInstanceFactory } from '../color/color.helpers';
 import { type ColorHarmony } from '../color/harmonies';
 import type { ColorSwatch, ColorSwatchOptions } from '../color/swatch';
 import { type CaseInsensitive, clampValue } from '../utils';
@@ -72,7 +71,6 @@ const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: Required<NeutralColorHarmoniz
   tintChromaFactor: 0.1,
   maxTintChroma: 0.04,
 };
-const defaultCreateColor = (): CreateColorInstance => getColorInstanceFactory();
 
 /**
  * Determine if a color meets the same "palette suitable" constraints used by `Color.random({ paletteSuitable: true })`:
@@ -165,39 +163,10 @@ function harmonizeSemanticColor(
 
 export function generateColorPaletteFromBaseColor(
   baseColor: Color,
-  createColor: CreateColorInstance,
-): ColorPalette;
-export function generateColorPaletteFromBaseColor(
-  baseColor: Color,
-  harmony: CaseInsensitive<ColorHarmony>,
-  createColor: CreateColorInstance,
-): ColorPalette;
-export function generateColorPaletteFromBaseColor(
-  baseColor: Color,
-  harmony: CaseInsensitive<ColorHarmony> | undefined,
+  harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
   options: GenerateColorPaletteOptions | undefined,
   createColor: CreateColorInstance,
-): ColorPalette;
-export function generateColorPaletteFromBaseColor(
-  baseColor: Color,
-  harmonyOrCreateColor: CaseInsensitive<ColorHarmony> | CreateColorInstance = 'COMPLEMENTARY',
-  optionsOrCreateColor?: GenerateColorPaletteOptions | CreateColorInstance,
-  maybeCreateColor?: CreateColorInstance,
 ): ColorPalette {
-  const harmony =
-    typeof harmonyOrCreateColor === 'function' ? 'COMPLEMENTARY' : harmonyOrCreateColor;
-  let createColor: CreateColorInstance;
-  let options: GenerateColorPaletteOptions | undefined;
-
-  if (typeof harmonyOrCreateColor === 'function') {
-    createColor = harmonyOrCreateColor;
-  } else if (typeof optionsOrCreateColor === 'function') {
-    createColor = optionsOrCreateColor;
-  } else {
-    createColor = maybeCreateColor ?? defaultCreateColor();
-    options = optionsOrCreateColor;
-  }
-
   // TODO: helpers or warnings if the palette is suboptimal
 
   const neutralHarmonizationOptions = {

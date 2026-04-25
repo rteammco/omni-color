@@ -1,4 +1,4 @@
-import { Color } from '../color';
+import { Color, createColorInstance } from '../color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from '../color.consts';
 import type {
   ColorCMYK,
@@ -17,8 +17,6 @@ import type {
 import { getRandomColorRGBA } from '../random';
 import type { ReadabilityOptions } from '../readability';
 import { getColorFromTemperatureLabel } from '../temperature';
-
-const createColor = (input: ConstructorParameters<typeof Color>[0]) => new Color(input);
 
 jest.mock('../random', () => {
   const actual = jest.requireActual('../random');
@@ -188,17 +186,21 @@ describe('Color constructor and conversion tests', () => {
   it('accepts color temperature label strings', () => {
     let color = new Color('fluorescent');
     expect(color.toHex()).toBe(
-      getColorFromTemperatureLabel('Fluorescent lamp', createColor).toHex(),
+      getColorFromTemperatureLabel('Fluorescent lamp', createColorInstance).toHex(),
     );
 
     color = new Color('Daylight');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Daylight', createColor).toHex());
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel('Daylight', createColorInstance).toHex(),
+    );
 
     color = new Color('  shade ');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Shade', createColor).toHex());
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Shade', createColorInstance).toHex());
 
     color = new Color('blue sky');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Blue sky', createColor).toHex());
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel('Blue sky', createColorInstance).toHex(),
+    );
   });
 });
 

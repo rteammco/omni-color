@@ -785,25 +785,9 @@ function adjustHueStops(
  */
 export function createColorGradient(
   colors: readonly Color[],
+  options: ColorGradientOptions = {},
   createColor: CreateColorInstance,
-): Color[];
-export function createColorGradient(
-  colors: readonly Color[],
-  options: ColorGradientOptions | undefined,
-  createColor: CreateColorInstance,
-): Color[];
-export function createColorGradient(
-  colors: readonly Color[],
-  optionsOrCreateColor: ColorGradientOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): Color[] {
-  const createColor =
-    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
-  if (!createColor) {
-    throw new Error('createColor function is required');
-  }
-  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
-
   if (colors.length < MIN_SCALE_STOPS) {
     throw new Error('at least two colors are required to build a gradient');
   }

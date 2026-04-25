@@ -479,24 +479,11 @@ function mixColorsAdditive({
   }
 }
 
-export function mixColors(colors: readonly Color[], createColor: CreateColorInstance): Color;
 export function mixColors(
   colors: readonly Color[],
-  options: MixColorsOptions | undefined,
+  options: MixColorsOptions = {},
   createColor: CreateColorInstance,
-): Color;
-export function mixColors(
-  colors: readonly Color[],
-  optionsOrCreateColor: MixColorsOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): Color {
-  const createColor =
-    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
-  if (!createColor) {
-    throw new Error('createColor function is required');
-  }
-  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
-
   if (colors.length < 2) {
     throw new Error('at least two colors are required for mixing');
   }
@@ -680,26 +667,12 @@ function blendColorsInHSLSpace({
   });
 }
 
-export function blendColors(base: Color, blend: Color, createColor: CreateColorInstance): Color;
 export function blendColors(
   base: Color,
   blend: Color,
-  options: BlendColorsOptions | undefined,
+  options: BlendColorsOptions = {},
   createColor: CreateColorInstance,
-): Color;
-export function blendColors(
-  base: Color,
-  blend: Color,
-  optionsOrCreateColor: BlendColorsOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): Color {
-  const createColor =
-    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
-  if (!createColor) {
-    throw new Error('createColor function is required');
-  }
-  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
-
   const mode = resolveCaseInsensitiveOption({
     allowedValues: BLEND_MODES,
     defaultValue: 'NORMAL',
@@ -878,24 +851,11 @@ function averageColorsInRgb(
   });
 }
 
-export function averageColors(colors: readonly Color[], createColor: CreateColorInstance): Color;
 export function averageColors(
   colors: readonly Color[],
-  options: AverageColorsOptions | undefined,
+  options: AverageColorsOptions = {},
   createColor: CreateColorInstance,
-): Color;
-export function averageColors(
-  colors: readonly Color[],
-  optionsOrCreateColor: AverageColorsOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): Color {
-  const createColor =
-    typeof optionsOrCreateColor === 'function' ? optionsOrCreateColor : maybeCreateColor;
-  if (!createColor) {
-    throw new Error('createColor function is required');
-  }
-  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
-
   if (colors.length < 2) {
     throw new Error('at least two colors are required for averaging');
   }

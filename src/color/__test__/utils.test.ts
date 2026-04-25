@@ -1,9 +1,7 @@
 import { resolveCaseInsensitiveOption } from '../../utils';
-import { Color } from '../color';
+import { Color, createColorInstance } from '../color';
 import { getColorFromTemperatureLabel } from '../temperature';
 import { areColorsEqual, getColorRGBAFromInput, isColorDark, isColorOffWhite } from '../utils';
-
-const createColor = (input: ConstructorParameters<typeof Color>[0]) => new Color(input);
 
 describe('areColorsEqual', () => {
   it('identifies identical colors across formats', () => {
@@ -391,7 +389,7 @@ describe('isColorOffWhite', () => {
 
 describe('getColorRGBAFromInput', () => {
   it('parses hex strings with leading/trailing spaces', () => {
-    expect(getColorRGBAFromInput('  #ff0000  ', createColor)).toEqual({
+    expect(getColorRGBAFromInput('  #ff0000  ', createColorInstance)).toEqual({
       r: 255,
       g: 0,
       b: 0,
@@ -400,7 +398,7 @@ describe('getColorRGBAFromInput', () => {
   });
 
   it('parses CSS color strings with leading/trailing spaces', () => {
-    expect(getColorRGBAFromInput('  rgb(255, 0, 0)  ', createColor)).toEqual({
+    expect(getColorRGBAFromInput('  rgb(255, 0, 0)  ', createColorInstance)).toEqual({
       r: 255,
       g: 0,
       b: 0,
@@ -409,30 +407,34 @@ describe('getColorRGBAFromInput', () => {
   });
 
   it('parses named colors with or without spaces', () => {
-    expect(new Color(getColorRGBAFromInput('lightblue', createColor)).toHex()).toBe('#add8e6');
-    expect(new Color(getColorRGBAFromInput('light blue', createColor)).toHex()).toBe('#add8e6');
+    expect(new Color(getColorRGBAFromInput('lightblue', createColorInstance)).toHex()).toBe(
+      '#add8e6',
+    );
+    expect(new Color(getColorRGBAFromInput('light blue', createColorInstance)).toHex()).toBe(
+      '#add8e6',
+    );
   });
 
   it('parses full and partial color temperature strings', () => {
-    expect(new Color(getColorRGBAFromInput('candlelight', createColor)).toHex()).toBe(
-      getColorFromTemperatureLabel('Candlelight', createColor).toHex(),
+    expect(new Color(getColorRGBAFromInput('candlelight', createColorInstance)).toHex()).toBe(
+      getColorFromTemperatureLabel('Candlelight', createColorInstance).toHex(),
     );
 
-    expect(new Color(getColorRGBAFromInput('incandescent', createColor)).toHex()).toBe(
-      getColorFromTemperatureLabel('Incandescent lamp', createColor).toHex(),
+    expect(new Color(getColorRGBAFromInput('incandescent', createColorInstance)).toHex()).toBe(
+      getColorFromTemperatureLabel('Incandescent lamp', createColorInstance).toHex(),
     );
 
-    expect(new Color(getColorRGBAFromInput('  shade  ', createColor)).toHex()).toBe(
-      getColorFromTemperatureLabel('Shade', createColor).toHex(),
+    expect(new Color(getColorRGBAFromInput('  shade  ', createColorInstance)).toHex()).toBe(
+      getColorFromTemperatureLabel('Shade', createColorInstance).toHex(),
     );
 
-    expect(new Color(getColorRGBAFromInput('cloudy sky', createColor)).toHex()).toBe(
-      getColorFromTemperatureLabel('Cloudy sky', createColor).toHex(),
+    expect(new Color(getColorRGBAFromInput('cloudy sky', createColorInstance)).toHex()).toBe(
+      getColorFromTemperatureLabel('Cloudy sky', createColorInstance).toHex(),
     );
   });
 
   it('throws on unknown color names', () => {
-    expect(() => getColorRGBAFromInput('notacolor', createColor)).toThrow();
+    expect(() => getColorRGBAFromInput('notacolor', createColorInstance)).toThrow();
   });
 });
 

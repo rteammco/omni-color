@@ -1,7 +1,5 @@
-import { Color } from '../color';
+import { Color, createColorInstance } from '../color';
 import { createColorGradient } from '../gradients';
-
-const createColor = (input: ConstructorParameters<typeof Color>[0]) => new Color(input);
 
 describe('createColorGradient', () => {
   it('builds linear RGB gradients with evenly spaced stops', () => {
@@ -11,7 +9,7 @@ describe('createColorGradient', () => {
         stops: 5,
         space: 'RGB',
       },
-      createColor,
+      createColorInstance,
     );
 
     expect(gradient.map((color) => color.toHex())).toEqual([
@@ -24,7 +22,11 @@ describe('createColorGradient', () => {
   });
 
   it('defaults to 5 evenly spaced gradient stops', () => {
-    const gradient = createColorGradient([new Color('#000000'), new Color('#ffffff')], createColor);
+    const gradient = createColorGradient(
+      [new Color('#000000'), new Color('#ffffff')],
+      undefined,
+      createColorInstance,
+    );
 
     expect(gradient).toHaveLength(5);
     expect(gradient[0].toHex()).toBe('#000000');
@@ -37,7 +39,7 @@ describe('createColorGradient', () => {
       {
         stops: 1.7,
       },
-      createColor,
+      createColorInstance,
     );
     expect(twoStopGradient).toHaveLength(2);
     expect(twoStopGradient[0].toHex()).toBe('#000000');
@@ -54,7 +56,7 @@ describe('createColorGradient', () => {
         space: 'HSL',
         easing: 'EASE_IN_OUT',
       },
-      createColor,
+      createColorInstance,
     );
 
     // Bezier curve in Polar space (hue unwound)
@@ -72,7 +74,7 @@ describe('createColorGradient', () => {
     const gradient = createColorGradient(
       [new Color({ h: 350, s: 100, l: 50 }), new Color({ h: 10, s: 100, l: 50 })],
       { stops: 5, space: 'HSL' },
-      createColor,
+      createColorInstance,
     );
 
     expect(gradient.map((color) => color.toHex())).toEqual([
@@ -93,7 +95,7 @@ describe('createColorGradient', () => {
         stops: 3,
         space: 'RGB',
       },
-      createColor,
+      createColorInstance,
     );
 
     expect(gradient[0].toRGBA()).toEqual({ r: 255, g: 0, b: 0, a: 0.2 });
@@ -109,7 +111,7 @@ describe('createColorGradient', () => {
         space: 'OKLCH',
         easing: (t: number) => 1.2 * t - 0.1,
       },
-      createColor,
+      createColorInstance,
     );
     const lchGradient = createColorGradient(
       [new Color('#2d2c7a'), new Color('#f4f0ff')],
@@ -118,7 +120,7 @@ describe('createColorGradient', () => {
         space: 'LCH',
         easing: 'EASE_OUT',
       },
-      createColor,
+      createColorInstance,
     );
 
     expect(oklchGradient[1].toOKLCH().c).toBeGreaterThanOrEqual(0);
@@ -129,15 +131,15 @@ describe('createColorGradient', () => {
   });
 
   it('throws when fewer than two colors are provided', () => {
-    expect(() => createColorGradient([new Color('#ff0000')], { stops: 2 }, createColor)).toThrow(
-      'at least two colors are required to build a gradient',
-    );
+    expect(() =>
+      createColorGradient([new Color('#ff0000')], { stops: 2 }, createColorInstance),
+    ).toThrow('at least two colors are required to build a gradient');
   });
 
   it('accepts readonly anchor arrays', () => {
     const anchors = [new Color('#14213d'), new Color('#fca311')] as const;
 
-    const gradient = createColorGradient(anchors, { stops: 3, space: 'RGB' }, createColor);
+    const gradient = createColorGradient(anchors, { stops: 3, space: 'RGB' }, createColorInstance);
 
     expect(gradient.map((color) => color.toHex())).toEqual(['#14213d', '#886227', '#fca311']);
   });
@@ -145,17 +147,21 @@ describe('createColorGradient', () => {
   it('throws for invalid option values', () => {
     const anchors = [new Color('#ff0000'), new Color('#0000ff')];
 
-    expect(() => createColorGradient(anchors, { space: 'INVALID' as never }, createColor)).toThrow(
-      "Invalid 'space'",
-    );
     expect(() =>
-      createColorGradient(anchors, { interpolation: 'INVALID' as never }, createColor),
+      createColorGradient(anchors, { space: 'INVALID' as never }, createColorInstance),
+    ).toThrow("Invalid 'space'");
+    expect(() =>
+      createColorGradient(anchors, { interpolation: 'INVALID' as never }, createColorInstance),
     ).toThrow("Invalid 'interpolation'");
-    expect(() => createColorGradient(anchors, { easing: 'INVALID' as never }, createColor)).toThrow(
-      "Invalid 'easing'",
-    );
     expect(() =>
-      createColorGradient(anchors, { hueInterpolationMode: 'INVALID' as never }, createColor),
+      createColorGradient(anchors, { easing: 'INVALID' as never }, createColorInstance),
+    ).toThrow("Invalid 'easing'");
+    expect(() =>
+      createColorGradient(
+        anchors,
+        { hueInterpolationMode: 'INVALID' as never },
+        createColorInstance,
+      ),
     ).toThrow("Invalid 'hueInterpolationMode'");
   });
 });
@@ -170,7 +176,7 @@ describe('Color gradient helpers', () => {
         easing: 'EASE_IN_OUT',
         space: 'RGB',
       },
-      createColor,
+      createColorInstance,
     );
 
     expect(gradient[0].toHex()).toBe('#ff0000');
@@ -192,7 +198,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'CARTESIAN',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     const hsl = mid.toHSL();
@@ -210,7 +216,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         // No mode specified -> defaults to Shortest
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     const hsl = mid.toHSL();
@@ -242,7 +248,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'LONGEST',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(120, 0);
@@ -259,7 +265,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'INCREASING',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(120, 0);
@@ -278,7 +284,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'INCREASING',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     const hue = mid.toHSL().h;
@@ -295,7 +301,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'DECREASING',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(300, 0);
@@ -314,7 +320,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'DECREASING',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     const hue = mid.toHSL().h;
@@ -333,7 +339,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'RAW',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(180, 0);
@@ -352,7 +358,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'SHORTEST',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(90, 0);
@@ -372,7 +378,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'LONGEST',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHSL().h).toBeCloseTo(90, 0);
@@ -386,7 +392,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'SHORTEST',
       },
-      createColor,
+      createColorInstance,
     );
     expect(gradient[1].toHSL().h).toBeCloseTo(0, 0);
   });
@@ -400,7 +406,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         stops: 3,
         space: 'OKLCH',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     // Check it's not gray.
@@ -411,7 +417,11 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     const start = new Color('#ff0000');
     const end = new Color('#0000ff');
 
-    const gradient = createColorGradient([start, end], { stops: 3, space: 'OKLAB' }, createColor);
+    const gradient = createColorGradient(
+      [start, end],
+      { stops: 3, space: 'OKLAB' },
+      createColorInstance,
+    );
     const mid = gradient[1].toOKLAB();
 
     expect(mid.l).toBeCloseTo(0.539339, 6);
@@ -426,7 +436,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         stops: 3,
         space: 'LCH',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toLCH().c).toBeGreaterThan(10);
@@ -439,7 +449,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         stops: 3,
         space: 'HSV',
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHSV().s).toBeCloseTo(100, 0);
@@ -455,7 +465,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'RGB',
         hueInterpolationMode: 'LONGEST', // Should be ignored
       },
-      createColor,
+      createColorInstance,
     );
     const mid = gradient[1];
     expect(mid.toHex()).toBe('#800080');
@@ -471,7 +481,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'SHORTEST',
       },
-      createColor,
+      createColorInstance,
     );
     // Stops: 0, 90, 180.
     // 5 stops: 0, 45, 90, 135 (approx), 180 (approx).
@@ -499,7 +509,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         hueInterpolationMode: 'SHORTEST',
       },
-      createColor,
+      createColorInstance,
     );
     // Segment 1: 0 -> 10. 3 stops. 0, 5, 10.
     // Segment 2: 10 -> 350 (adj -10). 3 stops. 10, 0, -10.
@@ -527,7 +537,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         hueInterpolationMode: 'LONGEST',
         clamp: false,
       },
-      createColor,
+      createColorInstance,
     );
     expect(gradient[1].toHSL().h).toBeCloseTo(120, 0);
   });
@@ -548,7 +558,7 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
         space: 'HSL',
         interpolation: 'BEZIER',
       },
-      createColor,
+      createColorInstance,
     );
     // Bezier with 3 anchors -> 0 -> 120.
     // stops=3. 0, 0.5, 1.
@@ -558,8 +568,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case gradient space', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = createColorGradient([c1, c2], { space: 'HSL' }, createColor);
-    const g2 = createColorGradient([c1, c2], { space: 'hsl' }, createColor);
+    const g1 = createColorGradient([c1, c2], { space: 'HSL' }, createColorInstance);
+    const g2 = createColorGradient([c1, c2], { space: 'hsl' }, createColorInstance);
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });
@@ -567,8 +577,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case interpolation', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = createColorGradient([c1, c2], { interpolation: 'BEZIER' }, createColor);
-    const g2 = createColorGradient([c1, c2], { interpolation: 'bezier' }, createColor);
+    const g1 = createColorGradient([c1, c2], { interpolation: 'BEZIER' }, createColorInstance);
+    const g2 = createColorGradient([c1, c2], { interpolation: 'bezier' }, createColorInstance);
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });
@@ -576,8 +586,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case easing', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = createColorGradient([c1, c2], { easing: 'EASE_IN' }, createColor);
-    const g2 = createColorGradient([c1, c2], { easing: 'ease_in' }, createColor);
+    const g1 = createColorGradient([c1, c2], { easing: 'EASE_IN' }, createColorInstance);
+    const g2 = createColorGradient([c1, c2], { easing: 'ease_in' }, createColorInstance);
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });
@@ -585,8 +595,16 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('accepts mixed case hue interpolation mode', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const g1 = createColorGradient([c1, c2], { hueInterpolationMode: 'LONGEST' }, createColor);
-    const g2 = createColorGradient([c1, c2], { hueInterpolationMode: 'longest' }, createColor);
+    const g1 = createColorGradient(
+      [c1, c2],
+      { hueInterpolationMode: 'LONGEST' },
+      createColorInstance,
+    );
+    const g2 = createColorGradient(
+      [c1, c2],
+      { hueInterpolationMode: 'longest' },
+      createColorInstance,
+    );
 
     expect(g1[1].toHex()).toBe(g2[1].toHex());
   });

@@ -1,6 +1,5 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import type { Color, CreateColorInstance } from './color';
-import { getColorInstanceFactory } from './color.helpers';
 import { srgbChannelToLinear } from './srgb';
 
 const COLOR_TEMPERATURE_LABELS = {
@@ -56,7 +55,6 @@ const LABEL_TO_TEMPERATURE_MAP: { [key in ColorTemperatureLabel]: number } = {
 // threshold of ~120 units (roughly half of the 0-255 channel range) was chosen
 // based on manual testing of canonical temperature colors and nearby hues.
 const MAX_COLOR_DISTANCE_FOR_LABEL = 120 * 120;
-const defaultCreateColor = (): CreateColorInstance => getColorInstanceFactory();
 
 function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
   const found = SORTED_TEMPERATURE_LABELS.find((t) => temperature < t.temperatureLimit);
@@ -94,22 +92,11 @@ export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
   return { temperature, label: getLabelForTemperature(temperature) };
 }
 
-export function getColorTemperatureString(color: Color, createColor: CreateColorInstance): string;
 export function getColorTemperatureString(
   color: Color,
-  options: ColorTemperatureStringFormatOptions | undefined,
+  options: ColorTemperatureStringFormatOptions = {},
   createColor: CreateColorInstance,
-): string;
-export function getColorTemperatureString(
-  color: Color,
-  optionsOrCreateColor: ColorTemperatureStringFormatOptions | CreateColorInstance | undefined = {},
-  maybeCreateColor?: CreateColorInstance,
 ): string {
-  const createColor =
-    typeof optionsOrCreateColor === 'function'
-      ? optionsOrCreateColor
-      : (maybeCreateColor ?? defaultCreateColor());
-  const options = typeof optionsOrCreateColor === 'function' ? {} : (optionsOrCreateColor ?? {});
   const { temperature, label } = getColorTemperature(color);
   const formattedTemperature = options.formatNumber ? temperature.toLocaleString() : temperature;
 
@@ -130,7 +117,7 @@ export function getColorTemperatureString(
 
 export function getColorFromTemperature(
   temperature: number,
-  createColor: CreateColorInstance = defaultCreateColor(),
+  createColor: CreateColorInstance,
 ): Color {
   // Clamp to the range supported by the conversion algorithm.
   const temp = clampValue(temperature, 1000, 40000) / 100;
@@ -184,7 +171,7 @@ export function matchPartialColorTemperatureLabel(
 
 export function getColorFromTemperatureLabel(
   label: CaseInsensitive<ColorTemperatureLabel>,
-  createColor: CreateColorInstance = defaultCreateColor(),
+  createColor: CreateColorInstance,
 ): Color {
   const matchedLabel = matchPartialColorTemperatureLabel(label);
   if (!matchedLabel) {
