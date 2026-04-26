@@ -131,7 +131,7 @@ describe('Color interoperability with chroma-js', () => {
       // chroma-js uses an lrgb approximation (gamma ≈ 2.2 power curve) instead of the sRGB
       // piecewise transfer function (gamma 2.4 with a linear toe below 0.04045). Our LINEAR_RGB
       // path follows the sRGB spec, so results are slightly brighter than chroma’s approximation.
-      const omniLinear = new Color('#ff0000').mix(['#0000ff'], { space: 'LINEAR_RGB' });
+      const omniLinear = new Color('#ff0000').mixWith(['#0000ff'], { space: 'LINEAR_RGB' });
       const chromaLinear = chroma.mix('#ff0000', '#0000ff', 0.5, 'lrgb');
 
       expect(omniLinear.toHex()).toBe('#bc00bc');
@@ -141,7 +141,7 @@ describe('Color interoperability with chroma-js', () => {
     it('aligns LINEAR_RGB weight handling with chroma-js lrgb interpolation within tolerance', () => {
       // Using the sRGB transfer function means omni-color prioritizes physical correctness; we keep
       // loose tolerances here because chroma’s simplified gamma curve yields slightly darker values.
-      const omniLinear = new Color('#ff0000').mix(['#0000ff'], {
+      const omniLinear = new Color('#ff0000').mixWith(['#0000ff'], {
         space: 'LINEAR_RGB',
         weights: [3, 1],
       });
@@ -154,7 +154,7 @@ describe('Color interoperability with chroma-js', () => {
     it('mixes multiple LINEAR_RGB inputs with normalized weights (brighter than chroma-js)', () => {
       // The same spec-accurate companding vs. approximation difference applies to multi-input mixes.
       // We assert brightness within a generous tolerance to document the expected divergence.
-      const omniLinear = new Color('#ff0000').mix(['#00ff00', '#0000ff'], {
+      const omniLinear = new Color('#ff0000').mixWith(['#00ff00', '#0000ff'], {
         space: 'LINEAR_RGB',
         weights: [0.5, 0.25, 0.25],
       });
@@ -169,7 +169,10 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('matches chroma-js sRGB mixing when the same weights are provided', () => {
-      const omniRgb = new Color('#ff0000').mix(['#0000ff'], { space: 'RGB', weights: [0.5, 0.5] });
+      const omniRgb = new Color('#ff0000').mixWith(['#0000ff'], {
+        space: 'RGB',
+        weights: [0.5, 0.5],
+      });
       const chromaRgb = chroma.mix('#ff0000', '#0000ff', 0.5, 'rgb');
 
       expect(omniRgb.toHex()).toBe(chromaRgb.hex().toLowerCase());
@@ -177,7 +180,7 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('aligns multi-input weight handling with chroma average calculations in RGB space', () => {
-      const omniMix = new Color('#ff0000').mix(['#00ff00', '#0000ff'], {
+      const omniMix = new Color('#ff0000').mixWith(['#00ff00', '#0000ff'], {
         space: 'RGB',
         weights: [0.5, 0.25, 0.25],
       });
@@ -188,7 +191,7 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('documents the deliberate divergence between subtractive mixing approaches', () => {
-      const omniSubtractive = new Color('#00ffff').mix(['#ffff00'], { type: 'SUBTRACTIVE' });
+      const omniSubtractive = new Color('#00ffff').mixWith(['#ffff00'], { type: 'SUBTRACTIVE' });
 
       const cyanCmyk = chroma('#00ffff').cmyk();
       const yellowCmyk = chroma('#ffff00').cmyk();
@@ -425,7 +428,7 @@ describe('Color interoperability with chroma-js', () => {
 
   describe('average parity with chroma-js', () => {
     it('keeps circular HSL averaging close to chroma-js while weighting saturation', () => {
-      const omniAverage = new Color('hsl(350, 100%, 50%)').average(
+      const omniAverage = new Color('hsl(350, 100%, 50%)').averageWith(
         ['hsl(10, 100%, 50%)', 'hsl(30, 60%, 50%)'],
         { space: 'HSL' },
       );
@@ -449,28 +452,28 @@ describe('Color interoperability with chroma-js', () => {
 
   describe('blend parity with chroma-js', () => {
     it('aligns RGB blend modes with chroma-js outputs', () => {
-      const multiplyBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+      const multiplyBlend = new Color('#336699').blendWith(new Color('#ffcc00'), {
         mode: 'MULTIPLY',
         ratio: 1,
       });
       const chromaMultiply = chroma.blend('#336699', '#ffcc00', 'multiply');
       expect(multiplyBlend.toRGBA()).toEqual(chromaRGBArrayToObj(chromaMultiply.rgba()));
 
-      const screenBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+      const screenBlend = new Color('#336699').blendWith(new Color('#ffcc00'), {
         mode: 'SCREEN',
         ratio: 1,
       });
       const chromaScreen = chroma.blend('#336699', '#ffcc00', 'screen');
       expect(screenBlend.toRGBA()).toEqual(chromaRGBArrayToObj(chromaScreen.rgba()));
 
-      const overlayBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+      const overlayBlend = new Color('#336699').blendWith(new Color('#ffcc00'), {
         mode: 'OVERLAY',
         ratio: 1,
       });
       const chromaOverlay = chroma.blend('#336699', '#ffcc00', 'overlay');
       expect(overlayBlend.toRGBA()).toEqual(chromaRGBArrayToObj(chromaOverlay.rgba()));
 
-      const normalBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+      const normalBlend = new Color('#336699').blendWith(new Color('#ffcc00'), {
         mode: 'NORMAL',
         ratio: 1,
       });
@@ -480,7 +483,7 @@ describe('Color interoperability with chroma-js', () => {
 
     it('matches blend modes for a secondary palette at partial ratios', () => {
       const multiplyBlend = new Color('#112233')
-        .blend(new Color('#ffaaff'), { mode: 'MULTIPLY', ratio: 0.4 })
+        .blendWith(new Color('#ffaaff'), { mode: 'MULTIPLY', ratio: 0.4 })
         .toRGBA();
       const chromaMultiply = chroma
         .mix('#112233', chroma.blend('#112233', '#ffaaff', 'multiply').hex(), 0.4, 'rgb')
@@ -488,7 +491,7 @@ describe('Color interoperability with chroma-js', () => {
       expectSimilarRGBAValues(multiplyBlend, chromaMultiply);
 
       const screenBlend = new Color('#112233')
-        .blend(new Color('#ffaaff'), { mode: 'SCREEN', ratio: 0.4 })
+        .blendWith(new Color('#ffaaff'), { mode: 'SCREEN', ratio: 0.4 })
         .toRGBA();
       const chromaScreen = chroma
         .mix('#112233', chroma.blend('#112233', '#ffaaff', 'screen').hex(), 0.4, 'rgb')
@@ -496,7 +499,7 @@ describe('Color interoperability with chroma-js', () => {
       expectSimilarRGBAValues(screenBlend, chromaScreen);
 
       const overlayBlend = new Color('#112233')
-        .blend(new Color('#ffaaff'), { mode: 'OVERLAY', ratio: 0.4 })
+        .blendWith(new Color('#ffaaff'), { mode: 'OVERLAY', ratio: 0.4 })
         .toRGBA();
       const chromaOverlay = chroma
         .mix('#112233', chroma.blend('#112233', '#ffaaff', 'overlay').hex(), 0.4, 'rgb')
@@ -505,7 +508,7 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('aligns blend modes for a high-contrast neutral and light pair', () => {
-      const multiplyBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), {
+      const multiplyBlend = new Color('#0f0f0f').blendWith(new Color('#fefefe'), {
         mode: 'MULTIPLY',
         ratio: 0.5,
       });
@@ -514,7 +517,7 @@ describe('Color interoperability with chroma-js', () => {
         .rgba();
       expectSimilarRGBAValues(multiplyBlend.toRGBA(), chromaMultiply);
 
-      const screenBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), {
+      const screenBlend = new Color('#0f0f0f').blendWith(new Color('#fefefe'), {
         mode: 'SCREEN',
         ratio: 0.5,
       });
@@ -523,7 +526,7 @@ describe('Color interoperability with chroma-js', () => {
         .rgba();
       expectSimilarRGBAValues(screenBlend.toRGBA(), chromaScreen);
 
-      const overlayBlend = new Color('#0f0f0f').blend(new Color('#fefefe'), {
+      const overlayBlend = new Color('#0f0f0f').blendWith(new Color('#fefefe'), {
         mode: 'OVERLAY',
         ratio: 0.5,
       });
@@ -534,7 +537,7 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('preserves blend ratio weighting compared to chroma-js', () => {
-      const multiplyBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+      const multiplyBlend = new Color('#336699').blendWith(new Color('#ffcc00'), {
         mode: 'MULTIPLY',
         ratio: 0.25,
       });
@@ -545,7 +548,7 @@ describe('Color interoperability with chroma-js', () => {
     });
 
     it('preserves HSL hue interpolation relative to chroma-js mix', () => {
-      const hslBlend = new Color('#336699').blend(new Color('#ffcc00'), {
+      const hslBlend = new Color('#336699').blendWith(new Color('#ffcc00'), {
         space: 'HSL',
         ratio: 0.35,
       });
@@ -564,7 +567,7 @@ describe('Color interoperability with chroma-js', () => {
     it('handles hue wrapping consistently when interpolating in HSL space', () => {
       const base = new Color('#ff0000');
       const blend = new Color('#00ff00');
-      const hslBlend = base.blend(blend, { space: 'HSL', ratio: 0.75 });
+      const hslBlend = base.blendWith(blend, { space: 'HSL', ratio: 0.75 });
       const chromaHslBlend = chroma.mix('#ff0000', '#00ff00', 0.75, 'hsl');
       const omniHsl = hslBlend.toHSL();
       const chromaHsl = chromaHslBlend.hsl();
@@ -577,7 +580,7 @@ describe('Color interoperability with chroma-js', () => {
     it('keeps hue alignment when blending across the 360° boundary', () => {
       const base = new Color('#ff00ff');
       const blend = new Color('#00ffff');
-      const omniHsl = base.blend(blend, { space: 'HSL', ratio: 0.6 }).toHSL();
+      const omniHsl = base.blendWith(blend, { space: 'HSL', ratio: 0.6 }).toHSL();
       const chromaHsl = chroma.mix('#ff00ff', '#00ffff', 0.6, 'hsl').hsl();
 
       expect(omniHsl.h).toBeCloseTo(chromaHsl[0], 0);
@@ -587,7 +590,7 @@ describe('Color interoperability with chroma-js', () => {
 
     it('keeps alpha ratios consistent with chroma-js expectations', () => {
       const omniAlphaBlend = new Color('rgba(51, 102, 153, 0.6)')
-        .blend(new Color('rgba(255, 204, 0, 0.3)'), {
+        .blendWith(new Color('rgba(255, 204, 0, 0.3)'), {
           mode: 'NORMAL',
           ratio: 0.65,
         })
@@ -602,7 +605,7 @@ describe('Color interoperability with chroma-js', () => {
 
     it('blends when the top color is fully transparent', () => {
       const omniBlend = new Color('rgba(51, 102, 153, 0.8)')
-        .blend(new Color('rgba(255, 204, 0, 0)'), { mode: 'NORMAL', ratio: 0.4 })
+        .blendWith(new Color('rgba(255, 204, 0, 0)'), { mode: 'NORMAL', ratio: 0.4 })
         .toRGBA();
       const chromaBlend = chroma
         .mix('rgba(51, 102, 153, 0.8)', 'rgba(255, 204, 0, 0)', 0.4, 'rgb')

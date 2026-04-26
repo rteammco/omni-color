@@ -591,7 +591,7 @@ export class Color implements ColorBrand {
    * @param options - Optional {@link MixColorsOptions} mixing options and weights.
    * @returns A new {@link Color} that is the result of the mixing.
    */
-  mix(others: readonly ValidColorInputFormat[], options?: MixColorsOptions): Color {
+  mixWith(others: readonly ValidColorInputFormat[], options?: MixColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }
@@ -609,7 +609,7 @@ export class Color implements ColorBrand {
    * @param options - Optional {@link BlendColorsOptions} for blend mode, space, and ratio.
    * @returns A new {@link Color} that is the result of the blending.
    */
-  blend(other: ValidColorInputFormat, options?: BlendColorsOptions): Color {
+  blendWith(other: ValidColorInputFormat, options?: BlendColorsOptions): Color {
     return blendColors(this, createColorInstance(other), options, createColorInstance);
   }
 
@@ -620,7 +620,7 @@ export class Color implements ColorBrand {
    * @param options - Optional {@link AverageColorsOptions} mix space and weights.
    * @returns A new {@link Color} that is the result of the averaging.
    */
-  average(others: readonly ValidColorInputFormat[], options?: AverageColorsOptions): Color {
+  averageWith(others: readonly ValidColorInputFormat[], options?: AverageColorsOptions): Color {
     if (others.length === 0) {
       return this.clone();
     }

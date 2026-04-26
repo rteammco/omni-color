@@ -27,10 +27,10 @@ const red = new Color('red');
 const green = new Color('green');
 const blue = new Color('blue');
 
-const mixedWithRed = color.mix([red], { space: '${mixSpace}', type: '${mixType}' });
-const mixedWithGreen = color.mix([green], { space: '${mixSpace}', type: '${mixType}' });
-const mixedWithBlue = color.mix([blue], { space: '${mixSpace}', type: '${mixType}' });
-const mixedWithAll = color.mix([red, green, blue], { space: '${mixSpace}', type: '${mixType}' });
+const mixedWithRed = color.mixWith([red], { space: '${mixSpace}', type: '${mixType}' });
+const mixedWithGreen = color.mixWith([green], { space: '${mixSpace}', type: '${mixType}' });
+const mixedWithBlue = color.mixWith([blue], { space: '${mixSpace}', type: '${mixType}' });
+const mixedWithAll = color.mixWith([red, green, blue], { space: '${mixSpace}', type: '${mixType}' });
 `;
 }
 
@@ -45,9 +45,9 @@ const red = new Color('red');
 const green = new Color('green');
 const blue = new Color('blue');
 
-const blendedWithRed = color.blend(red, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
-const blendedWithGreen = color.blend(green, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
-const blendedWithBlue = color.blend(blue, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
+const blendedWithRed = color.blendWith(red, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
+const blendedWithGreen = color.blendWith(green, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
+const blendedWithBlue = color.blendWith(blue, { mode: '${blendMode}', space: '${blendSpace}', ratio: ${blendRatio} });
 `;
 }
 
@@ -60,10 +60,10 @@ const red = new Color('red');
 const green = new Color('green');
 const blue = new Color('blue');
 
-const averagedWithRed = color.average([red], { space: '${averageSpace}' });
-const averagedWithGreen = color.average([green], { space: '${averageSpace}' });
-const averagedWithBlue = color.average([blue], { space: '${averageSpace}' });
-const averagedWithAll = color.average([red, green, blue], { space: '${averageSpace}' });
+const averagedWithRed = color.averageWith([red], { space: '${averageSpace}' });
+const averagedWithGreen = color.averageWith([green], { space: '${averageSpace}' });
+const averagedWithBlue = color.averageWith([blue], { space: '${averageSpace}' });
+const averagedWithAll = color.averageWith([red, green, blue], { space: '${averageSpace}' });
 `;
 }
 
@@ -78,19 +78,19 @@ export function ColorCombinationDemo({ color }: Props) {
     return { red: new Color('red'), green: new Color('green'), blue: new Color('blue') };
   }, []);
 
-  const mixRed = color.mix([red], mixOptions);
-  const mixGreen = color.mix([green], mixOptions);
-  const mixBlue = color.mix([blue], mixOptions);
-  const mixRGB = color.mix([red, green, blue], mixOptions);
+  const mixRed = color.mixWith([red], mixOptions);
+  const mixGreen = color.mixWith([green], mixOptions);
+  const mixBlue = color.mixWith([blue], mixOptions);
+  const mixRGB = color.mixWith([red, green, blue], mixOptions);
 
-  const blendRed = color.blend(red, blendOptions);
-  const blendGreen = color.blend(green, blendOptions);
-  const blendBlue = color.blend(blue, blendOptions);
+  const blendRed = color.blendWith(red, blendOptions);
+  const blendGreen = color.blendWith(green, blendOptions);
+  const blendBlue = color.blendWith(blue, blendOptions);
 
-  const averageRed = color.average([red], averageOptions);
-  const averageGreen = color.average([green], averageOptions);
-  const averageBlue = color.average([blue], averageOptions);
-  const averageRGB = color.average([red, green, blue], averageOptions);
+  const averageRed = color.averageWith([red], averageOptions);
+  const averageGreen = color.averageWith([green], averageOptions);
+  const averageBlue = color.averageWith([blue], averageOptions);
+  const averageRGB = color.averageWith([red, green, blue], averageOptions);
 
   return (
     <div className="w-full flex flex-col gap-4">

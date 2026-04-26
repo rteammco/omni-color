@@ -534,7 +534,7 @@ new Color('rgba(255, 127, 80, 0.5)').grayscale().toHex8(); // '#a8a8a880'
 
 ### Color Combinations
 
-#### `mix(others: Array<Color | ColorFormat | string>, options?: MixColorsOptions): Color`
+#### `mixWith(others: Array<Color | ColorFormat | string>, options?: MixColorsOptions): Color`
 
 - <ins>Returns</ins> a new [`Color`](#types-color) created by additively or subtractively mixing this color with additional colors. If `others` is empty, the original color will be returned.
 - <ins>Inputs</ins>:
@@ -546,13 +546,13 @@ new Color('rgba(255, 127, 80, 0.5)').grayscale().toHex8(); // '#a8a8a880'
 
 ```ts
 const coral = new Color('#ff7f50');
-const mixed = coral.mix(['red', '#00ff00', new Color('blue')]);
+const mixed = coral.mixWith(['red', '#00ff00', new Color('blue')]);
 mixed.toHex(); // '#ffffff'
-const weightedMix = coral.mix([new Color()], { space: 'LCH', weights: [2, 1] });
+const weightedMix = coral.mixWith([new Color()], { space: 'LCH', weights: [2, 1] });
 weightedMix.toHex(); // '#fffdd0'
 ```
 
-#### `blend(other: Color | ColorFormat | string, options?: BlendColorsOptions): Color`
+#### `blendWith(other: Color | ColorFormat | string, options?: BlendColorsOptions): Color`
 
 - <ins>Returns</ins> a new [`Color`](#types-color) that blends this color with another.
 - <ins>Inputs</ins>:
@@ -563,11 +563,11 @@ weightedMix.toHex(); // '#fffdd0'
     - `ratio` - the blend ratio between `0` and `1` (default is `0.5`).
 
 ```ts
-new Color('#ff0000').blend('blue', { space: 'HSL' }); // '#ff00ff'
-new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 }); // '#00ff40'
+new Color('#ff0000').blendWith('blue', { space: 'HSL' }); // '#ff00ff'
+new Color('#00ff00').blendWith(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 }); // '#00ff40'
 ```
 
-#### `average(others: Array<Color | ColorFormat | string>, options?: AverageColorsOptions): Color`
+#### `averageWith(others: Array<Color | ColorFormat | string>, options?: AverageColorsOptions): Color`
 
 - <ins>Returns</ins> a new [`Color`](#types-color) averaging channel values with other colors.
 - <ins>Inputs</ins>:
@@ -579,7 +579,7 @@ new Color('#00ff00').blend(new Color('#00ffff'), { mode: 'SCREEN', ratio: 0.25 }
 
 ```ts
 const base = new Color('#ff0000');
-base.average([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex(); // '#555555'
+base.averageWith([new Color('#00ff00'), new Color('#0000ff')], { space: 'RGB' }).toHex(); // '#555555'
 ```
 
 ### Perceptual Difference (Delta E)
