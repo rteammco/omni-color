@@ -1,6 +1,7 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
+    "noEmit": true,
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "node",

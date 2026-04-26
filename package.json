@@ -60,6 +60,7 @@
     "typecheck": "tsc",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json --watch",
     "build": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json",
+    "prepack": "npm run build",
     "prepublishOnly": "npm run build",
     "install:demo": "npm install --prefix demo",
     "dev:demo": "npm run build && npm run dev --prefix demo",
