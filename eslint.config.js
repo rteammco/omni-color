@@ -65,6 +65,8 @@ export default [
           ignoreExports: ['**/*.test.ts', '**/__test__/**', 'src/index.ts'],
         },
       ],
+      'import/first': 'warn',
+      'import/no-duplicates': 'warn',
       'import/no-cycle': [
         'error',
         {
@@ -72,14 +74,30 @@ export default [
           ignoreExternal: true,
         },
       ],
-      'simple-import-sort/imports': 'warn',
+      'simple-import-sort/imports': [
+        'warn',
+        {
+          groups: [
+            ['^\\u0000'], // side effects
+            ['^node:'], // node builtins
+            ['^@?\\w'], // external deps
+            ['^'], // everything else (aliases + relative)
+          ],
+        },
+      ],
       'simple-import-sort/exports': 'warn',
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'separate-type-imports',
+        },
+      ],
       'prefer-const': 'warn',
       'no-nested-ternary': 'warn',
       'no-console': 'warn',
       'max-params': ['warn', 4],
       'object-shorthand': ['warn', 'always'],
-      '@typescript-eslint/consistent-type-imports': 'warn',
       curly: ['warn', 'all'],
     },
   },
