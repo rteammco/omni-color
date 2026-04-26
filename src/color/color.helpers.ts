@@ -1,6 +1,6 @@
 import type { Color } from './color';
 
-export const COLOR_BRAND: unique symbol = Symbol('omni-color.Color');
+export const COLOR_BRAND: unique symbol = Symbol.for('omni-color.Color');
 
 export interface ColorBrand {
   readonly [COLOR_BRAND]: true;
