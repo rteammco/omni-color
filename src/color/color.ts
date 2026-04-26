@@ -5,7 +5,7 @@ import {
   isColorPaletteSuitable,
 } from '../palette/palette';
 import { type CaseInsensitive, clampValue } from '../utils';
-import { COLOR_BRAND } from './color.helpers';
+import { COLOR_BRAND, type ColorBrand } from './color.helpers';
 import type { ColorStringOptions } from './colorSpaces';
 import {
   averageColors,
@@ -149,7 +149,7 @@ export const createColorInstance: CreateColorInstance = (input: ValidColorInputF
  * red.toHex(); // '#ff0000'
  * ```
  */
-export class Color {
+export class Color implements ColorBrand {
   readonly #color: Readonly<ColorRGBA>;
 
   // Runtime brand used by `isColorInstance` without relying on `instanceof`.
