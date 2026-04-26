@@ -65,6 +65,8 @@ export default [
           ignoreExports: ['**/*.test.ts', '**/__test__/**', 'src/index.ts'],
         },
       ],
+      'import/first': 'warn',
+      'import/no-duplicates': 'warn',
       'import/no-cycle': [
         'error',
         {
@@ -72,7 +74,20 @@ export default [
           ignoreExternal: true,
         },
       ],
-      'simple-import-sort/imports': 'warn',
+      // Keep import blocks predictable: type-only side-effects first, then node builtins, packages, aliases, and relative paths.
+      'simple-import-sort/imports': [
+        'warn',
+        {
+          groups: [
+            ['^\u0000'],
+            ['^node:'],
+            ['^@?\\w'],
+            ['^@/'],
+            ['^\\.\\.(?!/?$)'],
+            ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)'],
+          ],
+        },
+      ],
       'simple-import-sort/exports': 'warn',
       'prefer-const': 'warn',
       'no-nested-ternary': 'warn',
