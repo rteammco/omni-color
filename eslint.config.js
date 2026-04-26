@@ -74,27 +74,30 @@ export default [
           ignoreExternal: true,
         },
       ],
-      // Keep import blocks predictable: type-only side-effects first, then node builtins, packages, aliases, and relative paths.
       'simple-import-sort/imports': [
         'warn',
         {
           groups: [
-            ['^\u0000'],
-            ['^node:'],
-            ['^@?\\w'],
-            ['^@/'],
-            ['^\\.\\.(?!/?$)'],
-            ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)'],
+            ['^\\u0000'], // side effects
+            ['^node:'], // node builtins
+            ['^@?\\w'], // external deps
+            ['^'], // everything else (aliases + relative)
           ],
         },
       ],
       'simple-import-sort/exports': 'warn',
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'separate-type-imports',
+        },
+      ],
       'prefer-const': 'warn',
       'no-nested-ternary': 'warn',
       'no-console': 'warn',
       'max-params': ['warn', 4],
       'object-shorthand': ['warn', 'always'],
-      '@typescript-eslint/consistent-type-imports': 'warn',
       curly: ['warn', 'all'],
     },
   },
