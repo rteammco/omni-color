@@ -44,6 +44,7 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      - run: npm run build
       - run: npm ci --prefix demo
       - run: npm run typecheck
       - run: npm exec --prefix demo tsc -- -p demo/tsconfig.app.json --noEmit
