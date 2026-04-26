@@ -1037,5 +1037,6 @@ From the project's <ins>root directory</ins>:
   - `npm run test:watch` - run all tests in watch mode.
   - `npm run test -- src/color/__test__/validations.test.ts` - run a specific test file.
 - `npm run lint` - run linter.
+- `npm run lint:fix` - run linter with auto-fixes (for example import sorting) before committing.
 - `npm run typecheck` - run TS type checker.
 - `npm run format:check` - run Prettier code format checker.

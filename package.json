@@ -55,6 +55,7 @@
     "test:watch": "jest --watch",
     "lint": "npm run lint:lib && npm run lint:demo",
     "lint:lib": "eslint .",
+    "lint:fix": "eslint . --fix",
     "lint:demo": "npm run lint --prefix demo",
     "typecheck": "tsc",
     "dev": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json --watch",
