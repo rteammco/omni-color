@@ -1211,14 +1211,14 @@ describe('Color mixing and averaging', () => {
     const base = new Color('#030303');
     const others = ['#060606', '#090909'];
 
-    const result = base.mix(others, { space: 'RGB' });
+    const result = base.mixWith(others, { space: 'RGB' });
 
     expect(result.toHex()).toBe('#121212');
   });
 
   it('mixes colors in LINEAR_RGB space by default', () => {
     const base = new Color('#ff0000');
-    const result = base.mix(['#0000ff']);
+    const result = base.mixWith(['#0000ff']);
 
     expect(result.toHex()).toBe('#bc00bc');
     expect(result.toRGBA()).toEqual(new Color('#bc00bc').toRGBA());
@@ -1228,7 +1228,7 @@ describe('Color mixing and averaging', () => {
     const base = new Color('#123456');
     const others = ['#abcdef'] as const;
 
-    const result = base.mix(others, { space: 'RGB' });
+    const result = base.mixWith(others, { space: 'RGB' });
 
     expect(result.toHex()).toBe('#bdffff');
   });
@@ -1237,7 +1237,7 @@ describe('Color mixing and averaging', () => {
     const base = new Color('#050a0f');
     const others = ['#0f0a05'];
 
-    const result = base.average(others, { space: 'RGB' });
+    const result = base.averageWith(others, { space: 'RGB' });
 
     expect(result.toHex()).toBe('#0a0a0a');
   });
@@ -1246,7 +1246,7 @@ describe('Color mixing and averaging', () => {
     const base = new Color('#112233');
     const others = ['#8899aa', '#223344'] as const;
 
-    const result = base.average(others, { space: 'RGB' });
+    const result = base.averageWith(others, { space: 'RGB' });
 
     expect(result.toHex()).toBe('#3e4f60');
   });
@@ -1303,8 +1303,8 @@ describe('Color option validation', () => {
     const base = new Color('#ff0000');
     const blue = new Color('#0000ff');
 
-    expect(() => base.mix([blue], { space: 'INVALID' as never })).toThrow("Invalid 'space'");
-    expect(() => base.blend(blue, { mode: 'INVALID' as never })).toThrow("Invalid 'mode'");
+    expect(() => base.mixWith([blue], { space: 'INVALID' as never })).toThrow("Invalid 'space'");
+    expect(() => base.blendWith(blue, { mode: 'INVALID' as never })).toThrow("Invalid 'mode'");
     expect(() => base.createGradientTo(blue, { hueInterpolationMode: 'INVALID' as never })).toThrow(
       "Invalid 'hueInterpolationMode'",
     );

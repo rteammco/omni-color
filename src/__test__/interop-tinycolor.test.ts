@@ -409,7 +409,7 @@ describe('Color interoperability with tinycolor2', () => {
       const base = new Color('#ff0000');
       const other = '#0000ff';
 
-      const mixed = base.mix([other], { space: 'RGB', weights: [0.5, 0.5] });
+      const mixed = base.mixWith([other], { space: 'RGB', weights: [0.5, 0.5] });
       const tinyMixed = tinycolor.mix(base.toHex(), other);
 
       expect(mixed.toHex()).toBe(tinyMixed.toHexString().toLowerCase());
@@ -420,12 +420,12 @@ describe('Color interoperability with tinycolor2', () => {
       const base = '#ff0000';
       const other = '#0000ff';
 
-      const mixed25 = new Color(base).mix([other], { space: 'RGB', weights: [0.75, 0.25] });
+      const mixed25 = new Color(base).mixWith([other], { space: 'RGB', weights: [0.75, 0.25] });
       const tinyMixed25 = tinycolor.mix(base, other, 25);
       expect(mixed25.toHex()).toBe(tinyMixed25.toHexString().toLowerCase());
       expectSimilarRGBAValues(mixed25.toRGBA(), tinyMixed25);
 
-      const mixed75 = new Color(base).mix([other], { space: 'RGB', weights: [0.25, 0.75] });
+      const mixed75 = new Color(base).mixWith([other], { space: 'RGB', weights: [0.25, 0.75] });
       const tinyMixed75 = tinycolor.mix(base, other, 75);
       expect(mixed75.toHex()).toBe(tinyMixed75.toHexString().toLowerCase());
       expectSimilarRGBAValues(mixed75.toRGBA(), tinyMixed75);
@@ -435,12 +435,12 @@ describe('Color interoperability with tinycolor2', () => {
       const base = 'rgba(255, 0, 0, 0.6)';
       const other = 'rgba(0, 0, 255, 0.2)';
 
-      const mixed = new Color(base).mix([other], { space: 'RGB', weights: [0.5, 0.5] });
+      const mixed = new Color(base).mixWith([other], { space: 'RGB', weights: [0.5, 0.5] });
       const tinyMixed = tinycolor.mix(base, other);
       expect(mixed.toHex8()).toBe(tinyMixed.toHex8String().toLowerCase());
       expectSimilarRGBAValues(mixed.toRGBA(), tinyMixed);
 
-      const skewed = new Color(base).mix([other], { space: 'RGB', weights: [0.75, 0.25] });
+      const skewed = new Color(base).mixWith([other], { space: 'RGB', weights: [0.75, 0.25] });
       const tinySkewed = tinycolor.mix(base, other, 25);
       expect(skewed.toHex8()).toBe(tinySkewed.toHex8String().toLowerCase());
       expectSimilarRGBAValues(skewed.toRGBA(), tinySkewed);
