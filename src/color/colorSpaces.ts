@@ -1,6 +1,6 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import type { ColorRGB } from './formats';
-import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
+import { linearChannelToSrgb, srgbChannelToLinear } from './srgb';
 
 export type ColorSpace = 'SRGB' | 'DISPLAY-P3' | 'REC2020';
 

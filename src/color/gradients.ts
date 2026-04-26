@@ -1,5 +1,5 @@
 import { type CaseInsensitive, clampValue, resolveCaseInsensitiveOption } from '../utils';
-import type { Color } from './color';
+import type { Color, CreateColorInstance } from './color';
 import type {
   ColorHSL,
   ColorHSV,
@@ -9,7 +9,7 @@ import type {
   ColorRGB,
   ColorRGBA,
 } from './formats';
-import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
+import { linearChannelToSrgb, srgbChannelToLinear } from './srgb';
 
 const GRADIENT_SPACES = ['RGB', 'HSL', 'HSV', 'LCH', 'OKLAB', 'OKLCH'] as const;
 export type ColorGradientSpace = (typeof GRADIENT_SPACES)[number];
@@ -786,12 +786,12 @@ function adjustHueStops(
 export function createColorGradient(
   colors: readonly Color[],
   options: ColorGradientOptions = {},
+  createColor: CreateColorInstance,
 ): Color[] {
   if (colors.length < MIN_SCALE_STOPS) {
     throw new Error('at least two colors are required to build a gradient');
   }
 
-  const ColorConstructor = colors[0].constructor as typeof Color;
   const stopCount = getStopCount(options.stops);
   const space = resolveCaseInsensitiveOption({
     allowedValues: GRADIENT_SPACES,
@@ -840,7 +840,7 @@ export function createColorGradient(
       space,
       stopCount,
       stops: vectors,
-    }).map((stop) => new ColorConstructor(stop));
+    }).map((stop) => createColor(stop));
   }
 
   return interpolateLinearStops({
@@ -850,5 +850,5 @@ export function createColorGradient(
     space,
     stopCount,
     stops: vectors,
-  }).map((stop) => new ColorConstructor(stop));
+  }).map((stop) => createColor(stop));
 }

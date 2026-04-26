@@ -1,4 +1,4 @@
-import { Color } from '../color';
+import { Color, createColorInstance } from '../color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from '../color.consts';
 import type {
   ColorCMYK,
@@ -185,16 +185,22 @@ describe('Color constructor and conversion tests', () => {
 
   it('accepts color temperature label strings', () => {
     let color = new Color('fluorescent');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Fluorescent lamp').toHex());
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel('Fluorescent lamp', createColorInstance).toHex(),
+    );
 
     color = new Color('Daylight');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Daylight').toHex());
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel('Daylight', createColorInstance).toHex(),
+    );
 
     color = new Color('  shade ');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Shade').toHex());
+    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Shade', createColorInstance).toHex());
 
     color = new Color('blue sky');
-    expect(color.toHex()).toBe(getColorFromTemperatureLabel('Blue sky').toHex());
+    expect(color.toHex()).toBe(
+      getColorFromTemperatureLabel('Blue sky', createColorInstance).toHex(),
+    );
   });
 });
 

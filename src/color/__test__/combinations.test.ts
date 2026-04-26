@@ -1,14 +1,18 @@
-import { Color } from '../color';
+import { Color, createColorInstance } from '../color';
 import { averageColors, blendColors, mixColors } from '../combinations';
 
 describe('mixColors', () => {
   it('mixes colors additively in RGB space', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
-    const result = mixColors([red, green], {
-      type: 'ADDITIVE',
-      space: 'RGB',
-    });
+    const result = mixColors(
+      [red, green],
+      {
+        type: 'ADDITIVE',
+        space: 'RGB',
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#ffff00');
   });
 
@@ -16,17 +20,21 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
     const blue = new Color('#0000ff');
-    const result = mixColors([red, green, blue], {
-      type: 'ADDITIVE',
-      space: 'RGB',
-    });
+    const result = mixColors(
+      [red, green, blue],
+      {
+        type: 'ADDITIVE',
+        space: 'RGB',
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#ffffff');
   });
 
   it('mixes colors subtractively in CMYK space', () => {
     const cyan = new Color('#00ffff');
     const yellow = new Color('#ffff00');
-    const result = mixColors([cyan, yellow], { type: 'SUBTRACTIVE' });
+    const result = mixColors([cyan, yellow], { type: 'SUBTRACTIVE' }, createColorInstance);
     expect(result.toHex()).toBe('#00ff00');
   });
 
@@ -34,19 +42,27 @@ describe('mixColors', () => {
     const cyan = new Color('#00ffff');
     const magenta = new Color('#ff00ff');
     const yellow = new Color('#ffff00');
-    const result = mixColors([cyan, magenta, yellow], {
-      type: 'SUBTRACTIVE',
-    });
+    const result = mixColors(
+      [cyan, magenta, yellow],
+      {
+        type: 'SUBTRACTIVE',
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#000000');
   });
 
   it('mixes colors in HSL space with weighted interpolation', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = mixColors([red, blue], {
-      space: 'HSL',
-      weights: [1, 3],
-    });
+    const result = mixColors(
+      [red, blue],
+      {
+        space: 'HSL',
+        weights: [1, 3],
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#5100ff');
     const { h, s, l } = result.toHSL();
     expect(h).toBeCloseTo(259, 0);
@@ -57,10 +73,10 @@ describe('mixColors', () => {
   it('accepts mixed case mix space', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const mix1 = mixColors([c1, c2], { space: 'RGB' });
-    const mix2 = mixColors([c1, c2], { space: 'rgb' });
+    const mix1 = mixColors([c1, c2], { space: 'RGB' }, createColorInstance);
+    const mix2 = mixColors([c1, c2], { space: 'rgb' }, createColorInstance);
     // @ts-expect-error - testing mixed casing not covered by type but valid runtime
-    const mix3 = mixColors([c1, c2], { space: 'rGb' });
+    const mix3 = mixColors([c1, c2], { space: 'rGb' }, createColorInstance);
 
     expect(mix1.toHex()).toBe(mix2.toHex());
     expect(mix1.toHex()).toBe(mix3.toHex());
@@ -69,8 +85,8 @@ describe('mixColors', () => {
   it('accepts mixed case mix type', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const sub1 = mixColors([c1, c2], { type: 'SUBTRACTIVE' });
-    const sub2 = mixColors([c1, c2], { type: 'subtractive' });
+    const sub1 = mixColors([c1, c2], { type: 'SUBTRACTIVE' }, createColorInstance);
+    const sub2 = mixColors([c1, c2], { type: 'subtractive' }, createColorInstance);
 
     expect(sub1.toHex()).toBe(sub2.toHex());
   });
@@ -78,7 +94,7 @@ describe('mixColors', () => {
   it('defaults to additive Linear RGB mixing', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
-    const result = mixColors([red, green]);
+    const result = mixColors([red, green], {}, createColorInstance);
     expect(result.toHex()).toBe('#bcbc00');
   });
 
@@ -93,7 +109,11 @@ describe('mixColors', () => {
     // Linear(0.6) -> sRGB(0.8) -> 204.
     // Wait, pure additive of non-clipping colors should be similar?
     // Let's test averaging behavior via weights summing to 1.
-    const result = mixColors([red, green], { space: 'LINEAR_RGB', weights: [0.5, 0.5] });
+    const result = mixColors(
+      [red, green],
+      { space: 'LINEAR_RGB', weights: [0.5, 0.5] },
+      createColorInstance,
+    );
     // sRGB Avg: 102, 102, 0 -> #666600
     // Linear Avg: 0.6*0.5 + 0 = 0.3. sRGB(0.3) -> ~150 (#96)
     expect(result.toHex()).not.toBe('#666600');
@@ -105,20 +125,26 @@ describe('mixColors', () => {
 
   it('throws when fewer than two colors are provided', () => {
     const red = new Color('#ff0000');
-    expect(() => mixColors([red])).toThrow('at least two colors are required for mixing');
+    expect(() => mixColors([red], undefined, createColorInstance)).toThrow(
+      'at least two colors are required for mixing',
+    );
   });
 
   it('defaults weights to 1 when provided weights sum to 0', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = mixColors([red, blue], { weights: [1, -1] });
+    const result = mixColors([red, blue], { weights: [1, -1] }, createColorInstance);
     expect(result.toHex()).toBe('#bc00bc');
   });
 
   it('mixes colors with alpha channel in RGB space', () => {
     const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
     const blue = new Color({ r: 0, g: 0, b: 255, a: 1 });
-    const result = mixColors([semiRed, blue], { type: 'ADDITIVE', space: 'RGB' });
+    const result = mixColors(
+      [semiRed, blue],
+      { type: 'ADDITIVE', space: 'RGB' },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#ff00ff');
     expect(result.toRGBA().a).toBe(0.75);
   });
@@ -126,21 +152,21 @@ describe('mixColors', () => {
   it('mixes colors in LCH space', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
-    const result = mixColors([black, white], { space: 'LCH' });
+    const result = mixColors([black, white], { space: 'LCH' }, createColorInstance);
     expect(result.toHex()).toBe('#777777');
   });
 
   it('mixes colors in OKLCH space', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
-    const result = mixColors([black, white], { space: 'OKLCH' });
+    const result = mixColors([black, white], { space: 'OKLCH' }, createColorInstance);
     expect(result.toHex()).toBe('#636363');
   });
 
   it('mixes colors across the red hue boundary using linear addition', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
-    const result = mixColors([h1, h2], { space: 'HSL' });
+    const result = mixColors([h1, h2], { space: 'HSL' }, createColorInstance);
     expect(result.toHex()).toBe('#ff0000');
   });
 
@@ -157,10 +183,14 @@ describe('mixColors', () => {
     // Result sRGB:
     // R: 0.42 -> ~0.68 -> ~174
     // B: 0.21 -> ~0.50 -> ~128
-    const result = mixColors([darkRed, darkBlue], {
-      space: 'HSL',
-      weights: [2, 1],
-    });
+    const result = mixColors(
+      [darkRed, darkBlue],
+      {
+        space: 'HSL',
+        weights: [2, 1],
+      },
+      createColorInstance,
+    );
 
     const { r, b } = result.toRGBA();
     expect(result.toHex()).toBe('#800040');
@@ -172,7 +202,7 @@ describe('mixColors', () => {
   it('handles hue wrap-around in LCH space', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
-    const result = mixColors([h1, h2], { space: 'LCH' });
+    const result = mixColors([h1, h2], { space: 'LCH' }, createColorInstance);
     const hue = result.toLCH().h;
     const distanceFromZero = Math.min(hue, 360 - hue);
     expect(distanceFromZero).toBeLessThan(45);
@@ -182,7 +212,7 @@ describe('mixColors', () => {
   it('handles hue wrap-around in OKLCH space', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
-    const result = mixColors([h1, h2], { space: 'OKLCH' });
+    const result = mixColors([h1, h2], { space: 'OKLCH' }, createColorInstance);
     const hue = result.toOKLCH().h;
     const distanceFromZero = Math.min(hue, 360 - hue);
     expect(distanceFromZero).toBeLessThan(45);
@@ -192,20 +222,20 @@ describe('mixColors', () => {
   it('defaults to equal weights when weights length mismatches', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = mixColors([red, blue], { weights: [2] });
+    const result = mixColors([red, blue], { weights: [2] }, createColorInstance);
     expect(result.toHex()).toBe('#bc00bc');
   });
 
   it('ignores colors with zero weight', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = mixColors([red, blue], { weights: [0, 1] });
+    const result = mixColors([red, blue], { weights: [0, 1] }, createColorInstance);
     expect(result.toHex()).toBe('#0000ff');
   });
 
   it('accumulates light when mixing identical colors in HSL space', () => {
     const darkRed = new Color('#800000');
-    const result = mixColors([darkRed, darkRed], { space: 'HSL' });
+    const result = mixColors([darkRed, darkRed], { space: 'HSL' }, createColorInstance);
     expect(result.toHex()).toBe('#800000');
   });
 
@@ -213,9 +243,9 @@ describe('mixColors', () => {
     const red = new Color('#ff0000');
     const cyan = new Color('#00ffff');
 
-    const hslMix = mixColors([red, cyan], { space: 'HSL' });
-    const lchMix = mixColors([red, cyan], { space: 'LCH' });
-    const oklchMix = mixColors([red, cyan], { space: 'OKLCH' });
+    const hslMix = mixColors([red, cyan], { space: 'HSL' }, createColorInstance);
+    const lchMix = mixColors([red, cyan], { space: 'LCH' }, createColorInstance);
+    const oklchMix = mixColors([red, cyan], { space: 'OKLCH' }, createColorInstance);
 
     expect(hslMix.toHex()).toBe('#80ff00');
     expect(lchMix.toHex()).toBe('#dda581');
@@ -225,7 +255,11 @@ describe('mixColors', () => {
   it('mixes colors subtractively in RGB space using normalized absorption', () => {
     const cyan = new Color('#00ffff');
     const yellow = new Color('#ffff00');
-    const result = mixColors([cyan, yellow], { type: 'SUBTRACTIVE', space: 'RGB' });
+    const result = mixColors(
+      [cyan, yellow],
+      { type: 'SUBTRACTIVE', space: 'RGB' },
+      createColorInstance,
+    );
 
     expect(result.toHex()).toBe('#00ff00');
     expect(result.toRGBA().a).toBe(1);
@@ -234,16 +268,24 @@ describe('mixColors', () => {
   it('mixes colors subtractively in Linear RGB space and respects weight ratios', () => {
     const green = new Color('#00ff00');
     const blue = new Color('#0000ff');
-    const mixA = mixColors([green, blue], {
-      type: 'SUBTRACTIVE',
-      space: 'LINEAR_RGB',
-      weights: [2, 1],
-    });
-    const mixB = mixColors([green, blue], {
-      type: 'SUBTRACTIVE',
-      space: 'LINEAR_RGB',
-      weights: [200, 100],
-    });
+    const mixA = mixColors(
+      [green, blue],
+      {
+        type: 'SUBTRACTIVE',
+        space: 'LINEAR_RGB',
+        weights: [2, 1],
+      },
+      createColorInstance,
+    );
+    const mixB = mixColors(
+      [green, blue],
+      {
+        type: 'SUBTRACTIVE',
+        space: 'LINEAR_RGB',
+        weights: [200, 100],
+      },
+      createColorInstance,
+    );
 
     expect(mixA.toHex()).toBe(mixB.toHex());
   });
@@ -251,7 +293,7 @@ describe('mixColors', () => {
   it('mixes colors subtractively in HSL space while handling hue wrap-around', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
-    const result = mixColors([h1, h2], { type: 'SUBTRACTIVE', space: 'HSL' });
+    const result = mixColors([h1, h2], { type: 'SUBTRACTIVE', space: 'HSL' }, createColorInstance);
 
     expect(result.toHex()).toBe('#ff0000');
     expect(result.toHSL().h).toBe(0);
@@ -260,7 +302,11 @@ describe('mixColors', () => {
   it('mixes colors subtractively in LCH space with chroma-driven hue', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = mixColors([red, blue], { type: 'SUBTRACTIVE', space: 'LCH' });
+    const result = mixColors(
+      [red, blue],
+      { type: 'SUBTRACTIVE', space: 'LCH' },
+      createColorInstance,
+    );
 
     const { h, c } = result.toLCH();
     expect(c).toBeGreaterThan(0);
@@ -276,7 +322,11 @@ describe('mixColors', () => {
   it('mixes colors subtractively in OKLCH space with clamped lightness', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
-    const result = mixColors([black, white], { type: 'SUBTRACTIVE', space: 'OKLCH' });
+    const result = mixColors(
+      [black, white],
+      { type: 'SUBTRACTIVE', space: 'OKLCH' },
+      createColorInstance,
+    );
 
     expect(result.toHex()).toBe('#000000');
     expect(result.toRGBA().a).toBe(1);
@@ -285,7 +335,11 @@ describe('mixColors', () => {
   it('handles alpha when mixing subtractively', () => {
     const yellow = new Color({ r: 255, g: 255, b: 0, a: 0.5 });
     const magenta = new Color({ r: 255, g: 0, b: 255, a: 1 });
-    const result = mixColors([yellow, magenta], { type: 'SUBTRACTIVE', space: 'RGB' });
+    const result = mixColors(
+      [yellow, magenta],
+      { type: 'SUBTRACTIVE', space: 'RGB' },
+      createColorInstance,
+    );
 
     expect(result.toHex()).toBe('#ff0000');
     expect(result.toRGBA().a).toBe(0.75);
@@ -294,7 +348,7 @@ describe('mixColors', () => {
   it('defaults to Linear RGB subtractive mixing when type is subtractive but space omitted', () => {
     const cyan = new Color('#00ffff');
     const yellow = new Color('#ffff00');
-    const result = mixColors([cyan, yellow], { type: 'SUBTRACTIVE' });
+    const result = mixColors([cyan, yellow], { type: 'SUBTRACTIVE' }, createColorInstance);
 
     expect(result.toHex()).toBe('#00ff00');
   });
@@ -304,14 +358,14 @@ describe('averageColors', () => {
   it('averages colors in RGB space', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = averageColors([red, blue], { space: 'RGB' });
+    const result = averageColors([red, blue], { space: 'RGB' }, createColorInstance);
     expect(result.toHex()).toBe('#800080');
   });
 
   it('averages colors in Linear RGB space (brighter purple)', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = averageColors([red, blue], { space: 'LINEAR_RGB' });
+    const result = averageColors([red, blue], { space: 'LINEAR_RGB' }, createColorInstance);
     // RGB avg: 128, 0, 128 -> #800080
     // Linear avg: #bc00bc
     expect(result.toHex()).toBe('#bc00bc');
@@ -321,37 +375,43 @@ describe('averageColors', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
     const blue = new Color('#0000ff');
-    const result = averageColors([red, green, blue], { space: 'RGB' });
+    const result = averageColors([red, green, blue], { space: 'RGB' }, createColorInstance);
     expect(result.toHex()).toBe('#555555');
   });
 
   it('averages colors in HSL space with weights', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
-    const result = averageColors([red, green], {
-      space: 'HSL',
-      weights: [1, 2],
-    });
+    const result = averageColors(
+      [red, green],
+      {
+        space: 'HSL',
+        weights: [1, 2],
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#80c936');
   });
 
   it('defaults to Linear RGB averaging', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
-    const result = averageColors([red, green]);
+    const result = averageColors([red, green], undefined, createColorInstance);
     // Expect brighter yellow than #808000
     expect(result.toHex()).toBe('#bcbc00');
   });
 
   it('throws when fewer than two colors are provided', () => {
     const red = new Color('#ff0000');
-    expect(() => averageColors([red])).toThrow('at least two colors are required for averaging');
+    expect(() => averageColors([red], {}, createColorInstance)).toThrow(
+      'at least two colors are required for averaging',
+    );
   });
 
   it('averages colors with alpha channel', () => {
     const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
     const blue = new Color({ r: 0, g: 0, b: 255, a: 1 });
-    const result = averageColors([semiRed, blue], { space: 'RGB' });
+    const result = averageColors([semiRed, blue], { space: 'RGB' }, createColorInstance);
     expect(result.toHex()).toBe('#800080');
     expect(result.toRGBA().a).toBe(0.75);
   });
@@ -359,21 +419,21 @@ describe('averageColors', () => {
   it('averages black and white in LCH space', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
-    const result = averageColors([black, white], { space: 'LCH' });
+    const result = averageColors([black, white], { space: 'LCH' }, createColorInstance);
     expect(result.toHex()).toBe('#777777');
   });
 
   it('averages black and white in OKLCH space', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
-    const result = averageColors([black, white], { space: 'OKLCH' });
+    const result = averageColors([black, white], { space: 'OKLCH' }, createColorInstance);
     expect(result.toHex()).toBe('#636363');
   });
 
   it('averages hues correctly across the 360° boundary', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
-    const result = averageColors([h1, h2], { space: 'HSL' });
+    const result = averageColors([h1, h2], { space: 'HSL' }, createColorInstance);
     expect(result.toHex()).toBe('#fc0303');
     expect(result.toHSL().h).toBe(0);
   });
@@ -382,7 +442,7 @@ describe('averageColors', () => {
     const h1 = new Color({ h: 0, s: 100, l: 50 });
     const h2 = new Color({ h: 180, s: 100, l: 50 });
 
-    const result = averageColors([h1, h2], { space: 'HSL' });
+    const result = averageColors([h1, h2], { space: 'HSL' }, createColorInstance);
     const hsl = result.toHSL();
 
     expect(Number.isNaN(hsl.h)).toBe(false);
@@ -395,7 +455,7 @@ describe('averageColors', () => {
     const warmGray = new Color({ h: 30, s: 40, l: 60 });
     const coolGray = new Color({ h: 210, s: 40, l: 40 });
 
-    const result = averageColors([warmGray, coolGray], { space: 'HSL' });
+    const result = averageColors([warmGray, coolGray], { space: 'HSL' }, createColorInstance);
     const hsl = result.toHSL();
 
     expect(hsl.h).toBe(0);
@@ -407,7 +467,7 @@ describe('averageColors', () => {
   it('averages LCH hues correctly across 360 boundary', () => {
     const h1 = new Color({ l: 50, c: 50, h: 350 });
     const h2 = new Color({ l: 50, c: 50, h: 10 });
-    const result = averageColors([h1, h2], { space: 'LCH' });
+    const result = averageColors([h1, h2], { space: 'LCH' }, createColorInstance);
     const h = result.toLCH().h;
     const distTo0 = Math.min(h, 360 - h);
     expect(distTo0).toBeLessThan(10);
@@ -417,7 +477,7 @@ describe('averageColors', () => {
     const h1 = new Color({ l: 60, c: 40, h: 0 });
     const h2 = new Color({ l: 60, c: 40, h: 180 });
 
-    const result = averageColors([h1, h2], { space: 'LCH' });
+    const result = averageColors([h1, h2], { space: 'LCH' }, createColorInstance);
     const lch = result.toLCH();
     const { r, g, b } = result.toRGBA();
 
@@ -428,7 +488,7 @@ describe('averageColors', () => {
   it('averages OKLCH hues correctly across 360 boundary', () => {
     const h1 = new Color({ l: 0.5, c: 0.1, h: 350 });
     const h2 = new Color({ l: 0.5, c: 0.1, h: 10 });
-    const result = averageColors([h1, h2], { space: 'OKLCH' });
+    const result = averageColors([h1, h2], { space: 'OKLCH' }, createColorInstance);
     const h = result.toOKLCH().h;
     const distTo0 = Math.min(h, 360 - h);
     expect(distTo0).toBeLessThan(10);
@@ -438,7 +498,7 @@ describe('averageColors', () => {
     const h1 = new Color({ l: 0.6, c: 0.05, h: 0 });
     const h2 = new Color({ l: 0.6, c: 0.05, h: 180 });
 
-    const result = averageColors([h1, h2], { space: 'OKLCH' });
+    const result = averageColors([h1, h2], { space: 'OKLCH' }, createColorInstance);
     const oklch = result.toOKLCH();
 
     expect(oklch.c).toBeLessThan(0.001);
@@ -449,7 +509,11 @@ describe('averageColors', () => {
     const saturated = new Color({ l: 60, c: 40, h: 0 });
     const desaturatedOpponent = new Color({ l: 60, c: 39, h: 180 });
 
-    const result = averageColors([saturated, desaturatedOpponent], { space: 'LCH' });
+    const result = averageColors(
+      [saturated, desaturatedOpponent],
+      { space: 'LCH' },
+      createColorInstance,
+    );
     const lch = result.toLCH();
 
     expect(lch.c).toBeLessThan(1);
@@ -460,7 +524,11 @@ describe('averageColors', () => {
     const saturated = new Color({ l: 0.6, c: 0.05, h: 0 });
     const desaturatedOpponent = new Color({ l: 0.6, c: 0.045, h: 180 });
 
-    const result = averageColors([saturated, desaturatedOpponent], { space: 'OKLCH' });
+    const result = averageColors(
+      [saturated, desaturatedOpponent],
+      { space: 'OKLCH' },
+      createColorInstance,
+    );
     const oklch = result.toOKLCH();
 
     expect(oklch.c).toBeLessThan(0.005);
@@ -471,9 +539,21 @@ describe('averageColors', () => {
     const translucentRed = new Color({ h: 0, s: 100, l: 50, a: 0.2 });
     const translucentBlue = new Color({ h: 240, s: 100, l: 50, a: 0.8 });
 
-    const hslAverage = averageColors([translucentRed, translucentBlue], { space: 'HSL' });
-    const lchAverage = averageColors([translucentRed, translucentBlue], { space: 'LCH' });
-    const oklchAverage = averageColors([translucentRed, translucentBlue], { space: 'OKLCH' });
+    const hslAverage = averageColors(
+      [translucentRed, translucentBlue],
+      { space: 'HSL' },
+      createColorInstance,
+    );
+    const lchAverage = averageColors(
+      [translucentRed, translucentBlue],
+      { space: 'LCH' },
+      createColorInstance,
+    );
+    const oklchAverage = averageColors(
+      [translucentRed, translucentBlue],
+      { space: 'OKLCH' },
+      createColorInstance,
+    );
 
     expect(hslAverage.toRGBA().a).toBeCloseTo(0.5, 5);
     expect(lchAverage.toRGBA().a).toBeCloseTo(0.5, 5);
@@ -487,11 +567,31 @@ describe('averageColors', () => {
     const weights = [1, 3];
     const expectedAlpha = 0.25 * 0.25 + 1 * 0.75;
 
-    const rgb = averageColors([lowAlphaRed, opaqueBlue], { space: 'RGB', weights });
-    const linearRgb = averageColors([lowAlphaRed, opaqueBlue], { space: 'LINEAR_RGB', weights });
-    const hsl = averageColors([lowAlphaRed, opaqueBlue], { space: 'HSL', weights });
-    const lch = averageColors([lowAlphaRed, opaqueBlue], { space: 'LCH', weights });
-    const oklch = averageColors([lowAlphaRed, opaqueBlue], { space: 'OKLCH', weights });
+    const rgb = averageColors(
+      [lowAlphaRed, opaqueBlue],
+      { space: 'RGB', weights },
+      createColorInstance,
+    );
+    const linearRgb = averageColors(
+      [lowAlphaRed, opaqueBlue],
+      { space: 'LINEAR_RGB', weights },
+      createColorInstance,
+    );
+    const hsl = averageColors(
+      [lowAlphaRed, opaqueBlue],
+      { space: 'HSL', weights },
+      createColorInstance,
+    );
+    const lch = averageColors(
+      [lowAlphaRed, opaqueBlue],
+      { space: 'LCH', weights },
+      createColorInstance,
+    );
+    const oklch = averageColors(
+      [lowAlphaRed, opaqueBlue],
+      { space: 'OKLCH', weights },
+      createColorInstance,
+    );
 
     expect(rgb.toRGBA().a).toBeCloseTo(expectedAlpha, 3);
     expect(linearRgb.toRGBA().a).toBeCloseTo(expectedAlpha, 3);
@@ -503,14 +603,14 @@ describe('averageColors', () => {
   it('defaults to equal weights when weights length mismatches', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = averageColors([red, blue], { weights: [2] });
+    const result = averageColors([red, blue], { weights: [2] }, createColorInstance);
     expect(result.toHex()).toBe('#bc00bc');
   });
 
   it('defaults weights to equal when provided weights sum to 0', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = averageColors([red, blue], { weights: [1, -1] });
+    const result = averageColors([red, blue], { weights: [1, -1] }, createColorInstance);
     expect(result.toHex()).toBe('#bc00bc');
   });
 });
@@ -519,15 +619,15 @@ describe('blendColors', () => {
   it('blends using multiply mode', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = blendColors(red, blue, { mode: 'MULTIPLY', ratio: 1 });
+    const result = blendColors(red, blue, { mode: 'MULTIPLY', ratio: 1 }, createColorInstance);
     expect(result.toHex()).toBe('#000000');
   });
 
   it('accepts mixed case blend mode', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const b1 = blendColors(c1, c2, { mode: 'MULTIPLY' });
-    const b2 = blendColors(c1, c2, { mode: 'multiply' });
+    const b1 = blendColors(c1, c2, { mode: 'MULTIPLY' }, createColorInstance);
+    const b2 = blendColors(c1, c2, { mode: 'multiply' }, createColorInstance);
 
     expect(b1.toHex()).toBe(b2.toHex());
   });
@@ -535,8 +635,8 @@ describe('blendColors', () => {
   it('accepts mixed case blend space', () => {
     const c1 = new Color('red');
     const c2 = new Color('blue');
-    const b1 = blendColors(c1, c2, { space: 'HSL' });
-    const b2 = blendColors(c1, c2, { space: 'hsl' });
+    const b1 = blendColors(c1, c2, { space: 'HSL' }, createColorInstance);
+    const b2 = blendColors(c1, c2, { space: 'hsl' }, createColorInstance);
 
     expect(b1.toHex()).toBe(b2.toHex());
   });
@@ -544,72 +644,87 @@ describe('blendColors', () => {
   it('partially blends using multiply mode', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = blendColors(red, blue, {
-      mode: 'MULTIPLY',
-      ratio: 0.5,
-    });
+    const result = blendColors(
+      red,
+      blue,
+      {
+        mode: 'MULTIPLY',
+        ratio: 0.5,
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#800000');
   });
 
   it('blends using screen mode', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = blendColors(red, blue, { mode: 'SCREEN', ratio: 1 });
+    const result = blendColors(red, blue, { mode: 'SCREEN', ratio: 1 }, createColorInstance);
     expect(result.toHex()).toBe('#ff00ff');
   });
 
   it('partially blends using screen mode', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = blendColors(red, blue, {
-      mode: 'SCREEN',
-      ratio: 0.5,
-    });
+    const result = blendColors(
+      red,
+      blue,
+      {
+        mode: 'SCREEN',
+        ratio: 0.5,
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#ff0080');
   });
 
   it('blends using overlay mode', () => {
     const gray = new Color('#808080');
     const white = new Color('#ffffff');
-    const result = blendColors(gray, white, { mode: 'OVERLAY', ratio: 1 });
+    const result = blendColors(gray, white, { mode: 'OVERLAY', ratio: 1 }, createColorInstance);
     expect(result.toHex()).toBe('#ffffff');
   });
 
   it('returns base color when ratio is 0', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = blendColors(red, blue, { ratio: 0 });
+    const result = blendColors(red, blue, { ratio: 0 }, createColorInstance);
     expect(result.toHex()).toBe('#ff0000');
   });
 
   it('returns blend color when ratio is 1 in normal mode', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = blendColors(red, blue, { mode: 'NORMAL', ratio: 1 });
+    const result = blendColors(red, blue, { mode: 'NORMAL', ratio: 1 }, createColorInstance);
     expect(result.toHex()).toBe('#0000ff');
   });
 
   it('blends in HSL space', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const result = blendColors(red, blue, {
-      space: 'HSL',
-      ratio: 0.5,
-    });
+    const result = blendColors(
+      red,
+      blue,
+      {
+        space: 'HSL',
+        ratio: 0.5,
+      },
+      createColorInstance,
+    );
     expect(result.toHex()).toBe('#ff00ff');
   });
 
   it('clamps ratio outside of range 0-1', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    expect(blendColors(red, blue, { ratio: -1 }).toHex()).toBe('#ff0000');
-    expect(blendColors(red, blue, { ratio: 2 }).toHex()).toBe('#0000ff');
+    expect(blendColors(red, blue, { ratio: -1 }, createColorInstance).toHex()).toBe('#ff0000');
+    expect(blendColors(red, blue, { ratio: 2 }, createColorInstance).toHex()).toBe('#0000ff');
   });
 
   it('blends colors with alpha channel in RGB space', () => {
     const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
     const blue = new Color({ r: 0, g: 0, b: 255, a: 0.2 });
-    const result = blendColors(semiRed, blue, { ratio: 0.5 });
+    const result = blendColors(semiRed, blue, { ratio: 0.5 }, createColorInstance);
     expect(result.toHex()).toBe('#800080');
     expect(result.toRGBA().a).toBe(0.35);
   });
@@ -617,24 +732,44 @@ describe('blendColors', () => {
   it('handles hue wrap-around when blending in HSL space', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
-    const result = blendColors(h1, h2, { space: 'HSL', ratio: 0.5 });
+    const result = blendColors(h1, h2, { space: 'HSL', ratio: 0.5 }, createColorInstance);
     expect(result.toHex()).toBe('#ff0000');
   });
 
   it('blends using overlay mode with dark base color', () => {
     const darkGray = new Color('#404040');
     const red = new Color('#ff0000');
-    const result = blendColors(darkGray, red, { mode: 'OVERLAY', ratio: 1 });
+    const result = blendColors(darkGray, red, { mode: 'OVERLAY', ratio: 1 }, createColorInstance);
     expect(result.toHex()).toBe('#800000');
   });
 
   it('applies blend modes within HSL space', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
-    const normal = blendColors(red, blue, { space: 'HSL', mode: 'NORMAL', ratio: 0.5 });
-    const multiply = blendColors(red, blue, { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 });
-    const screen = blendColors(red, blue, { space: 'HSL', mode: 'SCREEN', ratio: 0.5 });
-    const overlay = blendColors(red, blue, { space: 'HSL', mode: 'OVERLAY', ratio: 0.5 });
+    const normal = blendColors(
+      red,
+      blue,
+      { space: 'HSL', mode: 'NORMAL', ratio: 0.5 },
+      createColorInstance,
+    );
+    const multiply = blendColors(
+      red,
+      blue,
+      { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 },
+      createColorInstance,
+    );
+    const screen = blendColors(
+      red,
+      blue,
+      { space: 'HSL', mode: 'SCREEN', ratio: 0.5 },
+      createColorInstance,
+    );
+    const overlay = blendColors(
+      red,
+      blue,
+      { space: 'HSL', mode: 'OVERLAY', ratio: 0.5 },
+      createColorInstance,
+    );
 
     expect(normal.toHex()).toBe('#ff00ff');
     expect(multiply.toHex()).toBe('#b900bf');
@@ -648,9 +783,24 @@ describe('blendColors', () => {
   it('handles hue wrap-around for multiple HSL blend modes', () => {
     const h1 = new Color({ h: 350, s: 100, l: 50 });
     const h2 = new Color({ h: 10, s: 100, l: 50 });
-    const multiply = blendColors(h1, h2, { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 });
-    const screen = blendColors(h1, h2, { space: 'HSL', mode: 'SCREEN', ratio: 0.5 });
-    const overlay = blendColors(h1, h2, { space: 'HSL', mode: 'OVERLAY', ratio: 0.5 });
+    const multiply = blendColors(
+      h1,
+      h2,
+      { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 },
+      createColorInstance,
+    );
+    const screen = blendColors(
+      h1,
+      h2,
+      { space: 'HSL', mode: 'SCREEN', ratio: 0.5 },
+      createColorInstance,
+    );
+    const overlay = blendColors(
+      h1,
+      h2,
+      { space: 'HSL', mode: 'OVERLAY', ratio: 0.5 },
+      createColorInstance,
+    );
 
     expect(multiply.toHex()).toBe('#bf003e');
     expect(screen.toHex()).toBe('#ff5f40');
@@ -662,7 +812,12 @@ describe('blendColors', () => {
   it('preserves alpha handling when blending in HSL space', () => {
     const semiRed = new Color({ r: 255, g: 0, b: 0, a: 0.5 });
     const blue = new Color({ r: 0, g: 0, b: 255, a: 0.2 });
-    const result = blendColors(semiRed, blue, { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 });
+    const result = blendColors(
+      semiRed,
+      blue,
+      { space: 'HSL', mode: 'MULTIPLY', ratio: 0.5 },
+      createColorInstance,
+    );
 
     expect(result.toHex()).toBe('#b900bf');
     expect(result.toRGBA().a).toBe(0.35);
@@ -673,7 +828,7 @@ describe('LINEAR_RGB robustness', () => {
   it('produces physically accurate middle gray from black and white', () => {
     const black = new Color('#000000');
     const white = new Color('#ffffff');
-    const result = averageColors([black, white], { space: 'LINEAR_RGB' });
+    const result = averageColors([black, white], { space: 'LINEAR_RGB' }, createColorInstance);
     // In sRGB averaging, (0+255)/2 = 127.5 -> #808080
     // In Linear averaging, light intensity is averaged.
     // 0 + 1 = 1. / 2 = 0.5 intensity.
@@ -685,10 +840,14 @@ describe('LINEAR_RGB robustness', () => {
     const blue = new Color('#0000ff');
     const yellow = new Color('#ffff00');
 
-    const srgbResult = averageColors([blue, yellow], { space: 'RGB' });
+    const srgbResult = averageColors([blue, yellow], { space: 'RGB' }, createColorInstance);
     expect(srgbResult.toHex()).toBe('#808080'); // Dark gray
 
-    const linearResult = averageColors([blue, yellow], { space: 'LINEAR_RGB' });
+    const linearResult = averageColors(
+      [blue, yellow],
+      { space: 'LINEAR_RGB' },
+      createColorInstance,
+    );
     expect(linearResult.toHex()).toBe('#bcbcbc'); // Lighter gray (physically correct)
   });
 
@@ -696,8 +855,16 @@ describe('LINEAR_RGB robustness', () => {
     const red = new Color('#ff0000');
     const green = new Color('#00ff00');
 
-    const srgbMix = mixColors([red, green], { space: 'RGB', weights: [0.5, 0.5] });
-    const linearMix = mixColors([red, green], { space: 'LINEAR_RGB', weights: [0.5, 0.5] });
+    const srgbMix = mixColors(
+      [red, green],
+      { space: 'RGB', weights: [0.5, 0.5] },
+      createColorInstance,
+    );
+    const linearMix = mixColors(
+      [red, green],
+      { space: 'LINEAR_RGB', weights: [0.5, 0.5] },
+      createColorInstance,
+    );
 
     expect(srgbMix.toHex()).toBe('#808000');
     expect(linearMix.toHex()).toBe('#bcbc00');
@@ -709,10 +876,14 @@ describe('LINEAR_RGB robustness', () => {
     const blue = new Color('#0000ff'); // Linear (0, 0, 1)
 
     // 75% Red, 25% Blue. LINEAR_RGB mixing normalizes weights to preserve the intended ratio.
-    const result = mixColors([red, blue], {
-      space: 'LINEAR_RGB',
-      weights: [0.75, 0.25],
-    });
+    const result = mixColors(
+      [red, blue],
+      {
+        space: 'LINEAR_RGB',
+        weights: [0.75, 0.25],
+      },
+      createColorInstance,
+    );
 
     expect(result.toHex()).toBe('#e10089');
     expect(result.toRGBA().a).toBe(1);
@@ -724,7 +895,11 @@ describe('LINEAR_RGB robustness', () => {
     const opaqueGreen = new Color('rgba(0, 255, 0, 1)');
 
     // Using averageColors for equal weighting
-    const result = averageColors([transparentRed, opaqueGreen], { space: 'LINEAR_RGB' });
+    const result = averageColors(
+      [transparentRed, opaqueGreen],
+      { space: 'LINEAR_RGB' },
+      createColorInstance,
+    );
 
     // Alpha should be 0.5
     expect(result.toRGBA().a).toBe(0.5);
@@ -745,8 +920,8 @@ describe('LINEAR_RGB robustness', () => {
       const c1 = Color.random();
       const c2 = Color.random();
 
-      const linear = averageColors([c1, c2], { space: 'LINEAR_RGB' });
-      const srgb = averageColors([c1, c2], { space: 'RGB' });
+      const linear = averageColors([c1, c2], { space: 'LINEAR_RGB' }, createColorInstance);
+      const srgb = averageColors([c1, c2], { space: 'RGB' }, createColorInstance);
 
       const lLum = linear.toRGBA().r + linear.toRGBA().g + linear.toRGBA().b;
       const sLum = srgb.toRGBA().r + srgb.toRGBA().g + srgb.toRGBA().b;
@@ -773,24 +948,32 @@ describe('LINEAR_RGB robustness', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
 
-    expect(() => mixColors([red, blue], { type: 'INVALID' as never })).toThrow("Invalid 'type'");
-    expect(() => mixColors([red, blue], { space: 'INVALID' as never })).toThrow("Invalid 'space'");
+    expect(() => mixColors([red, blue], { type: 'INVALID' as never }, createColorInstance)).toThrow(
+      "Invalid 'type'",
+    );
+    expect(() =>
+      mixColors([red, blue], { space: 'INVALID' as never }, createColorInstance),
+    ).toThrow("Invalid 'space'");
   });
 
   it('throws for invalid blend option values', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
 
-    expect(() => blendColors(red, blue, { mode: 'INVALID' as never })).toThrow("Invalid 'mode'");
-    expect(() => blendColors(red, blue, { space: 'INVALID' as never })).toThrow("Invalid 'space'");
+    expect(() => blendColors(red, blue, { mode: 'INVALID' as never }, createColorInstance)).toThrow(
+      "Invalid 'mode'",
+    );
+    expect(() =>
+      blendColors(red, blue, { space: 'INVALID' as never }, createColorInstance),
+    ).toThrow("Invalid 'space'");
   });
 
   it('throws for invalid average option values', () => {
     const red = new Color('#ff0000');
     const blue = new Color('#0000ff');
 
-    expect(() => averageColors([red, blue], { space: 'INVALID' as never })).toThrow(
-      "Invalid 'space'",
-    );
+    expect(() =>
+      averageColors([red, blue], { space: 'INVALID' as never }, createColorInstance),
+    ).toThrow("Invalid 'space'");
   });
 });

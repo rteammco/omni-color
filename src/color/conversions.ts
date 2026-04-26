@@ -17,7 +17,7 @@ import type {
   ColorRGBA,
 } from './formats';
 import { getColorFormatType } from './formats';
-import { linearChannelToSrgb, srgbChannelToLinear } from './utils';
+import { linearChannelToSrgb, srgbChannelToLinear } from './srgb';
 import { validateColorOrThrow } from './validations';
 
 const LAB_DELTA = 6 / 29; // = 0.20689655
