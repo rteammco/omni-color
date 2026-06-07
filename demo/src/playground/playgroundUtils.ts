@@ -13,7 +13,7 @@ const UPDATE_COLOR_METHOD_EXAMPLES: { method: string; argOptions?: unknown[] }[]
   { method: 'desaturate', argOptions: [undefined, 20, 30, 40] },
   { method: 'grayscale' },
   {
-    method: 'mix',
+    method: 'mixWith',
     argOptions: [
       '[new Color("red")], { space: "RGB" }',
       '[new Color("green")], { space: "HSL" }',
@@ -22,7 +22,7 @@ const UPDATE_COLOR_METHOD_EXAMPLES: { method: string; argOptions?: unknown[] }[]
     ],
   },
   {
-    method: 'blend',
+    method: 'blendWith',
     argOptions: [
       'new Color("red")',
       'new Color("green"), { mode: "MULTIPLY" }',
@@ -30,7 +30,7 @@ const UPDATE_COLOR_METHOD_EXAMPLES: { method: string; argOptions?: unknown[] }[]
     ],
   },
   {
-    method: 'average',
+    method: 'averageWith',
     argOptions: [
       '[new Color()]',
       '[new Color("red"), new Color("green")]',
