@@ -21,7 +21,7 @@ export interface ColorPalette {
   // Neutrals:
   neutrals: ColorSwatch;
   tintedNeutrals: ColorSwatch;
-  back: Color;
+  black: Color;
   white: Color;
 
   // Semantic colors:
@@ -206,7 +206,7 @@ export function generateColorPaletteFromBaseColor(
       neutralHarmonizationOptions,
       createColor,
     ).getColorSwatch(paletteSwatchOptions),
-    back: createColor(BLACK_HEX),
+    black: createColor(BLACK_HEX),
     white: createColor(WHITE_HEX),
     info: harmonizeSemanticColor(
       baseColor,
