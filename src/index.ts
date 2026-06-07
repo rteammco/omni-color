@@ -27,7 +27,13 @@ import type {
   ColorGradientSpace,
   HueInterpolationMode,
 } from './color/gradients';
-import type { ColorHarmony, ColorHarmonyOptions, GrayscaleHandlingMode } from './color/harmonies';
+import type {
+  ColorHarmony,
+  ColorHarmonyOptions,
+  GrayscaleHandlingMode,
+  TetradicHarmonyDirection,
+  TetradicHarmonyOptions,
+} from './color/harmonies';
 import type {
   ColorBrightnessOptions,
   ColorBrightnessSpace,
@@ -116,6 +122,8 @@ export {
   RandomColorOptions,
   type ReadabilityAlgorithm,
   ReadabilityOptions,
+  type TetradicHarmonyDirection,
+  TetradicHarmonyOptions,
   type WCAGReadabilityConformanceLevel,
   WCAGReadabilityOptions,
   WCAGReadabilityReport,

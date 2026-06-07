@@ -110,20 +110,39 @@ export function getSquareHarmonyColors(
   ];
 }
 
+export type TetradicHarmonyDirection = 'CLOCKWISE' | 'COUNTERCLOCKWISE';
+export interface TetradicHarmonyOptions extends ColorHarmonyOptions {
+  /**
+   * Direction used for tetradic hue spins.
+   *
+   * - CLOCKWISE: +60, +180, +240
+   * - COUNTERCLOCKWISE: -60, -180, -240
+   *
+   * Defaults to CLOCKWISE.
+   */
+  direction?: CaseInsensitive<TetradicHarmonyDirection>;
+}
+
 export function getTetradicHarmonyColors(
   color: Color,
-  options: ColorHarmonyOptions = {},
+  options: TetradicHarmonyOptions = {},
   createColor: CreateColorInstance,
 ): [Color, Color, Color, Color] {
   const grayscaleHandlingMode = resolveGrayscaleHandlingMode(options);
-  // TODO: tetradic harmonies can also be "wide" (120, 180, 300) or go in the other direction, or potentially any rectangle
-  // e.g. #0000ff => #0000ff, #ff00ff, #ffff00, #00ff00
-  // vs.  #0000ff => #0000ff, #00ffff, #ffff00, #ff0000
+  const direction = resolveCaseInsensitiveOption({
+    allowedValues: ['CLOCKWISE', 'COUNTERCLOCKWISE'],
+    defaultValue: 'CLOCKWISE',
+    key: 'direction',
+    options,
+  });
+
+  const spinValues = direction === 'CLOCKWISE' ? [60, 180, 240] : [-60, -180, -240];
+
   return [
     color.clone(),
-    spinColorOnHueOrLightness(color, 60, grayscaleHandlingMode, createColor),
-    spinColorOnHueOrLightness(color, 180, grayscaleHandlingMode, createColor),
-    spinColorOnHueOrLightness(color, 240, grayscaleHandlingMode, createColor),
+    spinColorOnHueOrLightness(color, spinValues[0], grayscaleHandlingMode, createColor),
+    spinColorOnHueOrLightness(color, spinValues[1], grayscaleHandlingMode, createColor),
+    spinColorOnHueOrLightness(color, spinValues[2], grayscaleHandlingMode, createColor),
   ];
 }
 

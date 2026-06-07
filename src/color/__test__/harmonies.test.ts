@@ -639,6 +639,46 @@ describe('getSquareHarmonyColors', () => {
 });
 
 describe('getTetradicHarmonyColors', () => {
+  it('supports direction option for hue rotation order', () => {
+    const clockwise = getTetradicHarmonyColors(
+      new Color('#ff0000'),
+      {
+        direction: 'CLOCKWISE',
+      },
+      createColorInstance,
+    ).map((c) => c.toHex());
+    expect(clockwise).toEqual(['#ff0000', '#ffff00', '#00ffff', '#0000ff']);
+
+    const counterclockwise = getTetradicHarmonyColors(
+      new Color('#ff0000'),
+      {
+        direction: 'COUNTERCLOCKWISE',
+      },
+      createColorInstance,
+    ).map((c) => c.toHex());
+    expect(counterclockwise).toEqual(['#ff0000', '#ff00ff', '#00ffff', '#00ff00']);
+  });
+
+  it('accepts case-insensitive direction values', () => {
+    const clockwiseMixedCase = getTetradicHarmonyColors(
+      new Color('#ff0000'),
+      {
+        direction: 'clockwise',
+      },
+      createColorInstance,
+    ).map((c) => c.toHex());
+    expect(clockwiseMixedCase).toEqual(['#ff0000', '#ffff00', '#00ffff', '#0000ff']);
+
+    const counterclockwiseMixedCase = getTetradicHarmonyColors(
+      new Color('#ff0000'),
+      {
+        direction: 'counterclockwise',
+      },
+      createColorInstance,
+    ).map((c) => c.toHex());
+    expect(counterclockwiseMixedCase).toEqual(['#ff0000', '#ff00ff', '#00ffff', '#00ff00']);
+  });
+
   it('returns tetradic harmony colors for primary colors', () => {
     const [red1, red2, red3, red4] = getTetradicHarmonyColors(
       new Color('#ff0000'),

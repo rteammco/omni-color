@@ -75,6 +75,7 @@ import {
   getSquareHarmonyColors,
   getTetradicHarmonyColors,
   getTriadicHarmonyColors,
+  type TetradicHarmonyOptions,
 } from './harmonies';
 import {
   brightenColor,
@@ -766,7 +767,7 @@ export class Color implements ColorBrand {
    * d.toHex(); // '#0000ff'
    * ```
    */
-  getTetradicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color] {
+  getTetradicHarmonyColors(options?: TetradicHarmonyOptions): [Color, Color, Color, Color] {
     return getTetradicHarmonyColors(this, options, createColorInstance);
   }
 

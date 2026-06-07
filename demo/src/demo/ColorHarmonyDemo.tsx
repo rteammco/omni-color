@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Color, GrayscaleHandlingMode } from '../../../dist';
+import type { Color, GrayscaleHandlingMode, TetradicHarmonyDirection } from '../../../dist';
 import { ColorBox } from '../components/ColorBox';
 import { Icon } from '../components/Icon';
 import { Card } from '../components/Card';
@@ -34,6 +34,8 @@ interface Props {
 export function ColorHarmonyDemo({ color }: Props) {
   const [grayscaleHandlingMode, setGrayscaleHandlingMode] =
     useState<GrayscaleHandlingMode>('SPIN_LIGHTNESS');
+  const [tetradicHarmonyDirection, setTetradicHarmonyDirection] =
+    useState<TetradicHarmonyDirection>('CLOCKWISE');
 
   const isColorGrayscale = color.toHSL().s === 0;
 
@@ -65,7 +67,23 @@ export function ColorHarmonyDemo({ color }: Props) {
         <ColorHarmonyRow colors={color.getSquareHarmonyColors({ grayscaleHandlingMode })} />
       </Card>
       <Card title="Tetradic">
-        <ColorHarmonyRow colors={color.getTetradicHarmonyColors({ grayscaleHandlingMode })} />
+        <div className="flex flex-col gap-4">
+          <ColorHarmonyRow
+            colors={color.getTetradicHarmonyColors({
+              grayscaleHandlingMode,
+              direction: tetradicHarmonyDirection,
+            })}
+          />
+          <Select
+            label="Spin direction"
+            options={[
+              { label: 'Clockwise', value: 'CLOCKWISE' },
+              { label: 'Counterclockwise', value: 'COUNTERCLOCKWISE' },
+            ]}
+            value={tetradicHarmonyDirection}
+            onChange={setTetradicHarmonyDirection}
+          />
+        </div>
       </Card>
       <Card title="Analogous">
         <ColorHarmonyRow colors={color.getAnalogousHarmonyColors({ grayscaleHandlingMode })} />
