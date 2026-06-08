@@ -29,6 +29,8 @@ This does not mean blocking normal implementation work with excessive questions.
 
 ## Adding Or Extending Library Features
 
+omni-color is currently in beta. When changing or adding features, prioritize the best long-term API and implementation for the library; do not preserve backwards compatibility with existing released versions unless the user explicitly asks for it.
+
 These are the general steps to adding any new code changes to the core library:
 
 1. Cleanly update the appropriate helper or util file.
