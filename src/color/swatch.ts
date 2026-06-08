@@ -1,9 +1,9 @@
 import { clampValue } from '../utils';
 import type { Color, CreateColorInstance } from './color';
 
-type BasicColorSwatchStop = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
-type ExtendedColorSwatchStop =
-  | BasicColorSwatchStop
+export type BaseColorSwatchShade = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+export type ExtendedColorSwatchShade =
+  | BaseColorSwatchShade
   | 50
   | 150
   | 250
@@ -15,10 +15,13 @@ type ExtendedColorSwatchStop =
   | 850
   | 950;
 
-type SwatchStopDelta = { saturationDelta: number; lightnessDelta: number };
-type ColorSwatchStopDeltas<Stop extends number> = Record<Stop, SwatchStopDelta>;
+type ColorSwatchShadeAdjustment = { saturationShift: number; lightnessShift: number };
+type ColorSwatchShadeAdjustmentsFrom500<Shade extends ExtendedColorSwatchShade> = Record<
+  Shade,
+  ColorSwatchShadeAdjustment
+>;
 
-interface BaseColorSwatchStops {
+interface BaseColorSwatchShades {
   100: Color; // light
   200: Color;
   300: Color;
@@ -30,12 +33,12 @@ interface BaseColorSwatchStops {
   900: Color; // dark
 }
 
-interface BaseColorSwatch extends BaseColorSwatchStops {
-  type: 'BASIC';
-  mainStop: BasicColorSwatchStop;
+export interface BaseColorSwatch extends BaseColorSwatchShades {
+  type: 'BASE';
+  baseShade: BaseColorSwatchShade;
 }
 
-interface ExtendedColorSwatchStops extends BaseColorSwatchStops {
+interface ExtendedColorSwatchShades extends BaseColorSwatchShades {
   50: Color;
   150: Color;
   250: Color;
@@ -48,20 +51,20 @@ interface ExtendedColorSwatchStops extends BaseColorSwatchStops {
   950: Color;
 }
 
-export interface ExtendedColorSwatch extends ExtendedColorSwatchStops {
+export interface ExtendedColorSwatch extends ExtendedColorSwatchShades {
   type: 'EXTENDED';
-  mainStop: BasicColorSwatchStop;
+  baseShade: BaseColorSwatchShade;
 }
 
 export type ColorSwatch = BaseColorSwatch | ExtendedColorSwatch;
 
 export interface ColorSwatchOptions {
   /**
-   * Include half-stops (`50`, `150`, …, `950`) interpolated between the base swatch stops.
+   * Include half-shades (`50`, `150`, …, `950`) interpolated between the base swatch shades.
    */
   extended?: boolean;
   /**
-   * Center the provided color on the 500 swatch stop instead of positioning it dynamically.
+   * Center the provided color on the 500 swatch shade instead of positioning it dynamically.
    */
   centerOn500?: boolean;
 }
@@ -76,47 +79,49 @@ function getAdjustedSaturation(baseSaturation: number, delta: number): number {
   return clampValue(baseSaturation + delta, 0, 100);
 }
 
-const BASE_COLOR_SWATCH_STOPS: readonly BasicColorSwatchStop[] = [
+const BASE_COLOR_SWATCH_SHADES: readonly BaseColorSwatchShade[] = [
   100, 200, 300, 400, 500, 600, 700, 800, 900,
 ];
 
-const EXTENDED_COLOR_SWATCH_STOPS: readonly ExtendedColorSwatchStop[] = [
+const EXTENDED_COLOR_SWATCH_SHADES: readonly ExtendedColorSwatchShade[] = [
   50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
 ];
 
-const BASIC_SWATCH_DELTAS: ColorSwatchStopDeltas<BasicColorSwatchStop> = {
-  100: { saturationDelta: 20, lightnessDelta: 40 },
-  200: { saturationDelta: 15, lightnessDelta: 30 },
-  300: { saturationDelta: 10, lightnessDelta: 20 },
-  400: { saturationDelta: 5, lightnessDelta: 10 },
-  500: { saturationDelta: 0, lightnessDelta: 0 },
-  600: { saturationDelta: -5, lightnessDelta: -10 },
-  700: { saturationDelta: -10, lightnessDelta: -20 },
-  800: { saturationDelta: -15, lightnessDelta: -30 },
-  900: { saturationDelta: -20, lightnessDelta: -40 },
-};
+const BASE_SWATCH_SHADE_ADJUSTMENTS_FROM_500: ColorSwatchShadeAdjustmentsFrom500<BaseColorSwatchShade> =
+  {
+    100: { saturationShift: 20, lightnessShift: 40 },
+    200: { saturationShift: 15, lightnessShift: 30 },
+    300: { saturationShift: 10, lightnessShift: 20 },
+    400: { saturationShift: 5, lightnessShift: 10 },
+    500: { saturationShift: 0, lightnessShift: 0 },
+    600: { saturationShift: -5, lightnessShift: -10 },
+    700: { saturationShift: -10, lightnessShift: -20 },
+    800: { saturationShift: -15, lightnessShift: -30 },
+    900: { saturationShift: -20, lightnessShift: -40 },
+  };
 
-const EXTENDED_SWATCH_DELTAS: ColorSwatchStopDeltas<ExtendedColorSwatchStop> = {
-  50: { saturationDelta: 22.5, lightnessDelta: 45 },
-  100: { saturationDelta: 20, lightnessDelta: 40 },
-  150: { saturationDelta: 17.5, lightnessDelta: 35 },
-  200: { saturationDelta: 15, lightnessDelta: 30 },
-  250: { saturationDelta: 12.5, lightnessDelta: 25 },
-  300: { saturationDelta: 10, lightnessDelta: 20 },
-  350: { saturationDelta: 7.5, lightnessDelta: 15 },
-  400: { saturationDelta: 5, lightnessDelta: 10 },
-  450: { saturationDelta: 2.5, lightnessDelta: 5 },
-  500: { saturationDelta: 0, lightnessDelta: 0 },
-  550: { saturationDelta: -2.5, lightnessDelta: -5 },
-  600: { saturationDelta: -5, lightnessDelta: -10 },
-  650: { saturationDelta: -7.5, lightnessDelta: -15 },
-  700: { saturationDelta: -10, lightnessDelta: -20 },
-  750: { saturationDelta: -12.5, lightnessDelta: -25 },
-  800: { saturationDelta: -15, lightnessDelta: -30 },
-  850: { saturationDelta: -17.5, lightnessDelta: -35 },
-  900: { saturationDelta: -20, lightnessDelta: -40 },
-  950: { saturationDelta: -22.5, lightnessDelta: -45 },
-};
+const EXTENDED_SWATCH_SHADE_ADJUSTMENTS_FROM_500: ColorSwatchShadeAdjustmentsFrom500<ExtendedColorSwatchShade> =
+  {
+    50: { saturationShift: 22.5, lightnessShift: 45 },
+    100: { saturationShift: 20, lightnessShift: 40 },
+    150: { saturationShift: 17.5, lightnessShift: 35 },
+    200: { saturationShift: 15, lightnessShift: 30 },
+    250: { saturationShift: 12.5, lightnessShift: 25 },
+    300: { saturationShift: 10, lightnessShift: 20 },
+    350: { saturationShift: 7.5, lightnessShift: 15 },
+    400: { saturationShift: 5, lightnessShift: 10 },
+    450: { saturationShift: 2.5, lightnessShift: 5 },
+    500: { saturationShift: 0, lightnessShift: 0 },
+    550: { saturationShift: -2.5, lightnessShift: -5 },
+    600: { saturationShift: -5, lightnessShift: -10 },
+    650: { saturationShift: -7.5, lightnessShift: -15 },
+    700: { saturationShift: -10, lightnessShift: -20 },
+    750: { saturationShift: -12.5, lightnessShift: -25 },
+    800: { saturationShift: -15, lightnessShift: -30 },
+    850: { saturationShift: -17.5, lightnessShift: -35 },
+    900: { saturationShift: -20, lightnessShift: -40 },
+    950: { saturationShift: -22.5, lightnessShift: -45 },
+  };
 
 function isPureBlackOrWhite(baseColor: Color): boolean {
   const { r, g, b } = baseColor.toRGB();
@@ -126,59 +131,59 @@ function isPureBlackOrWhite(baseColor: Color): boolean {
   return isBlack || isWhite;
 }
 
-function getMainStop(baseColor: Color, shouldCenterOn500: boolean): BasicColorSwatchStop {
+function getBaseShade(baseColor: Color, shouldCenterOn500: boolean): BaseColorSwatchShade {
   if (shouldCenterOn500 || isPureBlackOrWhite(baseColor)) {
     return 500;
   }
 
   const { l } = baseColor.toHSLA();
-  const stopIndex = Math.round((1 - l / 100) * 8);
-  const stop = (100 + stopIndex * 100) as BasicColorSwatchStop;
+  const shadeIndex = Math.round((1 - l / 100) * 8);
+  const shade = (100 + shadeIndex * 100) as BaseColorSwatchShade;
 
-  return clampValue(stop, 100, 900) as BasicColorSwatchStop;
+  return clampValue(shade, 100, 900) as BaseColorSwatchShade;
 }
 
-function getSwatchStopDelta<Stop extends number>(
-  stop: Stop,
-  baseStop: BasicColorSwatchStop,
-  deltas: Record<number, SwatchStopDelta>,
-): SwatchStopDelta {
-  const baseDelta = deltas[baseStop];
-  const stopDelta = deltas[stop];
+function getRelativeShadeAdjustment<Shade extends ExtendedColorSwatchShade>(
+  shade: Shade,
+  baseShade: BaseColorSwatchShade,
+  adjustmentsFrom500: Record<number, ColorSwatchShadeAdjustment>,
+): ColorSwatchShadeAdjustment {
+  const baseShadeAdjustment = adjustmentsFrom500[baseShade];
+  const shadeAdjustment = adjustmentsFrom500[shade];
 
   return {
-    saturationDelta: stopDelta.saturationDelta - baseDelta.saturationDelta,
-    lightnessDelta: stopDelta.lightnessDelta - baseDelta.lightnessDelta,
+    saturationShift: shadeAdjustment.saturationShift - baseShadeAdjustment.saturationShift,
+    lightnessShift: shadeAdjustment.lightnessShift - baseShadeAdjustment.lightnessShift,
   };
 }
 
-function createSwatch<Stop extends number>({
+function createSwatch<Shade extends ExtendedColorSwatchShade>({
   baseColor,
-  deltas,
-  mainStop,
-  stops,
+  adjustmentsFrom500,
+  baseShade,
+  shades,
   type,
   createColor,
 }: {
   baseColor: Color;
-  deltas: ColorSwatchStopDeltas<Stop>;
-  mainStop: BasicColorSwatchStop;
-  stops: readonly Stop[];
+  adjustmentsFrom500: ColorSwatchShadeAdjustmentsFrom500<Shade>;
+  baseShade: BaseColorSwatchShade;
+  shades: readonly Shade[];
   type: ColorSwatch['type'];
   createColor: CreateColorInstance;
 }): ColorSwatch {
   const { h: baseH, s: baseS, l: baseL, a: baseA } = baseColor.toHSLA();
 
-  const swatchStops = stops.reduce<Record<number, Color>>((acc, stop) => {
-    const delta = getSwatchStopDelta(stop, mainStop, deltas);
+  const swatchShades = shades.reduce<Record<number, Color>>((acc, shade) => {
+    const adjustment = getRelativeShadeAdjustment(shade, baseShade, adjustmentsFrom500);
 
-    acc[stop] =
-      stop === mainStop
+    acc[shade] =
+      shade === baseShade
         ? baseColor.clone()
         : createColor({
             h: baseH,
-            s: getAdjustedSaturation(baseS, delta.saturationDelta),
-            l: clampValue(baseL + delta.lightnessDelta, 0, 100),
+            s: getAdjustedSaturation(baseS, adjustment.saturationShift),
+            l: clampValue(baseL + adjustment.lightnessShift, 0, 100),
             a: baseA,
           });
 
@@ -187,36 +192,36 @@ function createSwatch<Stop extends number>({
 
   return {
     type,
-    mainStop,
-    ...(swatchStops as Record<Stop, Color>),
+    baseShade,
+    ...(swatchShades as Record<Shade, Color>),
   } as ColorSwatch;
 }
 
 function getBaseColorSwatch(
   baseColor: Color,
-  mainStop: BasicColorSwatchStop,
+  baseShade: BaseColorSwatchShade,
   createColor: CreateColorInstance,
 ): BaseColorSwatch {
   return createSwatch({
     baseColor,
-    deltas: BASIC_SWATCH_DELTAS,
-    mainStop,
-    stops: BASE_COLOR_SWATCH_STOPS,
-    type: 'BASIC',
+    adjustmentsFrom500: BASE_SWATCH_SHADE_ADJUSTMENTS_FROM_500,
+    baseShade,
+    shades: BASE_COLOR_SWATCH_SHADES,
+    type: 'BASE',
     createColor,
   }) as BaseColorSwatch;
 }
 
 function getExtendedColorSwatch(
   baseColor: Color,
-  mainStop: BasicColorSwatchStop,
+  baseShade: BaseColorSwatchShade,
   createColor: CreateColorInstance,
 ): ExtendedColorSwatch {
   return createSwatch({
     baseColor,
-    deltas: EXTENDED_SWATCH_DELTAS,
-    mainStop,
-    stops: EXTENDED_COLOR_SWATCH_STOPS,
+    adjustmentsFrom500: EXTENDED_SWATCH_SHADE_ADJUSTMENTS_FROM_500,
+    baseShade,
+    shades: EXTENDED_COLOR_SWATCH_SHADES,
     type: 'EXTENDED',
     createColor,
   }) as ExtendedColorSwatch;
@@ -237,11 +242,11 @@ export function getColorSwatch(
   options: ColorSwatchOptions = {},
   createColor: CreateColorInstance,
 ): ColorSwatch {
-  const mainStop = getMainStop(baseColor, options.centerOn500 ?? false);
+  const baseShade = getBaseShade(baseColor, options.centerOn500 ?? false);
 
   if (options.extended) {
-    return getExtendedColorSwatch(baseColor, mainStop, createColor);
+    return getExtendedColorSwatch(baseColor, baseShade, createColor);
   }
 
-  return getBaseColorSwatch(baseColor, mainStop, createColor);
+  return getBaseColorSwatch(baseColor, baseShade, createColor);
 }

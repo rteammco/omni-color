@@ -61,7 +61,14 @@ import type {
   WCAGReadabilityReport,
   WCAGReadabilityTextSizeOptions,
 } from './color/readability';
-import type { ColorSwatch, ColorSwatchOptions, ExtendedColorSwatch } from './color/swatch';
+import type {
+  BaseColorSwatch,
+  BaseColorSwatchShade,
+  ColorSwatch,
+  ColorSwatchOptions,
+  ExtendedColorSwatch,
+  ExtendedColorSwatchShade,
+} from './color/swatch';
 import type {
   ColorTemperatureAndLabel,
   ColorTemperatureLabel,
@@ -77,6 +84,8 @@ export {
   type APCAThresholdPreset,
   type AverageColorsOptions,
   type BaseColorName,
+  type BaseColorSwatch,
+  type BaseColorSwatchShade,
   type BlendColorsOptions,
   type BlendMode,
   type BlendSpace,
@@ -122,6 +131,7 @@ export {
   type DeltaEMethod,
   type DeltaEOptions,
   type ExtendedColorSwatch,
+  type ExtendedColorSwatchShade,
   type GenerateColorPaletteOptions,
   type GrayscaleHandlingMode,
   type HueInterpolationMode,

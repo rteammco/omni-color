@@ -271,7 +271,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
 
       const primarySwatch = palette.primary.type === 'EXTENDED' ? palette.primary : null;
 
-      expect(primarySwatch?.mainStop).toBe(expected.mainStop);
+      expect(primarySwatch?.baseShade).toBe(expected.baseShade);
       expect(primarySwatch?.[950].toHex()).toBe(expected[950].toHex());
     });
 
@@ -284,7 +284,7 @@ describe('generateColorPaletteFromBaseColor()', () => {
         createColorInstance,
       );
 
-      expect(palette.primary.mainStop).toBe(500);
+      expect(palette.primary.baseShade).toBe(500);
     });
   });
 

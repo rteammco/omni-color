@@ -805,22 +805,22 @@ new Color('#ff7f50').getHarmonyColors('TRIADIC').map((color) => color.toHex());
 
 #### `getColorSwatch(options?: ColorSwatchOptions): ColorSwatch`
 
-- <ins>Returns</ins> a [`ColorSwatch`](#types-color-swatch) of lighter and darker variants keyed `100`–`900`, reporting the anchored stop via `mainStop`. When `extended` is `true`, returns instead an [`ExtendedColorSwatch`](#types-extended-color-swatch) with half-steps `50`–`950` are added without moving the base color to a half-stop; otherwise, [`BaseColorSwatch`](#types-base-color-swatch).
+- <ins>Returns</ins> a [`ColorSwatch`](#types-color-swatch) of lighter and darker variants keyed `100`–`900`, reporting the base shade via `baseShade`. When `extended` is `true`, returns instead an [`ExtendedColorSwatch`](#types-extended-color-swatch) with half-shades `50`–`950` added without moving the base color to a half-shade; otherwise, [`BaseColorSwatch`](#types-base-color-swatch).
 - <ins>Inputs</ins>:
   - `options` (optional) - `ColorSwatchOptions`:
-    - `centerOn500` - force the original color onto the `500` stop instead of dynamically anchoring by lightness (default is `false`).
-    - `extended` - set to `true` to include midpoint stops `50`–`950` and return an [`ExtendedColorSwatch`](#types-extended-color-swatch). Defaults to `false` (basic stops only).
+    - `centerOn500` - force the original color onto the `500` shade instead of dynamically anchoring by lightness (default is `false`).
+    - `extended` - set to `true` to include midpoint shades `50`–`950` and return an [`ExtendedColorSwatch`](#types-extended-color-swatch). Defaults to `false` (base shades only).
 
 ```ts
 const green = new Color('green');
 const swatch = green.getColorSwatch({ centerOn500: true });
-swatch.mainStop; // 500
+swatch.baseShade; // 500
 swatch[500].equals(green); // true
 swatch[100].toHex(); // lightest
 swatch[900].toHex(); // darkest
 
 const extendedSwatch = new Color('#008000').getColorSwatch({ extended: true });
-extendedSwatch.mainStop; // 700
+extendedSwatch.baseShade; // 700
 extendedSwatch[700].equals('#008000'); // true
 extendedSwatch[50].toHex(); // lightest
 extendedSwatch[500].toHex(); // middle
@@ -1001,8 +1001,10 @@ bestSwatchBackground.toHex(); // '#301308'
   - <span id="types-color-oklch">`ColorOKLCH`</span> - OKLCH color space with lightness, chroma, and hue. `{ l: number; c: number; h: number }` where `l` is a number between 0 and 1 (lightness), `c` is a number representing chroma (typically 0–0.4), and `h` is a number between 0 and 360 (hue in degrees).
 - <span id="types-color-space">`ColorSpace`</span> - supported color spaces for `Color.toColorString()`: `"SRGB" | "DISPLAY-P3" | "REC2020"`.
 - <span id="types-color-temperature-label">`ColorTemperatureLabel`</span> - color temperature options: `"Candlelight" | "Incandescent lamp" | "Halogen lamp" | "Fluorescent lamp" | "Daylight" | "Cloudy sky" | "Shade" | "Blue sky"`
-- <span id="types-base-color-swatch">`BaseColorSwatch`</span> - a swatch representing shades of the same color from 100 to 900 `{ 100: number; 200 number; ... 900: number }` where `100` is the lightest shade and `900` is the darkest shade.
-- <span id="types-extended-color-swatch">`ExtendedColorSwatch`</span> - same as a [`ColorSwatch`](#types-color-swatch) but includes half-shades at 50, 100, 150, ..., 950. It is a superset of [`ColorSwatch`](#types-color-swatch).
+- <span id="types-base-color-swatch-shade">`BaseColorSwatchShade`</span> - a base swatch shade key: `100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900`.
+- <span id="types-extended-color-swatch-shade">`ExtendedColorSwatchShade`</span> - an extended swatch shade key: [`BaseColorSwatchShade`](#types-base-color-swatch-shade) plus `50 | 150 | 250 | 350 | 450 | 550 | 650 | 750 | 850 | 950`.
+- <span id="types-base-color-swatch">`BaseColorSwatch`</span> - a swatch representing shades of the same color from 100 to 900 with `baseShade` identifying the original color shade. `100` is the lightest shade and `900` is the darkest shade.
+- <span id="types-extended-color-swatch">`ExtendedColorSwatch`</span> - same as a [`BaseColorSwatch`](#types-base-color-swatch) but includes half-shades at 50, 100, 150, ..., 950.
 - <span id="types-color-swatch">`ColorSwatch`</span> - `BaseColorSwatch | ExtendedColorSwatch`.
 - <span id="types-color-palette">`ColorPalette`</span> - a collection of [`ColorSwatch`](#types-color-swatch)es representing a color palette for a specified [`ColorHarmony`](#types-color-harmony). Includes a `primary` swatch for the main (base) color, `secondaryColors` swatches depending on the color harmony, and swatches for `neutrals`, `tintedNeutrals` (neutrals slightly tinted towards the main color), and swatches for semantic colors `info`, `negative`, `positive`, `special`, and `warning`.
 - <span id="types-color-harmony">`ColorHarmony`</span> - a type of color harmony to generate [`ColorPalette`](#types-color-palette): `"COMPLEMENTARY" | "SPLIT_COMPLEMENTARY" | "TRIADIC" | "SQUARE" | "TETRADIC" | "ANALOGOUS" | "MONOCHROMATIC"`

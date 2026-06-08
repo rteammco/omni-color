@@ -6,7 +6,7 @@ describe('getPaletteColorVariations', () => {
     it('returns grayscale steps', () => {
       const baseColor = new Color('#000000');
       const swatch = getColorSwatch(baseColor, {}, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#666666');
       expect(swatch[200].toHex()).toBe('#4d4d4d');
       expect(swatch[300].toHex()).toBe('#333333');
@@ -23,7 +23,7 @@ describe('getPaletteColorVariations', () => {
     it('returns darker grays for higher numbers', () => {
       const baseColor = new Color('#ffffff');
       const swatch = getColorSwatch(baseColor, undefined, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#ffffff');
       expect(swatch[200].toHex()).toBe('#ffffff');
       expect(swatch[300].toHex()).toBe('#ffffff');
@@ -40,7 +40,7 @@ describe('getPaletteColorVariations', () => {
     it('keeps shades neutral', () => {
       const baseColor = new Color('#808080');
       const swatch = getColorSwatch(baseColor, undefined, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#e6e6e6');
       expect(swatch[200].toHex()).toBe('#cccccc');
       expect(swatch[300].toHex()).toBe('#b3b3b3');
@@ -57,7 +57,7 @@ describe('getPaletteColorVariations', () => {
     it('spans from vibrant blue to black', () => {
       const baseColor = new Color('#123456');
       const swatch = getColorSwatch(baseColor, {}, createColorInstance);
-      expect(swatch.mainStop).toBe(700);
+      expect(swatch.baseShade).toBe(700);
       expect(swatch[100].toHex()).toBe('#9dcdfd');
       expect(swatch[200].toHex()).toBe('#6fb3f8');
       expect(swatch[300].toHex()).toBe('#449af0');
@@ -74,7 +74,7 @@ describe('getPaletteColorVariations', () => {
     it('lightens up to white and darkens gradually', () => {
       const baseColor = new Color('#abcdef');
       const swatch = getColorSwatch(baseColor, undefined, createColorInstance);
-      expect(swatch.mainStop).toBe(300);
+      expect(swatch.baseShade).toBe(300);
       expect(swatch[100].toHex()).toBe('#ffffff');
       expect(swatch[200].toHex()).toBe('#d5e7f8');
       expect(swatch[300].toHex()).toBe('#abcdef');
@@ -91,7 +91,7 @@ describe('getPaletteColorVariations', () => {
     it('creates a classic red palette', () => {
       const baseColor = new Color('#ff0000');
       const swatch = getColorSwatch(baseColor, {}, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#ffcccc');
       expect(swatch[200].toHex()).toBe('#ff9999');
       expect(swatch[300].toHex()).toBe('#ff6666');
@@ -108,7 +108,7 @@ describe('getPaletteColorVariations', () => {
     it('creates a classic green palette', () => {
       const baseColor = new Color('#00ff00');
       const swatch = getColorSwatch(baseColor, undefined, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#ccffcc');
       expect(swatch[200].toHex()).toBe('#99ff99');
       expect(swatch[300].toHex()).toBe('#66ff66');
@@ -125,7 +125,7 @@ describe('getPaletteColorVariations', () => {
     it('creates a classic blue palette', () => {
       const baseColor = new Color('#0000ff');
       const swatch = getColorSwatch(baseColor, undefined, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#ccccff');
       expect(swatch[200].toHex()).toBe('#9999ff');
       expect(swatch[300].toHex()).toBe('#6666ff');
@@ -142,7 +142,7 @@ describe('getPaletteColorVariations', () => {
     it('retains its muted character', () => {
       const baseColor = new Color('#7f8c8d');
       const swatch = getColorSwatch(baseColor, undefined, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#e7f0f1');
       expect(swatch[200].toHex()).toBe('#c9dadc');
       expect(swatch[300].toHex()).toBe('#aec2c4');
@@ -159,7 +159,7 @@ describe('getPaletteColorVariations', () => {
     it('spans a useful design range', () => {
       const baseColor = new Color('#3498db');
       const swatch = getColorSwatch(baseColor, {}, createColorInstance);
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#def1fd');
       expect(swatch[200].toHex()).toBe('#b0dbf8');
       expect(swatch[300].toHex()).toBe('#84c5f1');
@@ -175,13 +175,13 @@ describe('getPaletteColorVariations', () => {
   describe('swatch metadata', () => {
     it('labels swatches by type', () => {
       const baseColor = new Color('#3498db');
-      const basicSwatch = getColorSwatch(baseColor, undefined, createColorInstance);
+      const baseSwatch = getColorSwatch(baseColor, undefined, createColorInstance);
       const extendedSwatch = getColorSwatch(baseColor, { extended: true }, createColorInstance);
 
-      expect(basicSwatch.type).toBe('BASIC');
-      expect(basicSwatch.mainStop).toBe(500);
+      expect(baseSwatch.type).toBe('BASE');
+      expect(baseSwatch.baseShade).toBe(500);
       expect(extendedSwatch.type).toBe('EXTENDED');
-      expect(extendedSwatch.mainStop).toBe(500);
+      expect(extendedSwatch.baseShade).toBe(500);
     });
   });
 
@@ -190,7 +190,7 @@ describe('getPaletteColorVariations', () => {
       const baseColor = new Color('#123456');
       const swatch = getColorSwatch(baseColor, { centerOn500: true }, createColorInstance);
 
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[100].toHex()).toBe('#449af0');
       expect(swatch[200].toHex()).toBe('#1b81e6');
       expect(swatch[300].toHex()).toBe('#1967b5');
@@ -208,7 +208,7 @@ describe('getPaletteColorVariations', () => {
       const baseColor = new Color('#ff0000');
       const swatch = getColorSwatch(baseColor, { extended: true }, createColorInstance);
 
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[50].toHex()).toBe('#ffe5e5');
       expect(swatch[100].toHex()).toBe('#ffcccc');
       expect(swatch[150].toHex()).toBe('#ffb3b3');
@@ -234,7 +234,7 @@ describe('getPaletteColorVariations', () => {
       const baseColor = new Color('#808080');
       const swatch = getColorSwatch(baseColor, { extended: true }, createColorInstance);
 
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[50].toHex()).toBe('#f3f3f3');
       expect(swatch[100].toHex()).toBe('#e6e6e6');
       expect(swatch[150].toHex()).toBe('#d9d9d9');
@@ -261,7 +261,7 @@ describe('getPaletteColorVariations', () => {
       const baseSwatch = getColorSwatch(baseColor, {}, createColorInstance);
       const extendedSwatch = getColorSwatch(baseColor, { extended: true }, createColorInstance);
 
-      expect(extendedSwatch.mainStop).toBe(baseSwatch.mainStop);
+      expect(extendedSwatch.baseShade).toBe(baseSwatch.baseShade);
       expect(extendedSwatch[100].toHex()).toBe(baseSwatch[100].toHex());
       expect(extendedSwatch[200].toHex()).toBe(baseSwatch[200].toHex());
       expect(extendedSwatch[300].toHex()).toBe(baseSwatch[300].toHex());
@@ -279,7 +279,7 @@ describe('getPaletteColorVariations', () => {
       const baseColor = new Color('rgba(52, 152, 219, 0.4)');
       const swatch = getColorSwatch(baseColor, { extended: true }, createColorInstance);
 
-      expect(swatch.mainStop).toBe(500);
+      expect(swatch.baseShade).toBe(500);
       expect(swatch[300].toRGBA().a).toBeCloseTo(0.4, 5);
       expect(swatch[500].toRGBA().a).toBeCloseTo(0.4, 5);
       expect(swatch[700].toRGBA().a).toBeCloseTo(0.4, 5);

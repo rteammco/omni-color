@@ -682,8 +682,8 @@ describe('Color.getColorSwatch', () => {
   it('returns the correct swatch for a color', () => {
     const baseColor = new Color('#625aa5');
     const swatch = baseColor.getColorSwatch();
-    expect(swatch.type).toBe('BASIC');
-    expect(swatch.mainStop).toBe(500);
+    expect(swatch.type).toBe('BASE');
+    expect(swatch.baseShade).toBe(500);
     expect(swatch[100].toHex()).toBe('#dcd9f2');
     expect(swatch[200].toHex()).toBe('#bab5e3');
     expect(swatch[300].toHex()).toBe('#9b94d1');
@@ -699,7 +699,7 @@ describe('Color.getColorSwatch', () => {
     const baseColor = new Color('#625aa5');
     const swatch = baseColor.getColorSwatch({ extended: true });
     expect(swatch.type).toBe('EXTENDED');
-    expect(swatch.mainStop).toBe(500);
+    expect(swatch.baseShade).toBe(500);
 
     expect(swatch[50].toHex()).toBe('#edecf9');
     expect(swatch[100].toHex()).toBe('#dcd9f2');
@@ -943,10 +943,10 @@ describe('Color.getMostReadableTextColor', () => {
   it('returns the strongest readable color from a swatch', () => {
     const background = new Color('#f8fafc');
 
-    const basicSwatch = new Color('#21352e').getColorSwatch({ centerOn500: true });
-    const resultBasic = background.getMostReadableTextColor(basicSwatch);
-    expect(resultBasic.equals(basicSwatch[900])).toBe(true);
-    expect(resultBasic).not.toBe(basicSwatch[900]);
+    const baseSwatch = new Color('#21352e').getColorSwatch({ centerOn500: true });
+    const resultBase = background.getMostReadableTextColor(baseSwatch);
+    expect(resultBase.equals(baseSwatch[900])).toBe(true);
+    expect(resultBase).not.toBe(baseSwatch[900]);
 
     const extendedSwatch = new Color('#0ea5e9ff').getColorSwatch({
       extended: true,
@@ -1070,10 +1070,10 @@ describe('Color.getBestBackgroundColor', () => {
   it('selects the best background from a swatch', () => {
     const textColor = new Color('#111111');
 
-    const basicSwatch = new Color('#3e3623ff').getColorSwatch();
-    const resultBasic = textColor.getBestBackgroundColor(basicSwatch);
-    expect(resultBasic.equals(basicSwatch[100])).toBe(true);
-    expect(resultBasic).not.toBe(basicSwatch[100]);
+    const baseSwatch = new Color('#3e3623ff').getColorSwatch();
+    const resultBase = textColor.getBestBackgroundColor(baseSwatch);
+    expect(resultBase.equals(baseSwatch[100])).toBe(true);
+    expect(resultBase).not.toBe(baseSwatch[100]);
 
     const extendedSwatch = new Color('#eab308').getColorSwatch({
       extended: true,

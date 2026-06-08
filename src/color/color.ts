@@ -830,26 +830,26 @@ export class Color implements ColorBrand {
   /**
    * Returns a {@link ColorSwatch} of lighter and darker variants of the color. The
    * swatch has keys `100`–`900` and, by default, anchors the original color on the
-   * stop that best matches its lightness (reported via the `mainStop` property).
+   * shade that best matches its lightness (reported via the `baseShade` property).
    * Lower numbers are lighter and higher numbers are darker, with black and white
    * always centered on `500`. Passing `{ centerOn500: true }` forces the original
-   * color onto the `500` stop regardless of its brightness. Passing
-   * `{ extended: true }` adds midpoint stops (`50`, `150`, `250`, ... `950`) that
+   * color onto the `500` shade regardless of its brightness. Passing
+   * `{ extended: true }` adds midpoint shades (`50`, `150`, `250`, ... `950`) that
    * are interpolated between the base swatch colors while still anchoring the
-   * base color on a `100`–`900` stop.
+   * base color on a `100`–`900` shade.
    *
-   * @param options - Optional {@link ColorSwatchOptions} for requesting the extended swatch or customizing the anchor stop.
+   * @param options - Optional {@link ColorSwatchOptions} for requesting the extended swatch or customizing the base shade.
    * @returns A {@link ColorSwatch} containing lighter and darker {@link Color}s ranging from lightest to darkest.
    *
    * @example
    * ```ts
    * const swatch = new Color('#ff0000').getColorSwatch();
-   * swatch.mainStop; // e.g. 500
+   * swatch.baseShade; // e.g. 500
    * const light = swatch[100]; // lightest shade
    * const dark = swatch[900];  // darkest shade
    *
    * const extendedSwatch = new Color('#ff0000').getColorSwatch({ extended: true, centerOn500: true });
-   * extendedSwatch.mainStop; // 500
+   * extendedSwatch.baseShade; // 500
    * const midLight = extendedSwatch[150]; // halfway between 100 and 200
    * const darkest = extendedSwatch[950];  // darker than 900
    * ```

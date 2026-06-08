@@ -2885,12 +2885,12 @@ describe('readability selection helpers', () => {
   it('selects the most readable text color from a swatch', () => {
     const background = new Color('#ffffff');
 
-    const basicSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
-    const resultBasic = getMostReadableTextColorForBackground(
+    const baseSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
+    const resultBase = getMostReadableTextColorForBackground(
       background,
-      getColorList(basicSwatch, createColorInstance),
+      getColorList(baseSwatch, createColorInstance),
     );
-    expect(resultBasic.equals(basicSwatch[900])).toBe(true);
+    expect(resultBase.equals(baseSwatch[900])).toBe(true);
 
     const extendedSwatch = new Color('#3b82f6').getColorSwatch({
       extended: true,

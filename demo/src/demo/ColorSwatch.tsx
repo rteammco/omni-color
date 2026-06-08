@@ -3,8 +3,8 @@ import { Card } from '../components/Card';
 import { ColorBox } from '../components/ColorBox';
 import { IconType } from '../components/Icon.types';
 
-const BASIC_SWATCH_STOPS = [100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
-const EXTENDED_SWATCH_STOPS = [
+const BASE_SWATCH_SHADES = [100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
+const EXTENDED_SWATCH_SHADES = [
   50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
 ] as const;
 
@@ -31,27 +31,27 @@ export function ColorSwatch(props: Props) {
       <Card title={title}>
         <div className="flex flex-row gap-0 justify-center overflow-hidden">
           {swatch.type === 'EXTENDED'
-            ? EXTENDED_SWATCH_STOPS.map((stopValue) => (
+            ? EXTENDED_SWATCH_SHADES.map((shade) => (
                 <ColorBox
-                  key={stopValue}
-                  color={swatch[stopValue]}
+                  key={shade}
+                  color={swatch[shade]}
                   hideBorder
-                  label={withLabels ? `${stopValue}` : undefined}
+                  label={withLabels ? `${shade}` : undefined}
                   labelResponsive
                   noBorderRadius
-                  overlayIcon={stopValue === swatch.mainStop ? IconType.CHECK : undefined}
+                  overlayIcon={shade === swatch.baseShade ? IconType.CHECK : undefined}
                   width="STRETCH"
                 />
               ))
-            : BASIC_SWATCH_STOPS.map((stopValue) => (
+            : BASE_SWATCH_SHADES.map((shade) => (
                 <ColorBox
-                  key={stopValue}
-                  color={swatch[stopValue]}
+                  key={shade}
+                  color={swatch[shade]}
                   hideBorder
-                  label={withLabels ? `${stopValue}` : undefined}
+                  label={withLabels ? `${shade}` : undefined}
                   labelResponsive
                   noBorderRadius
-                  overlayIcon={stopValue === swatch.mainStop ? IconType.CHECK : undefined}
+                  overlayIcon={shade === swatch.baseShade ? IconType.CHECK : undefined}
                   width="STRETCH"
                 />
               ))}
