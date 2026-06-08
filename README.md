@@ -829,7 +829,9 @@ extendedSwatch[950].toHex(); // darkest
 
 #### `getColorPalette(harmony = 'COMPLEMENTARY', options?: GenerateColorPaletteOptions): ColorPalette`
 
-- <ins>Returns</ins> a complete [`ColorPalette`](#types-color-palette) containing the primary swatch, secondary swatches from the chosen harmony, neutral/tinted neutrals, and semantic swatches (`info`, `positive`, `negative`, `warning`, `special`).
+- <ins>Returns</ins> a complete [`ColorPalette`](#types-color-palette) containing the primary swatch, secondary swatches from the chosen harmony, neutral/tinted neutrals, secondary tinted neutrals, and semantic swatches (`info`, `positive`, `negative`, `warning`, `special`).
+- `palette.tintedNeutrals` is tinted toward the main color.
+- `palette.secondaryTintedNeutrals` is an array of tinted neutral swatches for the secondary colors. It always matches `palette.secondaryColors` by index: `palette.secondaryTintedNeutrals[0]` is for `palette.secondaryColors[0]`, `palette.secondaryTintedNeutrals[1]` is for `palette.secondaryColors[1]`, and so on.
 - <ins>Inputs</ins>:
   - `harmony` (optional) - [`ColorHarmony`](#types-color-harmony) used to generate secondary colors (defaults to `'COMPLEMENTARY'`).
   - `options` (optional) - `GenerateColorPaletteOptions`:
@@ -843,7 +845,9 @@ const palette = new Color('#ff7f50').getColorPalette('ANALOGOUS', {
   semanticHarmonization: { huePull: 0.35 },
   swatchOptions: { centerOn500: false },
 });
-palette.info[500].toHex(); // '#9d40d4'
+palette.info[500].toHex(); // '#9d3fd3'
+palette.secondaryColors[0][500].toHex(); // '#f92354'
+palette.secondaryTintedNeutrals[0][500].toHex(); // '#8c7d7f' - for secondaryColors[0]
 ```
 
 ### Readability and Accessibility
@@ -1006,7 +1010,7 @@ bestSwatchBackground.toHex(); // '#301308'
 - <span id="types-base-color-swatch">`BaseColorSwatch`</span> - a swatch representing shades of the same color from 100 to 900 with `baseShade` identifying the original color shade. `100` is the lightest shade and `900` is the darkest shade.
 - <span id="types-extended-color-swatch">`ExtendedColorSwatch`</span> - same as a [`BaseColorSwatch`](#types-base-color-swatch) but includes half-shades at 50, 100, 150, ..., 950.
 - <span id="types-color-swatch">`ColorSwatch`</span> - `BaseColorSwatch | ExtendedColorSwatch`.
-- <span id="types-color-palette">`ColorPalette`</span> - a collection of [`ColorSwatch`](#types-color-swatch)es representing a color palette for a specified [`ColorHarmony`](#types-color-harmony). Includes a `primary` swatch for the main (base) color, `secondaryColors` swatches depending on the color harmony, and swatches for `neutrals`, `tintedNeutrals` (neutrals slightly tinted towards the main color), and swatches for semantic colors `info`, `negative`, `positive`, `special`, and `warning`.
+- <span id="types-color-palette">`ColorPalette`</span> - a collection of [`ColorSwatch`](#types-color-swatch)es representing a color palette for a specified [`ColorHarmony`](#types-color-harmony). Includes a `primary` swatch for the main (base) color, `secondaryColors` swatches depending on the color harmony, swatches for `neutrals`, `tintedNeutrals` (neutrals slightly tinted toward the main color), `secondaryTintedNeutrals` (an array of tinted neutral swatches that matches `secondaryColors` by index), and swatches for semantic colors `info`, `negative`, `positive`, `special`, and `warning`.
 - <span id="types-color-harmony">`ColorHarmony`</span> - a type of color harmony to generate [`ColorPalette`](#types-color-palette): `"COMPLEMENTARY" | "SPLIT_COMPLEMENTARY" | "TRIADIC" | "SQUARE" | "TETRADIC" | "ANALOGOUS" | "MONOCHROMATIC"`
 - <span id="types-grayscale-handling-mode">`GrayscaleHandlingMode`</span> - how hue rotations handle grayscale inputs: `"SPIN_LIGHTNESS" | "IGNORE"`.
 

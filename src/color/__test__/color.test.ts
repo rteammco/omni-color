@@ -746,16 +746,25 @@ describe('Color.getColorPalette', () => {
     // Default complementary palette
     const defaultPalette = baseColor.getColorPalette();
     expect(defaultPalette.secondaryColors).toHaveLength(1);
+    expect(defaultPalette.secondaryTintedNeutrals).toHaveLength(
+      defaultPalette.secondaryColors.length,
+    );
     const complement = baseColor.spin(180);
     expect(defaultPalette.secondaryColors[0][500].toHex()).toBe(complement.toHex());
+    expect(defaultPalette.secondaryTintedNeutrals[0][500].toHex()).toBe('#9e9f98');
 
     // Triadic palette
     const triadicPalette = baseColor.getColorPalette('TRIADIC');
     expect(triadicPalette.secondaryColors).toHaveLength(2);
+    expect(triadicPalette.secondaryTintedNeutrals).toHaveLength(
+      triadicPalette.secondaryColors.length,
+    );
     const triadic1 = baseColor.spin(-120);
     const triadic2 = baseColor.spin(120);
     expect(triadicPalette.secondaryColors[0][500].toHex()).toBe(triadic1.toHex());
     expect(triadicPalette.secondaryColors[1][500].toHex()).toBe(triadic2.toHex());
+    expect(triadicPalette.secondaryTintedNeutrals[0][500].toHex()).toBe('#8c938d');
+    expect(triadicPalette.secondaryTintedNeutrals[1][500].toHex()).toBe('#7c7574');
 
     // Semantic color harmonization options
     const noPullPalette = baseColor.getColorPalette('COMPLEMENTARY', {

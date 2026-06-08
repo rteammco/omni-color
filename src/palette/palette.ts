@@ -15,12 +15,24 @@ export const SUITABLE_PALETTE_MAX_LIGHTNESS = 75;
 
 export interface ColorPalette {
   // Main colors:
+  /** The main color's swatch. */
   primary: ColorSwatch;
+  /** Swatches generated from the selected harmony, excluding the main color. */
   secondaryColors: ColorSwatch[];
 
   // Neutrals:
+  /** Neutral swatch harmonized to the main color's lightness. */
   neutrals: ColorSwatch;
+  /** Neutral swatch harmonized to the main color's lightness and slightly tinted toward the main color. */
   tintedNeutrals: ColorSwatch;
+  /**
+   * Tinted neutral swatches for each secondary color.
+   *
+   * This array always matches `secondaryColors` by index: `secondaryTintedNeutrals[0]`
+   * is the tinted neutral swatch for `secondaryColors[0]`, `secondaryTintedNeutrals[1]`
+   * is the tinted neutral swatch for `secondaryColors[1]`, and so on.
+   */
+  secondaryTintedNeutrals: ColorSwatch[];
   black: Color;
   white: Color;
 
@@ -194,18 +206,25 @@ export function generateColorPaletteFromBaseColor(
 
   const harmonyColors = baseColor.getHarmonyColors(harmony);
   const primary = harmonyColors[0].getColorSwatch(paletteSwatchOptions);
+  const secondaryBaseColors = harmonyColors.slice(1);
+  const secondaryColors = secondaryBaseColors.map((color) =>
+    color.getColorSwatch(paletteSwatchOptions),
+  );
 
   return {
     primary,
-    secondaryColors: harmonyColors
-      .slice(1)
-      .map((color) => color.getColorSwatch(paletteSwatchOptions)),
+    secondaryColors,
     neutrals: harmonizeNeutrals(baseColor, createColor).getColorSwatch(paletteSwatchOptions),
     tintedNeutrals: harmonizeTintedNeutrals(
       baseColor,
       neutralHarmonizationOptions,
       createColor,
     ).getColorSwatch(paletteSwatchOptions),
+    secondaryTintedNeutrals: secondaryBaseColors.map((color) =>
+      harmonizeTintedNeutrals(color, neutralHarmonizationOptions, createColor).getColorSwatch(
+        paletteSwatchOptions,
+      ),
+    ),
     black: createColor(BLACK_HEX),
     white: createColor(WHITE_HEX),
     info: harmonizeSemanticColor(

@@ -68,6 +68,11 @@ describe('generateColorPaletteFromBaseColor()', () => {
     expect(palette.tintedNeutrals[100].toHex()).toBe('#f6efee');
     expect(palette.tintedNeutrals[500].toHex()).toBe('#988380');
     expect(palette.tintedNeutrals[900].toHex()).toBe('#262626');
+
+    expect(palette.secondaryTintedNeutrals).toHaveLength(1);
+    expect(palette.secondaryTintedNeutrals[0][100].toHex()).toBe('#ffffff');
+    expect(palette.secondaryTintedNeutrals[0][500].toHex()).toBe('#d5e3e3');
+    expect(palette.secondaryTintedNeutrals[0][900].toHex()).toBe('#767676');
   });
 
   describe('neutral harmonization across many base colors', () => {
@@ -661,11 +666,15 @@ describe('generateColorPaletteFromBaseColor()', () => {
         createColorInstance,
       );
       expect(palette.secondaryColors.length).toBe(1);
+      expect(palette.secondaryTintedNeutrals.length).toBe(palette.secondaryColors.length);
       expect(palette.primary[100].toHex()).toBe('#ffcccc');
       expect(palette.primary[900].toHex()).toBe('#2e0505');
       expect(palette.secondaryColors[0][100].toHex()).toBe('#ccffff');
       expect(palette.secondaryColors[0][500].toHex()).toBe('#00ffff');
       expect(palette.secondaryColors[0][900].toHex()).toBe('#052e2e');
+      expect(palette.secondaryTintedNeutrals[0][100].toHex()).toBe('#ffffff');
+      expect(palette.secondaryTintedNeutrals[0][500].toHex()).toBe('#d5e3e3');
+      expect(palette.secondaryTintedNeutrals[0][900].toHex()).toBe('#767676');
     });
 
     it('creates a full triadic harmony', () => {
@@ -676,11 +685,18 @@ describe('generateColorPaletteFromBaseColor()', () => {
         createColorInstance,
       );
       expect(palette.secondaryColors.length).toBe(2);
+      expect(palette.secondaryTintedNeutrals.length).toBe(palette.secondaryColors.length);
       expect(palette.primary[500].toHex()).toBe('#ff0000');
       expect(palette.secondaryColors[0][500].toHex()).toBe('#0000ff');
       expect(palette.secondaryColors[1][500].toHex()).toBe('#00ff00');
       expect(palette.secondaryColors[0][100].toHex()).toBe('#ccccff');
       expect(palette.secondaryColors[1][900].toHex()).toBe('#052e05');
+      expect(palette.secondaryTintedNeutrals[0][100].toHex()).toBe('#abb9d6');
+      expect(palette.secondaryTintedNeutrals[0][500].toHex()).toBe('#4d5668');
+      expect(palette.secondaryTintedNeutrals[0][900].toHex()).toBe('#000000');
+      expect(palette.secondaryTintedNeutrals[1][100].toHex()).toBe('#ffffff');
+      expect(palette.secondaryTintedNeutrals[1][500].toHex()).toBe('#c8d8c7');
+      expect(palette.secondaryTintedNeutrals[1][900].toHex()).toBe('#6a6a6a');
     });
 
     it('produces the expected number of secondary colors for other harmonies', () => {
@@ -691,8 +707,11 @@ describe('generateColorPaletteFromBaseColor()', () => {
         createColorInstance,
       );
       expect(analogous.secondaryColors.length).toBe(4);
+      expect(analogous.secondaryTintedNeutrals.length).toBe(analogous.secondaryColors.length);
       expect(analogous.secondaryColors[0][500].toHex()).toBe('#339999');
       expect(analogous.secondaryColors[3][500].toHex()).toBe('#663399');
+      expect(analogous.secondaryTintedNeutrals[0][500].toHex()).toBe('#828a89');
+      expect(analogous.secondaryTintedNeutrals[3][500].toHex()).toBe('#54515a');
 
       const monochromatic = generateColorPaletteFromBaseColor(
         new Color('#336699'),
@@ -701,8 +720,13 @@ describe('generateColorPaletteFromBaseColor()', () => {
         createColorInstance,
       );
       expect(monochromatic.secondaryColors.length).toBe(4);
+      expect(monochromatic.secondaryTintedNeutrals.length).toBe(
+        monochromatic.secondaryColors.length,
+      );
       expect(monochromatic.secondaryColors[0][500].toHex()).toBe('#6699cc');
       expect(monochromatic.secondaryColors[3][500].toHex()).toBe('#476685');
+      expect(monochromatic.secondaryTintedNeutrals[0][500].toHex()).toBe('#90959a');
+      expect(monochromatic.secondaryTintedNeutrals[3][500].toHex()).toBe('#606366');
     });
   });
 });

@@ -56,7 +56,15 @@ export function ColorPaletteDemo({ color }: Props) {
         />
       ))}
       <ColorSwatch swatch={palette.neutrals} title="Neutrals" withLabels />
-      <ColorSwatch swatch={palette.tintedNeutrals} title="Tinted neutrals" withLabels />
+      <ColorSwatch swatch={palette.tintedNeutrals} title="Tinted neutrals (primary)" withLabels />
+      {palette.secondaryTintedNeutrals.map((swatch, index) => (
+        <ColorSwatch
+          key={index}
+          title={`Tinted neutrals (secondary ${index + 1})`}
+          swatch={swatch}
+          withLabels
+        />
+      ))}
       <ColorSwatch swatch={palette.info} title="Info (semantic)" withLabels />
       <ColorSwatch swatch={palette.positive} title="Positive (semantic)" withLabels />
       <ColorSwatch swatch={palette.negative} title="Negative (semantic)" withLabels />
