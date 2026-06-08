@@ -417,19 +417,19 @@ describe('getColorRGBAFromInput', () => {
 
   it('parses full and partial color temperature strings', () => {
     expect(new Color(getColorRGBAFromInput('candlelight', createColorInstance)).toHex()).toBe(
-      getColorFromTemperatureLabel('Candlelight', createColorInstance).toHex(),
+      new Color(getColorFromTemperatureLabel('Candlelight')).toHex(),
     );
 
     expect(new Color(getColorRGBAFromInput('incandescent', createColorInstance)).toHex()).toBe(
-      getColorFromTemperatureLabel('Incandescent lamp', createColorInstance).toHex(),
+      new Color(getColorFromTemperatureLabel('Incandescent lamp')).toHex(),
     );
 
     expect(new Color(getColorRGBAFromInput('  shade  ', createColorInstance)).toHex()).toBe(
-      getColorFromTemperatureLabel('Shade', createColorInstance).toHex(),
+      new Color(getColorFromTemperatureLabel('Shade')).toHex(),
     );
 
     expect(new Color(getColorRGBAFromInput('cloudy sky', createColorInstance)).toHex()).toBe(
-      getColorFromTemperatureLabel('Cloudy sky', createColorInstance).toHex(),
+      new Color(getColorFromTemperatureLabel('Cloudy sky')).toHex(),
     );
   });
 

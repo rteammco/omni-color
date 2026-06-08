@@ -1,292 +1,254 @@
-import { Color, createColorInstance } from '../color';
-import {
-  getColorFromTemperature,
-  getColorFromTemperatureLabel,
-  getColorTemperature,
-  getColorTemperatureString,
-  matchPartialColorTemperatureLabel,
-} from '../temperature';
+import { Color } from '../color';
+import { matchPartialColorTemperatureLabel } from '../temperature';
 
-describe('getColorTemperature', () => {
+describe('getTemperature', () => {
   it('estimates temperature for a near-incandescent warm color', () => {
     // Approximation based on incandescent lamp values (~2700–3000 K)
     // from https://en.wikipedia.org/wiki/Color_temperature
     const color = new Color('#ffa757');
-    const result = getColorTemperature(color);
+    const result = color.getTemperature();
     expect(result.label).toBe('Incandescent lamp');
     expect(result.temperature).toBeGreaterThan(2200);
     expect(result.temperature).toBeLessThan(3200);
   });
 
   it('classifies grayscale and primary/secondary colors', () => {
-    let result = getColorTemperature(new Color('#000000'));
+    let result = new Color('#000000').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(0);
 
-    result = getColorTemperature(new Color('#ffffff'));
+    result = new Color('#ffffff').getTemperature();
     expect(result.label).toBe('Cloudy sky');
     expect(result.temperature).toBe(6504);
 
-    result = getColorTemperature(new Color('#808080'));
+    result = new Color('#808080').getTemperature();
     expect(result.label).toBe('Cloudy sky');
     expect(result.temperature).toBe(6504);
 
-    result = getColorTemperature(new Color('#c0c0c0'));
+    result = new Color('#c0c0c0').getTemperature();
     expect(result.label).toBe('Cloudy sky');
     expect(result.temperature).toBe(6504);
 
-    result = getColorTemperature(new Color('#404040'));
+    result = new Color('#404040').getTemperature();
     expect(result.label).toBe('Cloudy sky');
     expect(result.temperature).toBe(6504);
 
-    result = getColorTemperature(new Color('#ff0000'));
+    result = new Color('#ff0000').getTemperature();
     expect(result.label).toBe('Incandescent lamp');
     expect(result.temperature).toBe(2655);
 
-    result = getColorTemperature(new Color('#00ff00'));
+    result = new Color('#00ff00').getTemperature();
     expect(result.label).toBe('Daylight');
     expect(result.temperature).toBe(6069);
 
-    result = getColorTemperature(new Color('#0000ff'));
+    result = new Color('#0000ff').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(1667);
 
-    result = getColorTemperature(new Color('#ffff00'));
+    result = new Color('#ffff00').getTemperature();
     expect(result.label).toBe('Halogen lamp');
     expect(result.temperature).toBe(3909);
 
-    result = getColorTemperature(new Color('#00ffff'));
+    result = new Color('#00ffff').getTemperature();
     expect(result.label).toBe('Blue sky');
     expect(result.temperature).toBe(12822);
 
-    result = getColorTemperature(new Color('#ff00ff'));
+    result = new Color('#ff00ff').getTemperature();
     expect(result.label).toBe('Halogen lamp');
     expect(result.temperature).toBe(3544);
   });
 
   it('classifies a full spectrum of intermediate hues', () => {
-    let result = getColorTemperature(new Color('#ff4000'));
+    let result = new Color('#ff4000').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(1856);
 
-    result = getColorTemperature(new Color('#ff8000'));
+    result = new Color('#ff8000').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(1829);
 
-    result = getColorTemperature(new Color('#ffbf00'));
+    result = new Color('#ffbf00').getTemperature();
     expect(result.label).toBe('Incandescent lamp');
     expect(result.temperature).toBe(2897);
 
-    result = getColorTemperature(new Color('#bfff00'));
+    result = new Color('#bfff00').getTemperature();
     expect(result.label).toBe('Fluorescent lamp');
     expect(result.temperature).toBe(4749);
 
-    result = getColorTemperature(new Color('#80ff00'));
+    result = new Color('#80ff00').getTemperature();
     expect(result.label).toBe('Daylight');
     expect(result.temperature).toBe(5458);
 
-    result = getColorTemperature(new Color('#40ff00'));
+    result = new Color('#40ff00').getTemperature();
     expect(result.label).toBe('Daylight');
     expect(result.temperature).toBe(5914);
 
-    result = getColorTemperature(new Color('#00ff40'));
+    result = new Color('#00ff40').getTemperature();
     expect(result.label).toBe('Daylight');
     expect(result.temperature).toBe(6250);
 
-    result = getColorTemperature(new Color('#00ff80'));
+    result = new Color('#00ff80').getTemperature();
     expect(result.label).toBe('Cloudy sky');
     expect(result.temperature).toBe(6908);
 
-    result = getColorTemperature(new Color('#00ffbf'));
+    result = new Color('#00ffbf').getTemperature();
     expect(result.label).toBe('Shade');
     expect(result.temperature).toBe(8521);
 
-    result = getColorTemperature(new Color('#00bfff'));
+    result = new Color('#00bfff').getTemperature();
     expect(result.label).toBe('Blue sky');
     expect(result.temperature).toBe(44005);
 
-    result = getColorTemperature(new Color('#0080ff'));
+    result = new Color('#0080ff').getTemperature();
     expect(result.label).toBe('Incandescent lamp');
     expect(result.temperature).toBe(2999);
 
-    result = getColorTemperature(new Color('#0040ff'));
+    result = new Color('#0040ff').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(1972);
 
-    result = getColorTemperature(new Color('#4000ff'));
+    result = new Color('#4000ff').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(1655);
 
-    result = getColorTemperature(new Color('#8000ff'));
+    result = new Color('#8000ff').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(1627);
 
-    result = getColorTemperature(new Color('#bf00ff'));
+    result = new Color('#bf00ff').getTemperature();
     expect(result.label).toBe('Candlelight');
     expect(result.temperature).toBe(1668);
 
-    result = getColorTemperature(new Color('#ff00bf'));
+    result = new Color('#ff00bf').getTemperature();
     expect(result.label).toBe('Candlelight');
     // Previously this case produced a negative temperature due to an out-of-gamut
     // chromaticity calculation. It should now be clamped to 0 K.
     expect(result.temperature).toBe(0);
 
-    result = getColorTemperature(new Color('#ff0080'));
+    result = new Color('#ff0080').getTemperature();
     expect(result.label).toBe('Halogen lamp');
     expect(result.temperature).toBe(3505);
 
-    result = getColorTemperature(new Color('#ff0040'));
+    result = new Color('#ff0040').getTemperature();
     expect(result.label).toBe('Incandescent lamp');
     expect(result.temperature).toBe(2789);
   });
 });
 
-describe('getColorTemperatureString', () => {
+describe('getTemperatureAsString', () => {
   it('includes label for colors near temperature reference colors', () => {
-    expect(getColorTemperatureString(new Color('#ffffff'), {}, createColorInstance)).toBe(
-      '6504 K (cloudy sky)',
-    );
-    expect(getColorTemperatureString(new Color('#c0c0c0'), {}, createColorInstance)).toBe(
-      '6504 K (cloudy sky)',
-    );
-    expect(getColorTemperatureString(new Color('#ff8400'), {}, createColorInstance)).toBe(
-      '1881 K (candlelight)',
-    );
-    expect(getColorTemperatureString(new Color('#ffa757'), {}, createColorInstance)).toBe(
-      '2583 K (incandescent lamp)',
-    );
-    expect(getColorTemperatureString(new Color('#ffbb81'), {}, createColorInstance)).toBe(
-      '3198 K (halogen lamp)',
-    );
-    expect(getColorTemperatureString(new Color('#ffd3af'), {}, createColorInstance)).toBe(
-      '4142 K (fluorescent lamp)',
-    );
-    expect(getColorTemperatureString(new Color('#fff6ed'), {}, createColorInstance)).toBe(
-      '5889 K (daylight)',
-    );
-    expect(getColorTemperatureString(new Color('#f3f2ff'), {}, createColorInstance)).toBe(
-      '7049 K (cloudy sky)',
-    );
-    expect(getColorTemperatureString(new Color('#dde6ff'), {}, createColorInstance)).toBe(
-      '8309 K (shade)',
-    );
-    expect(getColorTemperatureString(new Color('#cadaff'), {}, createColorInstance)).toBe(
-      '10026 K (blue sky)',
-    );
+    expect(new Color('#ffffff').getTemperatureAsString({})).toBe('6504 K (cloudy sky)');
+    expect(new Color('#c0c0c0').getTemperatureAsString({})).toBe('6504 K (cloudy sky)');
+    expect(new Color('#ff8400').getTemperatureAsString({})).toBe('1881 K (candlelight)');
+    expect(new Color('#ffa757').getTemperatureAsString({})).toBe('2583 K (incandescent lamp)');
+    expect(new Color('#ffbb81').getTemperatureAsString({})).toBe('3198 K (halogen lamp)');
+    expect(new Color('#ffd3af').getTemperatureAsString({})).toBe('4142 K (fluorescent lamp)');
+    expect(new Color('#fff6ed').getTemperatureAsString({})).toBe('5889 K (daylight)');
+    expect(new Color('#f3f2ff').getTemperatureAsString({})).toBe('7049 K (cloudy sky)');
+    expect(new Color('#dde6ff').getTemperatureAsString({})).toBe('8309 K (shade)');
+    expect(new Color('#cadaff').getTemperatureAsString({})).toBe('10026 K (blue sky)');
   });
 
   it('omits label for saturated or unrelated colors', () => {
-    expect(getColorTemperatureString(new Color('#ff0000'), {}, createColorInstance)).toBe('2655 K');
-    expect(getColorTemperatureString(new Color('#0000ff'), {}, createColorInstance)).toBe('1667 K');
-    expect(getColorTemperatureString(new Color('#00ff00'), {}, createColorInstance)).toBe('6069 K');
-    expect(getColorTemperatureString(new Color('#00ffff'), {}, createColorInstance)).toBe(
-      '12822 K',
-    );
-    expect(getColorTemperatureString(new Color('#ff00ff'), {}, createColorInstance)).toBe('3544 K');
-    expect(getColorTemperatureString(new Color('#ffff00'), {}, createColorInstance)).toBe('3909 K');
-    expect(getColorTemperatureString(new Color('#808080'), {}, createColorInstance)).toBe('6504 K');
-    expect(getColorTemperatureString(new Color('#404040'), {}, createColorInstance)).toBe('6504 K');
-    expect(getColorTemperatureString(new Color('#000000'), {}, createColorInstance)).toBe('0 K');
-    expect(getColorTemperatureString(new Color('#ff00bf'), {}, createColorInstance)).toBe('0 K');
-    expect(getColorTemperatureString(new Color('#00bfff'), {}, createColorInstance)).toBe(
-      '44005 K',
-    );
+    expect(new Color('#ff0000').getTemperatureAsString({})).toBe('2655 K');
+    expect(new Color('#0000ff').getTemperatureAsString({})).toBe('1667 K');
+    expect(new Color('#00ff00').getTemperatureAsString({})).toBe('6069 K');
+    expect(new Color('#00ffff').getTemperatureAsString({})).toBe('12822 K');
+    expect(new Color('#ff00ff').getTemperatureAsString({})).toBe('3544 K');
+    expect(new Color('#ffff00').getTemperatureAsString({})).toBe('3909 K');
+    expect(new Color('#808080').getTemperatureAsString({})).toBe('6504 K');
+    expect(new Color('#404040').getTemperatureAsString({})).toBe('6504 K');
+    expect(new Color('#000000').getTemperatureAsString({})).toBe('0 K');
+    expect(new Color('#ff00bf').getTemperatureAsString({})).toBe('0 K');
+    expect(new Color('#00bfff').getTemperatureAsString({})).toBe('44005 K');
   });
 
   it('formats numbers when requested', () => {
-    expect(
-      getColorTemperatureString(
-        getColorFromTemperatureLabel('Cloudy sky', createColorInstance),
-        {
-          formatNumber: true,
-        },
-        createColorInstance,
-      ),
-    ).toBe('7,049 K (cloudy sky)');
-    expect(
-      getColorTemperatureString(new Color('#ff0000'), { formatNumber: true }, createColorInstance),
-    ).toBe('2,655 K');
+    expect(Color.fromTemperature('Cloudy sky').getTemperatureAsString({ formatNumber: true })).toBe(
+      '7,049 K (cloudy sky)',
+    );
+    expect(new Color('#ff0000').getTemperatureAsString({ formatNumber: true })).toBe('2,655 K');
   });
 });
 
-describe('getColorFromTemperature', () => {
+describe('Color.fromTemperature', () => {
   it('returns the expected color for temperatures across all ranges', () => {
-    expect(getColorFromTemperature(1500, createColorInstance).toHex()).toBe('#ff6c00');
-    expect(getColorFromTemperature(1999, createColorInstance).toHex()).toBe('#ff890e');
-    expect(getColorFromTemperature(2000, createColorInstance).toHex()).toBe('#ff890e');
-    expect(getColorFromTemperature(2500, createColorInstance).toHex()).toBe('#ff9f46');
-    expect(getColorFromTemperature(3000, createColorInstance).toHex()).toBe('#ffb16e');
-    expect(getColorFromTemperature(3500, createColorInstance).toHex()).toBe('#ffc18d');
-    expect(getColorFromTemperature(4000, createColorInstance).toHex()).toBe('#ffcea6');
-    expect(getColorFromTemperature(4500, createColorInstance).toHex()).toBe('#ffdabb');
-    expect(getColorFromTemperature(5000, createColorInstance).toHex()).toBe('#ffe4ce');
-    expect(getColorFromTemperature(6499, createColorInstance).toHex()).toBe('#fffefa');
-    expect(getColorFromTemperature(6500, createColorInstance).toHex()).toBe('#fffefa');
-    expect(getColorFromTemperature(7499, createColorInstance).toHex()).toBe('#e6ebff');
-    expect(getColorFromTemperature(7500, createColorInstance).toHex()).toBe('#e6ebff');
-    expect(getColorFromTemperature(8999, createColorInstance).toHex()).toBe('#d2dfff');
-    expect(getColorFromTemperature(9000, createColorInstance).toHex()).toBe('#d2dfff');
-    expect(getColorFromTemperature(20000, createColorInstance).toHex()).toBe('#abc6ff');
+    expect(Color.fromTemperature(1500).toHex()).toBe('#ff6c00');
+    expect(Color.fromTemperature(1999).toHex()).toBe('#ff890e');
+    expect(Color.fromTemperature(2000).toHex()).toBe('#ff890e');
+    expect(Color.fromTemperature(2500).toHex()).toBe('#ff9f46');
+    expect(Color.fromTemperature(3000).toHex()).toBe('#ffb16e');
+    expect(Color.fromTemperature(3500).toHex()).toBe('#ffc18d');
+    expect(Color.fromTemperature(4000).toHex()).toBe('#ffcea6');
+    expect(Color.fromTemperature(4500).toHex()).toBe('#ffdabb');
+    expect(Color.fromTemperature(5000).toHex()).toBe('#ffe4ce');
+    expect(Color.fromTemperature(6499).toHex()).toBe('#fffefa');
+    expect(Color.fromTemperature(6500).toHex()).toBe('#fffefa');
+    expect(Color.fromTemperature(7499).toHex()).toBe('#e6ebff');
+    expect(Color.fromTemperature(7500).toHex()).toBe('#e6ebff');
+    expect(Color.fromTemperature(8999).toHex()).toBe('#d2dfff');
+    expect(Color.fromTemperature(9000).toHex()).toBe('#d2dfff');
+    expect(Color.fromTemperature(20000).toHex()).toBe('#abc6ff');
   });
 });
 
-describe('getColorFromTemperatureLabel', () => {
+describe('Color.fromTemperature (Label)', () => {
   it('returns the expected color for each label', () => {
-    let color = getColorFromTemperatureLabel('Candlelight', createColorInstance);
+    let color = Color.fromTemperature('Candlelight');
     expect(color.toHex()).toBe('#ff8400');
 
-    color = getColorFromTemperatureLabel('Incandescent lamp', createColorInstance);
+    color = Color.fromTemperature('Incandescent lamp');
     expect(color.toHex()).toBe('#ffa757');
 
-    color = getColorFromTemperatureLabel('Halogen lamp', createColorInstance);
+    color = Color.fromTemperature('Halogen lamp');
     expect(color.toHex()).toBe('#ffbb81');
 
-    color = getColorFromTemperatureLabel('Fluorescent lamp', createColorInstance);
+    color = Color.fromTemperature('Fluorescent lamp');
     expect(color.toHex()).toBe('#ffd3af');
 
-    color = getColorFromTemperatureLabel('Daylight', createColorInstance);
+    color = Color.fromTemperature('Daylight');
     expect(color.toHex()).toBe('#fff6ed');
 
-    color = getColorFromTemperatureLabel('Cloudy sky', createColorInstance);
+    color = Color.fromTemperature('Cloudy sky');
     expect(color.toHex()).toBe('#f3f2ff');
 
-    color = getColorFromTemperatureLabel('Shade', createColorInstance);
+    color = Color.fromTemperature('Shade');
     expect(color.toHex()).toBe('#dde6ff');
 
-    color = getColorFromTemperatureLabel('Blue sky', createColorInstance);
+    color = Color.fromTemperature('Blue sky');
     expect(color.toHex()).toBe('#cadaff');
   });
 
-  it('round-trips through getColorTemperature', () => {
-    let color = getColorFromTemperatureLabel('Candlelight', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Candlelight');
+  it('round-trips through getTemperature', () => {
+    let color = Color.fromTemperature('Candlelight');
+    expect(color.getTemperature().label).toBe('Candlelight');
 
-    color = getColorFromTemperatureLabel('Incandescent lamp', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Incandescent lamp');
+    color = Color.fromTemperature('Incandescent lamp');
+    expect(color.getTemperature().label).toBe('Incandescent lamp');
 
-    color = getColorFromTemperatureLabel('Halogen lamp', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Halogen lamp');
+    color = Color.fromTemperature('Halogen lamp');
+    expect(color.getTemperature().label).toBe('Halogen lamp');
 
-    color = getColorFromTemperatureLabel('Fluorescent lamp', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Fluorescent lamp');
+    color = Color.fromTemperature('Fluorescent lamp');
+    expect(color.getTemperature().label).toBe('Fluorescent lamp');
 
-    color = getColorFromTemperatureLabel('Daylight', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Daylight');
+    color = Color.fromTemperature('Daylight');
+    expect(color.getTemperature().label).toBe('Daylight');
 
-    color = getColorFromTemperatureLabel('Cloudy sky', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Cloudy sky');
+    color = Color.fromTemperature('Cloudy sky');
+    expect(color.getTemperature().label).toBe('Cloudy sky');
 
-    color = getColorFromTemperatureLabel('Shade', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Shade');
+    color = Color.fromTemperature('Shade');
+    expect(color.getTemperature().label).toBe('Shade');
 
-    color = getColorFromTemperatureLabel('Blue sky', createColorInstance);
-    expect(getColorTemperature(color).label).toBe('Blue sky');
+    color = Color.fromTemperature('Blue sky');
+    expect(color.getTemperature().label).toBe('Blue sky');
   });
 
   it('accepts mixed case temperature label', () => {
-    const t1 = getColorFromTemperatureLabel('Cloudy sky', createColorInstance);
-    const t2 = getColorFromTemperatureLabel('cloudy sky', createColorInstance);
-    const t3 = getColorFromTemperatureLabel('CLOUDY SKY', createColorInstance);
+    const t1 = Color.fromTemperature('Cloudy sky');
+    const t2 = Color.fromTemperature('cloudy sky');
+    const t3 = Color.fromTemperature('CLOUDY SKY');
 
     expect(t1.toHex()).toBe(t2.toHex());
     expect(t1.toHex()).toBe(t3.toHex());

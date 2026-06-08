@@ -214,9 +214,9 @@ export class Color implements ColorBrand {
    */
   static fromTemperature(temperature: number | CaseInsensitive<ColorTemperatureLabel>): Color {
     if (typeof temperature === 'number') {
-      return getColorFromTemperature(temperature, createColorInstance);
+      return new Color(getColorFromTemperature(temperature));
     }
-    return getColorFromTemperatureLabel(temperature, createColorInstance);
+    return new Color(getColorFromTemperatureLabel(temperature));
   }
 
   /**
@@ -504,7 +504,7 @@ export class Color implements ColorBrand {
    * ```
    */
   spin(degrees: number): Color {
-    return spinColorHue(this, degrees, createColorInstance);
+    return new Color(spinColorHue(this.#color, degrees));
   }
 
   /**
@@ -521,7 +521,7 @@ export class Color implements ColorBrand {
    * ```
    */
   brighten(options?: ColorBrightnessOptions): Color {
-    return brightenColor(this, options, createColorInstance);
+    return new Color(brightenColor(this.#color, options)).setAlpha(this.getAlpha());
   }
 
   /**
@@ -538,7 +538,7 @@ export class Color implements ColorBrand {
    * ```
    */
   darken(options?: ColorBrightnessOptions): Color {
-    return darkenColor(this, options, createColorInstance);
+    return new Color(darkenColor(this.#color, options)).setAlpha(this.getAlpha());
   }
 
   /**
@@ -556,7 +556,7 @@ export class Color implements ColorBrand {
    * ```
    */
   saturate(options?: ColorSaturationOptions): Color {
-    return saturateColor(this, options, createColorInstance);
+    return new Color(saturateColor(this.#color, options)).setAlpha(this.getAlpha());
   }
 
   /**
@@ -574,7 +574,7 @@ export class Color implements ColorBrand {
    * ```
    */
   desaturate(options?: ColorSaturationOptions): Color {
-    return desaturateColor(this, options, createColorInstance);
+    return new Color(desaturateColor(this.#color, options)).setAlpha(this.getAlpha());
   }
 
   /**
@@ -584,7 +584,7 @@ export class Color implements ColorBrand {
    * @returns A new {@link Color} with the modified saturation.
    */
   grayscale(): Color {
-    return colorToGrayscale(this, createColorInstance);
+    return new Color(colorToGrayscale(this.#color));
   }
 
   /**
@@ -598,10 +598,11 @@ export class Color implements ColorBrand {
     if (others.length === 0) {
       return this.clone();
     }
-    return mixColors(
-      [this, ...getColorList(others, createColorInstance)],
-      options,
-      createColorInstance,
+    return new Color(
+      mixColors(
+        [this.#color, ...getColorList(others, createColorInstance).map((c) => c.toRGBA())],
+        options,
+      ),
     );
   }
 
@@ -613,7 +614,7 @@ export class Color implements ColorBrand {
    * @returns A new {@link Color} that is the result of the blending.
    */
   blendWith(other: ValidColorInputFormat, options?: BlendColorsOptions): Color {
-    return blendColors(this, createColorInstance(other), options, createColorInstance);
+    return new Color(blendColors(this.#color, createColorInstance(other).toRGBA(), options));
   }
 
   /**
@@ -627,10 +628,11 @@ export class Color implements ColorBrand {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors(
-      [this, ...getColorList(others, createColorInstance)],
-      options,
-      createColorInstance,
+    return new Color(
+      averageColors(
+        [this.#color, ...getColorList(others, createColorInstance).map((c) => c.toRGBA())],
+        options,
+      ),
     );
   }
 
@@ -683,7 +685,7 @@ export class Color implements ColorBrand {
    * ```
    */
   getComplementaryColors(options?: ColorHarmonyOptions): [Color, Color] {
-    return getComplementaryColors(this, options, createColorInstance);
+    return getComplementaryColors(this.#color, options).map((c) => new Color(c)) as [Color, Color];
   }
 
   /**
@@ -704,7 +706,11 @@ export class Color implements ColorBrand {
    * ```
    */
   getSplitComplementaryColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
-    return getSplitComplementaryColors(this, options, createColorInstance);
+    return getSplitComplementaryColors(this.#color, options).map((c) => new Color(c)) as [
+      Color,
+      Color,
+      Color,
+    ];
   }
 
   /**
@@ -726,7 +732,11 @@ export class Color implements ColorBrand {
    * ```
    */
   getTriadicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
-    return getTriadicHarmonyColors(this, options, createColorInstance);
+    return getTriadicHarmonyColors(this.#color, options).map((c) => new Color(c)) as [
+      Color,
+      Color,
+      Color,
+    ];
   }
 
   /**
@@ -748,7 +758,12 @@ export class Color implements ColorBrand {
    * ```
    */
   getSquareHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color] {
-    return getSquareHarmonyColors(this, options, createColorInstance);
+    return getSquareHarmonyColors(this.#color, options).map((c) => new Color(c)) as [
+      Color,
+      Color,
+      Color,
+      Color,
+    ];
   }
 
   /**
@@ -770,7 +785,12 @@ export class Color implements ColorBrand {
    * ```
    */
   getTetradicHarmonyColors(options?: TetradicHarmonyOptions): [Color, Color, Color, Color] {
-    return getTetradicHarmonyColors(this, options, createColorInstance);
+    return getTetradicHarmonyColors(this.#color, options).map((c) => new Color(c)) as [
+      Color,
+      Color,
+      Color,
+      Color,
+    ];
   }
 
   /**
@@ -793,7 +813,13 @@ export class Color implements ColorBrand {
    * ```
    */
   getAnalogousHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color, Color] {
-    return getAnalogousHarmonyColors(this, options, createColorInstance);
+    return getAnalogousHarmonyColors(this.#color, options).map((c) => new Color(c)) as [
+      Color,
+      Color,
+      Color,
+      Color,
+      Color,
+    ];
   }
 
   /**
@@ -813,7 +839,13 @@ export class Color implements ColorBrand {
    * ```
    */
   getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color] {
-    return getMonochromaticHarmonyColors(this, createColorInstance);
+    return getMonochromaticHarmonyColors(this.#color).map((c) => new Color(c)) as [
+      Color,
+      Color,
+      Color,
+      Color,
+      Color,
+    ];
   }
 
   /**
@@ -826,7 +858,7 @@ export class Color implements ColorBrand {
    * @returns A list of new {@link Color}s representing the original color and its harmony colors for the specified `harmony` option.
    */
   getHarmonyColors(harmony: CaseInsensitive<ColorHarmony>, options?: ColorHarmonyOptions): Color[] {
-    return getHarmonyColors(this, harmony, options, createColorInstance);
+    return getHarmonyColors(this.#color, harmony, options).map((c) => new Color(c));
   }
 
   /**
@@ -1136,14 +1168,14 @@ export class Color implements ColorBrand {
    * @returns A {@link ColorTemperatureAndLabel} object with the temperature in Kelvin and a {@link ColorTemperatureLabel}.
    */
   getTemperature(): ColorTemperatureAndLabel {
-    return getColorTemperature(this);
+    return getColorTemperature(this.#color);
   }
 
   /**
    * Get the color's temperature as a string in Kelvin, optionally including a label for off-white colors.
    */
   getTemperatureAsString(options?: ColorTemperatureStringFormatOptions): string {
-    return getColorTemperatureString(this, options, createColorInstance);
+    return getColorTemperatureString(this.#color, options);
   }
 
   /**

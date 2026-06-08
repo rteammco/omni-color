@@ -1,6 +1,6 @@
 import { clampValue } from '../utils';
-import type { Color, CreateColorInstance } from './color';
-import type { ColorLCH } from './formats.types';
+import { toHSLA, toLAB, toLCH } from './conversions';
+import type { ColorFormat, ColorHSLA, ColorLCH, ColorRGBA } from './formats.types';
 
 export type ColorBrightnessSpace = 'HSL' | 'LAB' | 'LCH';
 
@@ -69,109 +69,101 @@ function normalizeLCH(lch: ColorLCH): ColorLCH {
   };
 }
 
-export function spinColorHue(
-  color: Color,
-  degrees: number,
-  createColor: CreateColorInstance,
-): Color {
-  const hsla = color.toHSLA();
+export function spinColorHue(rgba: Readonly<ColorRGBA>, degrees: number): ColorHSLA {
+  const hsla = toHSLA(rgba);
   const rotatedHue = (((hsla.h + degrees) % 360) + 360) % 360;
   hsla.h = rotatedHue;
-  return createColor(hsla);
+  return hsla;
 }
 
 export function brightenColor(
-  color: Color,
+  rgba: Readonly<ColorRGBA>,
   options: ColorBrightnessOptions = {},
-  createColor: CreateColorInstance,
-): Color {
+): ColorFormat {
   const { amount, space, labScale } = getColorBrightnessOptions(options);
   switch (space) {
     case 'LAB': {
-      const lab = color.toLAB();
+      const lab = toLAB(rgba);
       const updatedL = clampValue(lab.l + getLABLikeDelta(amount, labScale), 0, 100);
-      return createColor({ ...lab, l: updatedL }).setAlpha(color.getAlpha());
+      return { ...lab, l: updatedL };
     }
     case 'LCH': {
-      const lch = normalizeLCH(color.toLCH());
+      const lch = normalizeLCH(toLCH(rgba));
       const updatedL = clampValue(lch.l + getLABLikeDelta(amount, labScale), 0, 100);
-      return createColor({ ...lch, l: updatedL, format: 'LCH' }).setAlpha(color.getAlpha());
+      return { ...lch, l: updatedL, format: 'LCH' };
     }
     case 'HSL':
     default: {
-      const hsla = color.toHSLA();
+      const hsla = toHSLA(rgba);
       hsla.l = clampValue(hsla.l + amount, 0, 100);
-      return createColor(hsla);
+      return hsla;
     }
   }
 }
 
 export function darkenColor(
-  color: Color,
+  rgba: Readonly<ColorRGBA>,
   options: ColorBrightnessOptions = {},
-  createColor: CreateColorInstance,
-): Color {
+): ColorFormat {
   const { amount, space, labScale } = getColorBrightnessOptions(options);
   switch (space) {
     case 'LAB': {
-      const lab = color.toLAB();
+      const lab = toLAB(rgba);
       const updatedL = clampValue(lab.l - getLABLikeDelta(amount, labScale), 0, 100);
-      return createColor({ ...lab, l: updatedL }).setAlpha(color.getAlpha());
+      return { ...lab, l: updatedL };
     }
     case 'LCH': {
-      const lch = normalizeLCH(color.toLCH());
+      const lch = normalizeLCH(toLCH(rgba));
       const updatedL = clampValue(lch.l - getLABLikeDelta(amount, labScale), 0, 100);
-      return createColor({ ...lch, l: updatedL, format: 'LCH' }).setAlpha(color.getAlpha());
+      return { ...lch, l: updatedL, format: 'LCH' };
     }
     case 'HSL':
     default: {
-      return brightenColor(color, { amount: -amount, space: 'HSL' }, createColor);
+      return brightenColor(rgba, { amount: -amount, space: 'HSL' });
     }
   }
 }
 
 export function saturateColor(
-  color: Color,
+  rgba: Readonly<ColorRGBA>,
   options: ColorSaturationOptions = {},
-  createColor: CreateColorInstance,
-): Color {
+): ColorFormat {
   const { amount, space, labScale } = getColorSaturationOptions(options);
   switch (space) {
     case 'LCH': {
-      const lch = normalizeLCH(color.toLCH());
+      const lch = normalizeLCH(toLCH(rgba));
       const updatedC = Math.max(0, lch.c + getLABLikeDelta(amount, labScale));
-      return createColor({ ...lch, c: updatedC, format: 'LCH' }).setAlpha(color.getAlpha());
+      return { ...lch, c: updatedC, format: 'LCH' };
     }
     case 'HSL':
     default: {
-      const hsla = color.toHSLA();
+      const hsla = toHSLA(rgba);
       hsla.s = clampValue(hsla.s + amount, 0, 100);
-      return createColor(hsla);
+      return hsla;
     }
   }
 }
 
 export function desaturateColor(
-  color: Color,
+  rgba: Readonly<ColorRGBA>,
   options: ColorSaturationOptions = {},
-  createColor: CreateColorInstance,
-): Color {
+): ColorFormat {
   const { amount, space, labScale } = getColorSaturationOptions(options);
   switch (space) {
     case 'LCH': {
-      const lch = normalizeLCH(color.toLCH());
+      const lch = normalizeLCH(toLCH(rgba));
       const updatedC = Math.max(0, lch.c - getLABLikeDelta(amount, labScale));
-      return createColor({ ...lch, c: updatedC, format: 'LCH' }).setAlpha(color.getAlpha());
+      return { ...lch, c: updatedC, format: 'LCH' };
     }
     case 'HSL':
     default: {
-      return saturateColor(color, { amount: -amount, space: 'HSL' }, createColor);
+      return saturateColor(rgba, { amount: -amount, space: 'HSL' });
     }
   }
 }
 
-export function colorToGrayscale(color: Color, createColor: CreateColorInstance): Color {
-  const hsla = color.toHSLA();
+export function colorToGrayscale(rgba: Readonly<ColorRGBA>): ColorHSLA {
+  const hsla = toHSLA(rgba);
   hsla.s = 0;
-  return createColor(hsla);
+  return hsla;
 }

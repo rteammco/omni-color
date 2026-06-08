@@ -34,7 +34,7 @@ export function getColorRGBAFromInput(
 
     const matchedColorTemperatureLabel = matchPartialColorTemperatureLabel(colorString);
     if (matchedColorTemperatureLabel) {
-      return getColorFromTemperatureLabel(matchedColorTemperatureLabel, createColor).toRGBA();
+      return getColorFromTemperatureLabel(matchedColorTemperatureLabel);
     }
 
     // Other CSS color format string (e.g. "rgb(255, 0, 0)"):
