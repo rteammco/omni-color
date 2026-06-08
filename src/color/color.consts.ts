@@ -1,4 +1,4 @@
-import type { ColorHex } from './formats';
+import type { ColorHex } from './formats.types';
 
 export const BLACK_HEX = '#000000';
 export const WHITE_HEX = '#ffffff';

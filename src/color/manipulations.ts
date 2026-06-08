@@ -1,6 +1,6 @@
 import { clampValue } from '../utils';
 import type { Color, CreateColorInstance } from './color';
-import type { ColorLCH } from './formats';
+import type { ColorLCH } from './formats.types';
 
 export type ColorBrightnessSpace = 'HSL' | 'LAB' | 'LCH';
 

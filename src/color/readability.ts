@@ -1,6 +1,6 @@
 import { type CaseInsensitive, resolveCaseInsensitiveOption } from '../utils';
 import type { Color } from './color';
-import type { ColorRGBA } from './formats';
+import type { ColorRGBA } from './formats.types';
 import { getRelativeLuminance } from './utils';
 
 const APCA_THRESHOLD_PRESETS = ['BODY', 'LARGE_TEXT', 'NON_TEXT', 'VERY_LOW_VISION'] as const;

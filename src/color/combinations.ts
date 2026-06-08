@@ -1,6 +1,6 @@
 import { type CaseInsensitive, clampValue, resolveCaseInsensitiveOption } from '../utils';
 import type { Color, CreateColorInstance } from './color';
-import type { ColorHSL, ColorHSLA, ColorLCH, ColorOKLCH, ColorRGBA } from './formats';
+import type { ColorHSL, ColorHSLA, ColorLCH, ColorOKLCH, ColorRGBA } from './formats.types';
 import { linearChannelToSrgb, srgbChannelToLinear } from './srgb';
 
 const MIX_TYPES = ['ADDITIVE', 'SUBTRACTIVE'] as const;

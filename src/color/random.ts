@@ -6,7 +6,7 @@ import {
 import type { CaseInsensitive } from '../utils';
 import { capitalizeString, clampValue } from '../utils';
 import { toRGBA } from './conversions';
-import type { ColorRGBA } from './formats';
+import type { ColorRGBA } from './formats.types';
 import type { BaseColorName } from './names';
 import {
   BASE_COLOR_HUE_RANGES,

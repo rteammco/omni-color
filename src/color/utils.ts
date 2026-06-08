@@ -3,7 +3,7 @@ import type { Color, CreateColorInstance, ValidColorInputFormat } from './color'
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.consts';
 import { isColorInstance } from './color.helpers';
 import { toRGBA } from './conversions';
-import type { ColorHex, ColorRGBA } from './formats';
+import type { ColorHex, ColorRGBA } from './formats.types';
 import { parseCSSColorFormatString } from './parse';
 import { getRandomColorRGBA } from './random';
 import { srgbChannelToLinear } from './srgb';

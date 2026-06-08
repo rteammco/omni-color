@@ -8,7 +8,7 @@ import type {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
-} from './formats';
+} from './formats.types';
 import { linearChannelToSrgb, srgbChannelToLinear } from './srgb';
 
 const GRADIENT_SPACES = ['RGB', 'HSL', 'HSV', 'LCH', 'OKLAB', 'OKLCH'] as const;

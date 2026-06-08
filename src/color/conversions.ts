@@ -1,4 +1,5 @@
 import { clampValue } from '../utils';
+import { getColorFormatType } from './formats';
 import type {
   ColorCMYK,
   ColorFormat,
@@ -15,8 +16,7 @@ import type {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
-} from './formats';
-import { getColorFormatType } from './formats';
+} from './formats.types';
 import { linearChannelToSrgb, srgbChannelToLinear } from './srgb';
 import { validateColorOrThrow } from './validations';
 

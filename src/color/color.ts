@@ -34,21 +34,6 @@ import {
 import { type DeltaEOptions, getDeltaE } from './deltaE';
 import {
   cmykToString,
-  type ColorCMYK,
-  type ColorFormat,
-  type ColorHex,
-  type ColorHSL,
-  type ColorHSLA,
-  type ColorHSV,
-  type ColorHSVA,
-  type ColorHWB,
-  type ColorHWBA,
-  type ColorLAB,
-  type ColorLCH,
-  type ColorOKLAB,
-  type ColorOKLCH,
-  type ColorRGB,
-  type ColorRGBA,
   colorToString,
   hslaToString,
   hslToString,
@@ -63,6 +48,23 @@ import {
   rgbaToString,
   rgbToString,
 } from './formats';
+import type {
+  ColorCMYK,
+  ColorFormat,
+  ColorHex,
+  ColorHSL,
+  ColorHSLA,
+  ColorHSV,
+  ColorHSVA,
+  ColorHWB,
+  ColorHWBA,
+  ColorLAB,
+  ColorLCH,
+  ColorOKLAB,
+  ColorOKLCH,
+  ColorRGB,
+  ColorRGBA,
+} from './formats.types';
 import { type ColorGradientOptions, createColorGradient } from './gradients';
 import {
   type ColorHarmony,

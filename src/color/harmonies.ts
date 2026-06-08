@@ -1,7 +1,7 @@
 import { type CaseInsensitive, clampValue } from '../utils';
 import { resolveCaseInsensitiveOption, resolveRequiredCaseInsensitiveOption } from '../utils';
 import type { Color, CreateColorInstance } from './color';
-import type { ColorHSLA } from './formats';
+import type { ColorHSLA } from './formats.types';
 
 // TODO: consider using LCH or OKLCH space mode for more human perceptual accuracy
 

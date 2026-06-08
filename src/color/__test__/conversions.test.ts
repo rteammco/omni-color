@@ -26,7 +26,7 @@ import type {
   ColorOKLAB,
   ColorOKLCH,
   ColorRGBA,
-} from '../formats';
+} from '../formats.types';
 
 function expectHSLToBeClose(actual: ColorHSL, expected: ColorHSL): void {
   expect(actual.h).toBeCloseTo(expected.h, 0);

@@ -5,7 +5,7 @@ import {
   convertColorSpaceValuesToRGB,
   parseColorSpace,
 } from './colorSpaces';
-import type { ColorFormat, ColorRGB } from './formats';
+import type { ColorFormat, ColorRGB } from './formats.types';
 
 const MATCH_RGB_STRING_REGEX = /^rgb\((.+)\)$/;
 const MATCH_RGBA_STRING_REGEX = /^rgba\((.+)\)$/;

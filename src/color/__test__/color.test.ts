@@ -13,7 +13,7 @@ import type {
   ColorOKLAB,
   ColorOKLCH,
   ColorRGB,
-} from '../formats';
+} from '../formats.types';
 import { getRandomColorRGBA } from '../random';
 import type { ReadabilityOptions } from '../readability';
 import { getColorFromTemperatureLabel } from '../temperature';

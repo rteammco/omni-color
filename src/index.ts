@@ -10,23 +10,23 @@ import type {
   MixType,
 } from './color/combinations';
 import type { CIE94Options, CIEDE2000Options, DeltaEMethod, DeltaEOptions } from './color/deltaE';
-import {
-  type ColorCMYK,
-  type ColorFormat,
-  type ColorHex,
-  type ColorHSL,
-  type ColorHSLA,
-  type ColorHSV,
-  type ColorHSVA,
-  type ColorHWB,
-  type ColorHWBA,
-  type ColorLAB,
-  type ColorLCH,
-  type ColorOKLAB,
-  type ColorOKLCH,
-  type ColorRGB,
-  type ColorRGBA,
-} from './color/formats';
+import type {
+  ColorCMYK,
+  ColorFormat,
+  ColorHex,
+  ColorHSL,
+  ColorHSLA,
+  ColorHSV,
+  ColorHSVA,
+  ColorHWB,
+  ColorHWBA,
+  ColorLAB,
+  ColorLCH,
+  ColorOKLAB,
+  ColorOKLCH,
+  ColorRGB,
+  ColorRGBA,
+} from './color/formats.types';
 import type {
   ColorGradientEasing,
   ColorGradientInterpolation,

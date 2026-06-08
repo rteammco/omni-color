@@ -1,3 +1,4 @@
+import { getColorFormatType } from './formats';
 import type {
   ColorCMYK,
   ColorFormat,
@@ -13,8 +14,7 @@ import type {
   ColorOKLCH,
   ColorRGB,
   ColorRGBA,
-} from './formats';
-import { getColorFormatType } from './formats';
+} from './formats.types';
 
 const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
