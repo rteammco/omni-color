@@ -490,7 +490,7 @@ export class Color implements ColorBrand {
    * Values out of range will be clamped to the nearest valid value.
    */
   setAlpha(alpha: number): Color {
-    return createColorInstance({
+    return new Color({
       ...this.#color,
       a: Number.isFinite(alpha) ? +clampValue(alpha, 0, 1).toFixed(3) : 1,
     });
@@ -511,7 +511,7 @@ export class Color implements ColorBrand {
    * ```
    */
   spin(degrees: number): Color {
-    return createColorInstance(spinColorHue(this.#color, degrees));
+    return new Color(spinColorHue(this.#color, degrees));
   }
 
   /**
@@ -528,7 +528,7 @@ export class Color implements ColorBrand {
    * ```
    */
   brighten(options?: ColorBrightnessOptions): Color {
-    return createColorInstance(brightenColor(this.#color, options));
+    return new Color(brightenColor(this.#color, options));
   }
 
   /**
@@ -545,7 +545,7 @@ export class Color implements ColorBrand {
    * ```
    */
   darken(options?: ColorBrightnessOptions): Color {
-    return createColorInstance(darkenColor(this.#color, options));
+    return new Color(darkenColor(this.#color, options));
   }
 
   /**
@@ -563,7 +563,7 @@ export class Color implements ColorBrand {
    * ```
    */
   saturate(options?: ColorSaturationOptions): Color {
-    return createColorInstance(saturateColor(this.#color, options));
+    return new Color(saturateColor(this.#color, options));
   }
 
   /**
@@ -581,7 +581,7 @@ export class Color implements ColorBrand {
    * ```
    */
   desaturate(options?: ColorSaturationOptions): Color {
-    return createColorInstance(desaturateColor(this.#color, options));
+    return new Color(desaturateColor(this.#color, options));
   }
 
   /**
@@ -591,7 +591,7 @@ export class Color implements ColorBrand {
    * @returns A new {@link Color} with the modified saturation.
    */
   grayscale(): Color {
-    return createColorInstance(colorToGrayscale(this.#color));
+    return new Color(colorToGrayscale(this.#color));
   }
 
   /**
@@ -616,7 +616,7 @@ export class Color implements ColorBrand {
    * @returns A new {@link Color} that is the result of the blending.
    */
   blendWith(other: ValidColorInputFormat, options?: BlendColorsOptions): Color {
-    return blendColors(this, createColorInstance(other), options, createColorInstance);
+    return blendColors(this, new Color(other), options, createColorInstance);
   }
 
   /**
@@ -900,7 +900,7 @@ export class Color implements ColorBrand {
    * ```
    */
   equals(other: ValidColorInputFormat): boolean {
-    return areColorsEqual(this.#color, createColorInstance(other).toRGBA());
+    return areColorsEqual(this.#color, new Color(other).toRGBA());
   }
 
   /**
@@ -928,7 +928,7 @@ export class Color implements ColorBrand {
    * ```
    */
   differenceFrom(other: ValidColorInputFormat, options?: DeltaEOptions): number {
-    return getDeltaE(this, createColorInstance(other), options);
+    return getDeltaE(this, new Color(other), options);
   }
 
   /**
@@ -990,7 +990,7 @@ export class Color implements ColorBrand {
    * @returns The WCAG contrast ratio between the two colors.
    */
   getWCAGContrastRatio(other: ValidColorInputFormat): number {
-    return getWCAGContrastRatio(this, createColorInstance(other));
+    return getWCAGContrastRatio(this, new Color(other));
   }
 
   /**
@@ -1005,7 +1005,7 @@ export class Color implements ColorBrand {
    * @returns The APCA readability score as a number.
    */
   getAPCAReadabilityScore(backgroundColor: ValidColorInputFormat): number {
-    return getAPCAReadabilityScore(this, createColorInstance(backgroundColor));
+    return getAPCAReadabilityScore(this, new Color(backgroundColor));
   }
 
   /**
@@ -1034,7 +1034,7 @@ export class Color implements ColorBrand {
     backgroundColor: ValidColorInputFormat,
     options?: APCAReadabilityOptions,
   ): APCAReadabilityReport {
-    return getAPCAReadabilityReport(this, createColorInstance(backgroundColor), options);
+    return getAPCAReadabilityReport(this, new Color(backgroundColor), options);
   }
 
   /**
@@ -1060,7 +1060,7 @@ export class Color implements ColorBrand {
     backgroundColor: ValidColorInputFormat,
     options?: WCAGReadabilityOptions,
   ): WCAGReadabilityReport {
-    return getWCAGReadabilityReport(this, createColorInstance(backgroundColor), options);
+    return getWCAGReadabilityReport(this, new Color(backgroundColor), options);
   }
 
   /**
@@ -1101,7 +1101,7 @@ export class Color implements ColorBrand {
     backgroundColor: ValidColorInputFormat,
     options: ReadabilityOptions = {},
   ): boolean {
-    return isTextReadable(this, createColorInstance(backgroundColor), options);
+    return isTextReadable(this, new Color(backgroundColor), options);
   }
 
   /**
@@ -1176,7 +1176,7 @@ export class Color implements ColorBrand {
    * @returns A new {@link Color} instance with the same color value.
    */
   clone(): Color {
-    return createColorInstance({ ...this.#color });
+    return new Color({ ...this.#color });
   }
 }
 
@@ -1185,7 +1185,7 @@ function getColorList(candidates: readonly ValidColorInputFormat[] | ColorSwatch
   // If this is a list of `Color` or valid color inputs, convert to `Color` instances and return:
   if (Array.isArray(candidates)) {
     return candidates.map((candidate) =>
-      candidate instanceof Color ? candidate : createColorInstance(candidate),
+      candidate instanceof Color ? candidate : new Color(candidate),
     );
   }
 
