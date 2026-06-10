@@ -1,5 +1,5 @@
 import { type CaseInsensitive, clampValue } from '../utils';
-import type { Color, CreateColorInstance } from './color';
+import type { ColorRGBA } from './formats.types';
 import { srgbChannelToLinear } from './srgb';
 
 const COLOR_TEMPERATURE_LABELS = {
@@ -61,8 +61,8 @@ function getLabelForTemperature(temperature: number): ColorTemperatureLabel {
   return found ? found.label : COLOR_TEMPERATURE_LABELS.DAYLIGHT;
 }
 
-export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
-  const { r, g, b } = color.toRGB();
+export function getColorTemperature(rgba: Readonly<ColorRGBA>): ColorTemperatureAndLabel {
+  const { r, g, b } = rgba;
   const rLin = srgbChannelToLinear(r, 'SRGB');
   const gLin = srgbChannelToLinear(g, 'SRGB');
   const bLin = srgbChannelToLinear(b, 'SRGB');
@@ -93,18 +93,17 @@ export function getColorTemperature(color: Color): ColorTemperatureAndLabel {
 }
 
 export function getColorTemperatureString(
-  color: Color,
+  rgba: Readonly<ColorRGBA>,
   options: ColorTemperatureStringFormatOptions = {},
-  createColor: CreateColorInstance,
 ): string {
-  const { temperature, label } = getColorTemperature(color);
+  const { temperature, label } = getColorTemperature(rgba);
   const formattedTemperature = options.formatNumber ? temperature.toLocaleString() : temperature;
 
   // Compare the given color to the reference color generated for the estimated
   // temperature. If the color is close to the Planckian locus, attach the label
   // to the formatted temperature string.
-  const reference = getColorFromTemperature(temperature, createColor).toRGB();
-  const { r, g, b } = color.toRGB();
+  const reference = getColorFromTemperature(temperature);
+  const { r, g, b } = rgba;
   const dr = r - reference.r;
   const dg = g - reference.g;
   const db = b - reference.b;
@@ -115,10 +114,7 @@ export function getColorTemperatureString(
   return `${formattedTemperature} K`;
 }
 
-export function getColorFromTemperature(
-  temperature: number,
-  createColor: CreateColorInstance,
-): Color {
+export function getColorFromTemperature(temperature: number): ColorRGBA {
   // Clamp to the range supported by the conversion algorithm.
   const temp = clampValue(temperature, 1000, 40000) / 100;
 
@@ -151,7 +147,7 @@ export function getColorFromTemperature(
   }
   b = clampValue(b, 0, 255);
 
-  return createColor({ r: Math.round(r), g: Math.round(g), b: Math.round(b) });
+  return { r: Math.round(r), g: Math.round(g), b: Math.round(b), a: 1 };
 }
 
 export function matchPartialColorTemperatureLabel(
@@ -171,11 +167,10 @@ export function matchPartialColorTemperatureLabel(
 
 export function getColorFromTemperatureLabel(
   label: CaseInsensitive<ColorTemperatureLabel>,
-  createColor: CreateColorInstance,
-): Color {
+): ColorRGBA {
   const matchedLabel = matchPartialColorTemperatureLabel(label);
   if (!matchedLabel) {
     throw new Error(`Unknown color temperature label: ${label}`);
   }
-  return getColorFromTemperature(LABEL_TO_TEMPERATURE_MAP[matchedLabel], createColor);
+  return getColorFromTemperature(LABEL_TO_TEMPERATURE_MAP[matchedLabel]);
 }

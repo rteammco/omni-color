@@ -1,4 +1,4 @@
-import { Color, createColorInstance } from '../color';
+import { Color } from '../color';
 import {
   getAPCAReadabilityReport,
   getAPCAReadabilityScore,
@@ -8,7 +8,6 @@ import {
   getWCAGReadabilityReport,
   isTextReadable,
 } from '../readability';
-import { getColorList } from '../utils';
 
 describe('getWCAGContrastRatio', () => {
   it('red dark on #000000 alpha 1', () => {
@@ -2888,7 +2887,7 @@ describe('readability selection helpers', () => {
     const baseSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
     const resultBase = getMostReadableTextColorForBackground(
       background,
-      getColorList(baseSwatch, createColorInstance),
+      Object.values(baseSwatch).filter((value) => value instanceof Color),
     );
     expect(resultBase.equals(baseSwatch[900])).toBe(true);
 
@@ -2898,7 +2897,7 @@ describe('readability selection helpers', () => {
     });
     const resultExtended = getMostReadableTextColorForBackground(
       background,
-      getColorList(extendedSwatch, createColorInstance),
+      Object.values(extendedSwatch).filter((value) => value instanceof Color),
     );
     expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
   });
@@ -2918,7 +2917,7 @@ describe('readability selection helpers', () => {
 
     const result = getBestBackgroundColorForText(
       textColor,
-      getColorList(swatch, createColorInstance),
+      Object.values(swatch).filter((value) => value instanceof Color),
     );
 
     expect(result.toHex()).toBe(swatch[50].toHex());

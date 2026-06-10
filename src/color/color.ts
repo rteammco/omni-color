@@ -5,7 +5,6 @@ import {
   isColorPaletteSuitable,
 } from '../palette/palette';
 import { type CaseInsensitive, clampValue } from '../utils';
-import { COLOR_BRAND, type ColorBrand } from './color.helpers';
 import type { ColorStringOptions } from './colorSpaces';
 import {
   averageColors,
@@ -122,14 +121,25 @@ import {
 } from './temperature';
 import {
   areColorsEqual,
-  getColorList,
   getColorRGBAFromInput,
   isColorDark,
   type IsColorDarkOptions,
   isColorOffWhite,
 } from './utils';
 
-export type ValidColorInputFormat = Color | ColorFormat | string;
+const COLOR_BRAND: unique symbol = Symbol.for('omni-color.Color');
+
+interface ColorBrand {
+  readonly [COLOR_BRAND]: true;
+}
+
+function isColorInstance(value: unknown): value is Color {
+  return (
+    !!value && typeof value === 'object' && (value as Partial<ColorBrand>)[COLOR_BRAND] === true
+  );
+}
+
+type ValidColorInputFormat = Color | ColorFormat | string;
 
 export type CreateColorInstance = (input: ValidColorInputFormat) => Color;
 export const createColorInstance: CreateColorInstance = (input: ValidColorInputFormat) =>
@@ -182,7 +192,8 @@ export class Color implements ColorBrand {
    */
   constructor(color?: ValidColorInputFormat | null) {
     // getColorRGBAFromInput always returns a fresh object
-    this.#color = Object.freeze({ ...getColorRGBAFromInput(color, createColorInstance) });
+    const rgba = isColorInstance(color) ? color.toRGBA() : getColorRGBAFromInput(color);
+    this.#color = Object.freeze({ ...rgba });
   }
 
   /**
@@ -197,7 +208,7 @@ export class Color implements ColorBrand {
    * ```
    */
   static random(options?: RandomColorOptions): Color {
-    return createColorInstance(getRandomColorRGBA(options));
+    return new Color(getRandomColorRGBA(options));
   }
 
   /**
@@ -214,9 +225,9 @@ export class Color implements ColorBrand {
    */
   static fromTemperature(temperature: number | CaseInsensitive<ColorTemperatureLabel>): Color {
     if (typeof temperature === 'number') {
-      return getColorFromTemperature(temperature, createColorInstance);
+      return new Color(getColorFromTemperature(temperature));
     }
-    return getColorFromTemperatureLabel(temperature, createColorInstance);
+    return new Color(getColorFromTemperatureLabel(temperature));
   }
 
   /**
@@ -243,11 +254,7 @@ export class Color implements ColorBrand {
     colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions,
   ): Color[] {
-    return createColorGradient(
-      getColorList(colors, createColorInstance),
-      options,
-      createColorInstance,
-    );
+    return createColorGradient(getColorList(colors), options, createColorInstance);
   }
 
   /**
@@ -598,11 +605,7 @@ export class Color implements ColorBrand {
     if (others.length === 0) {
       return this.clone();
     }
-    return mixColors(
-      [this, ...getColorList(others, createColorInstance)],
-      options,
-      createColorInstance,
-    );
+    return mixColors([this, ...getColorList(others)], options, createColorInstance);
   }
 
   /**
@@ -627,11 +630,7 @@ export class Color implements ColorBrand {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors(
-      [this, ...getColorList(others, createColorInstance)],
-      options,
-      createColorInstance,
-    );
+    return averageColors([this, ...getColorList(others)], options, createColorInstance);
   }
 
   /**
@@ -901,7 +900,7 @@ export class Color implements ColorBrand {
    * ```
    */
   equals(other: ValidColorInputFormat): boolean {
-    return areColorsEqual(this, createColorInstance(other));
+    return areColorsEqual(this.#color, createColorInstance(other).toRGBA());
   }
 
   /**
@@ -948,7 +947,7 @@ export class Color implements ColorBrand {
    * ```
    */
   isDark(options?: IsColorDarkOptions): boolean {
-    return isColorDark(this, options);
+    return isColorDark(this.#color, options);
   }
 
   /**
@@ -962,7 +961,7 @@ export class Color implements ColorBrand {
    * ```
    */
   isOffWhite(): boolean {
-    return isColorOffWhite(this);
+    return isColorOffWhite(this.#color);
   }
 
   /**
@@ -1078,11 +1077,7 @@ export class Color implements ColorBrand {
     textColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityOptions,
   ): Color {
-    return getMostReadableTextColorForBackground(
-      this,
-      getColorList(textColors, createColorInstance),
-      options,
-    ).clone();
+    return getMostReadableTextColorForBackground(this, getColorList(textColors), options).clone();
   }
 
   /**
@@ -1123,11 +1118,7 @@ export class Color implements ColorBrand {
     backgroundColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityOptions,
   ): Color {
-    return getBestBackgroundColorForText(
-      this,
-      getColorList(backgroundColors, createColorInstance),
-      options,
-    ).clone();
+    return getBestBackgroundColorForText(this, getColorList(backgroundColors), options).clone();
   }
 
   /**
@@ -1136,14 +1127,14 @@ export class Color implements ColorBrand {
    * @returns A {@link ColorTemperatureAndLabel} object with the temperature in Kelvin and a {@link ColorTemperatureLabel}.
    */
   getTemperature(): ColorTemperatureAndLabel {
-    return getColorTemperature(this);
+    return getColorTemperature(this.#color);
   }
 
   /**
    * Get the color's temperature as a string in Kelvin, optionally including a label for off-white colors.
    */
   getTemperatureAsString(options?: ColorTemperatureStringFormatOptions): string {
-    return getColorTemperatureString(this, options, createColorInstance);
+    return getColorTemperatureString(this.#color, options);
   }
 
   /**
@@ -1187,4 +1178,23 @@ export class Color implements ColorBrand {
   clone(): Color {
     return createColorInstance({ ...this.#color });
   }
+}
+
+// TODO: TS seems to be inferring some of these types in here as `any`, see if we can fix this.
+function getColorList(candidates: readonly ValidColorInputFormat[] | ColorSwatch): Color[] {
+  // If this is a list of `Color` or valid color inputs, convert to `Color` instances and return:
+  if (Array.isArray(candidates)) {
+    return candidates.map((candidate) =>
+      candidate instanceof Color ? candidate : createColorInstance(candidate),
+    );
+  }
+
+  // Otherwise this is a `ColorSwatch` object, so extract the color values while ignoring the `type` and `baseShade` properties:
+  return Object.entries(candidates).reduce<Color[]>((colors, [shade, candidate]) => {
+    if (shade !== 'type' && shade !== 'baseShade') {
+      colors.push(candidate);
+    }
+
+    return colors;
+  }, []);
 }
