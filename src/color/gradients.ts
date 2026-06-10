@@ -1,5 +1,5 @@
 import { type CaseInsensitive, clampValue, resolveCaseInsensitiveOption } from '../utils';
-import type { Color, CreateColorInstance } from './color';
+import { toOKLAB, toOKLCH } from './conversions';
 import type {
   ColorHSL,
   ColorHSV,
@@ -166,8 +166,8 @@ function interpolateBezierScalar(values: number[], t: number): number {
   return working[0];
 }
 
-function getUnroundedHSL(color: Color): ColorHSL {
-  const { r, g, b } = color.toRGB();
+function getUnroundedHSL(rgba: Readonly<ColorRGBA>): ColorHSL {
+  const { r, g, b } = rgba;
   const rNorm = r / 255;
   const gNorm = g / 255;
   const bNorm = b / 255;
@@ -202,8 +202,8 @@ function getUnroundedHSL(color: Color): ColorHSL {
   };
 }
 
-function getUnroundedHSV(color: Color): ColorHSV {
-  const { r, g, b } = color.toRGB();
+function getUnroundedHSV(rgba: Readonly<ColorRGBA>): ColorHSV {
+  const { r, g, b } = rgba;
   const rNorm = r / 255;
   const gNorm = g / 255;
   const bNorm = b / 255;
@@ -240,8 +240,8 @@ function getUnroundedHSV(color: Color): ColorHSV {
   };
 }
 
-function getUnroundedLCH(color: Color): ColorLCH {
-  const { r, g, b } = color.toRGB();
+function getUnroundedLCH(rgba: Readonly<ColorRGBA>): ColorLCH {
+  const { r, g, b } = rgba;
   const rLin = srgbChannelToLinear(r, 'SRGB');
   const gLin = srgbChannelToLinear(g, 'SRGB');
   const bLin = srgbChannelToLinear(b, 'SRGB');
@@ -267,8 +267,12 @@ function getUnroundedLCH(color: Color): ColorLCH {
   return { l, c, h };
 }
 
-function getHSLVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
-  const { h, s, l } = getUnroundedHSL(color);
+function getHSLVector(
+  rgba: Readonly<ColorRGBA>,
+  alpha: number,
+  isCartesian: boolean,
+): InterpolatableColor {
+  const { h, s, l } = getUnroundedHSL(rgba);
   if (isCartesian) {
     const rad = (h * Math.PI) / 180;
     return { values: [Math.cos(rad) * s, Math.sin(rad) * s, l], alpha };
@@ -276,8 +280,12 @@ function getHSLVector(color: Color, alpha: number, isCartesian: boolean): Interp
   return { values: [h, s, l], alpha };
 }
 
-function getHSVVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
-  const { h, s, v } = getUnroundedHSV(color);
+function getHSVVector(
+  rgba: Readonly<ColorRGBA>,
+  alpha: number,
+  isCartesian: boolean,
+): InterpolatableColor {
+  const { h, s, v } = getUnroundedHSV(rgba);
   if (isCartesian) {
     const rad = (h * Math.PI) / 180;
     return { values: [Math.cos(rad) * s, Math.sin(rad) * s, v], alpha };
@@ -285,8 +293,12 @@ function getHSVVector(color: Color, alpha: number, isCartesian: boolean): Interp
   return { values: [h, s, v], alpha };
 }
 
-function getLCHVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
-  const { l, c, h } = getUnroundedLCH(color);
+function getLCHVector(
+  rgba: Readonly<ColorRGBA>,
+  alpha: number,
+  isCartesian: boolean,
+): InterpolatableColor {
+  const { l, c, h } = getUnroundedLCH(rgba);
   if (isCartesian) {
     const rad = (h * Math.PI) / 180;
     return { values: [l, Math.cos(rad) * c, Math.sin(rad) * c], alpha };
@@ -294,8 +306,12 @@ function getLCHVector(color: Color, alpha: number, isCartesian: boolean): Interp
   return { values: [l, c, h], alpha };
 }
 
-function getOKLCHVector(color: Color, alpha: number, isCartesian: boolean): InterpolatableColor {
-  const { l, c, h } = color.toOKLCH();
+function getOKLCHVector(
+  rgba: Readonly<ColorRGBA>,
+  alpha: number,
+  isCartesian: boolean,
+): InterpolatableColor {
+  const { l, c, h } = toOKLCH(rgba);
   if (isCartesian) {
     const rad = (h * Math.PI) / 180;
     return { values: [l, Math.cos(rad) * c, Math.sin(rad) * c], alpha };
@@ -303,8 +319,8 @@ function getOKLCHVector(color: Color, alpha: number, isCartesian: boolean): Inte
   return { values: [l, c, h], alpha };
 }
 
-function getOKLABVector(color: Color, alpha: number): InterpolatableColor {
-  const { l, a, b } = color.toOKLAB();
+function getOKLABVector(rgba: Readonly<ColorRGBA>, alpha: number): InterpolatableColor {
+  const { l, a, b } = toOKLAB(rgba);
   return { values: [l, a, b], alpha };
 }
 
@@ -313,23 +329,22 @@ function getOKLABVector(color: Color, alpha: number): InterpolatableColor {
  * while preserving alpha separately.
  */
 function colorToVector(
-  color: Color,
+  rgba: Readonly<ColorRGBA>,
   space: ColorGradientSpace,
   isCartesian: boolean,
 ): InterpolatableColor {
-  const rgba = color.toRGBA();
   const alpha = rgba.a ?? 1;
   switch (space) {
     case 'HSL':
-      return getHSLVector(color, alpha, isCartesian);
+      return getHSLVector(rgba, alpha, isCartesian);
     case 'HSV':
-      return getHSVVector(color, alpha, isCartesian);
+      return getHSVVector(rgba, alpha, isCartesian);
     case 'LCH':
-      return getLCHVector(color, alpha, isCartesian);
+      return getLCHVector(rgba, alpha, isCartesian);
     case 'OKLAB':
-      return getOKLABVector(color, alpha);
+      return getOKLABVector(rgba, alpha);
     case 'OKLCH':
-      return getOKLCHVector(color, alpha, isCartesian);
+      return getOKLCHVector(rgba, alpha, isCartesian);
     case 'RGB':
     default: {
       const { r, g, b } = rgba;
@@ -784,10 +799,9 @@ function adjustHueStops(
  * being converted back to RGB.
  */
 export function createColorGradient(
-  colors: readonly Color[],
+  colors: readonly Readonly<ColorRGBA>[],
   options: ColorGradientOptions = {},
-  createColor: CreateColorInstance,
-): Color[] {
+): ColorRGBA[] {
   if (colors.length < MIN_SCALE_STOPS) {
     throw new Error('at least two colors are required to build a gradient');
   }
@@ -840,7 +854,7 @@ export function createColorGradient(
       space,
       stopCount,
       stops: vectors,
-    }).map((stop) => createColor(stop));
+    });
   }
 
   return interpolateLinearStops({
@@ -850,5 +864,5 @@ export function createColorGradient(
     space,
     stopCount,
     stops: vectors,
-  }).map((stop) => createColor(stop));
+  });
 }
