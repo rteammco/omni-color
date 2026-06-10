@@ -511,7 +511,7 @@ export class Color implements ColorBrand {
    * ```
    */
   spin(degrees: number): Color {
-    return spinColorHue(this, degrees, createColorInstance);
+    return createColorInstance(spinColorHue(this.#color, degrees));
   }
 
   /**
@@ -528,7 +528,7 @@ export class Color implements ColorBrand {
    * ```
    */
   brighten(options?: ColorBrightnessOptions): Color {
-    return brightenColor(this, options, createColorInstance);
+    return createColorInstance(brightenColor(this.#color, options));
   }
 
   /**
@@ -545,7 +545,7 @@ export class Color implements ColorBrand {
    * ```
    */
   darken(options?: ColorBrightnessOptions): Color {
-    return darkenColor(this, options, createColorInstance);
+    return createColorInstance(darkenColor(this.#color, options));
   }
 
   /**
@@ -563,7 +563,7 @@ export class Color implements ColorBrand {
    * ```
    */
   saturate(options?: ColorSaturationOptions): Color {
-    return saturateColor(this, options, createColorInstance);
+    return createColorInstance(saturateColor(this.#color, options));
   }
 
   /**
@@ -581,7 +581,7 @@ export class Color implements ColorBrand {
    * ```
    */
   desaturate(options?: ColorSaturationOptions): Color {
-    return desaturateColor(this, options, createColorInstance);
+    return createColorInstance(desaturateColor(this.#color, options));
   }
 
   /**
@@ -591,7 +591,7 @@ export class Color implements ColorBrand {
    * @returns A new {@link Color} with the modified saturation.
    */
   grayscale(): Color {
-    return colorToGrayscale(this, createColorInstance);
+    return createColorInstance(colorToGrayscale(this.#color));
   }
 
   /**
