@@ -254,7 +254,8 @@ export class Color implements ColorBrand {
     colors: readonly ValidColorInputFormat[],
     options?: ColorGradientOptions,
   ): Color[] {
-    return createColorGradient(getColorList(colors), options, createColorInstance);
+    const rgbaColors = getColorList(colors).map((color) => color.toRGBA());
+    return createColorGradient(rgbaColors, options).map((rgba) => new Color(rgba));
   }
 
   /**

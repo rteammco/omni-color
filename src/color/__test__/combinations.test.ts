@@ -1,11 +1,11 @@
 import { Color } from '../color';
 import {
   averageColors,
+  type AverageColorsOptions,
   blendColors,
+  type BlendColorsOptions,
   mixColors,
   type MixColorsOptions,
-  type AverageColorsOptions,
-  type BlendColorsOptions,
 } from '../combinations';
 
 function mixColorsWrapped(colors: readonly Color[], options?: MixColorsOptions) {
