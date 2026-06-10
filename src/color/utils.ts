@@ -1,23 +1,13 @@
 import { type CaseInsensitive, resolveCaseInsensitiveOption } from '../utils';
-import type { Color, CreateColorInstance, ValidColorInputFormat } from './color';
 import { CSS_COLOR_NAME_TO_HEX_MAP } from './color.consts';
-import { isColorInstance } from './color.helpers';
 import { toRGBA } from './conversions';
-import type { ColorHex, ColorRGBA } from './formats.types';
+import type { ColorFormat, ColorHex, ColorRGBA } from './formats.types';
 import { parseCSSColorFormatString } from './parse';
 import { getRandomColorRGBA } from './random';
 import { srgbChannelToLinear } from './srgb';
-import type { ColorSwatch } from './swatch';
 import { getColorFromTemperatureLabel, matchPartialColorTemperatureLabel } from './temperature';
 
-export function getColorRGBAFromInput(
-  color: ValidColorInputFormat | null | undefined,
-  createColor: CreateColorInstance,
-): ColorRGBA {
-  if (isColorInstance(color)) {
-    return color.toRGBA();
-  }
-
+export function getColorRGBAFromInput(color: ColorFormat | string | null | undefined): ColorRGBA {
   if (typeof color === 'string') {
     const colorString = color.trim().toLowerCase();
 
@@ -34,13 +24,13 @@ export function getColorRGBAFromInput(
 
     const matchedColorTemperatureLabel = matchPartialColorTemperatureLabel(colorString);
     if (matchedColorTemperatureLabel) {
-      return getColorFromTemperatureLabel(matchedColorTemperatureLabel, createColor).toRGBA();
+      return getColorFromTemperatureLabel(matchedColorTemperatureLabel);
     }
 
     // Other CSS color format string (e.g. "rgb(255, 0, 0)"):
-    const parsedColor = parseCSSColorFormatString(colorString, createColor);
+    const parsedColor = parseCSSColorFormatString(colorString);
     if (parsedColor) {
-      return parsedColor.toRGBA();
+      return parsedColor;
     }
 
     throw new Error(`unknown color name or format: "${color}"`);
@@ -49,7 +39,7 @@ export function getColorRGBAFromInput(
   return color ? toRGBA(color) : getRandomColorRGBA();
 }
 
-export function getRelativeLuminance(rgb: ColorRGBA): number {
+export function getRelativeLuminance(rgb: Readonly<ColorRGBA>): number {
   const r = srgbChannelToLinear(rgb.r, 'WCAG');
   const g = srgbChannelToLinear(rgb.g, 'WCAG');
   const b = srgbChannelToLinear(rgb.b, 'WCAG');
@@ -98,19 +88,19 @@ interface IsColorDarkYIQOptions {
 
 export type IsColorDarkOptions = IsColorDarkWCAGOptions | IsColorDarkYIQOptions;
 
-function isColorDarkWCAG(color: Color, threshold: number): boolean {
-  return getRelativeLuminance(color.toRGBA()) < threshold;
+function isColorDarkWCAG(rgba: Readonly<ColorRGBA>, threshold: number): boolean {
+  return getRelativeLuminance(rgba) < threshold;
 }
 
-function isColorDarkYIQ(color: Color, threshold: number): boolean {
+function isColorDarkYIQ(rgba: Readonly<ColorRGBA>, threshold: number): boolean {
   // Weighted RGB luminance calculation:
-  const { r, g, b } = color.toRGB();
+  const { r, g, b } = rgba;
   const brightness = (299 * r + 587 * g + 114 * b) / 1000;
   return brightness < threshold;
 }
 
 // Checks if a color is dark based on the specified algorithm and threshold.
-export function isColorDark(color: Color, options: IsColorDarkOptions = {}): boolean {
+export function isColorDark(rgba: Readonly<ColorRGBA>, options: IsColorDarkOptions = {}): boolean {
   const colorDarknessMode = resolveCaseInsensitiveOption({
     allowedValues: COLOR_DARKNESS_MODES,
     defaultValue: 'WCAG',
@@ -119,14 +109,14 @@ export function isColorDark(color: Color, options: IsColorDarkOptions = {}): boo
   });
 
   if (colorDarknessMode === 'YIQ') {
-    return isColorDarkYIQ(color, options.yiqThreshold ?? 128);
+    return isColorDarkYIQ(rgba, options.yiqThreshold ?? 128);
   }
 
-  return isColorDarkWCAG(color, options.wcagThreshold ?? 0.179);
+  return isColorDarkWCAG(rgba, options.wcagThreshold ?? 0.179);
 }
 
-export function isColorOffWhite(color: Color): boolean {
-  const { r, g, b } = color.toRGB();
+export function isColorOffWhite(rgba: Readonly<ColorRGBA>): boolean {
+  const { r, g, b } = rgba;
   const brightness = (299 * r + 587 * g + 114 * b) / 1000;
   const maxChannel = Math.max(r, g, b);
   const minChannel = Math.min(r, g, b);
@@ -146,32 +136,16 @@ function normalizeAlpha(value: number): number {
   return Math.abs(value - rounded) <= ALPHA_EPSILON ? rounded : value;
 }
 
-export function areColorsEqual(color1: Color, color2: Color): boolean {
-  const c1 = color1.toRGBA();
-  const c2 = color2.toRGBA();
+export function areColorsEqual(color1: Readonly<ColorRGBA>, color2: Readonly<ColorRGBA>): boolean {
+  const r1 = normalizeChannel(color1.r);
+  const g1 = normalizeChannel(color1.g);
+  const b1 = normalizeChannel(color1.b);
+  const r2 = normalizeChannel(color2.r);
+  const g2 = normalizeChannel(color2.g);
+  const b2 = normalizeChannel(color2.b);
 
-  const r1 = normalizeChannel(c1.r);
-  const g1 = normalizeChannel(c1.g);
-  const b1 = normalizeChannel(c1.b);
-  const r2 = normalizeChannel(c2.r);
-  const g2 = normalizeChannel(c2.g);
-  const b2 = normalizeChannel(c2.b);
-
-  const a1 = normalizeAlpha(c1.a ?? 1);
-  const a2 = normalizeAlpha(c2.a ?? 1);
+  const a1 = normalizeAlpha(color1.a);
+  const a2 = normalizeAlpha(color2.a);
 
   return r1 === r2 && g1 === g2 && b1 === b2 && Math.abs(a1 - a2) <= ALPHA_EPSILON;
-}
-
-export function getColorList(
-  candidates: readonly ValidColorInputFormat[] | ColorSwatch,
-  createColor: CreateColorInstance,
-): Color[] {
-  if (Array.isArray(candidates)) {
-    return candidates.map((candidate) =>
-      isColorInstance(candidate) ? candidate : createColor(candidate),
-    );
-  }
-
-  return Object.values(candidates).filter(isColorInstance);
 }

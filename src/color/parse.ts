@@ -1,11 +1,11 @@
 import { clampValue } from '../utils';
-import type { Color, CreateColorInstance } from './color';
 import {
   type ColorSpaceValues,
   convertColorSpaceValuesToRGB,
   parseColorSpace,
 } from './colorSpaces';
-import type { ColorFormat, ColorRGB } from './formats.types';
+import { toRGBA } from './conversions';
+import type { ColorFormat, ColorRGB, ColorRGBA } from './formats.types';
 
 const MATCH_RGB_STRING_REGEX = /^rgb\((.+)\)$/;
 const MATCH_RGBA_STRING_REGEX = /^rgba\((.+)\)$/;
@@ -122,9 +122,9 @@ function parseHueAngle(value: string): number {
   return normalizeHue(numericValue);
 }
 
-function createColorOrNull(format: ColorFormat, createColor: CreateColorInstance): Color | null {
+function createColorRGBAOrNull(format: ColorFormat): ColorRGBA | null {
   try {
-    return createColor(format);
+    return toRGBA(format);
   } catch {
     return null;
   }
@@ -176,7 +176,7 @@ function parseHueAndTwoPercentChannels(channels: string[]): ParsedHueAndPercentC
   return { hue, firstPercentChannel, secondPercentChannel };
 }
 
-function parseColor(params: string, createColor: CreateColorInstance): Color | null {
+function parseColor(params: string): ColorRGBA | null {
   const separatorIndex = params.search(/[\s,]/);
   if (separatorIndex === -1) {
     return null;
@@ -212,7 +212,7 @@ function parseColor(params: string, createColor: CreateColorInstance): Color | n
   const colorSpaceValues: ColorSpaceValues = { r, g, b };
   const rgb = convertColorSpaceValuesToRGB(colorSpaceValues, colorSpaceName);
   if (colorParams.alpha === undefined) {
-    return createColorOrNull(rgb, createColor);
+    return createColorRGBAOrNull(rgb);
   }
 
   const alpha = parseAlpha(colorParams.alpha);
@@ -220,10 +220,10 @@ function parseColor(params: string, createColor: CreateColorInstance): Color | n
     return null;
   }
 
-  return createColorOrNull({ ...rgb, a: alpha }, createColor);
+  return createColorRGBAOrNull({ ...rgb, a: alpha });
 }
 
-function parseRGB(params: string, createColor: CreateColorInstance): Color | null {
+function parseRGB(params: string): ColorRGBA | null {
   const rgbParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -239,7 +239,7 @@ function parseRGB(params: string, createColor: CreateColorInstance): Color | nul
   }
 
   if (rgbParams.alpha === undefined) {
-    return createColorOrNull(rgbChannels, createColor);
+    return createColorRGBAOrNull(rgbChannels);
   }
 
   const alpha = parseAlpha(rgbParams.alpha);
@@ -247,10 +247,10 @@ function parseRGB(params: string, createColor: CreateColorInstance): Color | nul
     return null;
   }
 
-  return createColorOrNull({ ...rgbChannels, a: alpha }, createColor);
+  return createColorRGBAOrNull({ ...rgbChannels, a: alpha });
 }
 
-function parseRGBA(params: string, createColor: CreateColorInstance): Color | null {
+function parseRGBA(params: string): ColorRGBA | null {
   const rgbaParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -274,10 +274,10 @@ function parseRGBA(params: string, createColor: CreateColorInstance): Color | nu
     return null;
   }
 
-  return createColorOrNull({ ...rgbChannels, a: alpha }, createColor);
+  return createColorRGBAOrNull({ ...rgbChannels, a: alpha });
 }
 
-function parseHSL(params: string, createColor: CreateColorInstance): Color | null {
+function parseHSL(params: string): ColorRGBA | null {
   const hslParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -294,7 +294,7 @@ function parseHSL(params: string, createColor: CreateColorInstance): Color | nul
 
   const { hue: h, firstPercentChannel: s, secondPercentChannel: l } = parsedChannels;
   if (hslParams.alpha === undefined) {
-    return createColorOrNull({ h, s, l }, createColor);
+    return createColorRGBAOrNull({ h, s, l });
   }
 
   const alpha = parseAlpha(hslParams.alpha);
@@ -302,10 +302,10 @@ function parseHSL(params: string, createColor: CreateColorInstance): Color | nul
     return null;
   }
 
-  return createColorOrNull({ h, s, l, a: alpha }, createColor);
+  return createColorRGBAOrNull({ h, s, l, a: alpha });
 }
 
-function parseHSLA(params: string, createColor: CreateColorInstance): Color | null {
+function parseHSLA(params: string): ColorRGBA | null {
   const hslaParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -330,10 +330,10 @@ function parseHSLA(params: string, createColor: CreateColorInstance): Color | nu
     return null;
   }
 
-  return createColorOrNull({ h, s, l, a: alpha }, createColor);
+  return createColorRGBAOrNull({ h, s, l, a: alpha });
 }
 
-function parseHSV(params: string, createColor: CreateColorInstance): Color | null {
+function parseHSV(params: string): ColorRGBA | null {
   const hsvParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -350,7 +350,7 @@ function parseHSV(params: string, createColor: CreateColorInstance): Color | nul
 
   const { hue: h, firstPercentChannel: s, secondPercentChannel: v } = parsedChannels;
   if (hsvParams.alpha === undefined) {
-    return createColorOrNull({ h, s, v }, createColor);
+    return createColorRGBAOrNull({ h, s, v });
   }
 
   const alpha = parseAlpha(hsvParams.alpha);
@@ -358,10 +358,10 @@ function parseHSV(params: string, createColor: CreateColorInstance): Color | nul
     return null;
   }
 
-  return createColorOrNull({ h, s, v, a: alpha }, createColor);
+  return createColorRGBAOrNull({ h, s, v, a: alpha });
 }
 
-function parseHSVA(params: string, createColor: CreateColorInstance): Color | null {
+function parseHSVA(params: string): ColorRGBA | null {
   const hsvaParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -386,10 +386,10 @@ function parseHSVA(params: string, createColor: CreateColorInstance): Color | nu
     return null;
   }
 
-  return createColorOrNull({ h, s, v, a: alpha }, createColor);
+  return createColorRGBAOrNull({ h, s, v, a: alpha });
 }
 
-function parseHWB(params: string, createColor: CreateColorInstance): Color | null {
+function parseHWB(params: string): ColorRGBA | null {
   const hwbParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -406,7 +406,7 @@ function parseHWB(params: string, createColor: CreateColorInstance): Color | nul
 
   const { hue: h, firstPercentChannel: w, secondPercentChannel: b } = parsedChannels;
   if (hwbParams.alpha === undefined) {
-    return createColorOrNull({ h, w, b }, createColor);
+    return createColorRGBAOrNull({ h, w, b });
   }
 
   const alpha = parseAlpha(hwbParams.alpha);
@@ -414,10 +414,10 @@ function parseHWB(params: string, createColor: CreateColorInstance): Color | nul
     return null;
   }
 
-  return createColorOrNull({ h, w, b, a: alpha }, createColor);
+  return createColorRGBAOrNull({ h, w, b, a: alpha });
 }
 
-function parseCMYK(params: string, createColor: CreateColorInstance): Color | null {
+function parseCMYK(params: string): ColorRGBA | null {
   const cmykParams = splitColorFunctionParams(params, { expectedChannels: 4 });
   if (!cmykParams) {
     return null;
@@ -428,10 +428,10 @@ function parseCMYK(params: string, createColor: CreateColorInstance): Color | nu
     return null;
   }
 
-  return createColorOrNull({ c, m, y, k }, createColor);
+  return createColorRGBAOrNull({ c, m, y, k });
 }
 
-function parseLAB(params: string, createColor: CreateColorInstance): Color | null {
+function parseLAB(params: string): ColorRGBA | null {
   const labParams = splitColorFunctionParams(params, { expectedChannels: 3 });
   if (!labParams) {
     return null;
@@ -446,10 +446,10 @@ function parseLAB(params: string, createColor: CreateColorInstance): Color | nul
     return null;
   }
 
-  return createColorOrNull({ l, a, b, format: 'LAB' }, createColor);
+  return createColorRGBAOrNull({ l, a, b, format: 'LAB' });
 }
 
-function parseLCH(params: string, createColor: CreateColorInstance): Color | null {
+function parseLCH(params: string): ColorRGBA | null {
   const lchParams = splitColorFunctionParams(params, { expectedChannels: 3 });
   if (!lchParams) {
     return null;
@@ -464,10 +464,10 @@ function parseLCH(params: string, createColor: CreateColorInstance): Color | nul
     return null;
   }
 
-  return createColorOrNull({ l, c, h, format: 'LCH' }, createColor);
+  return createColorRGBAOrNull({ l, c, h, format: 'LCH' });
 }
 
-function parseOKLAB(params: string, createColor: CreateColorInstance): Color | null {
+function parseOKLAB(params: string): ColorRGBA | null {
   const oklabParams = splitColorFunctionParams(params, {
     expectedChannels: 3,
     allowAlpha: true,
@@ -489,7 +489,7 @@ function parseOKLAB(params: string, createColor: CreateColorInstance): Color | n
     return null;
   }
 
-  const parsedColor = createColorOrNull({ l, a, b, format: 'OKLAB' }, createColor);
+  const parsedColor = createColorRGBAOrNull({ l, a, b, format: 'OKLAB' });
   if (!parsedColor) {
     return null;
   }
@@ -503,10 +503,10 @@ function parseOKLAB(params: string, createColor: CreateColorInstance): Color | n
     return null;
   }
 
-  return parsedColor.setAlpha(alpha);
+  return { ...parsedColor, a: alpha };
 }
 
-function parseOKLCH(params: string, createColor: CreateColorInstance): Color | null {
+function parseOKLCH(params: string): ColorRGBA | null {
   const oklchParams = splitColorFunctionParams(params, { expectedChannels: 3 });
   if (!oklchParams) {
     return null;
@@ -524,12 +524,12 @@ function parseOKLCH(params: string, createColor: CreateColorInstance): Color | n
     return null;
   }
 
-  return createColorOrNull({ l, c, h }, createColor);
+  return createColorRGBAOrNull({ l, c, h });
 }
 
 const CSS_COLOR_PARSERS: {
   match: RegExp;
-  parse: (params: string, createColor: CreateColorInstance) => Color | null;
+  parse: (params: string) => ColorRGBA | null;
 }[] = [
   { match: MATCH_COLOR_FUNCTION_REGEX, parse: parseColor },
   { match: MATCH_RGB_STRING_REGEX, parse: parseRGB },
@@ -546,16 +546,13 @@ const CSS_COLOR_PARSERS: {
   { match: MATCH_OKLCH_STRING_REGEX, parse: parseOKLCH },
 ] as const;
 
-export function parseCSSColorFormatString(
-  colorFormatString: string,
-  createColor: CreateColorInstance,
-): Color | null {
+export function parseCSSColorFormatString(colorFormatString: string): ColorRGBA | null {
   const normalizedColorFormatString = colorFormatString.trim().toLowerCase();
 
   for (const parserDefinition of CSS_COLOR_PARSERS) {
     const match = normalizedColorFormatString.match(parserDefinition.match);
     if (match) {
-      return parserDefinition.parse(match[1].trim(), createColor);
+      return parserDefinition.parse(match[1].trim());
     }
   }
 
