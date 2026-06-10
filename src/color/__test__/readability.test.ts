@@ -1,5 +1,4 @@
 import { Color } from '../color';
-import { isColorInstance } from '../color.helpers';
 import {
   getAPCAReadabilityReport,
   getAPCAReadabilityScore,
@@ -2888,7 +2887,7 @@ describe('readability selection helpers', () => {
     const baseSwatch = new Color('#85ff97').getColorSwatch({ extended: false });
     const resultBase = getMostReadableTextColorForBackground(
       background,
-      Object.values(baseSwatch).filter(isColorInstance),
+      Object.values(baseSwatch).filter((value) => value instanceof Color),
     );
     expect(resultBase.equals(baseSwatch[900])).toBe(true);
 
@@ -2898,7 +2897,7 @@ describe('readability selection helpers', () => {
     });
     const resultExtended = getMostReadableTextColorForBackground(
       background,
-      Object.values(extendedSwatch).filter(isColorInstance),
+      Object.values(extendedSwatch).filter((value) => value instanceof Color),
     );
     expect(resultExtended.equals(extendedSwatch[950])).toBe(true);
   });
@@ -2918,7 +2917,7 @@ describe('readability selection helpers', () => {
 
     const result = getBestBackgroundColorForText(
       textColor,
-      Object.values(swatch).filter(isColorInstance),
+      Object.values(swatch).filter((value) => value instanceof Color),
     );
 
     expect(result.toHex()).toBe(swatch[50].toHex());

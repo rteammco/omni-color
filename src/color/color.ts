@@ -5,7 +5,6 @@ import {
   isColorPaletteSuitable,
 } from '../palette/palette';
 import { type CaseInsensitive, clampValue } from '../utils';
-import { COLOR_BRAND, type ColorBrand, isColorInstance } from './color.helpers';
 import type { ColorStringOptions } from './colorSpaces';
 import {
   averageColors,
@@ -127,6 +126,18 @@ import {
   type IsColorDarkOptions,
   isColorOffWhite,
 } from './utils';
+
+const COLOR_BRAND: unique symbol = Symbol.for('omni-color.Color');
+
+interface ColorBrand {
+  readonly [COLOR_BRAND]: true;
+}
+
+function isColorInstance(value: unknown): value is Color {
+  return (
+    !!value && typeof value === 'object' && (value as Partial<ColorBrand>)[COLOR_BRAND] === true
+  );
+}
 
 type ValidColorInputFormat = Color | ColorFormat | string;
 
@@ -1172,9 +1183,11 @@ export class Color implements ColorBrand {
 function getColorList(candidates: readonly ValidColorInputFormat[] | ColorSwatch): Color[] {
   if (Array.isArray(candidates)) {
     return candidates.map((candidate) =>
-      isColorInstance(candidate) ? candidate : createColorInstance(candidate),
+      candidate instanceof Color ? candidate : createColorInstance(candidate),
     );
   }
 
-  return Object.values(candidates).filter(isColorInstance);
+  return Object.values(candidates).filter(
+    (candidate): candidate is Color => !!candidate && typeof candidate === 'object',
+  );
 }
