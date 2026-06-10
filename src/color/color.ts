@@ -605,7 +605,8 @@ export class Color implements ColorBrand {
     if (others.length === 0) {
       return this.clone();
     }
-    return mixColors([this, ...getColorList(others)], options, createColorInstance);
+    const colorsRGBA = [this, ...getColorList(others)].map((color) => color.toRGBA());
+    return new Color(mixColors(colorsRGBA, options));
   }
 
   /**
@@ -616,7 +617,7 @@ export class Color implements ColorBrand {
    * @returns A new {@link Color} that is the result of the blending.
    */
   blendWith(other: ValidColorInputFormat, options?: BlendColorsOptions): Color {
-    return blendColors(this, new Color(other), options, createColorInstance);
+    return new Color(blendColors(this.toRGBA(), new Color(other).toRGBA(), options));
   }
 
   /**
@@ -630,7 +631,8 @@ export class Color implements ColorBrand {
     if (others.length === 0) {
       return this.clone();
     }
-    return averageColors([this, ...getColorList(others)], options, createColorInstance);
+    const colorsRGBA = [this, ...getColorList(others)].map((color) => color.toRGBA());
+    return new Color(averageColors(colorsRGBA, options));
   }
 
   /**

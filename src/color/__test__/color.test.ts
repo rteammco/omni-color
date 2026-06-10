@@ -1236,6 +1236,13 @@ describe('Color mixing and averaging', () => {
     expect(result.toHex()).toBe('#bdffff');
   });
 
+  it('blends colors using blendWith', () => {
+    const base = new Color('#ff0000');
+    const result = base.blendWith('#0000ff', { mode: 'MULTIPLY' });
+
+    expect(result.toHex()).toBe('#800000');
+  });
+
   it('averages colors from mutable inputs', () => {
     const base = new Color('#050a0f');
     const others = ['#0f0a05'];
