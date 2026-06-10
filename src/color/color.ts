@@ -1180,14 +1180,21 @@ export class Color implements ColorBrand {
   }
 }
 
+// TODO: TS seems to be inferring some of these types in here as `any`, see if we can fix this.
 function getColorList(candidates: readonly ValidColorInputFormat[] | ColorSwatch): Color[] {
+  // If this is a list of `Color` or valid color inputs, convert to `Color` instances and return:
   if (Array.isArray(candidates)) {
     return candidates.map((candidate) =>
       candidate instanceof Color ? candidate : createColorInstance(candidate),
     );
   }
 
-  return Object.values(candidates).filter(
-    (candidate): candidate is Color => !!candidate && typeof candidate === 'object',
-  );
+  // Otherwise this is a `ColorSwatch` object, so extract the color values while ignoring the `type` and `baseShade` properties:
+  return Object.entries(candidates).reduce<Color[]>((colors, [shade, candidate]) => {
+    if (shade !== 'type' && shade !== 'baseShade') {
+      colors.push(candidate);
+    }
+
+    return colors;
+  }, []);
 }
