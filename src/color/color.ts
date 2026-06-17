@@ -141,10 +141,6 @@ function isColorInstance(value: unknown): value is Color {
 
 type ValidColorInputFormat = Color | ColorFormat | string;
 
-export type CreateColorInstance = (input: ValidColorInputFormat) => Color;
-export const createColorInstance: CreateColorInstance = (input: ValidColorInputFormat) =>
-  new Color(input);
-
 /**
  * The base omni-color object.
  *
@@ -894,7 +890,7 @@ export class Color implements ColorBrand {
     harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
     options?: GenerateColorPaletteOptions,
   ): ColorPalette {
-    return generateColorPaletteFromBaseColor(this, harmony, options, createColorInstance);
+    return createColorPalette(generateColorPaletteFromBaseColor(this.#color, harmony, options));
   }
 
   /**
@@ -987,7 +983,7 @@ export class Color implements ColorBrand {
    * ```
    */
   isPaletteSuitable(): boolean {
-    return isColorPaletteSuitable(this);
+    return isColorPaletteSuitable(this.#color);
   }
 
   /**
@@ -1238,4 +1234,23 @@ function createColorSwatch(rawSwatch: ReturnType<typeof getRawColorSwatch>): Col
     baseShade: rawSwatch.baseShade,
     ...colorShades,
   } as ColorSwatch;
+}
+
+function createColorPalette(
+  rawPalette: ReturnType<typeof generateColorPaletteFromBaseColor>,
+): ColorPalette {
+  return {
+    primary: createColorSwatch(rawPalette.primary),
+    secondaryColors: rawPalette.secondaryColors.map(createColorSwatch),
+    neutrals: createColorSwatch(rawPalette.neutrals),
+    tintedNeutrals: createColorSwatch(rawPalette.tintedNeutrals),
+    secondaryTintedNeutrals: rawPalette.secondaryTintedNeutrals.map(createColorSwatch),
+    black: new Color(rawPalette.black),
+    white: new Color(rawPalette.white),
+    info: createColorSwatch(rawPalette.info),
+    negative: createColorSwatch(rawPalette.negative),
+    positive: createColorSwatch(rawPalette.positive),
+    special: createColorSwatch(rawPalette.special),
+    warning: createColorSwatch(rawPalette.warning),
+  };
 }
