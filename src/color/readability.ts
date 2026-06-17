@@ -1,5 +1,4 @@
 import { type CaseInsensitive, resolveCaseInsensitiveOption } from '../utils';
-import type { Color } from './color';
 import type { ColorRGBA } from './formats.types';
 import { getRelativeLuminance } from './utils';
 
@@ -31,15 +30,16 @@ function getCompositeRGBA(fg: ColorRGBA, bg: ColorRGBA): ColorRGBA {
   return { r, g, b, a: compositeAlpha };
 }
 
-export function getWCAGContrastRatio(color1: Color, color2: Color): number {
-  const c1 = color1.toRGBA();
-  const c2 = color2.toRGBA();
-  if (c1.a === 0 && c2.a === 0) {
+export function getWCAGContrastRatio(
+  color1: Readonly<ColorRGBA>,
+  color2: Readonly<ColorRGBA>,
+): number {
+  if (color1.a === 0 && color2.a === 0) {
     return 1;
   }
 
-  const c1Over2 = c1.a < 1 ? getCompositeRGBA(c1, c2) : c1;
-  const c2Over1 = c2.a < 1 ? getCompositeRGBA(c2, c1) : c2;
+  const c1Over2 = color1.a < 1 ? getCompositeRGBA(color1, color2) : color1;
+  const c2Over1 = color2.a < 1 ? getCompositeRGBA(color2, color1) : color2;
   const l1 = getRelativeLuminance(c1Over2);
   const l2 = getRelativeLuminance(c2Over1);
   const lighter = Math.max(l1, l2);
@@ -137,12 +137,13 @@ function getAPCAContrast(txtY: number, bgY: number): number {
 
 // Calculates the APCA readability score (Lc value).
 // NOTE: This is based on draft recommendations and is provided for advisory use only as WCAG 3 is not finalized.
-export function getAPCAReadabilityScore(foreground: Color, background: Color): number {
-  const fg = foreground.toRGBA();
-  const bg = background.toRGBA();
-
-  const bgOpaque = bg.a < 1 ? getCompositeRGBA(bg, { r: 255, g: 255, b: 255, a: 1 }) : bg;
-  const fgOpaque = fg.a < 1 ? getCompositeRGBA(fg, bgOpaque) : fg;
+export function getAPCAReadabilityScore(
+  foreground: Readonly<ColorRGBA>,
+  background: Readonly<ColorRGBA>,
+): number {
+  const bgOpaque =
+    background.a < 1 ? getCompositeRGBA(background, { r: 255, g: 255, b: 255, a: 1 }) : background;
+  const fgOpaque = foreground.a < 1 ? getCompositeRGBA(foreground, bgOpaque) : foreground;
 
   const txtY = sRGBtoY(fgOpaque);
   const bgY = sRGBtoY(bgOpaque);
@@ -196,8 +197,8 @@ function getAPCARequiredLc(options: APCAReadabilityOptions = {}): number | null 
 }
 
 export function getAPCAReadabilityReport(
-  foreground: Color,
-  background: Color,
+  foreground: Readonly<ColorRGBA>,
+  background: Readonly<ColorRGBA>,
   options: APCAReadabilityOptions = {},
 ): APCAReadabilityReport {
   const score = getAPCAReadabilityScore(foreground, background);
@@ -288,8 +289,8 @@ function isBetterReadabilityCandidate(
 }
 
 export function getWCAGReadabilityReport(
-  foreground: Color,
-  background: Color,
+  foreground: Readonly<ColorRGBA>,
+  background: Readonly<ColorRGBA>,
   options: WCAGReadabilityOptions = {},
 ): WCAGReadabilityReport {
   const level = resolveCaseInsensitiveOption({
@@ -316,8 +317,8 @@ export function getWCAGReadabilityReport(
 }
 
 export function isTextReadable(
-  foreground: Color,
-  background: Color,
+  foreground: Readonly<ColorRGBA>,
+  background: Readonly<ColorRGBA>,
   options: ReadabilityOptions = {},
 ): boolean {
   const algorithm = resolveCaseInsensitiveOption({
@@ -336,8 +337,8 @@ export function isTextReadable(
 }
 
 function getReadabilityComparisonResult(
-  foreground: Color,
-  background: Color,
+  foreground: Readonly<ColorRGBA>,
+  background: Readonly<ColorRGBA>,
   options: ReadabilityOptions = {},
 ): ReadabilityComparisonResult {
   const algorithm = resolveCaseInsensitiveOption({
@@ -369,10 +370,10 @@ function getReadabilityComparisonResult(
  * Pick the text color with the strongest readability against a background color.
  */
 export function getMostReadableTextColorForBackground(
-  backgroundColor: Color,
-  textColors: readonly Color[],
+  backgroundColor: Readonly<ColorRGBA>,
+  textColors: readonly Readonly<ColorRGBA>[],
   options: ReadabilityOptions = {},
-): Color {
+): Readonly<ColorRGBA> {
   if (textColors.length === 0) {
     throw new Error('At least one text color must be provided.');
   }
@@ -396,10 +397,10 @@ export function getMostReadableTextColorForBackground(
  * Pick the background color that maximizes readability for a given text color.
  */
 export function getBestBackgroundColorForText(
-  textColor: Color,
-  backgroundColors: readonly Color[],
+  textColor: Readonly<ColorRGBA>,
+  backgroundColors: readonly Readonly<ColorRGBA>[],
   options: ReadabilityOptions = {},
-): Color {
+): Readonly<ColorRGBA> {
   if (backgroundColors.length === 0) {
     throw new Error('At least one background color must be provided.');
   }

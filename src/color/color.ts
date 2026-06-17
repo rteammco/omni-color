@@ -1000,7 +1000,7 @@ export class Color implements ColorBrand {
    * @returns The WCAG contrast ratio between the two colors.
    */
   getWCAGContrastRatio(other: ValidColorInputFormat): number {
-    return getWCAGContrastRatio(this, new Color(other));
+    return getWCAGContrastRatio(this.toRGBA(), new Color(other).toRGBA());
   }
 
   /**
@@ -1015,7 +1015,7 @@ export class Color implements ColorBrand {
    * @returns The APCA readability score as a number.
    */
   getAPCAReadabilityScore(backgroundColor: ValidColorInputFormat): number {
-    return getAPCAReadabilityScore(this, new Color(backgroundColor));
+    return getAPCAReadabilityScore(this.toRGBA(), new Color(backgroundColor).toRGBA());
   }
 
   /**
@@ -1044,7 +1044,7 @@ export class Color implements ColorBrand {
     backgroundColor: ValidColorInputFormat,
     options?: APCAReadabilityOptions,
   ): APCAReadabilityReport {
-    return getAPCAReadabilityReport(this, new Color(backgroundColor), options);
+    return getAPCAReadabilityReport(this.toRGBA(), new Color(backgroundColor).toRGBA(), options);
   }
 
   /**
@@ -1070,7 +1070,7 @@ export class Color implements ColorBrand {
     backgroundColor: ValidColorInputFormat,
     options?: WCAGReadabilityOptions,
   ): WCAGReadabilityReport {
-    return getWCAGReadabilityReport(this, new Color(backgroundColor), options);
+    return getWCAGReadabilityReport(this.toRGBA(), new Color(backgroundColor).toRGBA(), options);
   }
 
   /**
@@ -1087,7 +1087,9 @@ export class Color implements ColorBrand {
     textColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityOptions,
   ): Color {
-    return getMostReadableTextColorForBackground(this, getColorList(textColors), options).clone();
+    const rawTextColors = getColorList(textColors).map((c) => c.toRGBA());
+    const result = getMostReadableTextColorForBackground(this.toRGBA(), rawTextColors, options);
+    return new Color(result);
   }
 
   /**
@@ -1111,7 +1113,7 @@ export class Color implements ColorBrand {
     backgroundColor: ValidColorInputFormat,
     options: ReadabilityOptions = {},
   ): boolean {
-    return isTextReadable(this, new Color(backgroundColor), options);
+    return isTextReadable(this.toRGBA(), new Color(backgroundColor).toRGBA(), options);
   }
 
   /**
@@ -1128,7 +1130,9 @@ export class Color implements ColorBrand {
     backgroundColors: readonly ValidColorInputFormat[] | ColorSwatch,
     options?: ReadabilityOptions,
   ): Color {
-    return getBestBackgroundColorForText(this, getColorList(backgroundColors), options).clone();
+    const rawBackgroundColors = getColorList(backgroundColors).map((c) => c.toRGBA());
+    const result = getBestBackgroundColorForText(this.toRGBA(), rawBackgroundColors, options);
+    return new Color(result);
   }
 
   /**
