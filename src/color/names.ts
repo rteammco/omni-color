@@ -1,4 +1,5 @@
-import type { Color } from './color';
+import { toHSL } from './conversions';
+import type { ColorRGBA } from './formats.types';
 
 export const BASE_COLOR_NAME_OPTIONS = {
   RED: 'Red',
@@ -94,8 +95,8 @@ function getLightnessModifier(l: number): ColorLightnessModifier {
   return COLOR_LIGHTNESS_MODIFIER_OPTIONS.NORMAL;
 }
 
-export function getBaseColorName(color: Color): ColorNameAndLightness {
-  const { h, s, l } = color.toHSL();
+export function getBaseColorName(rgba: Readonly<ColorRGBA>): ColorNameAndLightness {
+  const { h, s, l } = toHSL(rgba);
   const hue = Math.round(h);
   const saturation = Math.round(s);
   const lightness = Math.round(l);
