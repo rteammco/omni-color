@@ -1,5 +1,5 @@
 import { type CaseInsensitive, resolveCaseInsensitiveOption } from '../utils';
-import type { Color } from './color';
+import type { ColorLAB } from './formats.types';
 
 const DELTA_E_METHODS = ['CIE76', 'CIE94', 'CIEDE2000'] as const;
 export type DeltaEMethod = (typeof DELTA_E_METHODS)[number];
@@ -63,27 +63,23 @@ export type DeltaEOptions =
       ciede2000Options?: never;
     };
 
-function deltaECIE76(colorA: Color, colorB: Color): number {
-  const lab1 = colorA.toLAB();
-  const lab2 = colorB.toLAB();
-  const deltaL = lab1.l - lab2.l;
-  const deltaA = lab1.a - lab2.a;
-  const deltaB = lab1.b - lab2.b;
+function deltaECIE76(labA: ColorLAB, labB: ColorLAB): number {
+  const deltaL = labA.l - labB.l;
+  const deltaA = labA.a - labB.a;
+  const deltaB = labA.b - labB.b;
   return Math.sqrt(deltaL ** 2 + deltaA ** 2 + deltaB ** 2);
 }
 
-function deltaECIE94(colorA: Color, colorB: Color, options: CIE94Options = {}): number {
+function deltaECIE94(labA: ColorLAB, labB: ColorLAB, options: CIE94Options = {}): number {
   const { kL = 1, kC = 1, kH = 1, K1 = 0.045, K2 = 0.015 } = options;
-  const lab1 = colorA.toLAB();
-  const lab2 = colorB.toLAB();
 
-  const deltaL = lab1.l - lab2.l;
-  const c1 = Math.sqrt(lab1.a ** 2 + lab1.b ** 2);
-  const c2 = Math.sqrt(lab2.a ** 2 + lab2.b ** 2);
+  const deltaL = labA.l - labB.l;
+  const c1 = Math.sqrt(labA.a ** 2 + labA.b ** 2);
+  const c2 = Math.sqrt(labB.a ** 2 + labB.b ** 2);
   const deltaC = c1 - c2;
 
-  const deltaA = lab1.a - lab2.a;
-  const deltaB = lab1.b - lab2.b;
+  const deltaA = labA.a - labB.a;
+  const deltaB = labA.b - labB.b;
   const deltaH = Math.sqrt(Math.max(0, deltaA ** 2 + deltaB ** 2 - deltaC ** 2));
 
   const sL = 1;
@@ -97,33 +93,31 @@ function deltaECIE94(colorA: Color, colorB: Color, options: CIE94Options = {}): 
   return Math.sqrt(lTerm ** 2 + cTerm ** 2 + hTerm ** 2);
 }
 
-function deltaECIEDE2000(colorA: Color, colorB: Color, options: CIEDE2000Options = {}): number {
+function deltaECIEDE2000(labA: ColorLAB, labB: ColorLAB, options: CIEDE2000Options = {}): number {
   const { kL = 1, kC = 1, kH = 1 } = options;
-  const lab1 = colorA.toLAB();
-  const lab2 = colorB.toLAB();
 
-  const lBar = (lab1.l + lab2.l) / 2;
-  const c1 = Math.sqrt(lab1.a ** 2 + lab1.b ** 2);
-  const c2 = Math.sqrt(lab2.a ** 2 + lab2.b ** 2);
+  const lBar = (labA.l + labB.l) / 2;
+  const c1 = Math.sqrt(labA.a ** 2 + labA.b ** 2);
+  const c2 = Math.sqrt(labB.a ** 2 + labB.b ** 2);
   const cBar = (c1 + c2) / 2;
 
   const cBar7 = cBar ** 7;
   const g = 0.5 * (1 - Math.sqrt(cBar7 / (cBar7 + 25 ** 7)));
 
-  const a1Prime = lab1.a * (1 + g);
-  const a2Prime = lab2.a * (1 + g);
+  const a1Prime = labA.a * (1 + g);
+  const a2Prime = labB.a * (1 + g);
 
-  const c1Prime = Math.sqrt(a1Prime ** 2 + lab1.b ** 2);
-  const c2Prime = Math.sqrt(a2Prime ** 2 + lab2.b ** 2);
+  const c1Prime = Math.sqrt(a1Prime ** 2 + labA.b ** 2);
+  const c2Prime = Math.sqrt(a2Prime ** 2 + labB.b ** 2);
   const cBarPrime = (c1Prime + c2Prime) / 2;
 
-  const h1Prime = Math.atan2(lab1.b, a1Prime);
-  const h2Prime = Math.atan2(lab2.b, a2Prime);
+  const h1Prime = Math.atan2(labA.b, a1Prime);
+  const h2Prime = Math.atan2(labB.b, a2Prime);
 
   const h1PrimeDeg = (h1Prime * 180) / Math.PI + (h1Prime < 0 ? 360 : 0);
   const h2PrimeDeg = (h2Prime * 180) / Math.PI + (h2Prime < 0 ? 360 : 0);
 
-  const deltaLPrime = lab2.l - lab1.l;
+  const deltaLPrime = labB.l - labA.l;
   const deltaCPrime = c2Prime - c1Prime;
 
   let deltaHPrime: number;
@@ -172,7 +166,7 @@ function deltaECIEDE2000(colorA: Color, colorB: Color, options: CIEDE2000Options
   return Math.sqrt(lTerm ** 2 + cTerm ** 2 + hTerm ** 2 + rT * cTerm * hTerm);
 }
 
-export function getDeltaE(colorA: Color, colorB: Color, options: DeltaEOptions = {}): number {
+export function getDeltaE(labA: ColorLAB, labB: ColorLAB, options: DeltaEOptions = {}): number {
   const method = resolveCaseInsensitiveOption({
     allowedValues: DELTA_E_METHODS,
     defaultValue: 'CIEDE2000',
@@ -181,15 +175,15 @@ export function getDeltaE(colorA: Color, colorB: Color, options: DeltaEOptions =
   });
 
   if (method === 'CIE76') {
-    return deltaECIE76(colorA, colorB);
+    return deltaECIE76(labA, labB);
   }
   if (method === 'CIE94') {
     const cie94Options = 'cie94Options' in options ? options.cie94Options : undefined;
-    return deltaECIE94(colorA, colorB, cie94Options);
+    return deltaECIE94(labA, labB, cie94Options);
   }
   if (method === 'CIEDE2000') {
     const ciede2000Options = 'ciede2000Options' in options ? options.ciede2000Options : undefined;
-    return deltaECIEDE2000(colorA, colorB, ciede2000Options);
+    return deltaECIEDE2000(labA, labB, ciede2000Options);
   }
 
   throw new Error(`Unsupported Delta E method: ${method}`);

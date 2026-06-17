@@ -928,7 +928,7 @@ export class Color implements ColorBrand {
    * ```
    */
   differenceFrom(other: ValidColorInputFormat, options?: DeltaEOptions): number {
-    return getDeltaE(this, new Color(other), options);
+    return getDeltaE(this.toLAB(), new Color(other).toLAB(), options);
   }
 
   /**
