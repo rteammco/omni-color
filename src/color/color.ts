@@ -1152,7 +1152,7 @@ export class Color implements ColorBrand {
    * ```
    */
   getName(): ColorNameAndLightness {
-    return getBaseColorName(this);
+    return getBaseColorName(this.#color);
   }
 
   /**
