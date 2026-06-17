@@ -108,7 +108,7 @@ import {
   type ColorSwatch,
   type ColorSwatchOptions,
   type ExtendedColorSwatch,
-  getColorSwatch,
+  getColorSwatch as getRawColorSwatch,
 } from './swatch';
 import {
   type ColorTemperatureAndLabel,
@@ -869,7 +869,7 @@ export class Color implements ColorBrand {
   getColorSwatch(options?: ColorSwatchOptions & { extended: true }): ExtendedColorSwatch;
   getColorSwatch(options?: ColorSwatchOptions): ColorSwatch;
   getColorSwatch(options?: ColorSwatchOptions): ColorSwatch {
-    return getColorSwatch(this, options, createColorInstance);
+    return createColorSwatch(getRawColorSwatch(this.#color, options));
   }
 
   /**
@@ -1207,4 +1207,31 @@ function getColorList(candidates: readonly ValidColorInputFormat[] | ColorSwatch
 
     return colors;
   }, []);
+}
+
+function createColorSwatch(rawSwatch: ReturnType<typeof getRawColorSwatch>): ColorSwatch {
+  const colorShades = Object.entries(rawSwatch).reduce<Record<number, Color>>(
+    (colors, [shade, value]) => {
+      if (shade !== 'type' && shade !== 'baseShade') {
+        colors[Number(shade)] = new Color(value as ColorRGBA);
+      }
+
+      return colors;
+    },
+    {},
+  );
+
+  if (rawSwatch.type === 'EXTENDED') {
+    return {
+      type: rawSwatch.type,
+      baseShade: rawSwatch.baseShade,
+      ...colorShades,
+    } as ExtendedColorSwatch;
+  }
+
+  return {
+    type: rawSwatch.type,
+    baseShade: rawSwatch.baseShade,
+    ...colorShades,
+  } as ColorSwatch;
 }

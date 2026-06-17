@@ -1,5 +1,7 @@
 import { clampValue } from '../utils';
-import type { Color, CreateColorInstance } from './color';
+import type { Color } from './color';
+import { toHSLA, toRGBA } from './conversions';
+import type { ColorRGBA } from './formats.types';
 
 export type BaseColorSwatchShade = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 export type ExtendedColorSwatchShade =
@@ -57,6 +59,22 @@ export interface ExtendedColorSwatch extends ExtendedColorSwatchShades {
 }
 
 export type ColorSwatch = BaseColorSwatch | ExtendedColorSwatch;
+
+type RawBaseColorSwatchShades = Record<BaseColorSwatchShade, ColorRGBA>;
+type RawExtendedColorSwatchShades = RawBaseColorSwatchShades &
+  Record<Exclude<ExtendedColorSwatchShade, BaseColorSwatchShade>, ColorRGBA>;
+
+interface RawBaseColorSwatch extends RawBaseColorSwatchShades {
+  type: 'BASE';
+  baseShade: BaseColorSwatchShade;
+}
+
+interface RawExtendedColorSwatch extends RawExtendedColorSwatchShades {
+  type: 'EXTENDED';
+  baseShade: BaseColorSwatchShade;
+}
+
+type RawColorSwatch = RawBaseColorSwatch | RawExtendedColorSwatch;
 
 export interface ColorSwatchOptions {
   /**
@@ -123,20 +141,23 @@ const EXTENDED_SWATCH_SHADE_ADJUSTMENTS_FROM_500: ColorSwatchShadeAdjustmentsFro
     950: { saturationShift: -22.5, lightnessShift: -45 },
   };
 
-function isPureBlackOrWhite(baseColor: Color): boolean {
-  const { r, g, b } = baseColor.toRGB();
+function isPureBlackOrWhite(baseColor: Readonly<ColorRGBA>): boolean {
+  const { r, g, b } = baseColor;
   const isBlack = r === 0 && g === 0 && b === 0;
   const isWhite = r === 255 && g === 255 && b === 255;
 
   return isBlack || isWhite;
 }
 
-function getBaseShade(baseColor: Color, shouldCenterOn500: boolean): BaseColorSwatchShade {
+function getBaseShade(
+  baseColor: Readonly<ColorRGBA>,
+  shouldCenterOn500: boolean,
+): BaseColorSwatchShade {
   if (shouldCenterOn500 || isPureBlackOrWhite(baseColor)) {
     return 500;
   }
 
-  const { l } = baseColor.toHSLA();
+  const { l } = toHSLA(baseColor);
   const shadeIndex = Math.round((1 - l / 100) * 8);
   const shade = (100 + shadeIndex * 100) as BaseColorSwatchShade;
 
@@ -163,24 +184,22 @@ function createSwatch<Shade extends ExtendedColorSwatchShade>({
   baseShade,
   shades,
   type,
-  createColor,
 }: {
-  baseColor: Color;
+  baseColor: Readonly<ColorRGBA>;
   adjustmentsFrom500: ColorSwatchShadeAdjustmentsFrom500<Shade>;
   baseShade: BaseColorSwatchShade;
   shades: readonly Shade[];
-  type: ColorSwatch['type'];
-  createColor: CreateColorInstance;
-}): ColorSwatch {
-  const { h: baseH, s: baseS, l: baseL, a: baseA } = baseColor.toHSLA();
+  type: RawColorSwatch['type'];
+}): RawColorSwatch {
+  const { h: baseH, s: baseS, l: baseL, a: baseA } = toHSLA(baseColor);
 
-  const swatchShades = shades.reduce<Record<number, Color>>((acc, shade) => {
+  const swatchShades = shades.reduce<Record<number, ColorRGBA>>((acc, shade) => {
     const adjustment = getRelativeShadeAdjustment(shade, baseShade, adjustmentsFrom500);
 
     acc[shade] =
       shade === baseShade
-        ? baseColor.clone()
-        : createColor({
+        ? { ...baseColor }
+        : toRGBA({
             h: baseH,
             s: getAdjustedSaturation(baseS, adjustment.saturationShift),
             l: clampValue(baseL + adjustment.lightnessShift, 0, 100),
@@ -193,60 +212,53 @@ function createSwatch<Shade extends ExtendedColorSwatchShade>({
   return {
     type,
     baseShade,
-    ...(swatchShades as Record<Shade, Color>),
-  } as ColorSwatch;
+    ...(swatchShades as Record<Shade, ColorRGBA>),
+  } as RawColorSwatch;
 }
 
 function getBaseColorSwatch(
-  baseColor: Color,
+  baseColor: Readonly<ColorRGBA>,
   baseShade: BaseColorSwatchShade,
-  createColor: CreateColorInstance,
-): BaseColorSwatch {
+): RawBaseColorSwatch {
   return createSwatch({
     baseColor,
     adjustmentsFrom500: BASE_SWATCH_SHADE_ADJUSTMENTS_FROM_500,
     baseShade,
     shades: BASE_COLOR_SWATCH_SHADES,
     type: 'BASE',
-    createColor,
-  }) as BaseColorSwatch;
+  }) as RawBaseColorSwatch;
 }
 
 function getExtendedColorSwatch(
-  baseColor: Color,
+  baseColor: Readonly<ColorRGBA>,
   baseShade: BaseColorSwatchShade,
-  createColor: CreateColorInstance,
-): ExtendedColorSwatch {
+): RawExtendedColorSwatch {
   return createSwatch({
     baseColor,
     adjustmentsFrom500: EXTENDED_SWATCH_SHADE_ADJUSTMENTS_FROM_500,
     baseShade,
     shades: EXTENDED_COLOR_SWATCH_SHADES,
     type: 'EXTENDED',
-    createColor,
-  }) as ExtendedColorSwatch;
+  }) as RawExtendedColorSwatch;
 }
 
 export function getColorSwatch(
-  baseColor: Color,
+  baseColor: Readonly<ColorRGBA>,
   options: ColorSwatchOptions & { extended: true },
-  createColor: CreateColorInstance,
-): ExtendedColorSwatch;
+): RawExtendedColorSwatch;
 export function getColorSwatch(
-  baseColor: Color,
-  options: ColorSwatchOptions | undefined,
-  createColor: CreateColorInstance,
-): ColorSwatch;
+  baseColor: Readonly<ColorRGBA>,
+  options?: ColorSwatchOptions,
+): RawColorSwatch;
 export function getColorSwatch(
-  baseColor: Color,
+  baseColor: Readonly<ColorRGBA>,
   options: ColorSwatchOptions = {},
-  createColor: CreateColorInstance,
-): ColorSwatch {
+): RawColorSwatch {
   const baseShade = getBaseShade(baseColor, options.centerOn500 ?? false);
 
   if (options.extended) {
-    return getExtendedColorSwatch(baseColor, baseShade, createColor);
+    return getExtendedColorSwatch(baseColor, baseShade);
   }
 
-  return getBaseColorSwatch(baseColor, baseShade, createColor);
+  return getBaseColorSwatch(baseColor, baseShade);
 }
