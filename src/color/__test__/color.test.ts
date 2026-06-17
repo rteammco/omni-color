@@ -746,6 +746,10 @@ describe('Color.getColorPalette', () => {
     const complement = baseColor.spin(180);
     expect(defaultPalette.secondaryColors[0][500].toHex()).toBe(complement.toHex());
     expect(defaultPalette.secondaryTintedNeutrals[0][500].toHex()).toBe('#9e9f98');
+    expect(defaultPalette.black).toBeInstanceOf(Color);
+    expect(defaultPalette.black.toHex()).toBe('#000000');
+    expect(defaultPalette.white).toBeInstanceOf(Color);
+    expect(defaultPalette.white.toHex()).toBe('#ffffff');
 
     // Triadic palette
     const triadicPalette = baseColor.getColorPalette('TRIADIC');

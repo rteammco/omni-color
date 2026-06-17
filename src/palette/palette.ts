@@ -1,7 +1,9 @@
-import type { Color, CreateColorInstance } from '../color/color';
+import type { Color } from '../color/color';
 import { BLACK_HEX, WHITE_HEX } from '../color/color.consts';
-import { type ColorHarmony } from '../color/harmonies';
-import type { ColorSwatch, ColorSwatchOptions } from '../color/swatch';
+import { toHSL, toOKLCH, toRGBA } from '../color/conversions';
+import type { ColorFormat, ColorRGBA } from '../color/formats.types';
+import { type ColorHarmony, getHarmonyColors } from '../color/harmonies';
+import { type ColorSwatch, type ColorSwatchOptions, getColorSwatch } from '../color/swatch';
 import { type CaseInsensitive, clampValue } from '../utils';
 
 type SemanticColor = 'info' | 'positive' | 'negative' | 'warning' | 'special';
@@ -42,6 +44,28 @@ export interface ColorPalette {
   positive: ColorSwatch;
   special: ColorSwatch;
   warning: ColorSwatch;
+}
+
+type RawColorSwatch = ReturnType<typeof getColorSwatch>;
+
+interface RawColorPalette {
+  // Main colors:
+  primary: RawColorSwatch;
+  secondaryColors: RawColorSwatch[];
+
+  // Neutrals:
+  neutrals: RawColorSwatch;
+  tintedNeutrals: RawColorSwatch;
+  secondaryTintedNeutrals: RawColorSwatch[];
+  black: ColorRGBA;
+  white: ColorRGBA;
+
+  // Semantic colors:
+  info: RawColorSwatch;
+  negative: RawColorSwatch;
+  positive: RawColorSwatch;
+  special: RawColorSwatch;
+  warning: RawColorSwatch;
 }
 
 // TODO: derive from actual color values
@@ -89,8 +113,8 @@ const DEFAULT_NEUTRAL_COLOR_HARMONIZATION_OPTIONS: Required<NeutralColorHarmoniz
  * - saturation >= `SUITABLE_PALETTE_MIN_SATURATION`
  * - lightness between `SUITABLE_PALETTE_MIN_LIGHTNESS` and `SUITABLE_PALETTE_MAX_LIGHTNESS` (inclusive)
  */
-export function isColorPaletteSuitable(color: Color): boolean {
-  const { s, l } = color.toHSL();
+export function isColorPaletteSuitable(color: ColorFormat): boolean {
+  const { s, l } = toHSL(color);
   return (
     s >= SUITABLE_PALETTE_MIN_SATURATION &&
     l >= SUITABLE_PALETTE_MIN_LIGHTNESS &&
@@ -104,21 +128,20 @@ export interface GenerateColorPaletteOptions {
   swatchOptions?: ColorSwatchOptions;
 }
 
-function harmonizeNeutrals(paletteBaseColor: Color, createColor: CreateColorInstance): Color {
-  const { l: baseL, h: baseH } = paletteBaseColor.toOKLCH();
-  return createColor({ l: baseL, c: 0, h: baseH });
+function harmonizeNeutrals(paletteBaseColor: Readonly<ColorRGBA>): ColorRGBA {
+  const { l: baseL, h: baseH } = toOKLCH(paletteBaseColor);
+  return toRGBA({ l: baseL, c: 0, h: baseH, format: 'OKLCH' });
 }
 
 function harmonizeTintedNeutrals(
-  paletteBaseColor: Color,
+  paletteBaseColor: Readonly<ColorRGBA>,
   options: Required<NeutralColorHarmonizationOptions>,
-  createColor: CreateColorInstance,
-): Color {
-  const { l: baseL, c: baseC, h: baseH } = paletteBaseColor.toOKLCH();
+): ColorRGBA {
+  const { l: baseL, c: baseC, h: baseH } = toOKLCH(paletteBaseColor);
   const chromaFactor = clampValue(options.tintChromaFactor, 0, 1);
   const maxChroma = Math.max(options.maxTintChroma, 0);
   const resultChroma = clampValue(baseC * chromaFactor, 0, maxChroma);
-  return createColor({ l: baseL, c: resultChroma, h: baseH });
+  return toRGBA({ l: baseL, c: resultChroma, h: baseH, format: 'OKLCH' });
 }
 
 /**
@@ -142,15 +165,14 @@ function interpolateHueShortestPath(startHue: number, targetHue: number, fractio
 const CHROMA_THRESHOLD_FOR_USABLE_HUE = 0.015; // below this threshold, colors appear grayscale
 
 function harmonizeSemanticColor(
-  paletteBaseColor: Color,
+  paletteBaseColor: Readonly<ColorRGBA>,
   semanticColor: SemanticColor,
   options: Required<SemanticColorHarmonizationOptions>,
-  createColor: CreateColorInstance,
-): Color {
+): ColorRGBA {
   // Constrain hue pull option to its valid range:
   const huePullOption = clampValue(options.huePull, 0, 1);
 
-  const { l: baseL, c: baseC, h: baseH } = paletteBaseColor.toOKLCH();
+  const { l: baseL, c: baseC, h: baseH } = toOKLCH(paletteBaseColor);
 
   // Resolve target hue:
   const defaultSemanticH = SEMANTIC_COLOR_TO_BASE_OKLCH_HUE_MAP[semanticColor];
@@ -170,15 +192,14 @@ function harmonizeSemanticColor(
     maxChromaOption,
   );
 
-  return createColor({ l: baseL, c: resultChroma, h: resultHue });
+  return toRGBA({ l: baseL, c: resultChroma, h: resultHue, format: 'OKLCH' });
 }
 
 export function generateColorPaletteFromBaseColor(
-  baseColor: Color,
+  baseColor: Readonly<ColorRGBA>,
   harmony: CaseInsensitive<ColorHarmony> = 'COMPLEMENTARY',
   options: GenerateColorPaletteOptions | undefined,
-  createColor: CreateColorInstance,
-): ColorPalette {
+): RawColorPalette {
   // TODO: helpers or warnings if the palette is suboptimal
 
   const neutralHarmonizationOptions = {
@@ -204,58 +225,48 @@ export function generateColorPaletteFromBaseColor(
     ...options?.swatchOptions,
   };
 
-  const harmonyColors = baseColor.getHarmonyColors(harmony);
-  const primary = harmonyColors[0].getColorSwatch(paletteSwatchOptions);
+  const harmonyColors = getHarmonyColors(baseColor, harmony);
+  const primary = getColorSwatch(harmonyColors[0], paletteSwatchOptions);
   const secondaryBaseColors = harmonyColors.slice(1);
   const secondaryColors = secondaryBaseColors.map((color) =>
-    color.getColorSwatch(paletteSwatchOptions),
+    getColorSwatch(color, paletteSwatchOptions),
   );
 
   return {
     primary,
     secondaryColors,
-    neutrals: harmonizeNeutrals(baseColor, createColor).getColorSwatch(paletteSwatchOptions),
-    tintedNeutrals: harmonizeTintedNeutrals(
-      baseColor,
-      neutralHarmonizationOptions,
-      createColor,
-    ).getColorSwatch(paletteSwatchOptions),
+    neutrals: getColorSwatch(harmonizeNeutrals(baseColor), paletteSwatchOptions),
+    tintedNeutrals: getColorSwatch(
+      harmonizeTintedNeutrals(baseColor, neutralHarmonizationOptions),
+      paletteSwatchOptions,
+    ),
     secondaryTintedNeutrals: secondaryBaseColors.map((color) =>
-      harmonizeTintedNeutrals(color, neutralHarmonizationOptions, createColor).getColorSwatch(
+      getColorSwatch(
+        harmonizeTintedNeutrals(color, neutralHarmonizationOptions),
         paletteSwatchOptions,
       ),
     ),
-    black: createColor(BLACK_HEX),
-    white: createColor(WHITE_HEX),
-    info: harmonizeSemanticColor(
-      baseColor,
-      'info',
-      semanticHarmonizationOptions,
-      createColor,
-    ).getColorSwatch(paletteSwatchOptions),
-    positive: harmonizeSemanticColor(
-      baseColor,
-      'positive',
-      semanticHarmonizationOptions,
-      createColor,
-    ).getColorSwatch(paletteSwatchOptions),
-    negative: harmonizeSemanticColor(
-      baseColor,
-      'negative',
-      semanticHarmonizationOptions,
-      createColor,
-    ).getColorSwatch(paletteSwatchOptions),
-    warning: harmonizeSemanticColor(
-      baseColor,
-      'warning',
-      semanticHarmonizationOptions,
-      createColor,
-    ).getColorSwatch(paletteSwatchOptions),
-    special: harmonizeSemanticColor(
-      baseColor,
-      'special',
-      semanticHarmonizationOptions,
-      createColor,
-    ).getColorSwatch(paletteSwatchOptions),
+    black: toRGBA(BLACK_HEX),
+    white: toRGBA(WHITE_HEX),
+    info: getColorSwatch(
+      harmonizeSemanticColor(baseColor, 'info', semanticHarmonizationOptions),
+      paletteSwatchOptions,
+    ),
+    positive: getColorSwatch(
+      harmonizeSemanticColor(baseColor, 'positive', semanticHarmonizationOptions),
+      paletteSwatchOptions,
+    ),
+    negative: getColorSwatch(
+      harmonizeSemanticColor(baseColor, 'negative', semanticHarmonizationOptions),
+      paletteSwatchOptions,
+    ),
+    warning: getColorSwatch(
+      harmonizeSemanticColor(baseColor, 'warning', semanticHarmonizationOptions),
+      paletteSwatchOptions,
+    ),
+    special: getColorSwatch(
+      harmonizeSemanticColor(baseColor, 'special', semanticHarmonizationOptions),
+      paletteSwatchOptions,
+    ),
   };
 }
