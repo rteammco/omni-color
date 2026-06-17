@@ -1,207 +1,176 @@
-import { Color, createColorInstance } from '../color';
+import { Color } from '../color';
+import { toHex, toHSL, toHSV, toLCH, toOKLAB, toOKLCH } from '../conversions';
 import { createColorGradient } from '../gradients';
 
 describe('createColorGradient', () => {
   it('builds linear RGB gradients with evenly spaced stops', () => {
     const gradient = createColorGradient(
-      [new Color('#ff0000'), new Color('#0000ff')],
+      [new Color('#ff0000').toRGBA(), new Color('#0000ff').toRGBA()],
       {
         stops: 5,
         space: 'RGB',
       },
-      createColorInstance,
     );
 
-    expect(gradient.map((color) => color.toHex())).toEqual([
-      '#ff0000',
-      '#bf0040',
-      '#800080',
-      '#4000bf',
-      '#0000ff',
-    ]);
+    expect(gradient.map(toHex)).toEqual(['#ff0000', '#bf0040', '#800080', '#4000bf', '#0000ff']);
   });
 
   it('defaults to 5 evenly spaced gradient stops', () => {
     const gradient = createColorGradient(
-      [new Color('#000000'), new Color('#ffffff')],
+      [new Color('#000000').toRGBA(), new Color('#ffffff').toRGBA()],
       undefined,
-      createColorInstance,
     );
 
     expect(gradient).toHaveLength(5);
-    expect(gradient[0].toHex()).toBe('#000000');
-    expect(gradient[4].toHex()).toBe('#ffffff');
+    expect(toHex(gradient[0])).toBe('#000000');
+    expect(toHex(gradient[4])).toBe('#ffffff');
   });
 
   it('rounds non-integer stop counts and enforces a minimum of two anchors', () => {
     const twoStopGradient = createColorGradient(
-      [new Color('#000000'), new Color('#ffffff')],
+      [new Color('#000000').toRGBA(), new Color('#ffffff').toRGBA()],
       {
         stops: 1.7,
       },
-      createColorInstance,
     );
     expect(twoStopGradient).toHaveLength(2);
-    expect(twoStopGradient[0].toHex()).toBe('#000000');
-    expect(twoStopGradient[1].toHex()).toBe('#ffffff');
+    expect(toHex(twoStopGradient[0])).toBe('#000000');
+    expect(toHex(twoStopGradient[1])).toBe('#ffffff');
   });
 
   it('supports bezier interpolation with easing while preserving anchors', () => {
-    const anchors = [new Color('#f43f5e'), new Color('#fbbf24'), new Color('#22d3ee')];
-    const gradient = createColorGradient(
-      anchors,
-      {
-        stops: 4,
-        interpolation: 'BEZIER',
-        space: 'HSL',
-        easing: 'EASE_IN_OUT',
-      },
-      createColorInstance,
-    );
+    const anchors = [
+      new Color('#f43f5e').toRGBA(),
+      new Color('#fbbf24').toRGBA(),
+      new Color('#22d3ee').toRGBA(),
+    ];
+    const gradient = createColorGradient(anchors, {
+      stops: 4,
+      interpolation: 'BEZIER',
+      space: 'HSL',
+      easing: 'EASE_IN_OUT',
+    });
 
     // Bezier curve in Polar space (hue unwound)
-    expect(gradient.map((color) => color.toHex())).toEqual([
-      '#f43f5e',
-      '#f66f34',
-      '#24f340',
-      '#22d3ee',
-    ]);
-    expect(gradient[0].toHex()).toBe('#f43f5e');
-    expect(gradient[gradient.length - 1].toHex()).toBe('#22d3ee');
+    expect(gradient.map(toHex)).toEqual(['#f43f5e', '#f66f34', '#24f340', '#22d3ee']);
+    expect(toHex(gradient[0])).toBe('#f43f5e');
+    expect(toHex(gradient[gradient.length - 1])).toBe('#22d3ee');
   });
 
   it('wraps hues smoothly across the 0°/360° boundary in polar spaces', () => {
     const gradient = createColorGradient(
-      [new Color({ h: 350, s: 100, l: 50 }), new Color({ h: 10, s: 100, l: 50 })],
+      [new Color({ h: 350, s: 100, l: 50 }).toRGBA(), new Color({ h: 10, s: 100, l: 50 }).toRGBA()],
       { stops: 5, space: 'HSL' },
-      createColorInstance,
     );
 
-    expect(gradient.map((color) => color.toHex())).toEqual([
-      '#ff002b',
-      '#ff0016',
-      '#ff0000',
-      '#ff1500',
-      '#ff2a00',
-    ]);
-    const hue = gradient[2].toHSL().h;
+    expect(gradient.map(toHex)).toEqual(['#ff002b', '#ff0015', '#ff0000', '#ff1500', '#ff2b00']);
+    const hue = toHSL(gradient[2]).h;
     expect(Math.min(hue, 360 - hue)).toBeCloseTo(0, 0);
   });
 
   it('interpolates alpha alongside color channels', () => {
     const gradient = createColorGradient(
-      [new Color('rgba(255,0,0,0.2)'), new Color('rgba(0,0,255,0.8)')],
+      [new Color('rgba(255,0,0,0.2)').toRGBA(), new Color('rgba(0,0,255,0.8)').toRGBA()],
       {
         stops: 3,
         space: 'RGB',
       },
-      createColorInstance,
     );
 
-    expect(gradient[0].toRGBA()).toEqual({ r: 255, g: 0, b: 0, a: 0.2 });
-    expect(gradient[1].toRGBA()).toEqual({ r: 128, g: 0, b: 128, a: 0.5 });
-    expect(gradient[2].toRGBA()).toEqual({ r: 0, g: 0, b: 255, a: 0.8 });
+    expect(gradient[0]).toEqual({ r: 255, g: 0, b: 0, a: 0.2 });
+    expect(gradient[1]).toEqual({ r: 128, g: 0, b: 128, a: 0.5 });
+    expect(gradient[2]).toEqual({ r: 0, g: 0, b: 255, a: 0.8 });
   });
 
   it('clamps eased stops inside OKLCH and LCH gamuts', () => {
     const oklchGradient = createColorGradient(
-      [new Color('#111111'), new Color('#eeeeee')],
+      [new Color('#111111').toRGBA(), new Color('#eeeeee').toRGBA()],
       {
         stops: 3,
         space: 'OKLCH',
         easing: (t: number) => 1.2 * t - 0.1,
       },
-      createColorInstance,
     );
     const lchGradient = createColorGradient(
-      [new Color('#2d2c7a'), new Color('#f4f0ff')],
+      [new Color('#2d2c7a').toRGBA(), new Color('#f4f0ff').toRGBA()],
       {
         stops: 4,
         space: 'LCH',
         easing: 'EASE_OUT',
       },
-      createColorInstance,
     );
 
-    expect(oklchGradient[1].toOKLCH().c).toBeGreaterThanOrEqual(0);
-    expect(oklchGradient[1].toOKLCH().c).toBeLessThanOrEqual(0.5);
-    expect(lchGradient[1].toLCH().c).toBeLessThanOrEqual(150);
-    expect(lchGradient[2].toLCH().l).toBeGreaterThanOrEqual(0);
-    expect(lchGradient[2].toLCH().l).toBeLessThanOrEqual(100);
+    expect(toOKLCH(oklchGradient[1]).c).toBeGreaterThanOrEqual(0);
+    expect(toOKLCH(oklchGradient[1]).c).toBeLessThanOrEqual(0.5);
+    expect(toLCH(lchGradient[1]).c).toBeLessThanOrEqual(150);
+    expect(toLCH(lchGradient[2]).l).toBeGreaterThanOrEqual(0);
+    expect(toLCH(lchGradient[2]).l).toBeLessThanOrEqual(100);
   });
 
   it('throws when fewer than two colors are provided', () => {
-    expect(() =>
-      createColorGradient([new Color('#ff0000')], { stops: 2 }, createColorInstance),
-    ).toThrow('at least two colors are required to build a gradient');
+    expect(() => createColorGradient([new Color('#ff0000').toRGBA()], { stops: 2 })).toThrow(
+      'at least two colors are required to build a gradient',
+    );
   });
 
   it('accepts readonly anchor arrays', () => {
-    const anchors = [new Color('#14213d'), new Color('#fca311')] as const;
+    const anchors = [new Color('#14213d').toRGBA(), new Color('#fca311').toRGBA()] as const;
 
-    const gradient = createColorGradient(anchors, { stops: 3, space: 'RGB' }, createColorInstance);
+    const gradient = createColorGradient(anchors, { stops: 3, space: 'RGB' });
 
-    expect(gradient.map((color) => color.toHex())).toEqual(['#14213d', '#886227', '#fca311']);
+    expect(gradient.map(toHex)).toEqual(['#14213d', '#886227', '#fca311']);
   });
 
   it('throws for invalid option values', () => {
-    const anchors = [new Color('#ff0000'), new Color('#0000ff')];
+    const anchors = [new Color('#ff0000').toRGBA(), new Color('#0000ff').toRGBA()];
 
+    expect(() => createColorGradient(anchors, { space: 'INVALID' as never })).toThrow(
+      "Invalid 'space'",
+    );
+    expect(() => createColorGradient(anchors, { interpolation: 'INVALID' as never })).toThrow(
+      "Invalid 'interpolation'",
+    );
+    expect(() => createColorGradient(anchors, { easing: 'INVALID' as never })).toThrow(
+      "Invalid 'easing'",
+    );
     expect(() =>
-      createColorGradient(anchors, { space: 'INVALID' as never }, createColorInstance),
-    ).toThrow("Invalid 'space'");
-    expect(() =>
-      createColorGradient(anchors, { interpolation: 'INVALID' as never }, createColorInstance),
-    ).toThrow("Invalid 'interpolation'");
-    expect(() =>
-      createColorGradient(anchors, { easing: 'INVALID' as never }, createColorInstance),
-    ).toThrow("Invalid 'easing'");
-    expect(() =>
-      createColorGradient(
-        anchors,
-        { hueInterpolationMode: 'INVALID' as never },
-        createColorInstance,
-      ),
+      createColorGradient(anchors, { hueInterpolationMode: 'INVALID' as never }),
     ).toThrow("Invalid 'hueInterpolationMode'");
   });
 });
 
 describe('Color gradient helpers', () => {
   it('maintains anchors when easing between multiple colors', () => {
-    const anchors = [new Color('#ff0000'), new Color('#00ff00'), new Color('#0000ff')];
-    const gradient = createColorGradient(
-      anchors,
-      {
-        stops: 5,
-        easing: 'EASE_IN_OUT',
-        space: 'RGB',
-      },
-      createColorInstance,
-    );
+    const anchors = [
+      new Color('#ff0000').toRGBA(),
+      new Color('#00ff00').toRGBA(),
+      new Color('#0000ff').toRGBA(),
+    ];
+    const gradient = createColorGradient(anchors, {
+      stops: 5,
+      easing: 'EASE_IN_OUT',
+      space: 'RGB',
+    });
 
-    expect(gradient[0].toHex()).toBe('#ff0000');
-    expect(gradient[2].toHex()).toBe('#00ff00');
-    expect(gradient[4].toHex()).toBe('#0000ff');
+    expect(toHex(gradient[0])).toBe('#ff0000');
+    expect(toHex(gradient[2])).toBe('#00ff00');
+    expect(toHex(gradient[4])).toBe('#0000ff');
   });
 });
 
 describe('Polar Hue Interpolation (createColorGradient)', () => {
-  const red = new Color('hsl(0, 100%, 50%)');
-  const blue = new Color('hsl(240, 100%, 50%)');
-  const green = new Color('hsl(120, 100%, 50%)');
+  const red = new Color('hsl(0, 100%, 50%)').toRGBA();
+  const blue = new Color('hsl(240, 100%, 50%)').toRGBA();
+  const green = new Color('hsl(120, 100%, 50%)').toRGBA();
 
   it('reproduces current Cartesian desaturation behavior when explicitly requested', () => {
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'CARTESIAN',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'CARTESIAN',
+    });
     const mid = gradient[1];
-    const hsl = mid.toHSL();
+    const hsl = toHSL(mid);
 
     // Cartesian interpolation between 0 and 240 results in hue 300, but saturation ~50%
     expect(hsl.h).toBeCloseTo(300, 0);
@@ -209,17 +178,13 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   });
 
   it('defaults to Shortest Polar interpolation (preserving saturation)', () => {
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'HSL',
-        // No mode specified -> defaults to Shortest
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSL',
+      // No mode specified -> defaults to Shortest
+    });
     const mid = gradient[1];
-    const hsl = mid.toHSL();
+    const hsl = toHSL(mid);
 
     // Shortest path from 0 to 240 is via -60 (300) -> 240.
     // 0 -> 240 diff is 240 (>180). 240 - 360 = -120.
@@ -241,108 +206,84 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // Longest mode condition: if (abs(diff) < 180).
     // So here it does nothing.
     // 0 -> 240. Midpoint 120. Green.
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'LONGEST',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'LONGEST',
+    });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(120, 0);
-    expect(mid.toHSL().s).toBe(100);
+    expect(toHSL(mid).h).toBeCloseTo(120, 0);
+    expect(toHSL(mid).s).toBe(100);
   });
 
   it('supports Increasing mode (0 -> 240)', () => {
     // 0 -> 240. 240 > 0. Stays 240.
     // Midpoint 120.
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'INCREASING',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'INCREASING',
+    });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(120, 0);
+    expect(toHSL(mid).h).toBeCloseTo(120, 0);
   });
 
   it('supports Increasing mode with wrap (350 -> 10)', () => {
-    const start = new Color('hsl(350, 100%, 50%)');
-    const end = new Color('hsl(10, 100%, 50%)');
+    const start = new Color('hsl(350, 100%, 50%)').toRGBA();
+    const end = new Color('hsl(10, 100%, 50%)').toRGBA();
 
     // 350 -> 10. 10 < 350. Add 360 -> 370.
     // 350 -> 370. Midpoint 360 (0).
-    const gradient = createColorGradient(
-      [start, end],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'INCREASING',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([start, end], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'INCREASING',
+    });
     const mid = gradient[1];
-    const hue = mid.toHSL().h;
+    const hue = toHSL(mid).h;
     expect(Math.min(hue, 360 - hue)).toBeCloseTo(0, 0);
   });
 
   it('supports Decreasing mode (0 -> 240)', () => {
     // 0 -> 240. 240 > 0. Sub 360 -> -120.
     // 0 -> -120. Mid -60 (300).
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'DECREASING',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'DECREASING',
+    });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(300, 0);
+    expect(toHSL(mid).h).toBeCloseTo(300, 0);
   });
 
   it('supports Decreasing mode with wrap (10 -> 350)', () => {
-    const start = new Color('hsl(10, 100%, 50%)');
-    const end = new Color('hsl(350, 100%, 50%)');
+    const start = new Color('hsl(10, 100%, 50%)').toRGBA();
+    const end = new Color('hsl(350, 100%, 50%)').toRGBA();
 
     // 10 -> 350. 350 > 10. Sub 360 -> -10.
     // 10 -> -10. Mid 0.
-    const gradient = createColorGradient(
-      [start, end],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'DECREASING',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([start, end], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'DECREASING',
+    });
     const mid = gradient[1];
-    const hue = mid.toHSL().h;
+    const hue = toHSL(mid).h;
     expect(Math.min(hue, 360 - hue)).toBeCloseTo(0, 0);
   });
 
   it('supports Raw mode (350 -> 10)', () => {
     // 350 -> 10. Raw interpolation.
     // Midpoint (350+10)/2 = 180.
-    const start = new Color('hsl(350, 100%, 50%)');
-    const end = new Color('hsl(10, 100%, 50%)');
-    const gradient = createColorGradient(
-      [start, end],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'RAW',
-      },
-      createColorInstance,
-    );
+    const start = new Color('hsl(350, 100%, 50%)').toRGBA();
+    const end = new Color('hsl(10, 100%, 50%)').toRGBA();
+    const gradient = createColorGradient([start, end], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'RAW',
+    });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(180, 0);
+    expect(toHSL(mid).h).toBeCloseTo(180, 0);
   });
 
   it('handles ambiguous Shortest path (180 degree diff)', () => {
@@ -350,18 +291,14 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // Shortest logic: if (diff > 180) ... else if (diff < -180).
     // 180 is not > 180. So it stays 180.
     // 0 -> 180. Mid 90.
-    const cyan = new Color('hsl(180, 100%, 50%)');
-    const gradient = createColorGradient(
-      [red, cyan],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'SHORTEST',
-      },
-      createColorInstance,
-    );
+    const cyan = new Color('hsl(180, 100%, 50%)').toRGBA();
+    const gradient = createColorGradient([red, cyan], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'SHORTEST',
+    });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(90, 0);
+    expect(toHSL(mid).h).toBeCloseTo(90, 0);
   });
 
   it('handles ambiguous Longest path (180 degree diff)', () => {
@@ -370,59 +307,46 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // 180 is not < 180.
     // So it stays 180.
     // 0 -> 180. Mid 90.
-    const cyan = new Color('hsl(180, 100%, 50%)');
-    const gradient = createColorGradient(
-      [red, cyan],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'LONGEST',
-      },
-      createColorInstance,
-    );
+    const cyan = new Color('hsl(180, 100%, 50%)').toRGBA();
+    const gradient = createColorGradient([red, cyan], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'LONGEST',
+    });
     const mid = gradient[1];
-    expect(mid.toHSL().h).toBeCloseTo(90, 0);
+    expect(toHSL(mid).h).toBeCloseTo(90, 0);
   });
 
   it('handles exact 0 degree difference', () => {
-    const gradient = createColorGradient(
-      [red, red],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'SHORTEST',
-      },
-      createColorInstance,
-    );
-    expect(gradient[1].toHSL().h).toBeCloseTo(0, 0);
+    const gradient = createColorGradient([red, red], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'SHORTEST',
+    });
+    expect(toHSL(gradient[1]).h).toBeCloseTo(0, 0);
   });
 
   it('works with OKLCH space (Default)', () => {
     // Red (#ff0000) -> Blue (#0000ff) in OKLCH.
     // Shortest path.
     const gradient = createColorGradient(
-      [new Color('#ff0000'), new Color('#0000ff')],
+      [new Color('#ff0000').toRGBA(), new Color('#0000ff').toRGBA()],
       {
         stops: 3,
         space: 'OKLCH',
       },
-      createColorInstance,
     );
     const mid = gradient[1];
     // Check it's not gray.
-    expect(mid.toOKLCH().c).toBeGreaterThan(0.1);
+    expect(toOKLCH(mid).c).toBeGreaterThan(0.1);
   });
 
   it('supports OKLAB space to avoid polar hue handling', () => {
-    const start = new Color('#ff0000');
-    const end = new Color('#0000ff');
+    const start = new Color('#ff0000').toRGBA();
+    const end = new Color('#0000ff').toRGBA();
 
-    const gradient = createColorGradient(
-      [start, end],
-      { stops: 3, space: 'OKLAB' },
-      createColorInstance,
-    );
-    const mid = gradient[1].toOKLAB();
+    const gradient = createColorGradient([start, end], { stops: 3, space: 'OKLAB' });
+    const mid = toOKLAB(gradient[1]);
 
     expect(mid.l).toBeCloseTo(0.539339, 6);
     expect(mid.a).toBeCloseTo(0.095752, 6);
@@ -431,58 +355,45 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
 
   it('works with LCH space', () => {
     const gradient = createColorGradient(
-      [new Color('#ff0000'), new Color('#0000ff')],
+      [new Color('#ff0000').toRGBA(), new Color('#0000ff').toRGBA()],
       {
         stops: 3,
         space: 'LCH',
       },
-      createColorInstance,
     );
     const mid = gradient[1];
-    expect(mid.toLCH().c).toBeGreaterThan(10);
+    expect(toLCH(mid).c).toBeGreaterThan(10);
   });
 
   it('works with HSV space', () => {
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'HSV',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSV',
+    });
     const mid = gradient[1];
-    expect(mid.toHSV().s).toBeCloseTo(100, 0);
+    expect(toHSV(mid).s).toBeCloseTo(100, 0);
   });
 
   it('ignores hueInterpolationMode in RGB space', () => {
     // RGB interpolation Red -> Blue is #800080 (Purple).
     // Even if we say 'Increasing' or 'Longest', RGB doesn't use hue.
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'RGB',
-        hueInterpolationMode: 'LONGEST', // Should be ignored
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'RGB',
+      hueInterpolationMode: 'LONGEST', // Should be ignored
+    });
     const mid = gradient[1];
-    expect(mid.toHex()).toBe('#800080');
+    expect(toHex(mid)).toBe('#800080');
   });
 
   it('applies hue unwinding to multiple stops correctly', () => {
     // 0 -> 90 -> 180.
     // Shortest: 0->90 (diff 90), 90->180 (diff 90). No adjustments.
-    const gradient = createColorGradient(
-      [red, green, blue],
-      {
-        stops: 5,
-        space: 'HSL',
-        hueInterpolationMode: 'SHORTEST',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, green, blue], {
+      stops: 5,
+      space: 'HSL',
+      hueInterpolationMode: 'SHORTEST',
+    });
     // Stops: 0, 90, 180.
     // 5 stops: 0, 45, 90, 135 (approx), 180 (approx).
     // Wait, anchors are 0, 120 (Green), 240 (Blue).
@@ -490,27 +401,23 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // Result should be 0, 60, 120, 180, 240.
     // 0 (Red), 60 (Yellow), 120 (Green), 180 (Cyan), 240 (Blue).
 
-    expect(gradient[1].toHSL().h).toBeCloseTo(60, 1);
-    expect(gradient[3].toHSL().h).toBeCloseTo(180, 1);
+    expect(toHSL(gradient[1]).h).toBeCloseTo(60, 1);
+    expect(toHSL(gradient[3]).h).toBeCloseTo(180, 1);
   });
 
   it('handles zig-zag hues with Shortest', () => {
     // 0 -> 10 -> 350.
     // 0 -> 10.
     // 10 -> 350. Diff 340. Shortest: 10 -> -10.
-    const start = new Color('hsl(0, 100%, 50%)');
-    const mid = new Color('hsl(10, 100%, 50%)');
-    const end = new Color('hsl(350, 100%, 50%)');
+    const start = new Color('hsl(0, 100%, 50%)').toRGBA();
+    const mid = new Color('hsl(10, 100%, 50%)').toRGBA();
+    const end = new Color('hsl(350, 100%, 50%)').toRGBA();
 
-    const gradient = createColorGradient(
-      [start, mid, end],
-      {
-        stops: 5, // 0, 5, 10, 0, -10 (350).
-        space: 'HSL',
-        hueInterpolationMode: 'SHORTEST',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([start, mid, end], {
+      stops: 5, // 0, 5, 10, 0, -10 (350).
+      space: 'HSL',
+      hueInterpolationMode: 'SHORTEST',
+    });
     // Segment 1: 0 -> 10. 3 stops. 0, 5, 10.
     // Segment 2: 10 -> 350 (adj -10). 3 stops. 10, 0, -10.
     // Total 5 stops.
@@ -520,8 +427,8 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // 3: 0 (mid of seg 2)
     // 4: 350 (anchor)
 
-    const hue1 = gradient[1].toHSL().h;
-    const hue3 = gradient[3].toHSL().h;
+    const hue1 = toHSL(gradient[1]).h;
+    const hue3 = toHSL(gradient[3]).h;
     expect(Math.min(hue1, 360 - hue1)).toBeCloseTo(5, 0);
     expect(Math.min(hue3, 360 - hue3)).toBeCloseTo(0, 0);
   });
@@ -529,17 +436,13 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
   it('works with clamping disabled', () => {
     // Red -> Blue via Longest (0 -> 120 -> 240).
     // Mid is 120.
-    const gradient = createColorGradient(
-      [red, blue],
-      {
-        stops: 3,
-        space: 'HSL',
-        hueInterpolationMode: 'LONGEST',
-        clamp: false,
-      },
-      createColorInstance,
-    );
-    expect(gradient[1].toHSL().h).toBeCloseTo(120, 0);
+    const gradient = createColorGradient([red, blue], {
+      stops: 3,
+      space: 'HSL',
+      hueInterpolationMode: 'LONGEST',
+      clamp: false,
+    });
+    expect(toHSL(gradient[1]).h).toBeCloseTo(120, 0);
   });
 
   it('works with Bezier interpolation and Shortest mode', () => {
@@ -551,61 +454,49 @@ describe('Polar Hue Interpolation (createColorGradient)', () => {
     // L2 = lerp(120, 240, 0.5) = 180.
     // L3 = lerp(60, 180, 0.5) = 120.
     // Should be Green.
-    const gradient = createColorGradient(
-      [red, green, blue],
-      {
-        stops: 3,
-        space: 'HSL',
-        interpolation: 'BEZIER',
-      },
-      createColorInstance,
-    );
+    const gradient = createColorGradient([red, green, blue], {
+      stops: 3,
+      space: 'HSL',
+      interpolation: 'BEZIER',
+    });
     // Bezier with 3 anchors -> 0 -> 120.
     // stops=3. 0, 0.5, 1.
-    expect(gradient[1].toHSL().h).toBeCloseTo(120, 1);
+    expect(toHSL(gradient[1]).h).toBeCloseTo(120, 1);
   });
 
   it('accepts mixed case gradient space', () => {
-    const c1 = new Color('red');
-    const c2 = new Color('blue');
-    const g1 = createColorGradient([c1, c2], { space: 'HSL' }, createColorInstance);
-    const g2 = createColorGradient([c1, c2], { space: 'hsl' }, createColorInstance);
+    const c1 = new Color('red').toRGBA();
+    const c2 = new Color('blue').toRGBA();
+    const g1 = createColorGradient([c1, c2], { space: 'HSL' });
+    const g2 = createColorGradient([c1, c2], { space: 'hsl' });
 
-    expect(g1[1].toHex()).toBe(g2[1].toHex());
+    expect(toHex(g1[1])).toBe(toHex(g2[1]));
   });
 
   it('accepts mixed case interpolation', () => {
-    const c1 = new Color('red');
-    const c2 = new Color('blue');
-    const g1 = createColorGradient([c1, c2], { interpolation: 'BEZIER' }, createColorInstance);
-    const g2 = createColorGradient([c1, c2], { interpolation: 'bezier' }, createColorInstance);
+    const c1 = new Color('red').toRGBA();
+    const c2 = new Color('blue').toRGBA();
+    const g1 = createColorGradient([c1, c2], { interpolation: 'BEZIER' });
+    const g2 = createColorGradient([c1, c2], { interpolation: 'bezier' });
 
-    expect(g1[1].toHex()).toBe(g2[1].toHex());
+    expect(toHex(g1[1])).toBe(toHex(g2[1]));
   });
 
   it('accepts mixed case easing', () => {
-    const c1 = new Color('red');
-    const c2 = new Color('blue');
-    const g1 = createColorGradient([c1, c2], { easing: 'EASE_IN' }, createColorInstance);
-    const g2 = createColorGradient([c1, c2], { easing: 'ease_in' }, createColorInstance);
+    const c1 = new Color('red').toRGBA();
+    const c2 = new Color('blue').toRGBA();
+    const g1 = createColorGradient([c1, c2], { easing: 'EASE_IN' });
+    const g2 = createColorGradient([c1, c2], { easing: 'ease_in' });
 
-    expect(g1[1].toHex()).toBe(g2[1].toHex());
+    expect(toHex(g1[1])).toBe(toHex(g2[1]));
   });
 
   it('accepts mixed case hue interpolation mode', () => {
-    const c1 = new Color('red');
-    const c2 = new Color('blue');
-    const g1 = createColorGradient(
-      [c1, c2],
-      { hueInterpolationMode: 'LONGEST' },
-      createColorInstance,
-    );
-    const g2 = createColorGradient(
-      [c1, c2],
-      { hueInterpolationMode: 'longest' },
-      createColorInstance,
-    );
+    const c1 = new Color('red').toRGBA();
+    const c2 = new Color('blue').toRGBA();
+    const g1 = createColorGradient([c1, c2], { hueInterpolationMode: 'LONGEST' });
+    const g2 = createColorGradient([c1, c2], { hueInterpolationMode: 'longest' });
 
-    expect(g1[1].toHex()).toBe(g2[1].toHex());
+    expect(toHex(g1[1])).toBe(toHex(g2[1]));
   });
 });
