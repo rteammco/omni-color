@@ -685,7 +685,8 @@ export class Color implements ColorBrand {
    * ```
    */
   getComplementaryColors(options?: ColorHarmonyOptions): [Color, Color] {
-    return getComplementaryColors(this, options, createColorInstance);
+    const [a, b] = getComplementaryColors(this.#color, options);
+    return [new Color(a), new Color(b)];
   }
 
   /**
@@ -706,7 +707,8 @@ export class Color implements ColorBrand {
    * ```
    */
   getSplitComplementaryColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
-    return getSplitComplementaryColors(this, options, createColorInstance);
+    const [a, b, c] = getSplitComplementaryColors(this.#color, options);
+    return [new Color(a), new Color(b), new Color(c)];
   }
 
   /**
@@ -728,7 +730,8 @@ export class Color implements ColorBrand {
    * ```
    */
   getTriadicHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color] {
-    return getTriadicHarmonyColors(this, options, createColorInstance);
+    const [a, b, c] = getTriadicHarmonyColors(this.#color, options);
+    return [new Color(a), new Color(b), new Color(c)];
   }
 
   /**
@@ -750,7 +753,8 @@ export class Color implements ColorBrand {
    * ```
    */
   getSquareHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color] {
-    return getSquareHarmonyColors(this, options, createColorInstance);
+    const [a, b, c, d] = getSquareHarmonyColors(this.#color, options);
+    return [new Color(a), new Color(b), new Color(c), new Color(d)];
   }
 
   /**
@@ -772,7 +776,8 @@ export class Color implements ColorBrand {
    * ```
    */
   getTetradicHarmonyColors(options?: TetradicHarmonyOptions): [Color, Color, Color, Color] {
-    return getTetradicHarmonyColors(this, options, createColorInstance);
+    const [a, b, c, d] = getTetradicHarmonyColors(this.#color, options);
+    return [new Color(a), new Color(b), new Color(c), new Color(d)];
   }
 
   /**
@@ -795,7 +800,8 @@ export class Color implements ColorBrand {
    * ```
    */
   getAnalogousHarmonyColors(options?: ColorHarmonyOptions): [Color, Color, Color, Color, Color] {
-    return getAnalogousHarmonyColors(this, options, createColorInstance);
+    const [a, b, c, d, e] = getAnalogousHarmonyColors(this.#color, options);
+    return [new Color(a), new Color(b), new Color(c), new Color(d), new Color(e)];
   }
 
   /**
@@ -815,7 +821,8 @@ export class Color implements ColorBrand {
    * ```
    */
   getMonochromaticHarmonyColors(): [Color, Color, Color, Color, Color] {
-    return getMonochromaticHarmonyColors(this, createColorInstance);
+    const [a, b, c, d, e] = getMonochromaticHarmonyColors(this.#color);
+    return [new Color(a), new Color(b), new Color(c), new Color(d), new Color(e)];
   }
 
   /**
@@ -828,7 +835,7 @@ export class Color implements ColorBrand {
    * @returns A list of new {@link Color}s representing the original color and its harmony colors for the specified `harmony` option.
    */
   getHarmonyColors(harmony: CaseInsensitive<ColorHarmony>, options?: ColorHarmonyOptions): Color[] {
-    return getHarmonyColors(this, harmony, options, createColorInstance);
+    return getHarmonyColors(this.#color, harmony, options).map((c) => new Color(c));
   }
 
   /**
