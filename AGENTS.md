@@ -104,6 +104,7 @@ describe('function or util being tested', () => {
 - `it('tests a specific case or combination of inputs', () => {...});` contains multiple checks (usually) to verify a specific combination of inputs, edge cases, happy path cases, etc.
 - `Color` inputs and outputs should almost always be hex strings ('#rrggbb') so it's readable at a glance in the IDE - unless it doesn't make sense since we're checking a specific value like alpha or a specific conversion.
 - Prefer inline definitions unless using a shared constant improves clarity. E.g. `expect(myColor.toHex()).toBe('#ff0000');` is preferable to `expect(myColor.toHex()).toBe(RED);`.
+- When testing an exported function, import and call that function directly by its exported name. Do not alias it to describe implementation details, and do not hide required input conversion behind a local wrapper. Convert inputs explicitly at the call site instead.
 - `src/color/__test__/utils.test.ts` is a good example of nice test structure.
 - Keep all test cases for a suite of utils in the same test file, e.g. all tests for `gradients.ts` should go into its associated `__test__/gradients.test.ts`.
 - Do not export helper functions just to test them, but do make sure test coverage extends to those cases as well.
