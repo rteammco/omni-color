@@ -1,130 +1,102 @@
 <!-- AGENTS.md -->
 
-# omni-color — Agent Guide
+# omni-color - Agent Guide
 
-You are a senior frontend software engineer and you write high-quality, elegant, and readable code. Your mission is to help develop the best color library in the world.
+You are helping build a high-quality TypeScript color library. Favor clear, boring, well-tested code over clever shortcuts.
 
-- Before starting a task, think deeply to create an internal success metric at a very high bar and evaluate your results after each change.
-- If the results do not meet your high bar, iterate until it does.
-- When you're done, consider editing your code to meet even higher quality standards.
-- Follow the *Style Guide* section carefully.
-- `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run format:check` all pass.
-- Do not publish changes to `package.json` or `package-lock.json` unless you need to install or update a dev dependency.
+## Working Rules
 
----
+- Think through a high-bar success metric before changing code, then evaluate the result before finishing.
+- Keep edits scoped to the user's request. Do not make unrelated stylistic cleanups, drive-by refactors, or formatting churn.
+- Push back before following a request that looks technically wrong, brittle, wasteful, unsafe, or misaligned with the library's goals. Explain the concern, suggest a better path, and ask for confirmation before proceeding with the risky approach.
+- Do not touch git state unless the user explicitly asks. This includes commits, branches, staging, rebasing, resetting, pushing, and restoring files.
+- Check the worktree before editing. If files already contain user changes, preserve them and work around them.
+- Do not edit generated output by hand, including `dist/`, `demo/dist/`, coverage output, or dependency folders. Change source files and regenerate artifacts only when the task calls for it.
+- Do not change `package.json`, `package-lock.json`, or `demo/package-lock.json` unless a dependency change is truly required.
+- Prefer automated enforcement over agent instructions. If a lint rule, formatter, typecheck option, or test can enforce the same rule, use that instead of adding prose-only guidance; ask before adding dependencies for new enforcement.
+- When updating AGENTS.md files, audit new instructions for rules that should be lint, formatter, typecheck, or test coverage instead.
+- Use existing code as the reference for structure, naming, style, and testing patterns.
 
-## Push Back On Risky Or Misguided Requests
+## Project Shape
 
-Do not behave like a "yes man" when a user asks for something that appears technically wrong, risky, wasteful, brittle, or misaligned with the library's goals.
+- Core library source lives in `src/`.
+- Color utilities and the `Color` class live in `src/color/`.
+- Palette code lives in `src/palette/`.
+- Tests live next to their domain in `__test__/` directories.
+- The demo app lives in `demo/` and has its own [demo/AGENTS.md](demo/AGENTS.md) instructions.
+- `dist/` is build output from `npm run build`; consumers import from it, but agents should not edit it manually.
 
-Before executing such a request:
+## Core Library Changes
 
-1. Briefly explain the specific concern and the likely consequence.
-2. Suggest one or more better alternatives that still address the underlying goal.
-3. Ask the user to confirm before proceeding with the original approach.
+omni-color is in beta. For feature work, prioritize the best long-term API and implementation. Do not preserve backwards compatibility with existing released versions unless the user explicitly asks.
 
-This does not mean blocking normal implementation work with excessive questions. Push back only when there is a concrete engineering reason, and keep the interruption concise and actionable.
+When adding or extending library behavior:
 
----
+1. Update the appropriate helper, util, or domain file cleanly.
+2. Update or add comprehensive tests for the changed behavior.
+3. Update the `Color` class when the behavior should be exposed there.
+4. Add a basic `Color` class test in `src/color/__test__/color.test.ts` for new `Color` APIs.
+5. Update `src/index.ts` exports only for public APIs and consumer-facing types.
+6. Update the README "Documentation" section when public behavior changes.
+7. Build before demo verification when demo code imports from `dist`.
 
-## Adding Or Extending Library Features
+## Color Correctness
 
-omni-color is currently in beta. When changing or adding features, prioritize the best long-term API and implementation for the library; do not preserve backwards compatibility with existing released versions unless the user explicitly asks for it.
+- Treat color math as specification-sensitive. Cross-check new conversion, contrast, parsing, or formatting behavior against authoritative specs or established libraries where practical.
+- Be explicit about rounding, clamping, hue wrapping, alpha handling, gamut limits, and invalid input behavior.
+- Keep public API inputs and outputs predictable. Prefer throwing clear errors for invalid inputs over silent surprising behavior unless the surrounding code establishes a different pattern.
+- Avoid widening exported types or adding new top-level exports unless they are part of the intended consumer API.
 
-These are the general steps to adding any new code changes to the core library:
+## Automated Tests
 
-1. Cleanly update the appropriate helper or util file.
-2. Update or add tests to thoroughly validate the changes.
-3. Update the `Color` class as needed.
-4. Update `color.test.ts` with a basic test for any changes to the `Color` class as well.
-5. Update exports as needed to `index.ts`. All features should generally be exposed via the `Color` class, so only export the types that the consumer might need.
-6. Verify changes with the demo app (see below).
-7. Update the README.md "Documentation" section as needed.
+Any behavior change should include automated tests. Prefer tests that are readable at a glance over compact table loops.
 
-## Always Verify Changes With The Demo App
+Use this structure:
 
-The app runs locally via:
-
-1. `cd demo/`
-2. `npm install`
-3. `npm run dev`
-
-It prints the Vite dev URL (e.g. http://localhost:5173/omni-color/).
-
-Verify correct behavior using **Chrome DevTools MCP** (tool name: `chrome-devtools`). Run a tight loop against the local dev server rendered by Vite:
-
-> **Update library → install and run demo → observe → verify → fix (if needed) → re-run**
-
-Use the **Chrome DevTools MCP** tools to: launch/attach Chrome, navigate, click, type, query DOM, and evaluate JS. Carefully consider the *Size and Artifact Guardrails* section before testing.
-
-### How to Talk to Chrome DevTools MCP
-
-Use the `chrome-devtools` MCP tools to:
-
-- **Navigate** to a URL and **wait** for the initial paint.
-- **Query** elements.
-- **Click / Type** into elements.
-- **Evaluate JS** in the page.
-- **Read console** (errors/warnings).
-
-### Size and Artifact Guardrails (Hard Limits)
-
-- Never return full page HTML, full tables, full JSON traces, or screenshots by default.
-- **Caps:** Any single string <= **100,000 chars**; any array <= **50 items**.
-- **HTML:** Return only the specific node you need and cap it: `__cap(node.outerHTML, 50_000)`.
-- **Booleans/Numbers over Blobs:** Prefer boolean assertions or parsed numbers (`__num(...)`) instead of raw HTML text.
-- **Console:** Return only the **last 30** messages, level ∈ {error, warn}. Cap `message.text` to **2,000 chars**.
-- **Network:** Return only failed requests (status 0 or ≥400), **max 20**; cap each URL/body to **2,000 chars**.
-- If a single field would exceed a cap, return a **truncated** string with `…<TRUNCATED>` and include the original length.
-
-## Automated Test Guidelines
-
-In addition to manually testing, any changes should update or add comprehensive automated tests. Where possible, cross-reference test cases with real-world or authoritative examples. Never assume the outputs you're testing are already correct.
-
-Tests should be structured as follows:
-
-```
+```ts
 describe('function or util being tested', () => {
   it('works for the happy path', () => {
     expect(new Color('red').toHex()).toBe('#ff0000');
     expect(new Color('green').toHex()).toBe('#00ff00');
     expect(new Color('blue').toHex()).toBe('#0000ff');
-    // and many more rows to test every possible case
   });
-  it('works for some weirder cases', () => {
-    // test cases line by line like above
-  });
-  it('behaves correctly during edge case X', () => {
-    // test this edge case line by line like above
+
+  it('handles edge case X', () => {
+    expect(new Color('#000000').toHex()).toBe('#000000');
   });
 });
 ```
 
-- `describe('the function or util being tested', () => {...});` contains the test for whatever util / function / logical piece is being tested. It would likely contain multiple cases under it.
-- `it('tests a specific case or combination of inputs', () => {...});` contains multiple checks (usually) to verify a specific combination of inputs, edge cases, happy path cases, etc.
-- `Color` inputs and outputs should almost always be hex strings ('#rrggbb') so it's readable at a glance in the IDE - unless it doesn't make sense since we're checking a specific value like alpha or a specific conversion.
-- Prefer inline definitions unless using a shared constant improves clarity. E.g. `expect(myColor.toHex()).toBe('#ff0000');` is preferable to `expect(myColor.toHex()).toBe(RED);`.
-- When testing an exported function, import and call that function directly by its exported name. Do not alias it to describe implementation details, and do not hide required input conversion behind a local wrapper. Convert inputs explicitly at the call site instead.
-- `src/color/__test__/utils.test.ts` is a good example of nice test structure.
-- Keep all test cases for a suite of utils in the same test file, e.g. all tests for `gradients.ts` should go into its associated `__test__/gradients.test.ts`.
-- Do not export helper functions just to test them, but do make sure test coverage extends to those cases as well.
+- `src/color/__test__/utils.test.ts` is a good local example.
+- Keep tests for a domain file in its matching test file, for example `gradients.ts` coverage belongs in `src/color/__test__/gradients.test.ts`.
+- When testing an exported function, import and call it by its exported name. Do not alias it to describe internals.
+- Do not export private helpers only to test them.
+- Prefer explicit expectations line by line. Use shared constants only when they improve clarity.
+- Use hex strings like `#rrggbb` for `Color` inputs and outputs whenever that keeps expected behavior easy to inspect.
+- Cover edge cases: nullish inputs, invalid inputs, boundary channel values, alpha extremes, hue wrapping, rounding boundaries, and out-of-gamut values where relevant.
+- Do not remove existing test coverage unless the behavior is intentionally removed.
 
-In general:
+## Verification
 
-- Readability is more important than succinctness or "clean code" in tests.
-- Avoid loops on input/expected output, try to explicitly test each line within the test case.
-- The tests should catch even the most obscure of bugs if they're present.
-- It's preferable for test coverage to be overkill than to leave any case or combination of inputs untested.
-- Always test for edge cases like null/undefined, invalid inputs, extreme values, etc.
-- When fixing or extending tests, do not remove any existing test coverage unless necessary.
+Run the narrowest useful checks while iterating, then run the relevant final checks before finishing.
 
----
+For core library changes, the expected final checks are:
+
+```sh
+npm run lint
+npm run typecheck
+npm run test
+npm run format:check
+```
+
+If a command cannot be run, say exactly why and what risk remains.
 
 ## Style Guide
 
-- **Always** adapt to the style of any existing code.
-- Respect all lint rules and do not disable them unless there's no other option. Fix all errors and warnings before finishing a task.
-- Always use descriptive variable names. Exceptions: e.g., using `i` in a loop, using `x` and `y` for coordinates, etc.
-- Use existing utils as available. Add a new util if similar code is repeated in different places.
-- Use your best judgement and think deeply to maintain the highest bar of code quality possible.
-- For the demo app, do not introduce any React anti-patterns (e.g. using `useEffect()` to sync React state changes).
+- Adapt to the style of the files you touch.
+- Keep code elegant, clean, and professional. Do not over-engineer or invent creative abstractions when a simple local approach works.
+- Use descriptive variable names. Short names like `i`, `x`, and `y` are fine when their domain is obvious.
+- Use existing utilities before adding new ones.
+- Add a new utility only when it removes real duplication or clarifies shared behavior.
+- Respect lint rules. Do not disable them unless there is no reasonable alternative.
+- Avoid `any`, non-null assertions, nested ternaries, and broad parameter lists unless the existing code clearly requires them.
