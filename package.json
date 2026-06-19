@@ -1,7 +1,7 @@
 {
   "name": "omni-color",
   "description": "A modern TypeScript color library for parsing, converting, manipulating, palettes, and accessibility.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://rteammco.github.io/omni-color/",
   "license": "ISC",
   "author": "Richard Teammco",
